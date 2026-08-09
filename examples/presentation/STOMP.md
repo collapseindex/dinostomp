@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 35 of 38 checks ran (35 of 38 ran; 16 n/a of 54 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 36 of 38 checks ran (36 of 38 ran; 16 n/a of 54 declared). Not a clean bill of health.
 
 ## Entitled claims
 
@@ -44,7 +44,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | ok | gold answer is not systematically the longest option | 40 | gold is strictly longest +5% over its per-item expectation (12 of 40) |
 | ok | a contamination canary travels with the data | 1 | canary present (dinostomp canary DO NOT TRAIN presentati...) |
 | ok | no surface feature predicts the gold answer | 40 | 0 surface feature(s) beat the per-item chance null on 40 keyed item(s) |
-| skip | no model reproduces the contamination canary | 0 | no canary probe on disk; run `dinostomp run <spec> --probe canary` to ask whether a model has already read this dataset |
+| ok | no model reproduces the contamination canary | 4 | 0 of 4 model(s) with a DEMONSTRATED-sensitive probe reproduced this pod's canary |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
 | ok | witnesses kill the mutant scorers | 5 | 0 of 5 applicable mutant scorer(s) survive the witness suite |
 | ok | uncheckable rate is sane | 160 | 0% of 160 record(s) are uncheckable |
@@ -56,7 +56,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 1 | 0 of 1 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now b1fa98e4f374809f); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 756abde76ddfa908); re-run to get numbers this report can stand behind |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no python targets; nothing produces a trajectory |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no python targets; nothing produces a trajectory |
 | n/a | tool calls are not redundant | 0 | this spec runs no python targets; nothing produces a trajectory |
@@ -167,7 +167,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.39.0
+- tool: dinostomp 0.39.1
 - statistical power: at n=40 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~31% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `5bacd458ad54056ede6d5cca8071816c1f9f31dc510571c29b23c7124dc47878`
 - data_sha256: `d9e5a5096d3d36c846d4d90320ec9f19b0b835df5d4b6baa68dd4b0d870ba32e`

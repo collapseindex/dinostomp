@@ -50,6 +50,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-003](#n-003) | ARC, OpenBookQA, HellaSwag, WinoGrande | no repeated options in four datasets | negative |
 | [N-004](#n-004) | six dataset pairs | no cross-benchmark reuse found | negative |
 | [N-005](#n-005) | four models | re-ordering the options moved nobody beyond noise | negative, underpowered |
+| [N-006](#n-006) | four models | probe demonstrably sensitive, and no canary reproduced | negative |
 | [D-001](#d-001) | dinostomp | the money invariant had only ever run at zero | fixed |
 | [D-002](#d-002) | dinostomp | pooling hid a model that never read the question | fixed |
 | [D-003](#d-003) | dinostomp | a collapsed model manufactured 8 phantom key errors | fixed |
@@ -67,7 +68,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-015](#d-015) | dinostomp | position and length bias reported class balance on a fixed label set | fixed |
 | [D-016](#d-016) | dinostomp | the SciQ fetcher put the answer at index 0 on every item | fixed |
 | [D-017](#d-017) | dinostomp | a truncated judge was diagnosed as a judge with no opinion | fixed |
-| [D-018](#d-018) | dinostomp | the cross-judge probe crashed the CLI on its first real run | fixed |
+| [D-018](#d-018) | dinostomp | EVERY non-judge probe crashed the CLI, not just cross-judge | fixed |
 | [D-019](#d-019) | dinostomp | the docs claimed a 28-point swing with no run behind it | WITHDRAWN |
 | [D-020](#d-020) | dinostomp | the grounding check undercounts by 6x, by construction | scoped, not fixed |
 
@@ -468,6 +469,38 @@ test; these do not.
 It is recorded anyway because it is the only live shuffle probe this repository
 has ever run, and it is what forced [D-019](#d-019).
 
+### N-006
+**Four models · the probe proved it can detect memorisation, then found none**
+`canary-regurgitated` (S10) · 2026-08-09 · negative
+
+| model | controls reproduced | this pod's canary |
+|---|---|---|
+| llama-3.2-3b | 3/3 | 0/1 |
+| llama-3.1-8b | 3/3 | 0/1 |
+| ministral-8b | 3/3 | 0/1 |
+| qwen3-30b | 3/3 | 0/1 |
+
+Every model completed *"To be, or not to be, that is the"*, *"We hold these
+truths to be self-evident, that all men are created"* and *"The quick brown fox
+jumps over the lazy"*. None completed this pod's canary.
+
+**This is the strongest shape a negative result can take**: the instrument
+demonstrated on the same call that it detects the thing it was looking for, and
+then did not find it. A canary probe whose controls fail is blind, and S10
+correctly skips rather than reporting a clean bill; that path has a trial of its
+own. Here it did not need to.
+
+**What it does and does not license.** It says these four models cannot complete
+a string authored for this repository, which is what you would expect of a
+canary minted after their training cutoffs. It says nothing about whether the
+*items* were memorised, only the canary that travels with them, and nothing at
+all about any other model.
+
+**The canary is now partly spent**, which is the documented cost of running this
+probe: the string went to a provider and sits in their logs. For this pod the
+marginal cost is small, because publishing the repository published the canary
+anyway, and that is the design: a canary is meant to be findable later.
+
 ---
 
 ## Defects in dinostomp itself
@@ -771,15 +804,21 @@ Raising the cap took agreement from 50% to **100%** with no change to the judge
 or the rubric.
 
 ### D-018
-**The cross-judge probe crashed the CLI on its first real run**
-`--probe crossjudge` · 2026-08-09 · fixed
+**Every non-judge probe crashed the CLI, not just cross-judge**
+`--probe crossjudge`, `--probe canary` · 2026-08-09 · fixed
 
 `KeyError: 'accuracy_on_checkable'`. The CLI special-cased the judge probe's
-summary shape and no other, so the cross-judge summary, which carries no accuracy
-because it is a difference of differences, reached the line that prints one.
+summary shape and no other, so any probe whose summary carries no accuracy
+reached the line that prints one.
 
-The probe had only ever been exercised by trials that call the runner directly.
-Nobody had typed the command. Now every probe shape prints as a probe, and the
+Found on `--probe crossjudge`. **The scope was wider than that entry first
+said**: running `--probe canary` a release later showed its summary has no
+`accuracy_on_checkable` either, so pre-fix it would have raised the same
+KeyError. The fallback added for cross-judge is what caught it, which is the
+only reason the canary run printed a line instead of a traceback.
+
+These probes had only ever been exercised by trials calling the runner directly.
+Nobody had typed the commands. Now every probe shape prints as a probe, and the
 fallback names the probe rather than assuming a field.
 
 ### D-019
@@ -851,7 +890,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **5** |
+| negative results, recorded rather than dropped (**N**) | **6** |
 | defects in dinostomp itself (**D**) | **20** |
 
 Twenty to seventeen. That ratio is the useful number to publish, and it is the

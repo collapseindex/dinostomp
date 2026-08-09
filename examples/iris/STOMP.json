@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.39.0",
+  "version": "0.39.1",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -372,9 +372,9 @@
   },
   "summary": {
     "fail": 0,
-    "warn": 0,
+    "warn": 1,
     "skip": 0,
-    "verdict": "sound",
+    "verdict": "ok",
     "scope": "pod"
   },
   "construct_validity": {
@@ -707,10 +707,13 @@
       "id": "R19",
       "slug": "engine-drift",
       "check": "the runs were produced by this engine",
-      "level": "pass",
+      "level": "warn",
       "gating": false,
-      "detail": "0 of 6 run(s) were produced by a different engine than the one auditing them (now b1fa98e4f374809f); re-run to get numbers this report can stand behind",
+      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now 756abde76ddfa908); re-run to get numbers this report can stand behind",
       "witnesses": 6,
+      "examples": [
+        "engine b1fa98e4f374809f: dry-alpha seed 42 (tool 0.39.0), dry-bravo seed 42 (tool 0.39.0), dry-charlie seed 42 (tool 0.39.0) and 3 more"
+      ],
       "evidence": {
         "engines": {
           "b1fa98e4f374809f": 6

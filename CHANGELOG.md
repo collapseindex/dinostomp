@@ -1,5 +1,13 @@
 # Changelog
 
+### v0.39.1 (2026-08-09)
+
+The canary probe, run for the first time.
+
+- **N-006: the probe proved it can detect memorisation, then found none.** All four models completed all three positive controls (Hamlet, the Declaration, the quick brown fox) and none completed this pod's canary. That is the strongest shape a negative result takes: the instrument demonstrated sensitivity on the same call, so "found nothing" means something. A probe whose controls fail is blind and S10 skips instead of reporting a clean bill; that path has its own trial and did not need to fire here.
+- **D-018 was wider than it said.** It was recorded as "the cross-judge probe crashed the CLI". Running `--probe canary` showed its summary has no `accuracy_on_checkable` either, so pre-fix it would have raised the same KeyError: the defect was EVERY non-judge probe, not one of them. The fallback added for cross-judge is the only reason the canary run printed a line instead of a traceback. The entry has been corrected rather than left at its first, narrower reading.
+- Scope stated on the finding itself: it says these four models cannot complete a string authored for this repository, which is what a canary minted after their cutoffs should do. It says nothing about whether the ITEMS were memorised, and nothing about any other model. The canary is now partly spent, which is the documented cost, and for a published pod the marginal cost is small because publishing it published the canary.
+
 ### v0.39.0 (2026-08-09)
 
 The agent rail met a real model for the first time. Six checks that had only ever seen a scripted target, and the most important result is about one of the checks.

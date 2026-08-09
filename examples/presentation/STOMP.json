@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.39.0",
+  "version": "0.39.1",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -265,12 +265,8 @@
   "coverage": {
     "declared_total": 54,
     "declared": 38,
-    "ran": 35,
+    "ran": 36,
     "skipped": [
-      {
-        "id": "S10",
-        "reason": "no canary probe on disk; run `dinostomp run <spec> --probe canary` to ask whether a model has already read this dataset"
-      },
       {
         "id": "R13",
         "reason": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock"
@@ -350,7 +346,7 @@
   "summary": {
     "fail": 0,
     "warn": 3,
-    "skip": 3,
+    "skip": 2,
     "verdict": "incomplete",
     "scope": "pod"
   },
@@ -452,10 +448,10 @@
       "id": "S10",
       "slug": "canary-regurgitated",
       "check": "no model reproduces the contamination canary",
-      "level": "skip",
+      "level": "pass",
       "gating": false,
-      "detail": "no canary probe on disk; run `dinostomp run <spec> --probe canary` to ask whether a model has already read this dataset",
-      "witnesses": 0
+      "detail": "0 of 4 model(s) with a DEMONSTRATED-sensitive probe reproduced this pod's canary",
+      "witnesses": 4
     },
     {
       "id": "S11",
@@ -689,7 +685,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now b1fa98e4f374809f); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 756abde76ddfa908); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine cf11e5de89c91221: meta-llama/llama-3.2-3b-instruct seed 7 (tool 0.37.0), meta-llama/llama-3.1-8b-instruct seed 7 (tool 0.37.0), mistralai/ministral-8b-2512 seed 7 (tool 0.37.0) and 1 more"

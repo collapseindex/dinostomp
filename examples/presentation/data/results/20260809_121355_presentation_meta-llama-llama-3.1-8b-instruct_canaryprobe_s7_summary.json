@@ -1,0 +1,14 @@
+{
+  "spec_name": "presentation",
+  "model": "meta-llama/llama-3.1-8b-instruct",
+  "provider": "openrouter",
+  "seed": 7,
+  "status": "complete",
+  "probe": "canary",
+  "estimator": "canary_probe",
+  "n_records": 4,
+  "controls_reproduced": 3,
+  "n_controls": 3,
+  "canary_reproduced": false,
+  "spend_usd": 2.34e-05
+}
