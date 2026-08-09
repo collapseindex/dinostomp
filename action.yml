@@ -1,0 +1,94 @@
+name: dinostomp
+description: >-
+  Stomp an eval pod or a bare dataset. Fails the job on a gated finding, and
+  posts the findings so a reviewer reads them in the PR instead of the log.
+branding: {icon: alert-triangle, color: green}
+
+inputs:
+  target:
+    description: "An eval.yaml to stomp, or a .csv/.jsonl/.json dataset to audit directly."
+    required: true
+  allow-incomplete:
+    description: >-
+      Accept thin coverage. Off by default on purpose: an unattended pipeline
+      must never accept an INCOMPLETE verdict because someone forgot a flag.
+    required: false
+    default: "false"
+  trust-code:
+    description: >-
+      Import the pod's Python (custom scorer, judge, or target). Importing runs
+      it, so this is opt-in even in CI, and especially in CI.
+    required: false
+    default: "false"
+  comment:
+    description: "Post the findings as a PR comment. Needs pull-requests: write."
+    required: false
+    default: "true"
+  version:
+    description: "Version spec passed to pip, e.g. 'dinostomp==0.30.0'. Pin it."
+    required: false
+    default: "dinostomp"
+
+outputs:
+  verdict:
+    description: "clean | ok | incomplete | broken"
+    value: ${{ steps.stomp.outputs.verdict }}
+  findings:
+    description: "Number of gated findings."
+    value: ${{ steps.stomp.outputs.findings }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with: {python-version: "3.11"}
+
+    - name: install dinostomp
+      shell: bash
+      run: pip install "${{ inputs.version }}"
+
+    - name: record the engine that produced this verdict
+      shell: bash
+      run: |
+        echo "engine: $(dinostomp fingerprint)" >> "$GITHUB_STEP_SUMMARY"
+
+    - name: stomp
+      id: stomp
+      shell: bash
+      run: |
+        set +e
+        args=("${{ inputs.target }}" --json stomp-report.json)
+        [ "${{ inputs.allow-incomplete }}" = "true" ] && args+=(--allow-incomplete)
+        [ "${{ inputs.trust-code }}" = "true" ] && args+=(--trust-code)
+        dinostomp stomp "${args[@]}" | tee stomp-output.txt
+        code=${PIPESTATUS[0]}
+        set -e
+        verdict=$(python -c "import json;print(json.load(open('stomp-report.json'))['summary']['verdict'])" 2>/dev/null || echo unknown)
+        fails=$(python -c "import json;print(json.load(open('stomp-report.json'))['summary']['fail'])" 2>/dev/null || echo 0)
+        echo "verdict=$verdict" >> "$GITHUB_OUTPUT"
+        echo "findings=$fails" >> "$GITHUB_OUTPUT"
+        {
+          echo "## dinostomp: \`$verdict\`"
+          echo '```'
+          cat stomp-output.txt
+          echo '```'
+        } >> "$GITHUB_STEP_SUMMARY"
+        exit $code
+
+    - name: comment on the pull request
+      # always(): a BROKEN verdict is exactly when the comment is worth having,
+      # and the stomp step has already failed the job by then.
+      if: always() && inputs.comment == 'true' && github.event_name == 'pull_request'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        {
+          echo "**dinostomp** \`${{ steps.stomp.outputs.verdict }}\` on \`${{ inputs.target }}\`"
+          echo
+          echo '```'
+          cat stomp-output.txt
+          echo '```'
+        } > comment.md
+        gh pr comment "${{ github.event.pull_request.number }}" --body-file comment.md \
+          --repo "${{ github.repository }}" || echo "could not comment (needs pull-requests: write)"

@@ -1,0 +1,35 @@
+name: bench-truthfulqa
+version: 0.1.0
+question: "Does the model's answer match any answer the TruthfulQA authors accept as correct?"
+
+# TruthfulQA (Lin et al., 2022), generation split, Apache-2.0, fetched by
+# `python benchmarks/fetch.py`. The authors ship several acceptable answers per
+# question; they are carried through verbatim, pipe-separated.
+
+entitled_claims:
+  - "Substring match against any accepted answer on the 790 TruthfulQA questions, per model."
+
+data: {path: items.jsonl, format: jsonl}
+
+models:
+  - {provider: dry, model: dry-strong}
+
+scorer:
+  kind: includes
+  witnesses:
+    - {output: "Nothing happens", target: "Nothing happens", expect: pass}
+    - {output: "I have no comment", target: ["Nothing happens", "I have no comment"], expect: pass}
+    - {output: "You grow a watermelon", target: "Nothing happens", expect: fail}
+    - {output: "", target: "Nothing happens", expect: fail}
+    # The mutation gauntlet demanded these three, and answering it is what
+    # surfaced that a substring scorer marks a correct answer wrong for case
+    # alone. That is a property of THIS pod's scoring choice, now stated out
+    # loud instead of discovered halfway through a leaderboard.
+    - {output: "nothing happens", target: "Nothing happens", expect: fail,
+       why: "substring matching is case-sensitive, and this pod says so"}
+    - {output: "Nothing  happens", target: "Nothing happens", expect: fail,
+       why: "a doubled space is part of the match"}
+    - {output: "Nothing", target: "Nothing happens", expect: fail,
+       why: "a strict prefix is not the answer"}
+
+run: {n: 790, seed: 7, budget_usd: 0}

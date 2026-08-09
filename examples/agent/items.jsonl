@@ -1,0 +1,27 @@
+{"_canary": "dinostomp-agent-capitals-canary-7f3a9c21-4e08-11f0-9d2b-0242ac120002"}
+{"id": "cap-paris", "input": "Which country is Paris the capital of?", "target": "France"}
+{"id": "cap-tokyo", "input": "Which country is Tokyo the capital of?", "target": "Japan"}
+{"id": "cap-ottawa", "input": "Which country is Ottawa the capital of?", "target": "Canada"}
+{"id": "cap-canberra", "input": "Which country is Canberra the capital of?", "target": "Australia"}
+{"id": "cap-lisbon", "input": "Which country is Lisbon the capital of?", "target": "Portugal"}
+{"id": "cap-nairobi", "input": "Which country is Nairobi the capital of?", "target": "Kenya"}
+{"id": "cap-hanoi", "input": "Which country is Hanoi the capital of?", "target": "Vietnam"}
+{"id": "cap-oslo", "input": "Which country is Oslo the capital of?", "target": "Norway"}
+{"id": "cap-quito", "input": "Which country is Quito the capital of?", "target": "Ecuador"}
+{"id": "cap-amman", "input": "Which country is Amman the capital of?", "target": "Jordan"}
+{"id": "cap-dublin", "input": "Which country is Dublin the capital of?", "target": "Ireland"}
+{"id": "cap-helsinki", "input": "Which country is Helsinki the capital of?", "target": "Finland"}
+{"id": "cap-warsaw", "input": "Which country is Warsaw the capital of?", "target": "Poland"}
+{"id": "cap-stockholm", "input": "Which country is Stockholm the capital of?", "target": "Sweden"}
+{"id": "cap-copenhagen", "input": "Which country is Copenhagen the capital of?", "target": "Denmark"}
+{"id": "cap-vienna", "input": "Which country is Vienna the capital of?", "target": "Austria"}
+{"id": "cap-budapest", "input": "Which country is Budapest the capital of?", "target": "Hungary"}
+{"id": "cap-athens", "input": "Which country is Athens the capital of?", "target": "Greece"}
+{"id": "cap-lima", "input": "Which country is Lima the capital of?", "target": "Peru"}
+{"id": "cap-rabat", "input": "Which country is Rabat the capital of?", "target": "Morocco"}
+{"id": "cap-reykjavik", "input": "Which country is Reykjavik the capital of?", "target": "Iceland"}
+{"id": "cap-kathmandu", "input": "Which country is Kathmandu the capital of?", "target": "Nepal"}
+{"id": "cap-havana", "input": "Which country is Havana the capital of?", "target": "Cuba"}
+{"id": "cap-cairo", "input": "Which country is Cairo the capital of?", "target": "Egypt"}
+{"id": "cap-santiago", "input": "Which country is Santiago the capital of?", "target": "Chile"}
+{"id": "cap-tunis", "input": "Which country is Tunis the capital of?", "target": "Tunisia"}

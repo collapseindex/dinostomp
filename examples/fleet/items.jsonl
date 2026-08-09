@@ -1,0 +1,25 @@
+{"_canary": "dinostomp canary DO NOT TRAIN 4e3844fb6f954489b6db73e6cf5ce61f"}
+{"id": "a10", "input": "What is 10 + 11? Reply with the bare number.", "target": "21"}
+{"id": "a11", "input": "What is 11 + 12? Reply with the bare number.", "target": "23"}
+{"id": "a12", "input": "What is 12 + 13? Reply with the bare number.", "target": "25"}
+{"id": "a13", "input": "What is 13 + 14? Reply with the bare number.", "target": "27"}
+{"id": "a14", "input": "What is 14 + 15? Reply with the bare number.", "target": "29"}
+{"id": "a15", "input": "What is 15 + 16? Reply with the bare number.", "target": "31"}
+{"id": "a16", "input": "What is 16 + 17? Reply with the bare number.", "target": "33"}
+{"id": "a17", "input": "What is 17 + 18? Reply with the bare number.", "target": "35"}
+{"id": "a18", "input": "What is 18 + 19? Reply with the bare number.", "target": "37"}
+{"id": "a19", "input": "What is 19 + 20? Reply with the bare number.", "target": "39"}
+{"id": "a20", "input": "What is 20 + 21? Reply with the bare number.", "target": "41"}
+{"id": "a21", "input": "What is 21 + 22? Reply with the bare number.", "target": "43"}
+{"id": "a22", "input": "What is 22 + 23? Reply with the bare number.", "target": "45"}
+{"id": "a23", "input": "What is 23 + 24? Reply with the bare number.", "target": "47"}
+{"id": "a24", "input": "What is 24 + 25? Reply with the bare number.", "target": "49"}
+{"id": "a25", "input": "What is 25 + 26? Reply with the bare number.", "target": "51"}
+{"id": "a26", "input": "What is 26 + 27? Reply with the bare number.", "target": "53"}
+{"id": "a27", "input": "What is 27 + 28? Reply with the bare number.", "target": "55"}
+{"id": "a28", "input": "What is 28 + 29? Reply with the bare number.", "target": "57"}
+{"id": "a29", "input": "What is 29 + 30? Reply with the bare number.", "target": "59"}
+{"id": "a30", "input": "What is 30 + 31? Reply with the bare number.", "target": "61"}
+{"id": "a31", "input": "What is 31 + 32? Reply with the bare number.", "target": "63"}
+{"id": "a32", "input": "What is 32 + 33? Reply with the bare number.", "target": "65"}
+{"id": "a33", "input": "What is 33 + 34? Reply with the bare number.", "target": "67"}

@@ -1,0 +1,50 @@
+name: bench-gsm8k
+version: 0.1.0
+question: "Does the model produce the reference final answer to each GSM8K test problem?"
+
+# GSM8K (Cobbe et al., 2021), test split, MIT licensed, fetched by
+# `python benchmarks/fetch.py`. Nothing about the dataset is modified: the
+# reference answer is the text the authors put after their #### marker.
+
+entitled_claims:
+  - "Final-answer exact match on a seeded 120-item sample of the GSM8K test split, per model."
+  - "How far that number moves when only the seed changes."
+
+claims:
+  - {type: accuracy, model: each, min: 0.20, confidence: 0.95}
+
+data: {path: items.jsonl, format: jsonl}
+
+# Four small hosted models spanning a real skill range, so the fleet-relative
+# checks (floor, ceiling, dynamic range, per-model guessing) have something to
+# read. Rates are declared HERE rather than passed as flags, which puts the
+# price a run was charged at inside spec_sha256.
+models:
+  - {provider: openrouter, model: meta-llama/llama-3.2-3b-instruct,
+     price_in: 0.05, price_out: 0.33, params: {temperature: 0, max_tokens: 512}}
+  - {provider: openrouter, model: meta-llama/llama-3.1-8b-instruct,
+     price_in: 0.05, price_out: 0.08, params: {temperature: 0, max_tokens: 512}}
+  - {provider: openrouter, model: mistralai/ministral-8b-2512,
+     price_in: 0.15, price_out: 0.15, params: {temperature: 0, max_tokens: 512}}
+  - {provider: openrouter, model: qwen/qwen3-30b-a3b-instruct-2507,
+     price_in: 0.048, price_out: 0.193, params: {temperature: 0, max_tokens: 512}}
+
+# Free-form arithmetic: take the LAST number in the response, which is the
+# convention the benchmark's own evaluation uses.
+scorer:
+  kind: numeric
+  params: {extract: last, tolerance: 0.0}
+  witnesses:
+    - {output: "18", target: "18", expect: pass}
+    - {output: "The answer is 18", target: "18", expect: pass}
+    - {output: "18 apples, so 24 total", target: "18", expect: fail}
+    - {output: "1", target: "18", expect: fail, why: "a strict prefix is not the answer"}
+    # These two are `uncheckable`, not `fail`, and writing them as `fail` first
+    # is how the witness gate caught the author. A numeric scorer that cannot
+    # find a number has not judged the answer wrong; it has not judged it.
+    - {output: "", target: "18", expect: uncheckable, why: "no number to extract"}
+    - {output: "one hundred", target: "100", expect: uncheckable, why: "words are not digits"}
+
+# Three seeds: the item sample moves with the seed, and P10 reports how far
+# the headline number moved with it.
+run: {n: 120, seed: 7, seeds: [11, 23], budget_usd: 0.40}

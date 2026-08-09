@@ -1,0 +1,47 @@
+# The smallest complete dinostomp eval. Runs offline, costs nothing.
+name: smoke-arith
+version: 0.1.0
+question: "Does the model answer two-digit addition with the bare number, exactly?"
+
+entitled_claims:
+  - "Exact-match accuracy on these 6 addition items, bare-number format."
+  - "Nothing about arithmetic ability in general."
+
+data:
+  path: items.jsonl
+  format: jsonl
+
+models:
+  - provider: dry
+    model: dry-strong
+
+scorer:
+  kind: exact
+  # One fail witness per scoring-bug class; the W1 mutation gauntlet verifies
+  # every applicable mutant scorer dies against this suite.
+  witnesses:
+    - output: "57"
+      target: "57"
+      expect: pass
+      why: "bare exact match is the whole contract"
+    - output: "The answer is 57"
+      target: "57"
+      expect: fail
+      why: "no credit for wrapped answers"
+    - output: "5"
+      target: "57"
+      expect: fail
+      why: "no credit for truncation"
+    - output: "not 57"
+      target: "57"
+      expect: fail
+      why: "no credit for negation"
+    - output: "58"
+      target: "57"
+      expect: fail
+      why: "wrong is wrong"
+
+run:
+  n: 6
+  seed: 42
+  budget_usd: 0

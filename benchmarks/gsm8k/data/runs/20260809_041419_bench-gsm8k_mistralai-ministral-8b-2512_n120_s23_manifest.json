@@ -1,0 +1,38 @@
+{
+  "tool_version": "0.29.0",
+  "tool_sha256": "234beba29e95b4503f61438d60f83cd45895e5dccee7d7a5b3f48b5a5c361bd4",
+  "spec_name": "bench-gsm8k",
+  "spec_version": "0.1.0",
+  "spec_sha256": "0a43b2c953404b6768ed9d552f7decf2e4fe2fac5e084438900e57607ba25207",
+  "data_sha256": "a0917cec62a9d75e589e7ce559c88eaec8fe0cae1eb33f5aecdfa89df1935a55",
+  "provider": "openrouter",
+  "model": "mistralai/ministral-8b-2512",
+  "seed": 23,
+  "n_items": 120,
+  "repeats": 1,
+  "dry_run": false,
+  "budget_cap_usd": 0.4,
+  "rate_in_per_mtok": 0.15,
+  "rate_out_per_mtok": 0.15,
+  "witness_report": {
+    "n_witnesses": 6,
+    "n_behaved": 6,
+    "verdict": "validated"
+  },
+  "env": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "dinostomp": "0.29.0",
+      "jsonschema": "4.25.1",
+      "PyYAML": "6.0.2"
+    }
+  },
+  "started_at": "2026-08-09T04:14:19.862549+00:00",
+  "status": "complete",
+  "model_reported": "mistralai/ministral-8b-2512",
+  "spend_usd": 0.00628215,
+  "spend_source": "metered",
+  "finished_at": "2026-08-09T04:19:53.828278+00:00",
+  "run_file": "20260809_041419_bench-gsm8k_mistralai-ministral-8b-2512_n120_s23.jsonl"
+}

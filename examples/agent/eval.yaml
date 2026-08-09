@@ -1,0 +1,40 @@
+name: agent-capitals
+version: 0.1.0
+question: "Does a retrieval agent answer capital-city questions from evidence it actually retrieved?"
+
+entitled_claims:
+  - "Exact-match accuracy with a 95% interval on these 26 capital-city items, per agent configuration."
+  - "Whether each configuration's correct answers appear in the evidence it retrieved."
+
+claims:
+  - {type: accuracy, model: agent-grounded, min: 0.70, confidence: 0.95}
+  - {type: superiority, better: agent-lazy, worse: agent-narrow, min_effect: 0.20, confidence: 0.95}
+
+data: {path: items.jsonl, format: jsonl}
+
+# Four configurations of one agent, mounted on the target rail. The entrypoint
+# file is hashed into every manifest: edit agent.py after a run and the stomp
+# verdict goes BROKEN until you re-run.
+models:
+  - {provider: python, model: agent-grounded, entrypoint: agent.py:run}
+  - {provider: python, model: agent-partial,  entrypoint: agent.py:run}
+  - {provider: python, model: agent-narrow,   entrypoint: agent.py:run}
+  - {provider: python, model: agent-lazy,     entrypoint: agent.py:run}
+
+# Declarative policy over the trace. Judge-free: these are facts about what was
+# recorded, not opinions about it. See the trust boundary in targets.py.
+trajectory:
+  required_tools: [retrieve]
+  forbidden_tools: [shell.exec, http.get, write_file]
+  max_steps: 6
+
+scorer:
+  kind: exact
+  witnesses:
+    - {output: "France", target: "France", expect: pass}
+    - {output: "france", target: "France", expect: fail, why: "case matters; kills the case-blind mutant"}
+    - {output: "Fran", target: "France", expect: fail, why: "truncation is not a right answer"}
+    - {output: "The answer is France", target: "France", expect: fail, why: "wrappers are not bare answers"}
+    - {output: "not France", target: "France", expect: fail, why: "negation must not be credited"}
+
+run: {n: 26, seed: 42, budget_usd: 0}

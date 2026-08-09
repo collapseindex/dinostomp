@@ -1,0 +1,25 @@
+{
+  "spec_name": "iris-species",
+  "model": "dry-delta",
+  "provider": "dry",
+  "seed": 42,
+  "status": "complete",
+  "n_records": 149,
+  "estimator": "per_record",
+  "n_checkable": 149,
+  "n_uncheckable": 0,
+  "n_passes": 149,
+  "accuracy_on_checkable": 1.0,
+  "accuracy_ci95": [
+    0.9749,
+    1.0
+  ],
+  "judgeability": 1.0,
+  "by_verdict": {
+    "pass": 149,
+    "fail": 0,
+    "flag": 0,
+    "uncheckable": 0
+  },
+  "spend_usd": 0.0
+}

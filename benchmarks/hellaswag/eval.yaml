@@ -1,0 +1,32 @@
+name: bench-hellaswag
+version: 0.1.0
+question: "Does the model pick the ending the HellaSwag annotators labelled correct?"
+
+# HellaSwag (Zellers et al., 2019), validation split, MIT licensed.
+# Fetched unmodified by `python benchmarks/fetch.py`. The correct option's TEXT
+# is the target, not its letter, so the target stays invariant when the shuffle
+# probe permutes the block.
+
+entitled_claims:
+  - "Which option each model picks on 10042 HellaSwag items, per model."
+
+data: {path: items.jsonl, format: jsonl, render_choices: true}
+
+models:
+  - {provider: dry, model: dry-strong}
+
+scorer:
+  kind: includes
+  witnesses:
+    - {output: "Planetary density will decrease.", target: "Planetary density will decrease.", expect: pass}
+    - {output: "The answer is Planetary density will decrease.", target: "Planetary density will decrease.", expect: pass}
+    - {output: "Planetary years will become longer.", target: "Planetary density will decrease.", expect: fail}
+    - {output: "", target: "Planetary density will decrease.", expect: fail}
+    - {output: "planetary density will decrease.", target: "Planetary density will decrease.", expect: fail,
+       why: "substring matching is case-sensitive, and this pod says so"}
+    - {output: "Planetary  density will decrease.", target: "Planetary density will decrease.", expect: fail,
+       why: "a doubled space is part of the match"}
+    - {output: "Planetary density", target: "Planetary density will decrease.", expect: fail,
+       why: "a strict prefix is not the answer"}
+
+run: {n: 10042, seed: 7, budget_usd: 0}

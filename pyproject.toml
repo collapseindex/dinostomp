@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dinostomp"
+version = "0.35.0"
+description = "Build evals fast. Everything gets stomped before it gets believed."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+authors = [{name = "Alex Kwon"}]
+keywords = ["evals", "llm", "benchmarks", "validation"]
+dependencies = [
+    "jsonschema>=4.0",
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+dinostomp = "dinostomp.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"dinostomp.schemas" = ["*.schema.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

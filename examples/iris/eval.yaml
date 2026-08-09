@@ -1,0 +1,42 @@
+# Iris species classification as a multiple-choice eval: the first example
+# that exercises the choice checks (S3/S4/S5/S6, R7). Runs a six-model dry
+# fleet offline at zero cost.
+#
+# Data note: Fisher's iris ships 150 rows, but rows 101 and 142 are byte-identical
+# (the famous virginica duplicate). The stomp battery caught it on the full 150
+# (S1, verdict BROKEN), so this pod ships the deduplicated 149.
+name: iris-species
+version: 0.1.0
+question: "Does the model classify an iris flower's species from its four measurements?"
+
+entitled_claims:
+  - "Exact one-word accuracy with a 95% interval on the UCI-lineage iris measurements, per model."
+  - "Nothing about botany: the dry fleet answers from skill hashes, not petals."
+
+data:
+  path: items.jsonl
+  format: jsonl
+
+models:
+  - {provider: dry, model: dry-alpha}
+  - {provider: dry, model: dry-bravo}
+  - {provider: dry, model: dry-charlie}
+  - {provider: dry, model: dry-delta}
+  - {provider: dry, model: dry-echo}
+  - {provider: dry, model: dry-foxtrot}
+
+scorer:
+  kind: exact
+  witnesses:
+    - {output: "setosa", target: "setosa", expect: pass, why: "bare one-word answer is the contract"}
+    - {output: "  virginica  ", target: "virginica", expect: pass, why: "surrounding whitespace is not an error"}
+    - {output: "It is setosa.", target: "setosa", expect: fail, why: "the prompt demands exactly one word; wrappers get no credit"}
+    - {output: "seto", target: "setosa", expect: fail, why: "no credit for truncation"}
+    - {output: "not setosa", target: "setosa", expect: fail, why: "no credit for negation"}
+    - {output: "SETOSA", target: "setosa", expect: fail, why: "the prompt says lowercase words; case is part of the contract"}
+    - {output: "versicolor", target: "virginica", expect: fail, why: "wrong species is wrong"}
+
+run:
+  n: 149
+  seed: 42
+  budget_usd: 0

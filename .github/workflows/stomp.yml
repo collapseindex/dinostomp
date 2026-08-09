@@ -1,0 +1,35 @@
+# Stomps this repo's own example pods on every push. Dogfooding is the point:
+# a tool whose CI does not run itself is asking for trust it has not earned.
+name: stomp
+
+on: [push, pull_request]
+
+jobs:
+  examples:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        pod: [smoke, fleet, iris, agent, judge]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: pip install -e '.[dev]'
+      - name: verify the published report re-derives
+        run: dinostomp verify examples/${{ matrix.pod }}/eval.yaml
+      - name: stomp
+        run: dinostomp stomp examples/${{ matrix.pod }}/eval.yaml --allow-incomplete
+
+  suite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: pip install -e '.[dev]'
+      - run: python -m pytest -q
+      - name: DinoTrials, both tails
+        run: python trials/run_trials.py
+      - name: the engine fingerprint the README publishes
+        run: dinostomp fingerprint

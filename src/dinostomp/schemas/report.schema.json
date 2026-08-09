@@ -1,0 +1,351 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/collapseindex/dinostomp/main/src/dinostomp/schemas/report.schema.json",
+  "title": "dinostomp check report",
+  "description": "Machine-readable output of the lint battery. Coverage is first-class: a report that ran few checks says so in its verdict, loudly.",
+  "type": "object",
+  "required": [
+    "tool",
+    "version",
+    "target",
+    "coverage",
+    "summary",
+    "findings"
+  ],
+  "properties": {
+    "tool": {
+      "const": "dinostomp"
+    },
+    "version": {
+      "type": "string"
+    },
+    "target": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "inputs": {
+      "type": "object",
+      "description": "SHA-256 of every input the verified runs depended on, so a report can be tied to the exact artifacts it stomped.",
+      "properties": {
+        "spec_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "data_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "scorer_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "target_sha256": {
+          "type": "object",
+          "description": "{model: sha256} for python targets. The agent is an input like the data and the scorer.",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "runs": {
+      "type": "array",
+      "description": "Inventory of the runs this report covers, dry-ness included: a dry-fleet report must be distinguishable from a real one.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "run_file": {
+            "type": "string"
+          },
+          "model": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "model_reported": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "provider": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean"
+          },
+          "seed": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "records": {
+            "type": "integer"
+          },
+          "uncheckable": {
+            "type": "integer"
+          },
+          "spend_source": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "`metered` (priced from provider-returned tokens) or `target_reported` (the target priced its own calls, a claim the ledger cannot audit)."
+          },
+          "trajectory_steps": {
+            "type": "integer",
+            "description": "Total self-reported tool steps across this run's records. Zero for plain completion providers."
+          }
+        }
+      }
+    },
+    "entitled_claims": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "claims": {
+      "type": "array",
+      "description": "Typed claims compiled to evidence requirements, each with a per-requirement checklist (C1).",
+      "items": {
+        "type": "object",
+        "required": [
+          "description",
+          "supported",
+          "requirements"
+        ],
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "supported": {
+            "type": "boolean"
+          },
+          "requirements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "ok",
+                "detail"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "type": "boolean"
+                },
+                "detail": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "power": {
+      "type": "object",
+      "description": "Statistical power context: the minimum accuracy gap detectable at this item count. Printed so nobody claims a 3-point win on 24 items.",
+      "properties": {
+        "n_items": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mde_unpaired_80pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "thresholds": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "value",
+          "source"
+        ],
+        "properties": {
+          "value": {
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "default",
+              "spec"
+            ]
+          }
+        }
+      },
+      "description": "Every threshold used, with provenance. A spec that moved a threshold is visible in its own report."
+    },
+    "coverage": {
+      "type": "object",
+      "required": [
+        "declared",
+        "ran"
+      ],
+      "properties": {
+        "declared_total": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Size of the full battery before n/a exclusions; printed alongside so shrinking a dataset never buys a cleaner-looking line."
+        },
+        "declared": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ran": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "reason"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "not_applicable": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "reason"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "fail",
+        "warn",
+        "skip",
+        "verdict"
+      ],
+      "properties": {
+        "fail": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "warn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skip": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "verdict": {
+          "enum": [
+            "sound",
+            "ok",
+            "incomplete",
+            "broken"
+          ],
+          "description": "clean requires zero gated findings AND full coverage. No failures with thin coverage is incomplete, never clean."
+        },
+        "scope": {
+          "enum": [
+            "data",
+            "pod"
+          ],
+          "description": "How much this verdict is answerable for. A data-scoped audit read the dataset at rest and nothing else; the checks needing a scorer or a run are OUT OF SCOPE rather than missing."
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "check",
+          "level",
+          "gating",
+          "detail",
+          "witnesses",
+          "slug"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "check": {
+            "type": "string"
+          },
+          "level": {
+            "enum": [
+              "pass",
+              "fail",
+              "warn",
+              "skip",
+              "n/a"
+            ]
+          },
+          "gating": {
+            "type": "boolean"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "witnesses": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "How many units this check actually examined. A pass with zero witnesses is recorded as a skip, never a pass."
+          },
+          "examples": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evidence": {
+            "type": "object"
+          },
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+            "description": "Stable human-readable name for this check. An API: renaming one breaks --only flags and saved reports, so it is a MAJOR change."
+          }
+        }
+      }
+    }
+  }
+}

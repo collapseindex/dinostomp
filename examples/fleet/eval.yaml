@@ -1,0 +1,43 @@
+# The fleet example: six offline dry models over 24 items, still free.
+# A fleet is what unlocks the psychometric checks (P1-P5): reliability,
+# key-error hunting by discrimination, dead weight, matrix completeness.
+name: fleet-arith
+version: 0.1.0
+question: "Does the model answer two-digit addition with the bare number, exactly?"
+
+# No prose ordering claim on purpose: two of the dry models tie at 100%, so
+# a claimed full ranking would be inside sampling noise. The typed claims
+# below are the precise form: each compiles to evidence requirements that
+# C1 checks off, and each was chosen because the evidence actually clears it.
+entitled_claims:
+  - "Exact-match accuracy with a 95% interval on these 24 addition items, bare-number format, per model."
+
+claims:
+  - {type: accuracy, model: dry-alpha, min: 0.80, confidence: 0.95}
+  - {type: superiority, better: dry-alpha, worse: dry-charlie, min_effect: 0.20, confidence: 0.95}
+
+data:
+  path: items.jsonl
+  format: jsonl
+
+models:
+  - {provider: dry, model: dry-alpha}
+  - {provider: dry, model: dry-bravo}
+  - {provider: dry, model: dry-charlie}
+  - {provider: dry, model: dry-delta}
+  - {provider: dry, model: dry-echo}
+  - {provider: dry, model: dry-foxtrot}
+
+scorer:
+  kind: exact
+  witnesses:
+    - {output: "57", target: "57", expect: pass, why: "bare exact match is the contract"}
+    - {output: "The answer is 57", target: "57", expect: fail, why: "no credit for wrapped answers"}
+    - {output: "5", target: "57", expect: fail, why: "no credit for truncation"}
+    - {output: "not 57", target: "57", expect: fail, why: "no credit for negation"}
+    - {output: "58", target: "57", expect: fail, why: "wrong is wrong"}
+
+run:
+  n: 24
+  seed: 42
+  budget_usd: 0

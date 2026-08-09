@@ -1,0 +1,47 @@
+cff-version: 1.2.0
+title: "dinostomp: a validity battery for LLM evaluations"
+message: >-
+  If you use dinostomp, or reuse its checks, please cite it. When citing a
+  RESULT it produced, quote the engine fingerprint alongside the version: the
+  version says which release, the fingerprint says which bytes.
+type: software
+authors:
+  - family-names: Kwon
+    given-names: Alex
+    email: ask@collapseindex.org
+    alias: collapseindex
+repository-code: "https://github.com/collapseindex/dinostomp"
+license: Apache-2.0
+version: 0.35.0
+date-released: "2026-08-09"
+keywords:
+  - evaluation
+  - benchmark validity
+  - LLM
+  - reproducibility
+  - contamination
+  - LLM-as-judge
+  - agent evaluation
+abstract: >-
+  dinostomp treats every derived evaluation artifact as untrusted and
+  re-derives it from the closest available primary evidence. A local-first
+  toolkit for building, running and publishing LLM evals, it ships a battery of
+  checks over the spec, the dataset, the scorer and every run: scorers must
+  demonstrate they can fail before they may score, recorded verdicts are
+  re-scored, summaries are recomputed, seeded item selection is re-derived, and
+  every input that influences a run (spec, data, scorer, agent, judge, and the
+  engine itself) is hashed into the run manifest so post-hoc edits are
+  detectable. Checks are split constitutionally: deterministic facts gate,
+  statistical inferences only warn. Coverage is reported honestly, so a
+  narrowed dataset can never buy a cleaner-looking verdict. The battery is
+  validated by an executable scorecard of deliberately defective evals measured
+  in both directions, sensitivity and specificity, and several of its checks
+  were added or corrected because real models exposed defects in it.
+references:
+  - type: generic
+    title: "DinoTrials: the bad-eval torture suite"
+    notes: >-
+      The executable scorecard that validates the battery, in trials/. Cite the
+      sensitivity and specificity figures together; a battery loud enough to
+      catch every planted defect will also flag every innocent pod, and only
+      the second arm tells them apart.

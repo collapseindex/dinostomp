@@ -1,0 +1,25 @@
+{
+  "spec_name": "iris-species",
+  "model": "dry-bravo",
+  "provider": "dry",
+  "seed": 42,
+  "status": "complete",
+  "n_records": 149,
+  "estimator": "per_record",
+  "n_checkable": 149,
+  "n_uncheckable": 0,
+  "n_passes": 106,
+  "accuracy_on_checkable": 0.711409,
+  "accuracy_ci95": [
+    0.6341,
+    0.7781
+  ],
+  "judgeability": 1.0,
+  "by_verdict": {
+    "pass": 106,
+    "fail": 43,
+    "flag": 0,
+    "uncheckable": 0
+  },
+  "spend_usd": 0.0
+}

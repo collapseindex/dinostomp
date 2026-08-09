@@ -1,0 +1,639 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/collapseindex/dinostomp/main/src/dinostomp/schemas/eval.schema.json",
+  "title": "dinostomp eval spec",
+  "description": "One experiment: a question, data, models, a witnessed scorer, and a run budget. Written by humans or LLMs. Nothing runs until this validates.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "version",
+    "question",
+    "data",
+    "models",
+    "scorer",
+    "run"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+      "description": "Slug. Lowercase, digits, hyphen, underscore."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "question": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 300,
+      "description": "The one question this eval answers. One sentence."
+    },
+    "entitled_claims": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Prose claims, human-interpreted. Prefer typed `claims`, which compile into evidence requirements the battery checks off."
+    },
+    "claims": {
+      "type": "array",
+      "description": "Typed claims: executable specifications of required evidence. C1 gates on these; the spec chooses its own bar by declaring one.",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "model"
+            ],
+            "properties": {
+              "type": {
+                "const": "accuracy"
+              },
+              "model": {
+                "type": "string",
+                "description": "A model named in this spec, or 'each'."
+              },
+              "min": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "The interval's LOWER bound must clear this; a point estimate above it does not entitle."
+              },
+              "confidence": {
+                "enum": [
+                  0.9,
+                  0.95,
+                  0.99
+                ],
+                "default": 0.95
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "better",
+              "worse"
+            ],
+            "properties": {
+              "type": {
+                "const": "superiority"
+              },
+              "better": {
+                "type": "string"
+              },
+              "worse": {
+                "type": "string"
+              },
+              "min_effect": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "default": 0
+              },
+              "confidence": {
+                "enum": [
+                  0.9,
+                  0.95,
+                  0.99
+                ],
+                "default": 0.95
+              }
+            }
+          }
+        ]
+      }
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "format"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Path relative to the spec file. The linter rejects absolute paths and traversal."
+        },
+        "format": {
+          "enum": [
+            "jsonl",
+            "csv"
+          ]
+        },
+        "render_choices": {
+          "type": "boolean",
+          "description": "Append a lettered option block to every choice item's prompt, rendered by dinostomp rather than baked into your input text. Hands the tool ownership of option ORDER, which is what makes `--probe shuffle` (and P9, presentation-order sensitivity) possible at all."
+        },
+        "separator": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Splits `target` and `choices` cells into lists, e.g. \"|\". A flat CSV cell holds one string, so without this a multi-target item or an option list cannot be expressed in CSV at all. Cells that do not contain the separator stay plain strings, so declaring one never reshapes single-valued data."
+        },
+        "fields": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Optional mapping from this dataset's column names onto the canonical item fields.",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "input": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            },
+            "choices": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "models": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/model"
+      }
+    },
+    "scorer": {
+      "$ref": "#/$defs/scorer"
+    },
+    "run": {
+      "$ref": "#/$defs/run"
+    },
+    "trajectory": {
+      "$ref": "#/$defs/trajectory"
+    },
+    "mounts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Files OUTSIDE the pod that this eval depends on, e.g. a scorer shared across a workspace. Declaring a path is what makes it legal to reference: an undeclared path that leaves the pod is refused, because an unhashed input is outside the drift boundary. Every mount is hashed into each manifest as `mount_sha256`, so editing shared code after a run is drift exactly like editing the pod's own. Relative to the spec file; absolute paths are refused."
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "model"
+      ],
+      "properties": {
+        "provider": {
+          "enum": [
+            "anthropic",
+            "openai",
+            "openrouter",
+            "dry",
+            "python"
+          ],
+          "description": "dry is the offline deterministic provider: zero network, zero spend, always available. python mounts a pod-local callable (agent, RAG pipeline, workflow) on the target rail."
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entrypoint": {
+          "type": "string",
+          "pattern": "^[^:]+\\.py(:[A-Za-z_][A-Za-z0-9_]*)?$",
+          "description": "Required when provider=python. `agent.py:run`, relative to the spec file; the symbol defaults to `run`. The file is hashed into every manifest, so editing it after a run is drift."
+        },
+        "price_in": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Input rate, USD per MTok, for a model the built-in table does not know. Declared HERE rather than passed on the command line so the rate is inside spec_sha256: the price a run was charged at becomes part of the drift boundary instead of a flag nobody recorded. Per model, because a fleet does not share one rate."
+        },
+        "price_out": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Output rate, USD per MTok. Must accompany price_in."
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "temperature": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2
+            },
+            "max_tokens": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "provider": {
+                "const": "python"
+              }
+            },
+            "required": [
+              "provider"
+            ]
+          },
+          "then": {
+            "required": [
+              "entrypoint"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "entrypoint"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "price_in"
+            ]
+          },
+          "then": {
+            "required": [
+              "price_out"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "price_out"
+            ]
+          },
+          "then": {
+            "required": [
+              "price_in"
+            ]
+          }
+        }
+      ]
+    },
+    "trajectory": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Declarative policy over what a target may and must do while answering. Judge-free by construction: these are facts about the recorded trace, not opinions about it. Checked by T1-T6. Note the trust boundary: the trace is self-reported by the target, so these verify the RECORD, not the EXECUTION.",
+      "properties": {
+        "required_tools": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Every trajectory must contain a call to each of these. T2 gates."
+        },
+        "forbidden_tools": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "No trajectory may contain a call to any of these. T1 gates."
+        },
+        "max_steps": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "A trajectory longer than this is a runaway. T3 gates."
+        }
+      }
+    },
+    "witness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "output",
+        "target",
+        "expect"
+      ],
+      "properties": {
+        "output": {
+          "type": "string",
+          "description": "A verbatim model output to feed the scorer."
+        },
+        "target": {
+          "description": "The reference answer for this witness case.",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "expect": {
+          "enum": [
+            "pass",
+            "fail",
+            "uncheckable"
+          ],
+          "description": "The verdict this case must produce. uncheckable pins the scorer's behavior on unparseable output, which is what kills the uncheckable-credit mutant."
+        },
+        "why": {
+          "type": "string"
+        }
+      }
+    },
+    "scorer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "witnesses"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "exact",
+            "includes",
+            "regex",
+            "numeric",
+            "choice",
+            "python",
+            "judge"
+          ]
+        },
+        "params": {
+          "type": "object",
+          "description": "Scorer options. numeric: `tolerance` (float) and `extract` (`first` or `last`) - `last` is what you want when models show their working, and R16 is the check that tells you they do. regex: `pattern`.",
+          "properties": {
+            "tolerance": {
+              "type": "number",
+              "minimum": 0
+            },
+            "extract": {
+              "enum": [
+                "first",
+                "last"
+              ],
+              "default": "first"
+            },
+            "pattern": {
+              "type": "string"
+            }
+          }
+        },
+        "code": {
+          "type": "string",
+          "description": "Path to a python file exposing score(output, target) -> bool. Required when kind=python."
+        },
+        "rubric": {
+          "type": "string",
+          "minLength": 10,
+          "description": "What the judge is grading for, in one instruction. Hashed with the spec, so editing it after a run is drift."
+        },
+        "cross_judge": {
+          "$ref": "#/$defs/judge_block",
+          "description": "A SECOND judge, from a different model family, read only by `--probe crossjudge`. Self-preference is not measurable with one judge: there is nothing to compare its leniency against. Two judges grading the same recorded outputs make it an interaction J4 can read."
+        },
+        "judge": {
+          "$ref": "#/$defs/judge_block",
+          "description": "The model doing the grading. Required when kind=judge. Its calls are priced and capped like any other call."
+        },
+        "witnesses": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/witness"
+          },
+          "allOf": [
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "expect"
+                ],
+                "properties": {
+                  "expect": {
+                    "const": "pass"
+                  }
+                }
+              },
+              "description": "At least one case the scorer must accept."
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "expect"
+                ],
+                "properties": {
+                  "expect": {
+                    "const": "fail"
+                  }
+                }
+              },
+              "description": "At least one case the scorer must reject. A scorer that cannot fail is not a scorer."
+            }
+          ],
+          "description": "Concrete cases the scorer must get right before it is allowed to score real data. Executed by the runner before every run."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "python"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "code"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "judge"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "judge",
+              "rubric"
+            ]
+          }
+        }
+      ]
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "n",
+        "seed",
+        "budget_usd"
+      ],
+      "properties": {
+        "n": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of items to run."
+        },
+        "seed": {
+          "type": "integer",
+          "description": "Required. There is no unseeded run."
+        },
+        "seeds": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "integer"
+          },
+          "description": "Extra seeds to repeat the WHOLE eval under, each a separate run file. `seed` stays the primary. Measures the spread a single seed cannot: item selection and provider sampling both move, and P10 reports how far. A number that changes when only the seed changes was never the model's number."
+        },
+        "budget_usd": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Hard spend cap. Required even for free runs, so the field is never an afterthought."
+        },
+        "repeats": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        }
+      }
+    },
+    "judge_block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider"
+      ],
+      "description": "The model doing the grading. Required when kind=judge. Its calls are priced and capped like any other call: a judge is not free just because it is not the examinee.",
+      "properties": {
+        "provider": {
+          "enum": [
+            "anthropic",
+            "openai",
+            "openrouter",
+            "dry",
+            "python"
+          ],
+          "description": "dry is the offline control judge (agrees with normalized exact match, no biases). python mounts a pod-local judge(output, target, ctx) -> str."
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entrypoint": {
+          "type": "string",
+          "pattern": "^[^:]+\\.py(:[A-Za-z_][A-Za-z0-9_]*)?$",
+          "description": "Required when the judge provider is python. Hashed into every manifest as judge_sha256."
+        },
+        "price_in": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Input rate, USD per MTok, for a judge model the built-in table does not know. A judge that cannot be priced cannot be capped, so without this a hosted judge outside the table refuses to run."
+        },
+        "price_out": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Output rate, USD per MTok. Must accompany price_in."
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Sampling for the judge. temperature defaults to 0, because grading is not a creative task: a judge sampled hot contradicts itself on identical input, which J3 measures and the witness gate can fail at random.",
+          "properties": {
+            "temperature": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2
+            },
+            "max_tokens": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "provider": {
+                "const": "python"
+              }
+            },
+            "required": [
+              "provider"
+            ]
+          },
+          "then": {
+            "required": [
+              "entrypoint"
+            ]
+          },
+          "else": {
+            "required": [
+              "model"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "price_in"
+            ]
+          },
+          "then": {
+            "required": [
+              "price_out"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "price_out"
+            ]
+          },
+          "then": {
+            "required": [
+              "price_in"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

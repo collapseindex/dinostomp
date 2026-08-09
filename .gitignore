@@ -1,0 +1,32 @@
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+build/
+dist/
+data/
+!examples/*/data/
+!examples/*/data/**
+!benchmarks/*/data/
+!benchmarks/*/data/**
+.DS_Store
+
+# Secrets: never committed, in any repo, ever. API keys live in the
+# environment only and are read by the network providers at run time.
+.env
+.env.*
+!.env.sample
+
+# pin_thresholds scorecards: a maintenance artifact, not a deliverable.
+# Version-stamped names on purpose: three probe runs raced on a shared
+# `pins.txt` during v0.30.0 and produced a scorecard whose provenance nobody
+# could reconstruct, which is the exact failure R19 exists to catch, committed
+# by the person who wrote R19.
+pins*.json
+pins*.txt
+
+# Benchmark datasets are fetched, not vendored: they belong to their authors
+# and a stale copy here would be a copy nobody notices going stale.
+benchmarks/*/items.jsonl

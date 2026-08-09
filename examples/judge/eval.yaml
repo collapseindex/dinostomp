@@ -1,0 +1,31 @@
+name: judge-capitals
+version: 0.1.0
+question: "Do four differently-worded answerers get graded on their answer rather than their phrasing?"
+
+entitled_claims:
+  - "Judge-scored accuracy with a 95% interval on these 26 capital-city items, per bot."
+  - "Whether the judge's verdicts survive content-free rewording of the answer."
+
+data: {path: items.jsonl, format: jsonl}
+
+# Same facts, four house styles. Exact match would rank these by punctuation,
+# which is the whole reason a judge is here.
+models:
+  - {provider: python, model: bot-bare,    entrypoint: bots.py:run}
+  - {provider: python, model: bot-wrapped, entrypoint: bots.py:run}
+  - {provider: python, model: bot-hedged,  entrypoint: bots.py:run}
+  - {provider: python, model: bot-chatty,  entrypoint: bots.py:run}
+
+scorer:
+  kind: judge
+  rubric: "Mark PASS if the response names the same country as the reference answer, whatever else it says. Mark FAIL if it names a different country or denies the reference answer."
+  judge: {provider: dry, model: judge-control}
+  witnesses:
+    - {output: "France", target: "France", expect: pass}
+    - {output: "The answer is France.", target: "France", expect: pass, why: "the judge exists to see through wrappers; exact match cannot"}
+    - {output: "Japan", target: "France", expect: fail}
+    - {output: "not France", target: "France", expect: fail, why: "leniency must never extend to negation"}
+    - {output: "I am not sure.", target: "France", expect: fail}
+    - {output: "Franc", target: "France", expect: fail, why: "a truncated country is a different one; kills the prefix-lenient mutant"}
+
+run: {n: 26, seed: 42, budget_usd: 0}

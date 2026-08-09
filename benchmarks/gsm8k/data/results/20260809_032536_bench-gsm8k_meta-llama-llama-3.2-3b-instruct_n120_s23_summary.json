@@ -1,0 +1,25 @@
+{
+  "spec_name": "bench-gsm8k",
+  "model": "meta-llama/llama-3.2-3b-instruct",
+  "provider": "openrouter",
+  "seed": 23,
+  "status": "complete",
+  "n_records": 120,
+  "estimator": "per_record",
+  "n_checkable": 112,
+  "n_uncheckable": 8,
+  "n_passes": 56,
+  "accuracy_on_checkable": 0.5,
+  "accuracy_ci95": [
+    0.4089,
+    0.5911
+  ],
+  "judgeability": 0.9333,
+  "by_verdict": {
+    "pass": 56,
+    "fail": 56,
+    "flag": 0,
+    "uncheckable": 8
+  },
+  "spend_usd": 0.00521256
+}
