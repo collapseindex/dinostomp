@@ -264,32 +264,76 @@
   },
   "coverage": {
     "declared_total": 54,
-    "declared": 40,
-    "ran": 31,
+    "declared": 38,
+    "ran": 18,
     "skipped": [
       {
         "id": "S10",
         "reason": "no canary probe on disk; run `dinostomp run <spec> --probe canary` to ask whether a model has already read this dataset"
       },
       {
+        "id": "R3",
+        "reason": "no `usage` on every record (per-record cost is summed and compared to the manifest total); 0 of 1172 record(s) carry it; no `spend_usd` on every manifest (the ledger total the sum is checked against); 0 of 1 manifest(s) carry it"
+      },
+      {
+        "id": "R5",
+        "reason": "no `finish_reason` on every record (a truncated response is identified by it); 0 of 1172 record(s) carry it"
+      },
+      {
+        "id": "R8",
+        "reason": "no `output` on every record (verdicts are re-scored from the recorded text); 0 of 1172 record(s) carry it"
+      },
+      {
+        "id": "R12",
+        "reason": "needs at least 2 models to compare uncheckable rates"
+      },
+      {
         "id": "R13",
         "reason": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock"
+      },
+      {
+        "id": "R14",
+        "reason": "no `output` on every record (a collapsed model is identified by repeated output text); 0 of 1172 record(s) carry it"
       },
       {
         "id": "R15",
         "reason": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock"
       },
       {
+        "id": "R16",
+        "reason": "no `output` on every record (an unparsed-but-correct answer is looked for in the text); 0 of 1172 record(s) carry it"
+      },
+      {
         "id": "P1",
-        "reason": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock"
+        "reason": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics"
       },
       {
         "id": "P2",
-        "reason": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock"
+        "reason": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics"
       },
       {
         "id": "P3",
-        "reason": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock"
+        "reason": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics"
+      },
+      {
+        "id": "P4",
+        "reason": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics"
+      },
+      {
+        "id": "P5",
+        "reason": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics"
+      },
+      {
+        "id": "P6",
+        "reason": "an ordering claim needs at least 2 models on disk"
+      },
+      {
+        "id": "P7",
+        "reason": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics"
+      },
+      {
+        "id": "P8",
+        "reason": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics"
       },
       {
         "id": "P9",
@@ -306,24 +350,8 @@
     ],
     "not_applicable": [
       {
-        "id": "S3",
-        "reason": "no multiple-choice items in this dataset"
-      },
-      {
-        "id": "S4",
-        "reason": "no multiple-choice items in this dataset"
-      },
-      {
-        "id": "S5",
-        "reason": "no multiple-choice items in this dataset"
-      },
-      {
-        "id": "S6",
-        "reason": "no multiple-choice items in this dataset"
-      },
-      {
-        "id": "S9",
-        "reason": "no multiple-choice items in this dataset"
+        "id": "S2",
+        "reason": "no free-form items in this dataset"
       },
       {
         "id": "S11",
@@ -336,6 +364,34 @@
       {
         "id": "R18",
         "reason": "no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably"
+      },
+      {
+        "id": "R19",
+        "reason": "no run manifest records a tool_sha256"
+      },
+      {
+        "id": "T1",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T2",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T3",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T4",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T5",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T6",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
       },
       {
         "id": "J1",
@@ -354,10 +410,6 @@
         "reason": "this eval does not score with a judge"
       },
       {
-        "id": "P6",
-        "reason": "no entitled claim asserts a model ordering"
-      },
-      {
         "id": "P10",
         "reason": "the spec declares no extra seeds; a single seed cannot show its own spread (run.seeds is how you ask)"
       }
@@ -365,8 +417,8 @@
   },
   "summary": {
     "fail": 0,
-    "warn": 5,
-    "skip": 9,
+    "warn": 2,
+    "skip": 20,
     "verdict": "incomplete",
     "scope": "pod"
   },
@@ -382,53 +434,60 @@
       "check": "questions are unique",
       "level": "pass",
       "gating": true,
-      "detail": "0 duplicated question(s) among 24",
-      "witnesses": 24
+      "detail": "0 duplicated question(s) among 1172",
+      "witnesses": 1172
     },
     {
       "id": "S2",
       "slug": "answer-leak",
       "check": "no answer leaks into its own question",
-      "level": "pass",
+      "level": "n/a",
       "gating": true,
-      "detail": "0 of 24 free-form item(s) leak their answer",
-      "witnesses": 24
+      "detail": "no free-form items in this dataset",
+      "witnesses": 0
     },
     {
       "id": "S3",
       "slug": "position-bias",
       "check": "gold answer does not favour an option position",
-      "level": "n/a",
+      "level": "pass",
       "gating": false,
-      "detail": "no multiple-choice items in this dataset",
-      "witnesses": 0
+      "detail": "gold overshoots position 1 by +2% over its per-item expectation (311 of 1172)",
+      "witnesses": 1172,
+      "evidence": {
+        "position": 1,
+        "excess": 0.0152
+      }
     },
     {
       "id": "S4",
       "slug": "length-bias",
       "check": "gold answer is not systematically the longest option",
-      "level": "n/a",
+      "level": "pass",
       "gating": false,
-      "detail": "no multiple-choice items in this dataset",
-      "witnesses": 0
+      "detail": "gold is strictly longest -3% over its per-item expectation (259 of 1172)",
+      "witnesses": 1172,
+      "evidence": {
+        "excess": -0.0292
+      }
     },
     {
       "id": "S5",
       "slug": "dup-options",
       "check": "no option offered twice in one item",
-      "level": "n/a",
+      "level": "pass",
       "gating": true,
-      "detail": "no multiple-choice items in this dataset",
-      "witnesses": 0
+      "detail": "0 item(s) offer a duplicate option",
+      "witnesses": 1172
     },
     {
       "id": "S6",
       "slug": "target-not-offered",
       "check": "every target is among its choices",
-      "level": "n/a",
+      "level": "pass",
       "gating": true,
-      "detail": "no multiple-choice items in this dataset",
-      "witnesses": 0
+      "detail": "0 item(s) whose target is not among their choices",
+      "witnesses": 1172
     },
     {
       "id": "S7",
@@ -437,7 +496,7 @@
       "level": "pass",
       "gating": true,
       "detail": "0 question(s) appear with conflicting targets",
-      "witnesses": 24
+      "witnesses": 1172
     },
     {
       "id": "S8",
@@ -445,17 +504,17 @@
       "check": "a contamination canary travels with the data",
       "level": "pass",
       "gating": false,
-      "detail": "canary present (dinostomp canary DO NOT TRAIN live-agent...)",
+      "detail": "canary present (dinostomp canary DO NOT TRAIN lm-eval-im...)",
       "witnesses": 1
     },
     {
       "id": "S9",
       "slug": "surface-shortcut",
       "check": "no surface feature predicts the gold answer",
-      "level": "n/a",
+      "level": "pass",
       "gating": false,
-      "detail": "no multiple-choice items in this dataset",
-      "witnesses": 0
+      "detail": "0 surface feature(s) beat the per-item chance null on 1172 keyed item(s)",
+      "witnesses": 1172
     },
     {
       "id": "S10",
@@ -515,8 +574,8 @@
       "check": "runs match the spec, data, and scorer on disk (no drift)",
       "level": "pass",
       "gating": true,
-      "detail": "0 of 3 run(s) no longer match the spec, data, or scorer on disk",
-      "witnesses": 3
+      "detail": "0 of 1 run(s) no longer match the spec, data, or scorer on disk",
+      "witnesses": 1
     },
     {
       "id": "R2",
@@ -524,17 +583,23 @@
       "check": "the witness gate replays clean",
       "level": "pass",
       "gating": true,
-      "detail": "replayed 7 witness(es): 7 behaved; 3 run manifest(s) checked",
-      "witnesses": 10
+      "detail": "replayed 6 witness(es): 6 behaved; 1 run manifest(s) checked",
+      "witnesses": 7
     },
     {
       "id": "R3",
       "slug": "spend-ledger",
       "check": "ledger spend agrees with the manifest and the spec cap",
-      "level": "pass",
+      "level": "skip",
       "gating": true,
-      "detail": "0 money discrepanc(ies) across 3 run(s)",
-      "witnesses": 3
+      "detail": "no `usage` on every record (per-record cost is summed and compared to the manifest total); 0 of 1172 record(s) carry it; no `spend_usd` on every manifest (the ledger total the sum is checked against); 0 of 1 manifest(s) carry it",
+      "witnesses": 0,
+      "evidence": {
+        "missing_evidence": [
+          "usage",
+          "spend_usd"
+        ]
+      }
     },
     {
       "id": "R4",
@@ -542,17 +607,22 @@
       "check": "every run record is schema-valid, unique, and its manifest's own",
       "level": "pass",
       "gating": true,
-      "detail": "0 integrity problem(s) across 72 record(s)",
-      "witnesses": 72
+      "detail": "0 integrity problem(s) across 1172 record(s)",
+      "witnesses": 1172
     },
     {
       "id": "R5",
       "slug": "truncation-credit",
       "check": "truncated outputs are never credited",
-      "level": "pass",
+      "level": "skip",
       "gating": true,
-      "detail": "0 truncated output(s) scored as pass; a cut-off response can still have stated its answer, so read these before raising max_tokens and re-running",
-      "witnesses": 72
+      "detail": "no `finish_reason` on every record (a truncated response is identified by it); 0 of 1172 record(s) carry it",
+      "witnesses": 0,
+      "evidence": {
+        "missing_evidence": [
+          "finish_reason"
+        ]
+      }
     },
     {
       "id": "R6",
@@ -560,8 +630,8 @@
       "check": "uncheckable rate is sane",
       "level": "pass",
       "gating": false,
-      "detail": "0% of 72 record(s) are uncheckable",
-      "witnesses": 72,
+      "detail": "0% of 1172 record(s) are uncheckable",
+      "witnesses": 1172,
       "evidence": {
         "rate": 0.0
       }
@@ -570,30 +640,36 @@
       "id": "R7",
       "slug": "above-guessing",
       "check": "accuracy is distinguishable from guessing",
-      "level": "pass",
+      "level": "warn",
       "gating": false,
-      "detail": "0 of 3 model(s) score no better than guessing; fleet spans 54% to 83% vs chance ~8% (modal target floor)",
-      "witnesses": 3,
+      "detail": "1 of 1 model(s) score no better than guessing; fleet spans 20% to 20% vs chance ~25% (uniform choice floor)",
+      "witnesses": 1,
+      "examples": [
+        "Corianas/111m: 20% on 1172 checkable, at or below the 25% floor"
+      ],
       "evidence": {
         "per_model_accuracy": {
-          "live-grounded": 0.5417,
-          "live-oneshot": 0.7917,
-          "live-greedy": 0.8333
+          "Corianas/111m": 0.1971
         },
-        "chance_floor": 0.0833,
-        "uniform": 0.0,
-        "modal": 0.0833,
-        "modal_target": "oxygen"
+        "chance_floor": 0.2502,
+        "uniform": 0.2502,
+        "modal": 0.0026,
+        "modal_target": "earth rotates on its axis."
       }
     },
     {
       "id": "R8",
       "slug": "verdict-rederive",
       "check": "recorded verdicts re-score identically",
-      "level": "pass",
+      "level": "skip",
       "gating": true,
-      "detail": "0 of 72 recorded verdict(s) do not reproduce under the current scorer",
-      "witnesses": 72
+      "detail": "no `output` on every record (verdicts are re-scored from the recorded text); 0 of 1172 record(s) carry it",
+      "witnesses": 0,
+      "evidence": {
+        "missing_evidence": [
+          "output"
+        ]
+      }
     },
     {
       "id": "R9",
@@ -601,8 +677,8 @@
       "check": "summaries match their run records",
       "level": "pass",
       "gating": true,
-      "detail": "0 summary discrepanc(ies) across 3 run(s)",
-      "witnesses": 3
+      "detail": "0 summary discrepanc(ies) across 1 run(s)",
+      "witnesses": 1
     },
     {
       "id": "R10",
@@ -611,7 +687,7 @@
       "level": "pass",
       "gating": false,
       "detail": "0 run(s) outside the spec's declared scope",
-      "witnesses": 3
+      "witnesses": 1
     },
     {
       "id": "R11",
@@ -619,24 +695,17 @@
       "check": "records cover exactly the seeded selection",
       "level": "pass",
       "gating": true,
-      "detail": "0 of 3 run(s) do not cover their seeded selection",
-      "witnesses": 3
+      "detail": "0 of 1 run(s) do not cover their seeded selection",
+      "witnesses": 1
     },
     {
       "id": "R12",
       "slug": "scorer-escape",
       "check": "no model selectively escapes the scorer",
-      "level": "pass",
+      "level": "skip",
       "gating": false,
-      "detail": "0 of 3 model(s) escape the scorer more than the fleet does",
-      "witnesses": 3,
-      "evidence": {
-        "rates": {
-          "live-grounded": 0.0,
-          "live-oneshot": 0.0,
-          "live-greedy": 0.0
-        }
-      }
+      "detail": "needs at least 2 models to compare uncheckable rates",
+      "witnesses": 0
     },
     {
       "id": "R13",
@@ -651,10 +720,15 @@
       "id": "R14",
       "slug": "response-collapse",
       "check": "no model collapses onto one answer",
-      "level": "pass",
+      "level": "skip",
       "gating": false,
-      "detail": "0 of 3 model(s) answer with one response far more often than any target warrants",
-      "witnesses": 3
+      "detail": "no `output` on every record (a collapsed model is identified by repeated output text); 0 of 1172 record(s) carry it",
+      "witnesses": 0,
+      "evidence": {
+        "missing_evidence": [
+          "output"
+        ]
+      }
     },
     {
       "id": "R15",
@@ -669,14 +743,15 @@
       "id": "R16",
       "slug": "scorer-artifact",
       "check": "failed answers do not contain the reference",
-      "level": "warn",
+      "level": "skip",
       "gating": false,
-      "detail": "2 of 2 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness",
-      "witnesses": 2,
-      "examples": [
-        "live-grounded: 6 of 11 failed answer(s) (55%) contain the reference answer verbatim",
-        "live-oneshot: 3 of 5 failed answer(s) (60%) contain the reference answer verbatim"
-      ]
+      "detail": "no `output` on every record (an unparsed-but-correct answer is looked for in the text); 0 of 1172 record(s) carry it",
+      "witnesses": 0,
+      "evidence": {
+        "missing_evidence": [
+          "output"
+        ]
+      }
     },
     {
       "id": "R17",
@@ -684,8 +759,8 @@
       "check": "every model produced something scoreable",
       "level": "pass",
       "gating": true,
-      "detail": "0 of 3 model(s) produced nothing scoreable",
-      "witnesses": 3
+      "detail": "0 of 1 model(s) produced nothing scoreable",
+      "witnesses": 1
     },
     {
       "id": "R18",
@@ -700,96 +775,64 @@
       "id": "R19",
       "slug": "engine-drift",
       "check": "the runs were produced by this engine",
-      "level": "warn",
+      "level": "n/a",
       "gating": false,
-      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now 04bdfd057a413606); re-run to get numbers this report can stand behind",
-      "witnesses": 3,
-      "examples": [
-        "engine be4c83d7129cec32: live-grounded seed 7 (tool 0.38.0), live-oneshot seed 7 (tool 0.38.0), live-greedy seed 7 (tool 0.38.0)"
-      ],
-      "evidence": {
-        "engines": {
-          "be4c83d7129cec32": 3
-        }
-      }
+      "detail": "no run manifest records a tool_sha256",
+      "witnesses": 0
     },
     {
       "id": "T1",
       "slug": "forbidden-tool",
       "check": "no forbidden tool is called",
-      "level": "pass",
+      "level": "n/a",
       "gating": true,
-      "detail": "0 forbidden tool call(s) across 72 trajector(ies)",
-      "witnesses": 72
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
     },
     {
       "id": "T2",
       "slug": "required-tool",
       "check": "every required tool is actually called",
-      "level": "pass",
+      "level": "n/a",
       "gating": true,
-      "detail": "0 of 72 trajector(ies) skipped a required tool",
-      "witnesses": 72
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
     },
     {
       "id": "T3",
       "slug": "trajectory-shape",
       "check": "trajectories are well-formed",
-      "level": "pass",
+      "level": "n/a",
       "gating": true,
-      "detail": "0 malformed trajector(ies) of 72",
-      "witnesses": 72
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
     },
     {
       "id": "T4",
       "slug": "answer-grounding",
       "check": "passing answers are grounded in tool evidence",
-      "level": "warn",
+      "level": "n/a",
       "gating": false,
-      "detail": "2 of 3 target(s) pass items whose answer does not APPEAR in their own evidence (6 such answer(s) in total). This is co-occurrence, not causation: an answer recalled from memory that also happens to appear in a retrieved snippet counts as grounded here, so this count is a floor",
-      "witnesses": 3,
-      "examples": [
-        "live-greedy: 3 of 20 passing answer(s) (15%) appear in no retrieved evidence",
-        "live-oneshot: 3 of 19 passing answer(s) (16%) appear in no retrieved evidence",
-        "la-01 (live-greedy): passed, but its answer appears in no tool result",
-        "la-16 (live-greedy): passed, but its answer appears in no tool result",
-        "la-17 (live-greedy): passed, but its answer appears in no tool result",
-        "la-01 (live-oneshot): passed, but its answer appears in no tool result",
-        "la-04 (live-oneshot): passed, but its answer appears in no tool result",
-        "la-07 (live-oneshot): passed, but its answer appears in no tool result"
-      ],
-      "evidence": {
-        "models_judged": 3,
-        "ungrounded_records": 6,
-        "measures": "co-occurrence in the recorded trace, not causal use"
-      }
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
     },
     {
       "id": "T5",
       "slug": "trace-underreport",
       "check": "no model under-reports its trajectory",
-      "level": "pass",
+      "level": "n/a",
       "gating": false,
-      "detail": "0 of 3 target(s) report far fewer steps than the fleet (median 1.0); a thin trace can be efficiency OR omission",
-      "witnesses": 3,
-      "evidence": {
-        "fleet_median_steps": 1.0
-      }
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
     },
     {
       "id": "T6",
       "slug": "redundant-calls",
       "check": "tool calls are not redundant",
-      "level": "warn",
+      "level": "n/a",
       "gating": false,
-      "detail": "1 of 3 target(s) repeat identical calls in more than 25% of their trajectories",
-      "witnesses": 3,
-      "examples": [
-        "live-greedy: 24 of 24 trajector(ies) (100%) repeat an identical call",
-        "la-00 (live-greedy): 2 repeated identical call(s)",
-        "la-01 (live-greedy): 2 repeated identical call(s)",
-        "la-02 (live-greedy): 1 repeated identical call(s)"
-      ]
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
     },
     {
       "id": "J1",
@@ -833,7 +876,7 @@
       "check": "fleet score totals are reliable (KR-20)",
       "level": "skip",
       "gating": false,
-      "detail": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock",
+      "detail": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics",
       "witnesses": 0
     },
     {
@@ -842,7 +885,7 @@
       "check": "no item anti-correlates with fleet skill",
       "level": "skip",
       "gating": false,
-      "detail": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock",
+      "detail": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics",
       "witnesses": 0
     },
     {
@@ -851,60 +894,53 @@
       "check": "dead-weight items stay a minority",
       "level": "skip",
       "gating": false,
-      "detail": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock",
+      "detail": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics",
       "witnesses": 0
     },
     {
       "id": "P4",
       "slug": "matrix-complete",
       "check": "every model was asked the same items",
-      "level": "pass",
+      "level": "skip",
       "gating": true,
-      "detail": "0 of 3 model(s) were asked a different item set",
-      "witnesses": 3
+      "detail": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics",
+      "witnesses": 0
     },
     {
       "id": "P5",
       "slug": "unanimous-wrong",
       "check": "no unanimous identical wrong answers",
-      "level": "pass",
+      "level": "skip",
       "gating": false,
-      "detail": "0 item(s) where the whole fleet gave one identical wrong answer; candidate key errors",
-      "witnesses": 24
+      "detail": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics",
+      "witnesses": 0
     },
     {
       "id": "P6",
       "slug": "ordering-noise",
       "check": "entitled ordering claims are separated beyond sampling noise",
-      "level": "n/a",
+      "level": "skip",
       "gating": false,
-      "detail": "no entitled claim asserts a model ordering",
+      "detail": "an ordering claim needs at least 2 models on disk",
       "witnesses": 0
     },
     {
       "id": "P7",
       "slug": "ceiling-floor",
       "check": "the fleet is not pinned at a ceiling or floor",
-      "level": "pass",
+      "level": "skip",
       "gating": false,
-      "detail": "fleet accuracy spans 54% to 83% on 24 item(s)",
-      "witnesses": 3,
-      "evidence": {
-        "min": 0.5417,
-        "max": 0.8333
-      }
+      "detail": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics",
+      "witnesses": 0
     },
     {
       "id": "P8",
       "slug": "dynamic-range",
       "check": "the eval separates the fleet (dynamic range)",
-      "level": "pass",
+      "level": "skip",
       "gating": false,
-      "detail": "fleet spread 29% across 3 model(s) on 24 item(s)",
-      "witnesses": 3,
-      "evidence": {
-        "spread": 0.2917
-      }
+      "detail": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics",
+      "witnesses": 0
     },
     {
       "id": "P9",
@@ -944,58 +980,31 @@
     }
   ],
   "inputs": {
-    "spec_sha256": "40ec29a2e7b222d3ab5988e6140f4f51f1250a60ed5584b3683e6a03065c216f",
-    "data_sha256": "308236893b61320ddd8b4e45a4c36f00173d2f43ffc98736fa8b65d22cef3120",
-    "target_sha256": {
-      "live-grounded": "4f8a7f8a8f09e4607d3fda36ccf78651c05e3536fd3f6820e760098bfda03ce6",
-      "live-oneshot": "4f8a7f8a8f09e4607d3fda36ccf78651c05e3536fd3f6820e760098bfda03ce6",
-      "live-greedy": "4f8a7f8a8f09e4607d3fda36ccf78651c05e3536fd3f6820e760098bfda03ce6"
-    }
+    "spec_sha256": "967c38cc964d1369f96ddf6ab68a1c52eaac0c25d27a13b6e9bb1995c3491cb1",
+    "data_sha256": "63af045e1154054f7927b7969aa0fb23c7b80cc11ce1921605744124e6005267"
   },
   "runs": [
     {
-      "run_file": "20260809_120340_live-agent_live-grounded_n24_s7.jsonl",
-      "model": "live-grounded",
-      "model_reported": "live-grounded",
-      "provider": "python",
+      "run_file": "imported_imported-lm-eval_Corianas-111m_n1172_s0.jsonl",
+      "model": "Corianas/111m",
+      "model_reported": null,
+      "provider": "imported",
       "dry_run": false,
-      "seed": 7,
-      "records": 24,
+      "seed": 0,
+      "records": 1172,
       "uncheckable": 0,
-      "spend_source": "target_reported",
-      "trajectory_steps": 24
-    },
-    {
-      "run_file": "20260809_120411_live-agent_live-oneshot_n24_s7.jsonl",
-      "model": "live-oneshot",
-      "model_reported": "live-oneshot",
-      "provider": "python",
-      "dry_run": false,
-      "seed": 7,
-      "records": 24,
-      "uncheckable": 0,
-      "spend_source": "target_reported",
-      "trajectory_steps": 24
-    },
-    {
-      "run_file": "20260809_120447_live-agent_live-greedy_n24_s7.jsonl",
-      "model": "live-greedy",
-      "model_reported": "live-greedy",
-      "provider": "python",
-      "dry_run": false,
-      "seed": 7,
-      "records": 24,
-      "uncheckable": 0,
-      "spend_source": "target_reported",
-      "trajectory_steps": 72
+      "spend_source": null,
+      "trajectory_steps": 0
     }
   ],
   "entitled_claims": [
-    "Whether each configuration's correct answers appear in the evidence it retrieved, on 24 questions answerable from the pod's corpus.",
-    "Nothing about retrieval quality in general: one corpus, one tool, three configurations."
+    "Whether a third-party harness's reported per-item scores are re-derivable from the raw log-probabilities in the same file.",
+    "Which checks in this battery can and cannot speak to a loglikelihood-ranking log, named individually.",
+    "Nothing about this model's ability: a 111M model scoring below chance on 25-shot ARC is a fact about a 2023 log, not a measurement anyone should cite.",
+    "Nothing about lm-evaluation-harness as software: one details file from one run is not an audit of a harness."
   ],
   "power": {
-    "n_items": 24,
-    "mde_unpaired_80pct": 0.4044
+    "n_items": 1172,
+    "mde_unpaired_80pct": 0.0579
   }
 }

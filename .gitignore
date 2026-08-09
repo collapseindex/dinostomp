@@ -30,3 +30,6 @@ pins*.txt
 # Benchmark datasets are fetched, not vendored: they belong to their authors
 # and a stale copy here would be a copy nobody notices going stale.
 benchmarks/*/items.jsonl
+# Same rule for a fetched third-party eval LOG: it embeds the questions
+# and options of a CC-BY-SA dataset, which this repo does not vendor.
+benchmarks/*/lm_eval_*.jsonl

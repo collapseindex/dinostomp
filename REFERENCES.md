@@ -63,6 +63,7 @@ exactly what it downloaded. Nothing is vendored.
 | WinoGrande | Sakaguchi, K. et al. (2020). *WinoGrande: An Adversarial Winograd Schema Challenge at Scale.* [arXiv:1907.10641](https://arxiv.org/abs/1907.10641) | CC-BY |
 | SciQ | Welbl, J., Liu, N. F. & Gardner, M. (2017). *Crowdsourcing Multiple Choice Science Questions.* [arXiv:1707.06209](https://arxiv.org/abs/1707.06209) | CC-BY-NC-3.0 |
 | MedMCQA | Pal, A., Umapathi, L. K. & Sankarasubbu, M. (2022). *MedMCQA: A Large-scale Multi-Subject Multi-Choice Dataset for Medical domain Question Answering.* [arXiv:2203.14371](https://arxiv.org/abs/2203.14371) | MIT |
+| ARC-Challenge, as a third-party eval LOG | `open-llm-leaderboard-old/details_Corianas__111m`, file `details_harness\|arc:challenge\|25_2023-07-19T13:48:53.093937.parquet`. A real lm-evaluation-harness details file, fetched by `benchmarks/lm-eval-import/fetch.py`. Harness: Gao, L. et al. (2021). *A framework for few-shot language model evaluation.* Zenodo. Items: Clark et al. 2018, above. | CC-BY-SA-4.0 (items) |
 | iris | Fisher, R. A. (1936). *The use of multiple measurements in taxonomic problems.* Annals of Eugenics 7(2), 179–188. The UCI/scikit-learn lineage this repo pins differs from Fisher's table in two rows: Bezdek, J. C. et al. (1999). *Will the real iris data please stand up?* IEEE Trans. Fuzzy Systems 7(3), 368–369. | public domain |
 
 Findings against these datasets are in [FINDINGS.md](FINDINGS.md), series **F**.

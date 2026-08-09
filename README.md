@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.39.1 · Apache-2.0 · engine `756abde76ddfa908` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.40.0 · Apache-2.0 · engine `04bdfd057a413606` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -198,6 +198,17 @@ claiming no engine fingerprint it did not earn, and nothing is invented to fill
 a gap. Pointing your scorer at their outputs re-derives their verdicts
 independently, which is a real check on someone else's scoring for free.
 
+That claim has now been tested on a log this project did not write.
+[benchmarks/lm-eval-import](benchmarks/lm-eval-import/) is a real lm-evaluation-harness details
+file for ARC-Challenge, 1172 items, published by the Open LLM Leaderboard in
+2023. It carries **no generated text at all**, because it scores candidate
+continuations by log-probability, which is how ARC, MMLU and HellaSwag are
+scored there. Three checks now skip naming `output`, the coverage line shortens,
+and nothing is invented to cover the gap. Getting there cost five defects in
+dinostomp itself, written up as D-021 to D-025. The log's own numbers came back
+clean: both metrics it reports re-derive exactly from the raw log-probabilities
+in the same file (N-007).
+
 ## Extending it
 
 The core is small and owns what `BROKEN` means. Two rails grow around it, and
@@ -239,7 +250,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.39.1
+- uses: collapseindex/dinostomp@v0.40.0
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -253,7 +264,7 @@ It installs dinostomp from PyPI by default, which does not exist yet, so pass
 `version:` pointing at this repo until it does:
 
 ```yaml
-    version: "git+https://github.com/collapseindex/dinostomp@v0.39.1"
+    version: "git+https://github.com/collapseindex/dinostomp@v0.40.0"
 ```
 
 That is stated rather than hidden because a copy-pasteable block that fails for
@@ -318,7 +329,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`756abde76ddfa9089d1b859dffeaec433151c6c6c577f14a9653cbb9c837505b`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`04bdfd057a4136062346e4aa4c379c61d2771f153e928660076775169f9b637c`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

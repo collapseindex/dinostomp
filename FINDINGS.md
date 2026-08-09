@@ -51,6 +51,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-004](#n-004) | six dataset pairs | no cross-benchmark reuse found | negative |
 | [N-005](#n-005) | four models | re-ordering the options moved nobody beyond noise | negative, underpowered |
 | [N-006](#n-006) | four models | probe demonstrably sensitive, and no canary reproduced | negative |
+| [N-007](#n-007) | lm-eval-harness log | both reported metrics re-derive from the raw log-probs | negative |
 | [D-001](#d-001) | dinostomp | the money invariant had only ever run at zero | fixed |
 | [D-002](#d-002) | dinostomp | pooling hid a model that never read the question | fixed |
 | [D-003](#d-003) | dinostomp | a collapsed model manufactured 8 phantom key errors | fixed |
@@ -71,6 +72,11 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-018](#d-018) | dinostomp | EVERY non-judge probe crashed the CLI, not just cross-judge | fixed |
 | [D-019](#d-019) | dinostomp | the docs claimed a 28-point swing with no run behind it | WITHDRAWN |
 | [D-020](#d-020) | dinostomp | the grounding check undercounts by 6x, by construction | scoped, not fixed |
+| [D-021](#d-021) | dinostomp | the most common eval-log shape in the field was unimportable | fixed |
+| [D-022](#d-022) | dinostomp | a check overwrote the contract's skip reason with a false one | fixed |
+| [D-023](#d-023) | dinostomp | a rival score column was chosen silently, and it was the wrong one | fixed |
+| [D-024](#d-024) | dinostomp | `run --dry` would fabricate records for a model it cannot call | fixed |
+| [D-025](#d-025) | dinostomp | an error message named a flag nobody can type | fixed |
 
 ---
 
@@ -510,6 +516,46 @@ worth being proud of, it is the direction bugs in a validator take by default:
 a check that fires too little looks like a clean bill, and nobody investigates a
 clean bill.
 
+### N-007
+**lm-evaluation-harness · both reported metrics re-derive exactly from the raw log-probabilities**
+`verdict-rederive` (R8), by hand · 2026-08-09 · negative
+
+The artifact: `open-llm-leaderboard-old/details_Corianas__111m`, file
+`details_harness|arc:challenge|25_2023-07-19T13:48:53.093937.parquet`. 1172
+ARC-Challenge items, 25-shot, run in July 2023 by people who had never heard of
+this tool. The underlying ARC data is CC-BY-SA-4.0 (Clark et al. 2018).
+
+Each row ships the per-choice log-probabilities alongside the verdicts, so both
+reported metrics can be recomputed from the same file rather than trusted:
+
+| claim | rows disagreeing |
+|---|---|
+| `acc` = `argmax(predictions) == gold` | **0 of 1172** |
+| `acc_norm` = `argmax(predictions / len(choice)) == gold` | **0 of 1172** |
+
+Nothing was found, and that is the result. A harness that publishes its raw
+scores next to its derived ones is auditable by anyone, and this one survives the
+audit exactly.
+
+**Two things that also came back clean, worth recording because they are the
+ones that usually bite.** Every row delivers all 25 requested few-shot examples
+(counted in `full_prompt`), and no row is truncated. An earlier reading of this
+file claimed a hard clip: 943 of 1172 prompts are exactly 2048 tokens long, which
+looks like a context limit shearing the few-shot prefix. It is batch padding.
+Subtracting the recorded `padded` count gives a clean unimodal 738 to 1316 tokens
+with nothing at the ceiling. **The finding was killed before it was written
+down**, and it is recorded here because a plausible artifact story that survives
+one query and dies on the second is the normal case, not a rare one.
+
+**Scope.** One details file from one run says nothing about lm-evaluation-harness
+as software, and the model's score (17.6% / 19.7% against a 25% floor) is a fact
+about a 111M model in 2023, not a number anyone should cite.
+`num_effective_few_shots` is `-1` on every row, an unpopulated sentinel; that is
+a gap in the record, not a defect in the run, since the prompt text shows the
+shots arrived.
+
+---
+
 ### D-001
 **The money invariant had only ever run at zero**
 `spend-ledger` (R3) · first live fleet · fixed
@@ -876,6 +922,120 @@ clean bill.
 
 ---
 
+### D-021
+**The most common eval-log shape in the field could not be imported at all**
+`dinostomp import` · 2026-08-09 · fixed in v0.40.0
+
+`output` was a required record field. A loglikelihood-ranking harness never
+produces one: it scores candidate continuations by log-probability and takes the
+argmax, and the model emits no text whatsoever. That is how ARC, MMLU and
+HellaSwag are scored on the Open LLM Leaderboard, so the refusal covered a large
+share of the eval logs that actually exist.
+
+The importer's whole stated purpose is that the battery consumes *schemas*, not
+"whatever `dinostomp run` wrote". It had never been tested against a log with a
+genuinely different shape, and the first one it met was rejected at the door.
+
+Fixed by making `output` optional, so R8, R14 and R16 skip **naming the field**
+and the coverage line shortens honestly. An absent output is **omitted**, never
+written as `""`: an empty string is the claim that the model answered with
+nothing, which is a result, and absence is the claim that it never emitted text,
+which is not.
+
+---
+
+### D-022
+**A check overwrote the evidence contract's skip reason with a false one**
+`scorer-artifact` (R16) · 2026-08-09 · fixed in v0.40.0
+
+With `output` absent on all 1172 records, R16 skipped and reported:
+
+```
+[skip] scorer-artifact   no model has 5+ failed records to inspect
+```
+
+There were **966 failed records**. The statement was false, and the action it
+implied (collect more failures) would never have helped, because no quantity of
+failed records carries text that is not there. The contract had already recorded
+the true reason; R16's body then called `skip()` a second time and replaced it.
+
+`Reporter.check()` already refused to revive a contract-disqualified check.
+`Reporter.skip()` had no such guard, so any check that skips from its own body
+could silently overwrite the only actionable half of the message.
+
+This is the recurring defect class in this ledger, again: **a check that compared
+the wrong thing and returned a confident answer about it.** Here it compared "how
+many failed records survived my filter" against a threshold and reported that as
+the reason, when the filter was what had removed them.
+
+Fixed, and negative-tested in both directions: a body skip can no longer replace
+a contract skip, and an ordinary skip is still overwritable, or the first reason
+any check gave would freeze in place and hide better ones.
+
+---
+
+### D-023
+**A rival score column was chosen silently, and it was the one nobody published**
+`dinostomp import` · 2026-08-09 · fixed in v0.40.0
+
+The log carries two per-item verdicts, `acc` and `acc_norm`. Only `acc` was in
+the candidate list, so the mapping took it without comment:
+
+```
+  score    <- acc
+```
+
+They disagree on **221 of 1172 items**: 17.6% against 19.7%. The Open LLM
+Leaderboard ranked ARC by **`acc_norm`**, the one that was not chosen. dinostomp
+would have imported, audited and published a headline number nobody reported,
+behind a mapping line that looked like it had told you everything.
+
+Fixed by refusing. Any unmapped column whose every value reads as a verdict is a
+rival, and the refusal fires only when it actually **disagrees**, so a log
+carrying a duplicate of the same verdict still imports clean. The rule needs no
+list of known harness column names, which matters because the next harness will
+not use these ones.
+
+**The guard has a guard.** The first version fired on `truncated`, which is `0`
+on all 1172 rows and therefore "disagreed" with the score on exactly the rows
+that passed. A column that never varies is a flag, not a rival verdict, and is
+now excluded. Caught on the first live run of the new rule.
+
+---
+
+### D-024
+**`run --dry` would have fabricated a full set of records for a model it cannot call**
+`dinostomp run` · 2026-08-09 · fixed in v0.40.0
+
+There was no way to declare a model whose evidence comes from somewhere else: the
+provider enum had no value for it, so the imported pod could not be written at
+all. Adding `imported` exposed the sharper problem. `--dry` substitutes the
+offline deterministic provider for whatever the spec declares, *before* any
+provider dispatch. A `run --dry` on an imported pod would therefore have written
+1172 schema-valid records, with a real model's name on every one, containing
+answers that model never gave.
+
+Refused before the substitution rather than after, and tested on both the live
+and the `--dry` path. The two failure modes are not the same and only one of them
+is quiet.
+
+---
+
+### D-025
+**An error message named a flag nobody can type**
+`dinostomp import` · 2026-08-09 · fixed in v0.40.0
+
+```
+[import] --item_id-field: no column looks like the item_id. ... Pass --item_id-field.
+```
+
+The flag is `--item-id-field`. The message was built by interpolating the
+canonical field name, which uses an underscore, so copy-pasting the tool's own
+instruction produced an argparse error. Small, and it was the first thing the
+first foreign log printed.
+
+---
+
 ## The honest scorecard
 
 **Thirteen benchmarks audited**, all fetched from their authors and none
@@ -890,10 +1050,10 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **6** |
-| defects in dinostomp itself (**D**) | **20** |
+| negative results, recorded rather than dropped (**N**) | **7** |
+| defects in dinostomp itself (**D**) | **25** |
 
-Twenty to seventeen. That ratio is the useful number to publish, and it is the
+Twenty-five to seventeen. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

@@ -1,5 +1,50 @@
 # Changelog
 
+### v0.40.0 (2026-08-09)
+
+The first log this engine did not write. A real lm-evaluation-harness details
+file for ARC-Challenge (1172 items, 25-shot, published by the Open LLM
+Leaderboard in July 2023 for a third-party 111M model) was imported and audited.
+It exposed four defects at once, all of the same kind: the importer had only
+ever been pointed at evidence dinostomp itself produced.
+
+- **`output` is no longer a required record field.** A loglikelihood-ranking
+  harness scores candidate continuations by log-probability and emits NO
+  generated text, which is how ARC, MMLU and HellaSwag are scored on the Open
+  LLM Leaderboard. The most common eval-log shape in the field was unimportable.
+  Absent output now means R8, R14 and R16 skip NAMING THE FIELD. Absent is not
+  empty: an import omits the key rather than writing `""`, because an empty
+  string claims the model answered with nothing.
+- **A contract skip could be overwritten by the check's own body, and R16 was
+  doing it.** With no output anywhere, R16 reported "no model has 5+ failed
+  records to inspect" across 966 failed records. The statement was false and the
+  advice it implied (go get more failures) would never have helped. `skip()` now
+  refuses to replace a skip that named missing evidence. The recurring defect
+  class again: a check that compared the wrong thing and returned a confident
+  answer about it.
+- **A rival score column that disagrees is refused, not silently chosen.** The
+  log carries both `acc` and `acc_norm`; only `acc` was in the candidate list,
+  so the mapping took it. They disagree on 221 of 1172 items, 17.6% against
+  19.7%, and the leaderboard published the other one. dinostomp would have
+  imported a headline number nobody reported. The rule needs no list of known
+  column names, and fires only on actual disagreement, so a log carrying a
+  duplicate verdict still imports clean.
+- **`imported` is a declarable provider that `run` refuses.** There was no way
+  to describe a model this engine cannot call. `--dry` made that dangerous: it
+  substitutes the offline provider for whatever was declared, so `run --dry`
+  would have written a full set of fabricated records under a real model's name.
+  Refused before the substitution, and tested on both paths.
+- Error messages now name flags someone can type (`--item-id-field`, not
+  `--item_id-field`).
+- New pod `benchmarks/lm-eval-import` (fetched, never vendored: the items are
+  CC-BY-SA and this repo vendors no dataset), new suite
+  `tests/test_importing.py`. All three
+  new guards were negative-tested by disabling them; the constant-column guard
+  exists because the first version of the rival rule fired on `truncated`, which
+  is 0 on all 1172 rows.
+- **F-018**: the log is internally honest. Both reported metrics re-derive
+  exactly from the raw log-probabilities in the same file, on all 1172 rows.
+
 ### v0.39.1 (2026-08-09)
 
 The canary probe, run for the first time.

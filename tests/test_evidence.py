@@ -56,8 +56,12 @@ def test_no_check_declares_a_schema_required_field():
     }
     for cid, needs in NEEDS.items():
         for n in needs:
-            if n.field in ("output", "score", "seed"):
+            if n.field in ("score", "seed"):
                 continue  # read as evidence AND schema-required; harmless overlap
+            # `output` was exempted here too, because the record schema required
+            # it. It no longer does: a loglikelihood-ranking log carries no
+            # generated text, so R8/R14/R16 declare it as an ordinary optional
+            # need and this assertion now genuinely covers them.
             assert n.field not in required[n.where], (
                 f"{cid} declares {n.field!r}, which the {n.where} schema already requires")
 

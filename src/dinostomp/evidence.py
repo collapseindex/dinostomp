@@ -61,6 +61,8 @@ NEEDS: dict[str, list[Need]] = {
     "R5": [Need(RECORD, "finish_reason", "a truncated response is identified by it")],
     "R8": [Need(RECORD, "output", "verdicts are re-scored from the recorded text"),
            Need(RECORD, "score", "the recorded verdict is what gets re-derived")],
+    "R14": [Need(RECORD, "output", "a collapsed model is identified by repeated output text")],
+    "R16": [Need(RECORD, "output", "an unparsed-but-correct answer is looked for in the text")],
     "R18": [Need(RECORD, "usage", "billed output tokens are compared against the recorded text")],
     "R19": [Need(MANIFEST, "tool_sha256", "the engine that produced the run is compared to this one")],
     "T1": [Need(RECORD, "trajectory", "a forbidden tool call is read from the trace")],

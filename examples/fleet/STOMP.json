@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.39.1",
+  "version": "0.40.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -709,7 +709,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now 756abde76ddfa908); re-run to get numbers this report can stand behind",
+      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now 04bdfd057a413606); re-run to get numbers this report can stand behind",
       "witnesses": 6,
       "examples": [
         "engine b1fa98e4f374809f: dry-alpha seed 42 (tool 0.39.0), dry-bravo seed 42 (tool 0.39.0), dry-charlie seed 42 (tool 0.39.0) and 3 more"

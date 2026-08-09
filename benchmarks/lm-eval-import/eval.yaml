@@ -1,0 +1,61 @@
+name: imported-lm-eval
+version: 0.1.0
+question: "What can this battery still say about a run it did not produce, from a log written by another harness in another year?"
+
+# THE ONLY POD HERE WHOSE EVIDENCE THIS ENGINE DID NOT PRODUCE.
+#
+# Every other pod in this repo audits a run `dinostomp run` wrote. That made the
+# evidence contract cheap to satisfy and meant it had never once been pointed at
+# a log shaped by somebody else's assumptions. This one is a real
+# lm-evaluation-harness details file for ARC-Challenge, 1172 items, 25-shot,
+# published in July 2023 by the Open LLM Leaderboard for a third-party 111M
+# model. Nobody involved had heard of this tool.
+#
+# WHAT MAKES IT A FAIR TEST: the log is a LOGLIKELIHOOD-RANKING record. There is
+# no generated text anywhere in it. The model never emitted an answer; the
+# harness scored four continuations by log-probability and took the argmax. A
+# large part of this battery reads `output`, and here there is none. The correct
+# behaviour is to skip those checks BY NAME and shorten the coverage line, not
+# to report a clean bill over an absence. That is the property under test.
+#
+# The items are reconstructed from the log's own `query` / `choices` / `gold`
+# fields, so the pod and the log describe the same 1172 items by construction.
+# `dinostomp import` then attaches the log as a run.
+#
+# Provenance: open-llm-leaderboard-old/details_Corianas__111m, file
+# details_harness|arc:challenge|25_2023-07-19T13:48:53.093937.parquet. The
+# underlying ARC data is CC-BY-SA-4.0 (Clark et al. 2018); the token arrays were
+# dropped on the way in because they carry no evidentiary weight here.
+
+entitled_claims:
+  - "Whether a third-party harness's reported per-item scores are re-derivable from the raw log-probabilities in the same file."
+  - "Which checks in this battery can and cannot speak to a loglikelihood-ranking log, named individually."
+  - "Nothing about this model's ability: a 111M model scoring below chance on 25-shot ARC is a fact about a 2023 log, not a measurement anyone should cite."
+  - "Nothing about lm-evaluation-harness as software: one details file from one run is not an audit of a harness."
+
+data: {path: items.jsonl, format: jsonl}
+
+# Recorded so the manifest names what produced the evidence. This engine cannot
+# and does not claim `tool_sha256` for an imported run.
+models:
+  - {provider: imported, model: Corianas/111m}
+
+# `includes` is the honest scorer for a log with no outputs: it is what WOULD have
+# graded generated text, and stating it keeps the pod readable. The imported
+# verdicts come from the log's own field, not from re-running this.
+scorer:
+  kind: includes
+  # Authored strings, deliberately NOT lifted from the dataset. The items are
+  # CC-BY-SA and this repo vendors none of them, so the checked-in spec must not
+  # smuggle option text in past the fetcher.
+  witnesses:
+    - {output: "The kettle boiled.", target: "The kettle boiled.", expect: pass}
+    - {output: "The answer is The kettle boiled.", target: "The kettle boiled.", expect: pass}
+    - {output: "The kettle froze.", target: "The kettle boiled.", expect: fail}
+    - {output: "", target: "The kettle boiled.", expect: fail}
+    - {output: "the kettle boiled.", target: "The kettle boiled.", expect: fail,
+       why: "substring matching is case-sensitive, and this pod says so"}
+    - {output: "The kettle boil", target: "The kettle boiled.", expect: fail,
+       why: "a strict prefix is not the answer"}
+
+run: {n: 1172, seed: 0, budget_usd: 0.0}

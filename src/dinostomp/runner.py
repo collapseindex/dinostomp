@@ -828,6 +828,20 @@ def run_spec(
     data_dir = (out_dir or base) / "data"
     outcome = RunOutcome(OK)
 
+    # An `imported` model names evidence this engine did not produce and cannot
+    # produce. Refused BEFORE the dry-run substitution below, because --dry would
+    # otherwise turn "I cannot call this" into a full set of fabricated records
+    # under the real model's name, which is the exact failure this tool exists to
+    # object to.
+    foreign = sorted({mc["model"] for mc in models if mc["provider"] == "imported"})
+    if foreign:
+        return RunOutcome(CANNOT_RUN, issues=[Issue(
+            loc="$.models", check="run",
+            message=f"{', '.join(repr(m) for m in foreign)} declares provider 'imported': this "
+                    "engine cannot call it, and --dry would fabricate its answers rather than "
+                    "leave them missing. Attach the other harness's log with `dinostomp import` "
+                    "instead")])
+
     for seed, model_cfg in [(s, mc) for mc in models for s in seeds]:
         selected = select_items(items, n, seed)
         provider_name = "dry" if dry_run else model_cfg["provider"]

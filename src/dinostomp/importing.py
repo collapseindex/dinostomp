@@ -87,7 +87,7 @@ def infer_record_mapping(rows: list[dict], overrides: dict | None = None
     for canon, options in RECORD_CANDIDATES.items():
         if canon in overrides:
             if overrides[canon] not in columns:
-                issues.append(Issue(loc=f"--{canon}-field", check="import",
+                issues.append(Issue(loc=f"--{canon.replace(chr(95), chr(45))}-field", check="import",
                                     message=f"column {overrides[canon]!r} is not in this log; "
                                             f"columns are {', '.join(columns)}"))
                 continue
@@ -98,19 +98,60 @@ def infer_record_mapping(rows: list[dict], overrides: dict | None = None
         if not hits:
             continue
         if len(hits) > 1 and _norm(hits[0]) != options[0]:
-            issues.append(Issue(loc=f"--{canon}-field", check="import",
+            issues.append(Issue(loc=f"--{canon.replace(chr(95), chr(45))}-field", check="import",
                                 message=f"cannot tell which column is the {canon}: "
-                                        f"{', '.join(hits)}. Pass --{canon}-field."))
+                                        f"{', '.join(hits)}. Pass --{canon.replace(chr(95), chr(45))}-field."))
             continue
         mapping[canon] = hits[0]
         notes.append(f"{canon:8} <- {hits[0]}")
 
-    for required in ("item_id", "output", "score"):
+    # `output` is deliberately NOT here. A loglikelihood-ranking log has no generated
+    # text to map, and demanding one would make the most common eval-log shape in the
+    # field unimportable. Absent output means R8/R14/R16 skip naming the field.
+    for required in ("item_id", "score"):
         if required not in mapping and not any(i.loc == f"--{required}-field" for i in issues):
             issues.append(Issue(
-                loc=f"--{required}-field", check="import",
+                loc=f"--{required.replace(chr(95), chr(45))}-field", check="import",
                 message=f"no column looks like the {required}. Columns are: "
-                        f"{', '.join(columns) or '(none)'}. Pass --{required}-field."))
+                        f"{', '.join(columns) or '(none)'}. Pass --{required.replace(chr(95), chr(45))}-field."))
+
+    # A RIVAL SCORE COLUMN THAT DISAGREES.
+    #
+    # Real harnesses ship more than one verdict per row. An lm-evaluation-harness
+    # details file carries both `acc` and `acc_norm`, and only `acc` is in the
+    # candidate list above, so the mapping silently took it. On the ARC log this
+    # repo audits they disagree on 221 of 1172 items, 17.6% against 19.7%, and the
+    # Open LLM Leaderboard published the OTHER one. Picking quietly would have made
+    # this tool import a headline number nobody reported, which is the failure it
+    # exists to object to.
+    #
+    # The rule needs no list of known column names: any unmapped column whose every
+    # value reads as a verdict is a rival, and it is only raised when it actually
+    # DISAGREES, so a log carrying a duplicate of the same verdict imports clean.
+    chosen = mapping.get("score")
+    if chosen and "score" not in overrides:
+        for col in columns:
+            if col == chosen or col in mapping.values():
+                continue
+            verdicts = [_as_verdict(r.get(col)) for r in rows]
+            if any(v is None for v in verdicts):
+                continue
+            # A CONSTANT column is not a rival verdict, it is a flag. The first
+            # version of this rule fired on `truncated`, which is 0 on all 1172
+            # rows and therefore "disagrees" with the score on exactly the rows
+            # that passed. That is an artifact of comparing a verdict to a
+            # constant, not evidence of two competing numbers.
+            if len(set(verdicts)) < 2:
+                continue
+            differs = sum(1 for r, v in zip(rows, verdicts)
+                          if v != _as_verdict(r.get(chosen)))
+            if differs:
+                issues.append(Issue(
+                    loc="--score-field", check="import",
+                    message=f"{chosen!r} and {col!r} both read as per-item verdicts and they "
+                            f"disagree on {differs} of {len(rows)} row(s). This tool will not "
+                            f"choose which number you meant: pass --score-field {chosen} or "
+                            f"--score-field {col}"))
     return mapping, notes, issues
 
 
@@ -141,10 +182,15 @@ def to_records(rows: list[dict], mapping: dict[str, str], *, model: str, seed: i
             "model": str(row.get(mapping["model"])) if mapping.get("model") else model,
             "provider": provider,
             "seed": seed,
-            "output": str(row.get(mapping["output"], "")),
             "score": {"verdict": verdict, "evidence": "imported verdict, not re-derived here"},
             "ts": "1970-01-01T00:00:00+00:00",
         }
+        # OMITTED, not defaulted. A loglikelihood log has no generated text, and
+        # writing "" would claim the model answered with nothing rather than that
+        # it never emitted text at all. The first is a result, the second is an
+        # absence, and R8/R14/R16 are entitled to tell them apart.
+        if mapping.get("output"):
+            rec["output"] = str(row.get(mapping["output"], ""))
         problems = validate_obj(rec, "record")
         if problems:
             issues.append(Issue(loc=f"row {n}", check="import",

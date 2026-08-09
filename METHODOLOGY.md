@@ -427,6 +427,15 @@ already requires, because a record missing one of those is schema-invalid and
 would be strictly worse. And a check the contract disqualifies cannot be
 revived by a later pass computing a vacuous green result over zero rows.
 
+That last guarantee used to be half-true, which is worse than either half. A
+disqualified check could not be revived into a **pass**, but its skip REASON
+could still be overwritten by the check's own body, and R16 was doing exactly
+that: with no `output` on any record it reported "no model has 5+ failed records
+to inspect" across 966 failed records. The reason was false and the remedy it
+implied did not exist. A body skip can no longer replace a skip that named
+missing evidence (D-022); an ordinary skip is still overwritable, or the first
+reason any check gave would freeze in place and hide better ones.
+
 **Anything that can write conforming evidence is auditable.** `dinostomp import`
 is the reference demonstration, not a privileged path:
 
@@ -464,6 +473,45 @@ What this buys, concretely: pointing the pod's own scorer at a foreign
 harness's outputs re-derives their verdicts independently. On the worked
 example, `verdict-rederive` passes, which is a real check on someone else's
 scoring that costs nothing.
+
+### What a real foreign log did to all of that
+
+Everything above was written before this engine had ever read a log it did not
+write, and the first one it met broke four things at once.
+[benchmarks/lm-eval-import](benchmarks/lm-eval-import/) is that log: an lm-evaluation-harness
+details file for ARC-Challenge, 1172 items, 25-shot, published by the Open LLM
+Leaderboard in July 2023 for a third-party 111M model.
+
+It is a **loglikelihood-ranking** record. The model never emitted an answer; the
+harness scored four candidate continuations by log-probability and took the
+argmax. There is no generated text anywhere in the file, which is also how MMLU
+and HellaSwag are scored on that leaderboard. So the single most common eval-log
+shape in open-weights ML met an importer that **required** an `output` column,
+and was rejected at the door (D-021).
+
+`output` is now optional. R8, R14 and R16 skip naming the field, and the coverage
+line shortens, which is what the contract promised all along and had never been
+asked to do. An absent output is **omitted rather than defaulted to `""`**: an
+empty string is the claim that the model answered with nothing, and that is a
+result, not an absence.
+
+The other three were worse than a rejection, because each would have produced a
+number:
+
+- the log ships **both `acc` and `acc_norm`**; only one was in the candidate
+  list, so the mapping took it silently. They disagree on **221 of 1172 items**,
+  17.6% against 19.7%, and the leaderboard published the other one. Two verdict
+  columns that disagree are now a refusal, not a coin flip (D-023).
+- R16's skip reason was overwritten with a false one (D-022, above).
+- `--dry` substitutes the offline provider for whatever a spec declares, so
+  `run --dry` on a pod whose model cannot be called would have written 1172
+  fabricated records under that model's name (D-024).
+
+And the audit itself came back clean where it counted: both of that harness's
+reported metrics re-derive **exactly** from the raw log-probabilities in the same
+file, 0 disagreements in 1172 rows either way (N-007). A harness that publishes
+its raw scores next to its derived ones can be checked by anyone, and this one
+survives being checked.
 
 ## The rails: extending without becoming a framework
 

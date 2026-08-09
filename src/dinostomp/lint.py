@@ -400,6 +400,16 @@ class Reporter:
                                      list(examples or []), dict(evidence or {}))
 
     def skip(self, cid: str, reason: str, missing: list | None = None) -> None:
+        # A contract skip already named the MISSING FIELD. A later skip from the
+        # check's own body describes the consequence of that absence, not its
+        # cause, and overwriting loses the only actionable half. R16 shipped this
+        # bug: with no `output` anywhere it reported "no model has 5+ failed
+        # records to inspect" over 966 failed records, sending a reader off to
+        # collect more failures when no number of them would ever have helped.
+        prior = self.findings.get(cid)
+        if (missing is None and prior is not None and prior.level == "skip"
+                and prior.evidence.get("missing_evidence")):
+            return
         self.findings[cid] = Finding(cid, NAMES[cid], "skip", GATING[cid], reason,
                                      evidence={"missing_evidence": [n.field for n in missing]}
                                      if missing else {})
@@ -877,7 +887,7 @@ def collapsed_models(runs: list[dict], modal_share: float,
     for entry, r in ((e, r) for e in runs for r in e["records"]):
         if (r.get("score") or {}).get("verdict") in ("pass", "fail", "flag") and "output" in r:
             by_model.setdefault(str((entry["manifest"] or {}).get("model")), []).append(
-                _norm(r["output"]))
+                _norm(r.get("output") or ""))
     out = {}
     for model, outs in by_model.items():
         if len(outs) < THRESHOLDS["min_checkable"]:
@@ -1627,7 +1637,7 @@ def _run_checks(rep: Reporter, mine: list[dict], foreign: list[dict], spec_file:
                                   "no recorded judge response; nothing backs it")
                 continue
         else:
-            fresh = scorer(r["output"], item["target"])
+            fresh = scorer(r.get("output") or "", item["target"])
         rescored += 1
         if fresh.verdict != verdict:
             mismatches.append(f"{entry['path'].name}: {r.get('key')!r} recorded {verdict}, re-scores {fresh.verdict}")
@@ -1867,7 +1877,7 @@ def _run_checks(rep: Reporter, mine: list[dict], foreign: list[dict], spec_file:
         item = item_by_id.get(str(r.get("item_id")))
         if item is None:
             continue
-        text = _norm(r["output"])
+        text = _norm(r.get("output") or "")
         present = 0
         for t in _targets_of(item):
             needle = _norm(t)

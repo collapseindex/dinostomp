@@ -66,7 +66,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | ok | each model beats its own blind baseline | 4 | 0 of 4 model(s) score no better informed than blind; their numbers are not evidence about this task (unpaired: separate runs) |
 | ok | failed answers do not contain the reference | 2 | 0 of 2 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 756abde76ddfa908); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 04bdfd057a413606); re-run to get numbers this report can stand behind |
 | ok | passing answers are grounded in tool evidence | 4 | 0 of 4 target(s) pass items whose answer does not APPEAR in their own evidence (2 such answer(s) in total). This is co-occurrence, not causation: an answer recalled from memory that also happens to appear in a retrieved snippet counts as grounded here, so this count is a floor |
 | ok | no model under-reports its trajectory | 4 | 0 of 4 target(s) report far fewer steps than the fleet (median 1.2); a thin trace can be efficiency OR omission |
 | ok | tool calls are not redundant | 4 | 0 of 4 target(s) repeat identical calls in more than 25% of their trajectories |
@@ -179,7 +179,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.39.1
+- tool: dinostomp 0.40.0
 - statistical power: at n=26 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~39% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `66a70cdee88cac64a2400c41b4a919c92d4e2e8345f4b4257b9433215195aeb1`
 - data_sha256: `5dfd19b1348d90405cd81c07540d53a4583e766dfbb690420cf78bdeb5cb530c`

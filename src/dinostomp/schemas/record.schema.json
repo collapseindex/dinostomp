@@ -4,25 +4,68 @@
   "title": "dinostomp run record",
   "description": "One scored model response. One JSON object per JSONL line, appended and flushed as the run progresses, so an interrupted run never loses paid work.",
   "type": "object",
-  "required": ["item_id", "model", "provider", "seed", "output", "score", "ts"],
+  "required": [
+    "item_id",
+    "model",
+    "provider",
+    "seed",
+    "score",
+    "ts"
+  ],
   "properties": {
-    "item_id": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
-    "model": {"type": "string"},
-    "provider": {"type": "string"},
-    "seed": {"type": "integer"},
-    "repeat": {"type": "integer", "minimum": 0, "description": "Repeat index when run.repeats > 1."},
-    "output": {"type": "string", "description": "Verbatim model output. Never truncated by the recorder."},
-    "finish_reason": {"type": "string"},
+    "item_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        }
+      ]
+    },
+    "model": {
+      "type": "string"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "seed": {
+      "type": "integer"
+    },
+    "repeat": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Repeat index when run.repeats > 1."
+    },
+    "output": {
+      "type": "string",
+      "description": "The model's generated text. OPTIONAL, because a whole class of eval never produces any: loglikelihood-ranking harnesses score candidate continuations by log-probability and emit no text at all, which is how ARC, MMLU and HellaSwag are scored on the Open LLM Leaderboard. When it is absent the checks that read it (R8, R14, R16) skip NAMING THE FIELD and the coverage line shortens. Absent is not the same as empty: an empty string is a model that answered with nothing, and R14/R16 will treat it as one."
+    },
+    "finish_reason": {
+      "type": "string"
+    },
     "score": {
       "type": "object",
-      "required": ["verdict"],
+      "required": [
+        "verdict"
+      ],
       "properties": {
         "verdict": {
-          "enum": ["pass", "fail", "flag", "uncheckable"],
+          "enum": [
+            "pass",
+            "fail",
+            "flag",
+            "uncheckable"
+          ],
           "description": "uncheckable is excluded from every accuracy denominator, never silently counted."
         },
-        "value": {"type": "number"},
-        "evidence": {"type": "string", "description": "What the scorer actually matched on, quotable back to the output."}
+        "value": {
+          "type": "number"
+        },
+        "evidence": {
+          "type": "string",
+          "description": "What the scorer actually matched on, quotable back to the output."
+        }
       }
     },
     "judge_response": {
@@ -34,7 +77,10 @@
       "description": "Cross-judge-probe records only: which model produced the output being re-graded."
     },
     "canary_kind": {
-      "enum": ["canary", "control"],
+      "enum": [
+        "canary",
+        "control"
+      ],
       "description": "Canary-probe records only. `control` is a passage certainly in training data: a model that cannot reproduce it has not demonstrated the probe is sensitive on it, so S10 skips rather than reporting clean."
     },
     "perturbation": {
@@ -42,7 +88,10 @@
       "description": "Judge-probe records only: which content-free perturbation was applied ('' for the baseline case)."
     },
     "polarity": {
-      "enum": ["correct", "corrupted"],
+      "enum": [
+        "correct",
+        "corrupted"
+      ],
       "description": "Judge-probe records only: whether this case was right or wrong BY CONSTRUCTION, which is what makes the judge's verdict checkable without a second judge."
     },
     "trajectory": {
@@ -50,25 +99,54 @@
       "description": "The target's SELF-REPORTED execution trace, in order. Present only for targets that report one. Verifying this verifies the record, not the execution: see targets.py.",
       "items": {
         "type": "object",
-        "required": ["tool"],
+        "required": [
+          "tool"
+        ],
         "properties": {
-          "tool": {"type": "string", "description": "Tool name. Empty means the target reported a step with no name, which T3 flags."},
-          "args": {"type": "object"},
-          "result": {"type": "string"},
-          "result_truncated": {"type": "boolean", "description": "The recorder capped an oversized result. Never silent."},
-          "ok": {"type": "boolean"}
+          "tool": {
+            "type": "string",
+            "description": "Tool name. Empty means the target reported a step with no name, which T3 flags."
+          },
+          "args": {
+            "type": "object"
+          },
+          "result": {
+            "type": "string"
+          },
+          "result_truncated": {
+            "type": "boolean",
+            "description": "The recorder capped an oversized result. Never silent."
+          },
+          "ok": {
+            "type": "boolean"
+          }
         }
       }
     },
     "usage": {
       "type": "object",
       "properties": {
-        "input_tokens": {"type": "integer", "minimum": 0},
-        "output_tokens": {"type": "integer", "minimum": 0},
-        "cost_usd": {"type": "number", "minimum": 0},
-        "rate_label": {"type": "string", "description": "Which price produced cost_usd, including 'target-reported' when the target priced its own call."}
+        "input_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "output_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cost_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "rate_label": {
+          "type": "string",
+          "description": "Which price produced cost_usd, including 'target-reported' when the target priced its own call."
+        }
       }
     },
-    "ts": {"type": "string", "description": "ISO 8601 timestamp."}
+    "ts": {
+      "type": "string",
+      "description": "ISO 8601 timestamp."
+    }
   }
 }

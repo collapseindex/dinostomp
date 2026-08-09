@@ -203,9 +203,10 @@
             "openai",
             "openrouter",
             "dry",
-            "python"
+            "python",
+            "imported"
           ],
-          "description": "dry is the offline deterministic provider: zero network, zero spend, always available. python mounts a pod-local callable (agent, RAG pipeline, workflow) on the target rail."
+          "description": "dry is the offline deterministic provider: zero network, zero spend, always available. python mounts a pod-local callable (agent, RAG pipeline, workflow) on the target rail. imported declares a model this engine cannot call, whose evidence arrives via `dinostomp import`; `run` refuses it rather than inventing a way to produce the numbers itself."
         },
         "model": {
           "type": "string",

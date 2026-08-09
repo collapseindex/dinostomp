@@ -1,0 +1,24 @@
+{
+  "tool_version": "imported",
+  "spec_name": "imported-lm-eval",
+  "spec_version": "0.1.0",
+  "spec_sha256": "967c38cc964d1369f96ddf6ab68a1c52eaac0c25d27a13b6e9bb1995c3491cb1",
+  "data_sha256": "63af045e1154054f7927b7969aa0fb23c7b80cc11ce1921605744124e6005267",
+  "provider": "imported",
+  "model": "Corianas/111m",
+  "seed": 0,
+  "n_items": 1172,
+  "dry_run": false,
+  "budget_cap_usd": 0.0,
+  "imported": true,
+  "imported_from": "benchmarks\\lm-eval-import\\lm_eval_arc_challenge.jsonl",
+  "witness_report": {
+    "n_witnesses": 6,
+    "n_behaved": 6,
+    "verdict": "validated"
+  },
+  "started_at": "1970-01-01T00:00:00+00:00",
+  "finished_at": "1970-01-01T00:00:00+00:00",
+  "run_file": "imported_imported-lm-eval_Corianas-111m_n1172_s0.jsonl",
+  "status": "complete"
+}
