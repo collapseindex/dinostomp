@@ -577,6 +577,30 @@ def _item_key(item: dict) -> str:
 # --------------------------------------------------------------------------- items
 
 
+def _duplicate_option_checks(rep: Reporter, choice_items: list[dict]) -> None:
+    """S5 and S6: facts about an item's own option list.
+
+    Lifted out of the main flow because they still apply when every item
+    shares one label set, unlike position and length bias.
+    """
+    # S5: same option twice in one item.
+    #
+    # EXACT comparison, deliberately. Normalising case here looks like an
+    # obvious improvement and is a false-positive generator: MMLU's genetics
+    # items offer 'Bb Bb' against 'BB Bb', and its predicate-logic items offer
+    # 'Sc = Ej' against 'sC = eJ', where the case IS the answer. Case-folding
+    # would have called four correct items defective. Tried it, measured it,
+    # kept the strict version.
+    dup_opts = [str(i["id"]) for i in choice_items if len(set(i["choices"])) < len(i["choices"])]
+    rep.check("S5", not dup_opts, f"{len(dup_opts)} item(s) offer a duplicate option",
+              n=len(choice_items), examples=dup_opts)
+
+    # S6: target among choices
+    keyless = [str(i["id"]) for i in choice_items if not any(t in i["choices"] for t in _targets_of(i))]
+    rep.check("S6", not keyless, f"{len(keyless)} item(s) whose target is not among their choices",
+              n=len(choice_items), examples=keyless)
+
+
 def _item_checks(rep: Reporter, items: list[dict]) -> None:
     text_items = [i for i in items if "choices" not in i]
     choice_items = [i for i in items if "choices" in i]
@@ -640,22 +664,30 @@ def _item_checks(rep: Reporter, items: list[dict]) -> None:
             rep.not_applicable(cid, "no multiple-choice items in this dataset")
         return
 
-    # S5: same option twice in one item.
+    # A GLOBAL label set (yes/no, true/false, entailment/neutral/contradiction)
+    # degenerates position and length bias into class balance. BoolQ offers
+    # ["yes", "no"] on all 3000 items, "yes" is longer than "no", and its answer
+    # is yes 62% of the time, so `length-bias` reported "gold is strictly longest
+    # +12% over expectation" while actually measuring the class distribution.
     #
-    # EXACT comparison, deliberately. Normalising case here looks like an
-    # obvious improvement and is a false-positive generator: MMLU's genetics
-    # items offer 'Bb Bb' against 'BB Bb', and its predicate-logic items offer
-    # 'Sc = Ej' against 'sC = eJ', where the case IS the answer. Case-folding
-    # would have called four correct items defective. Tried it, measured it,
-    # kept the strict version.
-    dup_opts = [str(i["id"]) for i in choice_items if len(set(i["choices"])) < len(i["choices"])]
-    rep.check("S5", not dup_opts, f"{len(dup_opts)} item(s) offer a duplicate option",
-              n=len(choice_items), examples=dup_opts)
+    # Those checks are about how each item's DISTRACTORS were written. With one
+    # vocabulary shared by every item there are no per-item distractors, so the
+    # honest answer is n/a plus the class balance, not a bias finding.
+    option_sets = {tuple(sorted(str(c) for c in i["choices"])) for i in choice_items}
+    if len(option_sets) == 1 and len(choice_items) > 1:
+        share = Counter(str(_targets_of(i)[0]) for i in choice_items).most_common(1)[0]
+        for cid in ("S3", "S4", "S9"):
+            rep.not_applicable(
+                cid, f"every item offers the same options, so position and length are properties "
+                     f"of the label set rather than of how each item's distractors were written. "
+                     f"What varies is class balance: {share[0]!r} is the answer "
+                     f"{share[1] / len(choice_items):.0%} of the time")
+        _duplicate_option_checks(rep, choice_items)
+        return
 
-    # S6: target among choices
-    keyless = [str(i["id"]) for i in choice_items if not any(t in i["choices"] for t in _targets_of(i))]
-    rep.check("S6", not keyless, f"{len(keyless)} item(s) whose target is not among their choices",
-              n=len(choice_items), examples=keyless)
+    _duplicate_option_checks(rep, choice_items)
+
+    # S3/S4/S9 need enough keyed items to say anything.
 
     # S3/S4 operate on items with a resolvable gold position. Expectations are
     # computed per item (1/k for that item's own k), so mixed-arity datasets

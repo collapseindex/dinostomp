@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**MECHANICALLY SOUND**: no integrity findings at pod scope, full coverage (32 of 32 ran; 22 n/a of 54 declared)
+**MECHANICALLY SOUND**: no integrity findings at pod scope, full coverage (29 of 29 ran; 25 n/a of 54 declared)
 
 > All runs used the offline dry provider; results exercise the benchmark, not any real model.
 
@@ -46,10 +46,10 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | | check | witnesses | detail |
 |---|---|---:|---|
-| ok | gold answer does not favour an option position | 149 | gold overshoots position 0 by +0% over its per-item expectation (50 of 149) |
-| ok | gold answer is not systematically the longest option | 149 | gold is strictly longest +0% over its per-item expectation (50 of 149) |
+| n/a | gold answer does not favour an option position | 0 | every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'setosa' is the answer 34% of the time |
+| n/a | gold answer is not systematically the longest option | 0 | every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'setosa' is the answer 34% of the time |
 | ok | a contamination canary travels with the data | 1 | canary present (dinostomp canary DO NOT TRAIN 1d1aaee8f1...) |
-| ok | no surface feature predicts the gold answer | 149 | 0 surface feature(s) beat the per-item chance null on 149 keyed item(s) |
+| n/a | no surface feature predicts the gold answer | 0 | every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'setosa' is the answer 34% of the time |
 | n/a | no model reproduces the contamination canary | 0 | regurgitation probes need a hosted model; this pod's runs are all local |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
 | ok | witnesses kill the mutant scorers | 6 | 0 of 6 applicable mutant scorer(s) survive the witness suite |
@@ -62,7 +62,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | ok | failed answers do not contain the reference | 5 | 0 of 5 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 6 | 0 of 6 run(s) were produced by a different engine than the one auditing them (now 545e7e9d012de495); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 6 | 0 of 6 run(s) were produced by a different engine than the one auditing them (now 1b8d1c54ebc53f5b); re-run to get numbers this report can stand behind |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no python targets; nothing produces a trajectory |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no python targets; nothing produces a trajectory |
 | n/a | tool calls are not redundant | 0 | this spec runs no python targets; nothing produces a trajectory |
@@ -84,16 +84,6 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ### Receipts
 
-<details><summary>[ok] gold answer does not favour an option position</summary>
-
-- evidence: `{"excess": 0.0022, "position": 0}`
-
-</details>
-<details><summary>[ok] gold answer is not systematically the longest option</summary>
-
-- evidence: `{"excess": 0.0022}`
-
-</details>
 <details><summary>[ok] witnesses kill the mutant scorers</summary>
 
 - evidence: `{"killed": ["always-pass", "always-fail", "case-blind", "substring-lenient", "prefix-lenient", "negation-blind"], "not_applicable": ["space-blind", "uncheckable-credit"]}`
@@ -116,7 +106,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"545e7e9d012de495": 6}}`
+- evidence: `{"engines": {"1b8d1c54ebc53f5b": 6}}`
 
 </details>
 <details><summary>[ok] fleet score totals are reliable (KR-20)</summary>
@@ -149,16 +139,16 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260809_095118_iris-species_dry-alpha_n149_s42.jsonl | dry-alpha | (same) | dry | yes | 42 | 149 | 0 |
-| 20260809_095118_iris-species_dry-bravo_n149_s42.jsonl | dry-bravo | (same) | dry | yes | 42 | 149 | 0 |
-| 20260809_095118_iris-species_dry-charlie_n149_s42.jsonl | dry-charlie | (same) | dry | yes | 42 | 149 | 0 |
-| 20260809_095118_iris-species_dry-delta_n149_s42.jsonl | dry-delta | (same) | dry | yes | 42 | 149 | 0 |
-| 20260809_095118_iris-species_dry-echo_n149_s42.jsonl | dry-echo | (same) | dry | yes | 42 | 149 | 0 |
-| 20260809_095118_iris-species_dry-foxtrot_n149_s42.jsonl | dry-foxtrot | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_100541_iris-species_dry-alpha_n149_s42.jsonl | dry-alpha | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_100541_iris-species_dry-bravo_n149_s42.jsonl | dry-bravo | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_100541_iris-species_dry-charlie_n149_s42.jsonl | dry-charlie | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_100541_iris-species_dry-delta_n149_s42.jsonl | dry-delta | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_100542_iris-species_dry-echo_n149_s42.jsonl | dry-echo | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_100542_iris-species_dry-foxtrot_n149_s42.jsonl | dry-foxtrot | (same) | dry | yes | 42 | 149 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.36.0
+- tool: dinostomp 0.36.1
 - statistical power: at n=149 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~16% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `b6443a36d9d3b0e15c9885a555de15cfffc25e25a646884f4f4d460787b6bc60`
 - data_sha256: `153c4dcefb332e38221e8a27b3f46b179d6dbf46ef834bbd87e188b0acda5942`

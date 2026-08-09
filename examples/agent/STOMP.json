@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.36.0",
+  "version": "0.36.1",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -689,11 +689,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now 545e7e9d012de495); re-run to get numbers this report can stand behind",
+      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now 1b8d1c54ebc53f5b); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "evidence": {
         "engines": {
-          "545e7e9d012de495": 4
+          "1b8d1c54ebc53f5b": 4
         }
       }
     },
@@ -943,7 +943,7 @@
   },
   "runs": [
     {
-      "run_file": "20260809_095120_agent-capitals_agent-grounded_n26_s42.jsonl",
+      "run_file": "20260809_100543_agent-capitals_agent-grounded_n26_s42.jsonl",
       "model": "agent-grounded",
       "model_reported": "agent-grounded",
       "provider": "python",
@@ -955,7 +955,7 @@
       "trajectory_steps": 28
     },
     {
-      "run_file": "20260809_095120_agent-capitals_agent-lazy_n26_s42.jsonl",
+      "run_file": "20260809_100543_agent-capitals_agent-lazy_n26_s42.jsonl",
       "model": "agent-lazy",
       "model_reported": "agent-lazy",
       "provider": "python",
@@ -967,7 +967,7 @@
       "trajectory_steps": 26
     },
     {
-      "run_file": "20260809_095120_agent-capitals_agent-narrow_n26_s42.jsonl",
+      "run_file": "20260809_100543_agent-capitals_agent-narrow_n26_s42.jsonl",
       "model": "agent-narrow",
       "model_reported": "agent-narrow",
       "provider": "python",
@@ -979,7 +979,7 @@
       "trajectory_steps": 43
     },
     {
-      "run_file": "20260809_095120_agent-capitals_agent-partial_n26_s42.jsonl",
+      "run_file": "20260809_100543_agent-capitals_agent-partial_n26_s42.jsonl",
       "model": "agent-partial",
       "model_reported": "agent-partial",
       "provider": "python",

@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.36.0",
+  "version": "0.36.1",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -449,7 +449,7 @@
   },
   "summary": {
     "fail": 1,
-    "warn": 2,
+    "warn": 1,
     "skip": 26,
     "verdict": "broken",
     "scope": "pod"
@@ -482,13 +482,13 @@
       "id": "S3",
       "slug": "position-bias",
       "check": "gold answer does not favour an option position",
-      "level": "warn",
+      "level": "pass",
       "gating": false,
-      "detail": "gold overshoots position 0 by +75% over its per-item expectation (1000 of 1000)",
+      "detail": "gold overshoots position 3 by +3% over its per-item expectation (277 of 1000)",
       "witnesses": 1000,
       "evidence": {
-        "position": 0,
-        "excess": 0.75
+        "position": 3,
+        "excess": 0.027
       }
     },
     {
@@ -983,7 +983,7 @@
   ],
   "inputs": {
     "spec_sha256": "40ca82e07eb52249056d6bf9d6bd4eb8e6b45fd9e0d7fb77acd9f112ca970089",
-    "data_sha256": "db7a245b0413d87507ecb3304b9a433f5916613d9137a0e0dc64d640e3ba0dd6"
+    "data_sha256": "802059bb926e15dc31f0de497c30b2a2d94652f99283dc8ac927d11338644ce1"
   },
   "runs": [],
   "entitled_claims": [

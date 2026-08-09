@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.36.0",
+  "version": "0.36.1",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -264,8 +264,8 @@
   },
   "coverage": {
     "declared_total": 54,
-    "declared": 36,
-    "ran": 10,
+    "declared": 33,
+    "ran": 7,
     "skipped": [
       {
         "id": "R1",
@@ -378,6 +378,18 @@
         "reason": "no free-form items in this dataset"
       },
       {
+        "id": "S3",
+        "reason": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'yes' is the answer 62% of the time"
+      },
+      {
+        "id": "S4",
+        "reason": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'yes' is the answer 62% of the time"
+      },
+      {
+        "id": "S9",
+        "reason": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'yes' is the answer 62% of the time"
+      },
+      {
         "id": "S10",
         "reason": "regurgitation probes need a hosted model; this pod's runs are all local"
       },
@@ -449,7 +461,7 @@
   },
   "summary": {
     "fail": 0,
-    "warn": 1,
+    "warn": 0,
     "skip": 26,
     "verdict": "incomplete",
     "scope": "pod"
@@ -482,26 +494,19 @@
       "id": "S3",
       "slug": "position-bias",
       "check": "gold answer does not favour an option position",
-      "level": "pass",
+      "level": "n/a",
       "gating": false,
-      "detail": "gold overshoots position 0 by +12% over its per-item expectation (1865 of 3000)",
-      "witnesses": 3000,
-      "evidence": {
-        "position": 0,
-        "excess": 0.1217
-      }
+      "detail": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'yes' is the answer 62% of the time",
+      "witnesses": 0
     },
     {
       "id": "S4",
       "slug": "length-bias",
       "check": "gold answer is not systematically the longest option",
-      "level": "warn",
+      "level": "n/a",
       "gating": false,
-      "detail": "gold is strictly longest +12% over its per-item expectation (1865 of 3000)",
-      "witnesses": 3000,
-      "evidence": {
-        "excess": 0.1217
-      }
+      "detail": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'yes' is the answer 62% of the time",
+      "witnesses": 0
     },
     {
       "id": "S5",
@@ -543,10 +548,10 @@
       "id": "S9",
       "slug": "surface-shortcut",
       "check": "no surface feature predicts the gold answer",
-      "level": "pass",
+      "level": "n/a",
       "gating": false,
-      "detail": "0 surface feature(s) beat the per-item chance null on 3000 keyed item(s)",
-      "witnesses": 3000
+      "detail": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'yes' is the answer 62% of the time",
+      "witnesses": 0
     },
     {
       "id": "S10",

@@ -200,11 +200,22 @@ def boolq_items(rows: list[dict]) -> list[dict]:
 def sciq_items(rows: list[dict]) -> list[dict]:
     """Correct answer plus three distractors as separate columns.
 
-    Option ORDER is reconstructed here rather than given, so position bias on
-    this pod is a property of THIS reconstruction and not of the dataset. The
-    order is the source column order, which is the least invented choice
-    available, and the pod says so.
+    Option ORDER is reconstructed here, because the source has none: SciQ ships
+    the answer and three distractors as separate columns.
+
+    Keeping the source column order put the answer at index 0 on all 1000 items,
+    and `position-bias` duly reported gold overshooting position 0 by 75%. That
+    was a finding about this fetcher, not about SciQ, and it cascaded into
+    `surface-shortcut` too. A report whose findings are about its own loader is
+    worse than no report.
+
+    So the options are SHUFFLED, per item, from a seed derived from the item id.
+    Deterministic and reproducible, position carries no information, and the
+    arbitrariness is explicit rather than smuggled in as column order.
     """
+    import hashlib
+    import random
+
     out = []
     for i, r in enumerate(rows):
         row = r["row"]
@@ -212,6 +223,8 @@ def sciq_items(rows: list[dict]) -> list[dict]:
         opts = [correct] + [str(row.get(f"distractor{k}") or "").strip() for k in (1, 2, 3)]
         if not correct or any(not o for o in opts):
             continue
+        seed = int(hashlib.sha256(f"sciq|{i}".encode()).hexdigest()[:8], 16)
+        random.Random(seed).shuffle(opts)
         out.append({"id": f"sq-{i:05d}", "input": str(row["question"]).strip(),
                     "choices": opts, "target": correct})
     return out

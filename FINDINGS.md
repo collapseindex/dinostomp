@@ -40,6 +40,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-010](#f-010) | SciQ | 9 items with a repeated option | confirmed |
 | [F-011](#f-011) | MMLU-Pro | 64 duplicate rows in the first 3000 | confirmed |
 | [F-012](#f-012) | MMLU-Pro vs MMLU | 158 of 3000 items reuse an MMLU question; 22 are unchanged | confirmed, expected |
+| [F-013](#f-013) | SciQ | the gold option reuses a question word no distractor does | confirmed, narrow |
 | [N-001](#n-001) | HellaSwag, ARC, MMLU | no position, length, or shortcut bias found | negative |
 | [N-002](#n-002) | dinostomp | the uncheckable path was untested, and said so | negative, later closed |
 | [N-003](#n-003) | ARC, OpenBookQA, HellaSwag, WinoGrande | no repeated options in four datasets | negative |
@@ -58,6 +59,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-012](#d-012) | dinostomp | line-ending translation is drift | fixed |
 | [D-013](#d-013) | dinostomp | smaller ones: a wrong hint, two wrong witnesses, a near-miss | fixed |
 | [D-014](#d-014) | dinostomp | the overlap check compared questions and ignored options | fixed |
+| [D-015](#d-015) | dinostomp | position and length bias reported class balance on a fixed label set | fixed |
+| [D-016](#d-016) | dinostomp | the SciQ fetcher put the answer at index 0 on every item | fixed |
 
 ---
 
@@ -93,7 +96,7 @@ published report, which is what the fix looks like from the other side:
 
 ```
   [ok]   dup-questions   questions are unique   0 duplicated question(s) among 149
-MECHANICALLY SOUND: no integrity findings, full coverage (32 of 32 ran; 22 n/a of 54 declared)
+MECHANICALLY SOUND: no integrity findings, full coverage (29 of 29 ran; 25 n/a of 54 declared)
 ```
 
 ### F-002
@@ -267,6 +270,28 @@ mp-02693 == mmlu-02786   "Which of the following statements is NOT correct about
 
 Reproduce with `dinostomp stomp benchmarks/mmlu-pro/eval.yaml --against
 benchmarks/mmlu/items.jsonl`.
+
+### F-013
+**SciQ · the gold option reuses a question word that no distractor does**
+`surface-shortcut` (S9) · 2026-08-09 · confirmed, narrow
+
+```
+Q: Which two major innovations allowed seed plants to reproduce without water?
+   options: ['root and pollen', 'salt and pollen', 'bee and pollen', 'seed and pollen']
+   gold:    'seed and pollen'   <- the only option containing "seed"
+```
+
+On the 64 items where one option clearly shares most words with the question,
+that option is the gold answer **32 times against a chance expectation of 16**
+(z = 4.6). A model that never reads past the overlap gets those right.
+
+**Scope it narrowly.** Only 64 of 1000 items are decidable this way, so this is
+not "SciQ is guessable"; it is a measurable lean on 6% of it. The check reports
+the decidable subset rather than the whole set for exactly that reason.
+
+This finding only became visible after [D-016](#d-016): while the fetcher put
+the answer at index 0 on every item, position dominated and this was buried
+under an artifact of my own making.
 
 ---
 
@@ -549,6 +574,47 @@ different things depending on which dataset produced it. Both are now computed
 and reported separately, which is how [F-012](#f-012) can say 22 and 136 rather
 than one misleading 158.
 
+### D-015
+**Position and length bias reported class balance on a fixed label set**
+`position-bias` (S3), `length-bias` (S4), `surface-shortcut` (S9) · 2026-08-09 · fixed
+
+BoolQ offers `["yes", "no"]` on all 3000 items. "yes" is longer than "no", and
+BoolQ's answer is yes 62% of the time, so `length-bias` reported *"gold is
+strictly longest, +12% over expectation"* while actually measuring the class
+distribution.
+
+Those checks are about how each item's **distractors were written**. With one
+vocabulary shared by every item there are no per-item distractors, so they are
+now `n/a` with the class balance stated instead:
+
+```
+[n/a] length-bias   every item offers the same options, so position and length are
+                    properties of the label set rather than of how each item's
+                    distractors were written. What varies is class balance:
+                    'yes' is the answer 62% of the time
+```
+
+`dup-options` and `target-not-offered` still run, because those are facts about
+an item's own option list either way.
+
+### D-016
+**The SciQ fetcher put the answer at index 0 on every item**
+`position-bias` (S3) · 2026-08-09 · fixed
+
+SciQ ships the answer and three distractors as separate columns, so option order
+has to be reconstructed. Keeping the source column order put gold first on all
+1000 items, and the check duly reported it overshooting position 0 by **75%**.
+
+That was a finding about the loader, not about SciQ, and it cascaded: it also
+drove the shortcut check. **A report whose findings are about its own loader is
+worse than no report.** The pod's spec had a comment saying the order was
+reconstructed, which is not the same as not publishing the artifact.
+
+Options are now shuffled per item from a seed derived from the item id:
+deterministic, reproducible, and position carries no information. Position bias
+dropped from +75% to +3%, the nine real duplicate options survived, and
+[F-013](#f-013) became visible underneath.
+
 ---
 
 ## The honest scorecard
@@ -561,13 +627,13 @@ Count it precisely.
 
 | | |
 |---|---|
-| findings in other people's evals (**F**) | **12** |
-| &nbsp;&nbsp;of which receipt-backed dataset defects | 9 (F-001 to F-004, F-008 to F-012) |
+| findings in other people's evals (**F**) | **13** |
+| &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **4** |
-| defects in dinostomp itself (**D**) | **14** |
+| defects in dinostomp itself (**D**) | **16** |
 
-Fourteen to twelve. That ratio is the useful number to publish, and it is the
+Sixteen to thirteen. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to
@@ -577,7 +643,7 @@ ran somewhere its author's assumptions did not hold, and one
 ([D-014](#d-014)) was a bug the project had already found and fixed elsewhere,
 written again three releases later in a different check.
 
-The most common shape across all fourteen is worth stating once: **a check that
+The most common shape across all sixteen is worth stating once: **a check that
 compared the wrong thing and returned a confident answer about it.**
 
 ## Adding an entry

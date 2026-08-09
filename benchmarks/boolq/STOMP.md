@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 10 of 36 checks ran (10 of 36 ran; 18 n/a of 54 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 7 of 33 checks ran (7 of 33 ran; 21 n/a of 54 declared). Not a clean bill of health.
 
 ## Entitled claims
 
@@ -40,10 +40,10 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | | check | witnesses | detail |
 |---|---|---:|---|
-| ok | gold answer does not favour an option position | 3000 | gold overshoots position 0 by +12% over its per-item expectation (1865 of 3000) |
-| warn | gold answer is not systematically the longest option | 3000 | gold is strictly longest +12% over its per-item expectation (1865 of 3000) |
+| n/a | gold answer does not favour an option position | 0 | every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'yes' is the answer 62% of the time |
+| n/a | gold answer is not systematically the longest option | 0 | every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'yes' is the answer 62% of the time |
 | ok | a contamination canary travels with the data | 1 | canary present (dinostomp canary DO NOT TRAIN benchmarks) |
-| ok | no surface feature predicts the gold answer | 3000 | 0 surface feature(s) beat the per-item chance null on 3000 keyed item(s) |
+| n/a | no surface feature predicts the gold answer | 0 | every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'yes' is the answer 62% of the time |
 | n/a | no model reproduces the contamination canary | 0 | regurgitation probes need a hosted model; this pod's runs are all local |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
 | ok | witnesses kill the mutant scorers | 4 | 0 of 4 applicable mutant scorer(s) survive the witness suite |
@@ -78,16 +78,6 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ### Receipts
 
-<details><summary>[ok] gold answer does not favour an option position</summary>
-
-- evidence: `{"excess": 0.1217, "position": 0}`
-
-</details>
-<details><summary>[warn] gold answer is not systematically the longest option</summary>
-
-- evidence: `{"excess": 0.1217}`
-
-</details>
 <details><summary>[ok] witnesses kill the mutant scorers</summary>
 
 - evidence: `{"killed": ["always-pass", "always-fail", "case-blind", "prefix-lenient"], "not_applicable": ["space-blind", "substring-lenient", "negation-blind", "uncheckable-credit"]}`
@@ -96,7 +86,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.36.0
+- tool: dinostomp 0.36.1
 - statistical power: at n=3000 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~4% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `9e9e9a232af1f851ea587668529d7e935f55578cb7c2d4164c3a9f580afa4d2d`
 - data_sha256: `e21fac30dfb9638145627c66773e3a24a49dad1aa05d836dd6934b36baacf4aa`

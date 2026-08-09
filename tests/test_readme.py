@@ -47,7 +47,7 @@ def rerun_pod(name: str, tmp_path: Path, capsys, probe: bool = False) -> str:
         "MECHANICALLY SOUND: no integrity findings, full coverage (29 of 29 ran; 25 n/a of 54 declared)",
     ], False),
     ("iris", [
-        "(32 of 32 ran; 22 n/a of 54 declared)",
+        "(29 of 29 ran; 25 n/a of 54 declared)",
     ], False),
     ("agent", [
         "agent-capitals | agent-grounded | complete | acc 0.923 [0.76, 0.98] on 26 checkable",
@@ -241,3 +241,17 @@ def test_the_scorecard_counts_match_the_entries():
         assert _re.search(rf"\*\*{n}\*\*", doc), (
             f"the scorecard does not state **{n}** anywhere, but there are {n} "
             f"{series} entries ({label})")
+
+
+def test_every_image_the_readme_embeds_exists():
+    """A broken image is the first thing a visitor sees, and the README is the
+    one file where a dead reference is most expensive."""
+    import re as _re
+
+    readme = (REPO / "README.md").read_text(encoding="utf-8")
+    srcs = _re.findall(r'<img[^>]+src="([^"]+)"', readme) + \
+        _re.findall(r"!\[[^\]]*\]\(([^)]+)\)", readme)
+    local = [s for s in srcs if not s.startswith("http")]
+    assert local, "the README embeds no local image; the logo went missing"
+    for src in local:
+        assert (REPO / src).is_file(), f"README embeds {src}, which does not exist"

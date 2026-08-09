@@ -40,7 +40,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | | check | witnesses | detail |
 |---|---|---:|---|
-| warn | gold answer does not favour an option position | 1000 | gold overshoots position 0 by +75% over its per-item expectation (1000 of 1000) |
+| ok | gold answer does not favour an option position | 1000 | gold overshoots position 3 by +3% over its per-item expectation (277 of 1000) |
 | ok | gold answer is not systematically the longest option | 1000 | gold is strictly longest -4% over its per-item expectation (209 of 1000) |
 | ok | a contamination canary travels with the data | 1 | canary present (dinostomp canary DO NOT TRAIN benchmarks) |
 | warn | no surface feature predicts the gold answer | 1000 | 1 surface feature(s) beat the per-item chance null on 1000 keyed item(s) |
@@ -78,9 +78,9 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ### Receipts
 
-<details><summary>[warn] gold answer does not favour an option position</summary>
+<details><summary>[ok] gold answer does not favour an option position</summary>
 
-- evidence: `{"excess": 0.75, "position": 0}`
+- evidence: `{"excess": 0.027, "position": 3}`
 
 </details>
 <details><summary>[ok] gold answer is not systematically the longest option</summary>
@@ -113,10 +113,10 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.36.0
+- tool: dinostomp 0.36.1
 - statistical power: at n=1000 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~6% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `40ca82e07eb52249056d6bf9d6bd4eb8e6b45fd9e0d7fb77acd9f112ca970089`
-- data_sha256: `db7a245b0413d87507ecb3304b9a433f5916613d9137a0e0dc64d640e3ba0dd6`
+- data_sha256: `802059bb926e15dc31f0de497c30b2a2d94652f99283dc8ac927d11338644ce1`
 - thresholds: all defaults
 - reproducibility tiers, stated honestly: local inputs hash-pinned (spec, data, scorer); requests reproducible given each manifest's environment envelope; hosted-model immutability UNKNOWN unless the provider exposes a pinned revision (the runs table records what each provider claims answered)
 - raw report: [STOMP.json](STOMP.json) (both files omit volatile fields, so an unchanged pod re-reports to identical bytes; run manifests carry the timestamps)

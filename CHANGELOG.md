@@ -1,5 +1,14 @@
 # Changelog
 
+### v0.36.1 (2026-08-09)
+
+Two false-positive classes the thirteen-benchmark sweep exposed, plus one real finding they were hiding.
+
+- **D-015: position and length bias were reporting class balance.** BoolQ offers `["yes", "no"]` on all 3000 items, "yes" is longer than "no", and BoolQ answers yes 62% of the time, so `length-bias` announced "gold is strictly longest, +12% over expectation" while measuring the class distribution. Those checks are about how each item's DISTRACTORS were written; with one vocabulary shared by every item there are none, so they are now `n/a` with the class balance stated. `dup-options` and `target-not-offered` still run, since those are facts about an item's own option list either way. iris is affected too, and correctly.
+- **D-016: the SciQ fetcher put the answer at index 0 on every item.** SciQ ships the answer and three distractors as separate columns, so order has to be reconstructed, and keeping the source column order made `position-bias` report gold overshooting position 0 by 75%. That was a finding about the loader, not about SciQ, and it cascaded into the shortcut check. The pod's spec had a comment saying the order was reconstructed, which is not the same as not publishing the artifact. Options are now shuffled per item from a seed derived from the item id: deterministic, reproducible, and position carries no information.
+- **F-013, which the artifact was burying.** With position randomised, SciQ shows a real lean: on the 64 items where one option clearly shares most words with the question, that option is the gold answer 32 times against a chance expectation of 16 (z = 4.6). Scoped narrowly, because only 64 of 1000 items are decidable that way: this is a measurable lean on 6% of the dataset, not "SciQ is guessable".
+- A logo, and a test asserting every image the README embeds actually exists.
+
 ### v0.36.0 (2026-08-09)
 
 Eight more benchmarks, five new findings, and one defect in a check that had already been fixed once elsewhere.

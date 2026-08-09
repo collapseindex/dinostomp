@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.36.0",
+  "version": "0.36.1",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -709,11 +709,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 6 run(s) were produced by a different engine than the one auditing them (now 545e7e9d012de495); re-run to get numbers this report can stand behind",
+      "detail": "0 of 6 run(s) were produced by a different engine than the one auditing them (now 1b8d1c54ebc53f5b); re-run to get numbers this report can stand behind",
       "witnesses": 6,
       "evidence": {
         "engines": {
-          "545e7e9d012de495": 6
+          "1b8d1c54ebc53f5b": 6
         }
       }
     },
@@ -946,7 +946,7 @@
   },
   "runs": [
     {
-      "run_file": "20260809_095116_fleet-arith_dry-alpha_n24_s42.jsonl",
+      "run_file": "20260809_100540_fleet-arith_dry-alpha_n24_s42.jsonl",
       "model": "dry-alpha",
       "model_reported": "dry-alpha",
       "provider": "dry",
@@ -958,7 +958,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_095116_fleet-arith_dry-bravo_n24_s42.jsonl",
+      "run_file": "20260809_100540_fleet-arith_dry-bravo_n24_s42.jsonl",
       "model": "dry-bravo",
       "model_reported": "dry-bravo",
       "provider": "dry",
@@ -970,7 +970,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_095116_fleet-arith_dry-charlie_n24_s42.jsonl",
+      "run_file": "20260809_100540_fleet-arith_dry-charlie_n24_s42.jsonl",
       "model": "dry-charlie",
       "model_reported": "dry-charlie",
       "provider": "dry",
@@ -982,7 +982,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_095116_fleet-arith_dry-delta_n24_s42.jsonl",
+      "run_file": "20260809_100540_fleet-arith_dry-delta_n24_s42.jsonl",
       "model": "dry-delta",
       "model_reported": "dry-delta",
       "provider": "dry",
@@ -994,7 +994,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_095116_fleet-arith_dry-echo_n24_s42.jsonl",
+      "run_file": "20260809_100540_fleet-arith_dry-echo_n24_s42.jsonl",
       "model": "dry-echo",
       "model_reported": "dry-echo",
       "provider": "dry",
@@ -1006,7 +1006,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_095117_fleet-arith_dry-foxtrot_n24_s42.jsonl",
+      "run_file": "20260809_100540_fleet-arith_dry-foxtrot_n24_s42.jsonl",
       "model": "dry-foxtrot",
       "model_reported": "dry-foxtrot",
       "provider": "dry",
