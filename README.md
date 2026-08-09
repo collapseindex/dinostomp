@@ -389,3 +389,10 @@ the tool names them.
 
 `CITATION.cff` carries the citation metadata. `CONTRIBUTING.md` states the entry
 fee for a new check and the rules a patch may not remove. [Apache-2.0](LICENSE).
+
+<sub>Built and maintained by one person, unfunded. If it caught something in your
+eval, [sponsorship](https://github.com/sponsors/collapseindex) buys time to keep
+pointing it at real benchmarks and publishing what it finds, including the thirty
+findings against itself. Adversarial pods and bug reports are worth more than
+money and are always free:
+[break it, please](CONTRIBUTING.md#break-it-please).</sub>
