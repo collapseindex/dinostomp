@@ -47,6 +47,7 @@ from dinostomp.psychometrics import (
     common_items,
     dead_items,
     kr20,
+    majority,
     min_detectable_effect,
     point_biserials,
 )
@@ -103,6 +104,7 @@ CHECKS: list[tuple[str, str, bool, str]] = [
     ("R17", "every model produced something scoreable", True, "runs on disk"),
     ("R18", "billed output tokens match the recorded text", False, "20+ records with usage"),
     ("R19", "the runs were produced by this engine", False, "runs recording a tool_sha256"),
+    ("R20", "repeated items reached a verdict", False, "runs with run.repeats > 1"),
     ("T1", "no forbidden tool is called", True, "forbidden_tools declared"),
     ("T2", "every required tool is actually called", True, "required_tools declared"),
     ("T3", "trajectories are well-formed", True, "python-target runs on disk"),
@@ -224,7 +226,7 @@ SLUGS = {
     "R10": "run-scope", "R11": "selection-coverage", "R12": "scorer-escape",
     "R13": "blind-solvable", "R14": "response-collapse", "R15": "input-blind",
     "R16": "scorer-artifact", "R17": "nothing-scoreable", "R18": "billing-mismatch",
-    "R19": "engine-drift",
+    "R19": "engine-drift", "R20": "repeat-ties",
     "T1": "forbidden-tool", "T2": "required-tool", "T3": "trajectory-shape",
     "T4": "answer-grounding", "T5": "trace-underreport", "T6": "redundant-calls",
     "J1": "judge-agreement", "J2": "judge-bias", "J3": "judge-consistency",
@@ -332,7 +334,7 @@ CONSTRUCT_VALIDITY = {
 
 
 RUN_CHECK_IDS = ("R1", "R3", "R4", "R5", "R6", "R8", "R9", "R10", "R11", "R12", "R14", "R16", "R17",
-                 "R18", "R19")
+                 "R18", "R19", "R20")
 PSYCHO_CHECK_IDS = ("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8")
 # P9 lives with the probes, not the fleet matrix: it needs a probe run, not more models.
 TRAJECTORY_CHECK_IDS = ("T1", "T2", "T3", "T4", "T5", "T6")
@@ -1857,6 +1859,50 @@ def _run_checks(rep: Reporter, mine: list[dict], foreign: list[dict], spec_file:
                             for k, v in sorted(stale.items())],
                   evidence={"engines": {k[:16]: len(v) for k, v in sorted(stamped.items())}})
 
+    # R20: repeated items that reached no verdict.
+    #
+    # `run.repeats` exists to average out a nondeterministic target. With an EVEN
+    # number of repeats a model can split its own votes, and what happens to
+    # those items decides what the headline number MEANS.
+    #
+    # Measured rather than reasoned about: a target with a known 50% per-item
+    # rate over 120 items, with ties scored as failures, reported 24% at
+    # repeats=2 and 30% at repeats=4, both behind Wilson intervals that excluded
+    # 50% (N-008). Ties are now undecided rather than failed, the same treatment
+    # every other unreached verdict gets here, and this check reports how much of
+    # the pod that covers. Silence would let a report say "50% on 60 items"
+    # without mentioning the 60 items it could not call.
+    tied: dict[str, tuple[int, int]] = {}
+    any_repeated = False
+    for entry in mine:
+        m = entry.get("manifest") or {}
+        by_item: dict[str, list[int]] = {}
+        for r in entry["records"]:
+            v = (r.get("score") or {}).get("verdict")
+            if v in ("pass", "fail", "flag"):
+                by_item.setdefault(str(r.get("item_id")), []).append(1 if v == "pass" else 0)
+        if not any(len(v) > 1 for v in by_item.values()):
+            continue
+        any_repeated = True
+        n_ties = sum(1 for v in by_item.values() if v and majority(v) is None)
+        if n_ties:
+            tied[str(m.get("model"))] = (n_ties, len(by_item))
+    declared = int(run_cfg.get("repeats", 1) or 1)
+    if not any_repeated:
+        rep.not_applicable(
+            "R20", "no run on disk repeats an item; a single pass per item cannot tie")
+    else:
+        share = max((t / n for t, n in tied.values()), default=0.0)
+        rep.check("R20", not tied,
+                  f"{len(tied)} model(s) left items undecided: their repeats split evenly, so the "
+                  f"majority vote reached no verdict and those items are excluded from accuracy "
+                  f"rather than scored 0. An ODD run.repeats decides every item and removes this "
+                  f"entirely (this spec declares {declared})",
+                  n=len(mine),
+                  examples=[f"{m}: {t} of {n} item(s) tied ({t / n:.0%})"
+                            for m, (t, n) in sorted(tied.items())],
+                  evidence={"repeats": declared, "max_tied_share": round(share, 4)})
+
     # R16: is the SCORER the thing that is failing? An answer marked wrong whose
     # text plainly contains the reference answer was not necessarily wrong; the
     # scorer may be measuring format. One such record is a judgement call, but a
@@ -1969,8 +2015,12 @@ def _fleet_matrices(runs: list[dict]) -> tuple[dict, dict]:
             item_id = str(r.get("item_id"))
             votes.setdefault(model, {}).setdefault(item_id, []).append(1 if verdict == "pass" else 0)
             outputs.setdefault(model, {})[item_id] = _norm(r.get("output", ""))
+    # Same tie rule as the summary, from the same function. A tied item is
+    # ABSENT from that model's row rather than scored 0: an undecided cell is
+    # not a failed cell, and P4 reports the raggedness rather than every fleet
+    # mean quietly absorbing it.
     matrix = {
-        m: {i: 1 if 2 * sum(vs) > len(vs) else 0 for i, vs in d.items()}
+        m: {i: out for i, vs in d.items() if (out := majority(vs)) is not None}
         for m, d in votes.items()
     }
     return matrix, outputs

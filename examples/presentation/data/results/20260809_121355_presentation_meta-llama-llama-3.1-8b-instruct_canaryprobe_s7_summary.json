@@ -1,14 +1,21 @@
 {
-  "spec_name": "presentation",
-  "model": "meta-llama/llama-3.1-8b-instruct",
-  "provider": "openrouter",
-  "seed": 7,
-  "status": "complete",
-  "probe": "canary",
-  "estimator": "canary_probe",
   "n_records": 4,
-  "controls_reproduced": 3,
-  "n_controls": 3,
-  "canary_reproduced": false,
+  "estimator": "per_record",
+  "n_checkable": 4,
+  "n_uncheckable": 0,
+  "n_repeat_ties": 0,
+  "n_passes": 0,
+  "accuracy_on_checkable": 0.0,
+  "accuracy_ci95": [
+    0.0,
+    0.4899
+  ],
+  "judgeability": 1.0,
+  "by_verdict": {
+    "pass": 0,
+    "fail": 1,
+    "flag": 3,
+    "uncheckable": 0
+  },
   "spend_usd": 2.34e-05
 }

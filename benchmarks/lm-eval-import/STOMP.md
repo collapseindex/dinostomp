@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 18 of 38 checks ran (18 of 38 ran; 16 n/a of 54 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 18 of 38 checks ran (18 of 38 ran; 17 n/a of 55 declared). Not a clean bill of health.
 
 ## Entitled claims
 
@@ -57,6 +57,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | failed answers do not contain the reference | 0 | no `output` on every record (an unparsed-but-correct answer is looked for in the text); 0 of 1172 record(s) carry it |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
 | n/a | the runs were produced by this engine | 0 | no run manifest records a tool_sha256 |
+| n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no python targets; nothing produces a trajectory |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no python targets; nothing produces a trajectory |
 | n/a | tool calls are not redundant | 0 | this spec runs no python targets; nothing produces a trajectory |
@@ -139,7 +140,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.40.0
+- tool: dinostomp 0.41.0
 - statistical power: at n=1172 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~6% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `967c38cc964d1369f96ddf6ab68a1c52eaac0c25d27a13b6e9bb1995c3491cb1`
 - data_sha256: `63af045e1154054f7927b7969aa0fb23c7b80cc11ce1921605744124e6005267`

@@ -1,13 +1,9 @@
 {
-  "spec_name": "judge-capitals",
-  "model": "bot-hedged",
-  "provider": "python",
-  "seed": 42,
-  "status": "complete",
   "n_records": 26,
   "estimator": "per_record",
   "n_checkable": 26,
   "n_uncheckable": 0,
+  "n_repeat_ties": 0,
   "n_passes": 10,
   "accuracy_on_checkable": 0.384615,
   "accuracy_ci95": [

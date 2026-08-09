@@ -1,5 +1,42 @@
 # Changelog
 
+### v0.41.0 (2026-08-09)
+
+`run.repeats` run live for the first time. It had unit tests, two
+implementations and a docstring about estimator discipline, and had never once
+been executed against a target that could disagree with itself.
+
+- **N-008: an even `run.repeats` reported p-squared instead of p.** Measured
+  against a python target with a KNOWN per-item pass rate over 120 items, not
+  estimated. A model whose true rate was 50% published **24% at repeats=2** and
+  **30% at repeats=4**, both behind Wilson intervals that excluded the truth,
+  because ties scored 0 and repeats=2 therefore reports the probability of
+  passing an item twice. The headline number moved 26 points on a parameter
+  whose purpose is to reduce noise, and all 54 checks were silent.
+- **A tie is now `uncheckable`, not `fail`**: excluded from the accuracy
+  denominator, reported on its own line, surfaced through `judgeability`. That
+  is the treatment every other unreached verdict already gets here. Odd repeats
+  cannot tie, so every pod already using them is unaffected and published
+  evidence does not move.
+- **New check R20 `repeat-ties`** (diagnostic, battery 54 -> 55), reporting how
+  much of a pod is undecided, because "50% on 58 items" is only honest when the
+  62 it could not call are printed beside it. Both tails have a trial: an
+  even-repeats pod that must warn and an odd-repeats pod that must stay silent,
+  so "warns on ties" is not the same experiment as "warns whenever repeats are
+  set". Trials 82 -> 83 planted, 12 -> 13 clean.
+- **D-026: the tie rule existed twice and the counts had two units.** It is now
+  `psychometrics.majority()`, imported by both the summary and the fleet matrix;
+  the duplicate implementations had agreed by luck rather than by parity. Fixing
+  ties first produced a summary whose numerator counted items and whose
+  `n_uncheckable` counted records, caught by the test rewrite before it shipped.
+- The unit test covering this **asserted the bug**, with a comment reading "the
+  b tie scores 0, conservative". Conservative was the wrong word: the rule
+  changed the estimand rather than shading it.
+- Committed summaries were recomputed from their own records (a summary is a
+  pure function of them, so no model was called and nothing was re-paid). One
+  judge-probe spend total moved by 4e-8 through float accumulation order, far
+  under tolerance and unrelated to this change.
+
 ### v0.40.0 (2026-08-09)
 
 The first log this engine did not write. A real lm-evaluation-harness details

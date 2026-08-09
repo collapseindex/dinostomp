@@ -1,13 +1,9 @@
 {
-  "spec_name": "imported-lm-eval",
-  "model": "Corianas/111m",
-  "seed": 0,
-  "status": "complete",
-  "imported": true,
   "n_records": 1172,
   "estimator": "per_record",
   "n_checkable": 1172,
   "n_uncheckable": 0,
+  "n_repeat_ties": 0,
   "n_passes": 231,
   "accuracy_on_checkable": 0.197099,
   "accuracy_ci95": [

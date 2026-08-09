@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.40.0",
+  "version": "0.41.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -263,7 +263,7 @@
     }
   },
   "coverage": {
-    "declared_total": 54,
+    "declared_total": 55,
     "declared": 38,
     "ran": 18,
     "skipped": [
@@ -368,6 +368,10 @@
       {
         "id": "R19",
         "reason": "no run manifest records a tool_sha256"
+      },
+      {
+        "id": "R20",
+        "reason": "no run on disk repeats an item; a single pass per item cannot tie"
       },
       {
         "id": "T1",
@@ -778,6 +782,15 @@
       "level": "n/a",
       "gating": false,
       "detail": "no run manifest records a tool_sha256",
+      "witnesses": 0
+    },
+    {
+      "id": "R20",
+      "slug": "repeat-ties",
+      "check": "repeated items reached a verdict",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no run on disk repeats an item; a single pass per item cannot tie",
       "witnesses": 0
     },
     {

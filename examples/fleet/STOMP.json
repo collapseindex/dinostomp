@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.40.0",
+  "version": "0.41.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -263,7 +263,7 @@
     }
   },
   "coverage": {
-    "declared_total": 54,
+    "declared_total": 55,
     "declared": 29,
     "ran": 29,
     "skipped": [],
@@ -307,6 +307,10 @@
       {
         "id": "R18",
         "reason": "no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably"
+      },
+      {
+        "id": "R20",
+        "reason": "no run on disk repeats an item; a single pass per item cannot tie"
       },
       {
         "id": "T1",
@@ -709,7 +713,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now 04bdfd057a413606); re-run to get numbers this report can stand behind",
+      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now 4beacd9962bd02c8); re-run to get numbers this report can stand behind",
       "witnesses": 6,
       "examples": [
         "engine b1fa98e4f374809f: dry-alpha seed 42 (tool 0.39.0), dry-bravo seed 42 (tool 0.39.0), dry-charlie seed 42 (tool 0.39.0) and 3 more"
@@ -719,6 +723,15 @@
           "b1fa98e4f374809f": 6
         }
       }
+    },
+    {
+      "id": "R20",
+      "slug": "repeat-ties",
+      "check": "repeated items reached a verdict",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no run on disk repeats an item; a single pass per item cannot tie",
+      "witnesses": 0
     },
     {
       "id": "T1",

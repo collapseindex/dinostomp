@@ -44,6 +44,31 @@ def n_for_effect(gap: float) -> int:
     return int(round(((Z_ALPHA + Z_POWER) ** 2 * 0.5) / max(gap, 1e-9) ** 2))
 
 
+def majority(votes: list[int]) -> int | None:
+    """The item-majority outcome over repeats: 1, 0, or None for a TIE.
+
+    Defined once and imported by both consumers, because the summary and the
+    fleet matrix disagreeing about what a repeated item scored would be a parity
+    break in the one number everybody reads.
+
+    A tie is `None`, not `0`, and that distinction is the point. With an EVEN
+    `run.repeats`, scoring ties as failures does not add noise, it reports a
+    different quantity: at repeats=2 a model whose true per-item rate is p
+    scores p squared, so a genuinely 50% model reports 25% behind a confidence
+    interval that excludes the truth. Measured rather than derived; see N-008 in
+    FINDINGS.md. Callers decide what an undecided item means. The summary calls
+    it `uncheckable`, which is the treatment every other "the instrument did not
+    reach a verdict" case already gets here.
+    """
+    if not votes:
+        return None
+    if 2 * sum(votes) > len(votes):
+        return 1
+    if 2 * sum(votes) < len(votes):
+        return 0
+    return None
+
+
 def common_items(matrix: Matrix) -> list[str]:
     """Item ids answered by every model in the matrix."""
     sets = [set(d) for d in matrix.values()]

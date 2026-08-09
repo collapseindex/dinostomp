@@ -52,6 +52,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-005](#n-005) | four models | re-ordering the options moved nobody beyond noise | negative, underpowered |
 | [N-006](#n-006) | four models | probe demonstrably sensitive, and no canary reproduced | negative |
 | [N-007](#n-007) | lm-eval-harness log | both reported metrics re-derive from the raw log-probs | negative |
+| [N-008](#n-008) | dinostomp | an even `run.repeats` reported p-squared, not p | measured, fixed |
 | [D-001](#d-001) | dinostomp | the money invariant had only ever run at zero | fixed |
 | [D-002](#d-002) | dinostomp | pooling hid a model that never read the question | fixed |
 | [D-003](#d-003) | dinostomp | a collapsed model manufactured 8 phantom key errors | fixed |
@@ -77,6 +78,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-023](#d-023) | dinostomp | a rival score column was chosen silently, and it was the wrong one | fixed |
 | [D-024](#d-024) | dinostomp | `run --dry` would fabricate records for a model it cannot call | fixed |
 | [D-025](#d-025) | dinostomp | an error message named a flag nobody can type | fixed |
+| [D-026](#d-026) | dinostomp | the item-majority estimator was never run live until now | fixed |
 
 ---
 
@@ -87,7 +89,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 `dup-questions` (S1) · 2026-07 · confirmed
 
 The battery's first contact with real data was the most famous dataset in
-statistics. Transcript re-run under the current 54-check battery; the original
+statistics. Transcript re-run under the current 55-check battery; the original
 catch happened at 23 checks.
 
 ```
@@ -112,7 +114,7 @@ published report, which is what the fix looks like from the other side:
 
 ```
   [ok]   dup-questions   questions are unique   0 duplicated question(s) among 149
-MECHANICALLY SOUND: no integrity findings, full coverage (29 of 29 ran; 25 n/a of 54 declared)
+MECHANICALLY SOUND: no integrity findings, full coverage (29 of 29 ran; 26 n/a of 55 declared)
 ```
 
 ### F-002
@@ -553,6 +555,64 @@ about a 111M model in 2023, not a number anyone should cite.
 `num_effective_few_shots` is `-1` on every row, an unpopulated sentinel; that is
 a gap in the record, not a defect in the run, since the prompt text shows the
 shots arrived.
+
+---
+
+### N-008
+**An even `run.repeats` reported p-squared instead of p, behind a confident interval**
+`repeat-ties` (R20), measured against a known ground truth · 2026-08-09 · measured, fixed
+
+`run.repeats` re-asks each item several times and scores the item by majority
+vote. The rule was "strict majority, ties score 0". Ties only happen when the
+repeat count is EVEN, and nothing in the tool warned about that, so the rule had
+never been examined against a target whose true rate was known.
+
+The instrument: a python target with a fixed, known per-item pass probability,
+deterministic given call order, over 120 items. Ground truth is not estimated
+here, it is set.
+
+| true per-item rate | repeats=2 | repeats=3 | repeats=4 |
+|---|---|---|---|
+| **0.5** | **0.242** `[0.17, 0.33]` | 0.500 | **0.300** `[0.23, 0.39]` |
+| **0.9** | 0.833 | 0.975 | 0.958 |
+| **0.2** | 0.025 | 0.100 | 0.033 |
+
+Read the top row. A model whose true per-item accuracy is 50% published **24% at
+repeats=2**, and the Wilson interval around it **excluded the truth**. It is not
+a conservative estimate, it is a different quantity: with ties scored 0,
+repeats=2 reports the probability of passing an item TWICE, which is p squared.
+At repeats=4 the same model reports 30%. The headline number moved 26 points on
+a parameter whose entire purpose is to REDUCE noise, and all 54 checks were
+silent about it.
+
+**The fix, and why it is this one.** A tie is `uncheckable`, not `fail`. That is
+not a new idea invented for this bug, it is the treatment every other
+"the instrument reached no verdict" case in this tool already gets: excluded
+from the accuracy denominator, reported on its own line, and surfaced through
+`judgeability`. After the change the same runs report:
+
+```
+repeats=2  coin  acc 0.500 [0.38, 0.62] on 58 checkable (62 uncheckable excluded)
+repeats=4  coin  acc 0.480 [0.37, 0.59] on 75 checkable (45 uncheckable excluded)
+repeats=3  coin  acc 0.500 [0.41, 0.59] on 120 checkable (0 uncheckable excluded)
+```
+
+Odd repeats cannot tie, so **every existing pod using them is unaffected**, which
+is why the fix is safe to apply to published evidence rather than only to new
+runs.
+
+**New check R20 `repeat-ties`**, diagnostic, reporting how much of a pod is
+undecided, since "50% on 58 items" is only honest when the 62 it could not call
+are printed next to it. R20 is n/a when nothing on disk repeats an item. Both
+tails have a trial: an even-repeats pod that must warn, and an odd-repeats pod
+that must stay silent, so "warns on ties" is not the same experiment as "warns
+whenever repeats are set".
+
+**Scope.** This says the estimator now reports the majority-vote rate over
+DECIDED items. Majority-vote-of-k accuracy is still not the same quantity as
+per-item accuracy, and for k > 1 it is deliberately more extreme than p: that is
+what voting is for. What changed is that the number no longer depends on whether
+k happened to be even.
 
 ---
 
@@ -1036,6 +1096,40 @@ first foreign log printed.
 
 ---
 
+### D-026
+**The item-majority estimator shipped for eleven versions without ever running live**
+`dinostomp run` · 2026-08-09 · fixed in v0.41.0
+
+N-008 is the number. This entry is how it survived.
+
+`run.repeats` had unit tests, a fleet-matrix implementation, a docstring
+explaining the estimator discipline, and a reviewer-note citation. It had never
+been executed end to end by a real runner against a target that could disagree
+with itself. Every pod in this repository, every trial, and every benchmark ran
+at `repeats: 1`, where the code path is dead.
+
+The unit test that covered it asserted the bug. Its own comment read
+**"the b tie scores 0, conservative"** — the wrong word, chosen while writing the
+test rather than while measuring anything, and then trusted for eleven versions
+because a green test looks the same whichever behaviour it pins.
+
+Two structural fixes, not just the arithmetic:
+
+- **The tie rule now exists once**, as `psychometrics.majority()`, imported by
+  both the summary and the fleet matrix. It was implemented twice before. They
+  happened to agree, which is luck, not parity.
+- **Every count the item-majority estimator prints is in ITEMS.** Fixing the
+  ties first produced a summary whose numerator was items and whose
+  `n_uncheckable` was records, which would have put two units on one line.
+  Caught by the test rewrite, before it shipped.
+
+The lesson is the one this ledger keeps recording: a code path with tests but no
+live execution is untested, and the flattering direction is always the one that
+survives. Here it survived behind a comment that said the number was
+conservative.
+
+---
+
 ## The honest scorecard
 
 **Thirteen benchmarks audited**, all fetched from their authors and none
@@ -1050,10 +1144,10 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **7** |
-| defects in dinostomp itself (**D**) | **25** |
+| negative results, recorded rather than dropped (**N**) | **8** |
+| defects in dinostomp itself (**D**) | **26** |
 
-Twenty-five to seventeen. That ratio is the useful number to publish, and it is the
+Twenty-six to seventeen. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

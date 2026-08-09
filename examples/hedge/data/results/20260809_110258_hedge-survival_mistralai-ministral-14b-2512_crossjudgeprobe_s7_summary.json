@@ -1,11 +1,21 @@
 {
-  "spec_name": "hedge-survival",
-  "model": "mistralai/ministral-14b-2512",
-  "provider": "openrouter",
-  "seed": 7,
-  "status": "complete",
-  "probe": "crossjudge",
-  "estimator": "crossjudge_probe",
   "n_records": 120,
+  "estimator": "item_majority",
+  "n_checkable": 27,
+  "n_uncheckable": 3,
+  "n_repeat_ties": 3,
+  "n_passes": 21,
+  "accuracy_on_checkable": 0.777778,
+  "accuracy_ci95": [
+    0.5924,
+    0.8939
+  ],
+  "judgeability": 0.9,
+  "by_verdict": {
+    "pass": 93,
+    "fail": 27,
+    "flag": 0,
+    "uncheckable": 0
+  },
   "spend_usd": 0.0108848
 }

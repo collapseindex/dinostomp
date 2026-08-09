@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.40.0 · Apache-2.0 · engine `04bdfd057a413606` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.41.0 · Apache-2.0 · engine `4beacd9962bd02c8` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -26,7 +26,7 @@ One invariant runs under all of it: **nothing becomes evidence merely because an
 earlier stage said it was.** Summaries are recomputed from records, verdicts are
 re-scored from recorded text, and the engine hashes itself into its own output.
 
-Fifty-four checks, each negative-tested to prove it fires, most invisible until
+Fifty-five checks, each negative-tested to prove it fires, most invisible until
 something breaks.
 
 | stage | what goes wrong there | something it caught |
@@ -64,7 +64,7 @@ BROKEN AT DATA SCOPE: 2 gated finding(s) in the dataset itself
 That is a real run against the real MMLU test split, and `mmlu-02178` is the
 subtraction item above: the answer is on its option list twice, so a model that
 computes it correctly picks the wrong letter half the time. Ten of the
-fifty-four checks read data at rest, which is why this costs nothing.
+fifty-five checks read data at rest, which is why this costs nothing.
 
 **Five minutes, for the other forty-four.** They need evidence: outputs, a
 scorer, a ledger, a claim.
@@ -128,7 +128,7 @@ Four things then happen that you did not ask for, and they are the product:
   between seeds is a finding; another moving 11.5 points is not, if its sample
   is smaller. The battery does that arithmetic so nobody has to eyeball it.
 - **Coverage is stated, always.** `MECHANICALLY SOUND: no integrity findings,
-  full coverage (29 of 29 ran; 25 n/a of 54 declared)` is a different claim from
+  full coverage (29 of 29 ran; 26 n/a of 55 declared)` is a different claim from
   a green tick, and the difference is printed every time.
 - **Nothing is trusted downstream of the run.** Summaries are recomputed from
   records, verdicts are re-scored offline, and hand-editing either is a gated
@@ -235,7 +235,7 @@ extension is named, versioned and hashed in the report, so a `SOUND` is always a
 claim about a specific set of code.
 
 The full contract, including why an extension is trusted when a stranger's pod
-is not, is in **[METHODOLOGY.md](METHODOLOGY.md)** along with all fifty-four
+is not, is in **[METHODOLOGY.md](METHODOLOGY.md)** along with all fifty-five
 checks and why each one exists.
 
 ## In CI
@@ -250,7 +250,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.40.0
+- uses: collapseindex/dinostomp@v0.41.0
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -264,7 +264,7 @@ It installs dinostomp from PyPI by default, which does not exist yet, so pass
 `version:` pointing at this repo until it does:
 
 ```yaml
-    version: "git+https://github.com/collapseindex/dinostomp@v0.40.0"
+    version: "git+https://github.com/collapseindex/dinostomp@v0.41.0"
 ```
 
 That is stated rather than hidden because a copy-pasteable block that fails for
@@ -272,7 +272,7 @@ the first person who tries it is a credibility wound in a document whose whole
 thesis is receipts.
 
 `dinostomp report` also writes `stomp-badge.svg`, which carries the verdict and
-its coverage fraction together (`sound 54/54`) so a badge on a README cannot
+its coverage fraction together (`sound 55/55`) so a badge on a README cannot
 outrun the evidence behind it.
 
 ## Before you trust it
@@ -293,10 +293,10 @@ measures the intended construct: NOT ESTABLISHED BY DINOSTOMP
 That is a constant. There is no flag and no code path that sets it to anything
 else, and a test walks the source to keep it that way. This battery checks
 mechanical integrity; construct validity is argued, not computed, and a trivial,
-mis-aimed, or saturated eval can pass every check here. Fifty-four is not a
+mis-aimed, or saturated eval can pass every check here. Fifty-five is not a
 number that bounds the ways an eval can be invalid.
 
-**The self-tests are not independent validation.** 82 of 82 caught means every
+**The self-tests are not independent validation.** 83 of 83 caught means every
 check fires on the failure it was built for. Those failures were planted by the
 same hands that wrote the checks, so it says nothing about defects nobody here
 imagined, and the scorecard prints that caveat under its own score. The next
@@ -308,11 +308,11 @@ published next to the tool's own defects.
 **The battery ships with its own validation, and you can run it.**
 
 ```bash
-python trials/run_trials.py        # 82 planted defects, 12 pods that must stay clean
+python trials/run_trials.py        # 83 planted defects, 13 pods that must stay clean
 python trials/pin_thresholds.py    # which of its own thresholds are load-bearing
 ```
 
-The current answers are 82 of 82 caught, 0 false alarms, and 25 of 33 thresholds
+The current answers are 83 of 83 caught, 0 false alarms, and 25 of 33 thresholds
 pinned. That last number is published because it is uncomfortable: eight
 thresholds could be quietly loosened today without a single trial noticing, and
 the tool names them.
@@ -321,7 +321,7 @@ the tool names them.
 
 - **[AUTHORING.md](AUTHORING.md)** — writing a spec, or having a model write one: the schema contract and the self-correction loop
 - **[FINDINGS.md](FINDINGS.md)** — what it found, in MMLU, GSM8K, TruthfulQA, and in itself
-- **[METHODOLOGY.md](METHODOLOGY.md)** — the fifty-four checks, the pod format, the philosophy, the self-audit
+- **[METHODOLOGY.md](METHODOLOGY.md)** — the fifty-five checks, the pod format, the philosophy, the self-audit
 - **[SECURITY.md](SECURITY.md)** — pod code, untrusted model output, money, what this does not do
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — the entry fee for a new check is a planted defect, not an argument
 - **[REFERENCES.md](REFERENCES.md)** — where the borrowed methods come from, what the audited benchmarks are, and what this deliberately does not borrow
@@ -329,7 +329,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`04bdfd057a4136062346e4aa4c379c61d2771f153e928660076775169f9b637c`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`4beacd9962bd02c88c5e5a102e630431621b2689120ac4d3bc26dd6eda3de364`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

@@ -105,7 +105,7 @@ def text_items(n=24):
 
 
 def build_pod(root: Path, items, models=None, witnesses=None, scorer_kind="exact",
-              claims=None, n=None, canary=True) -> Path:
+              claims=None, n=None, canary=True, repeats=None) -> Path:
     spec = {
         "name": "trial-pod", "version": "0.1.0",
         "question": "Does the model answer these trial items correctly?",
@@ -114,6 +114,11 @@ def build_pod(root: Path, items, models=None, witnesses=None, scorer_kind="exact
         "scorer": {"kind": scorer_kind, "witnesses": witnesses or WITNESSES},
         "run": {"n": n or len(items), "seed": 7, "budget_usd": 0},
     }
+    if repeats:
+        # Declared BEFORE the run, so the spec hash the manifest records is the
+        # one on disk. Setting it afterwards makes input-drift fire, correctly,
+        # and the trial then measures the edit rather than the thing it is for.
+        spec["run"]["repeats"] = repeats
     if claims:
         spec["entitled_claims"] = claims
     lines = ['{"_canary": "dinostomp canary DO NOT TRAIN trials"}'] if canary else []
@@ -890,6 +895,59 @@ def t_run_from_a_different_engine(root):
     return sp
 
 
+def _split_votes(root, share):
+    """Split `share` of each run's items evenly across the repeats already on
+    disk. The runner wrote the repeats; the dry provider is deterministic, so
+    the DISAGREEMENT is what has to be planted, the same way the template
+    probe's swing is."""
+    for rf in run_files(root):
+        records = [json.loads(l) for l in rf.read_text(encoding="utf-8").splitlines() if l.strip()]
+        by_item = {}
+        for r in records:
+            by_item.setdefault(str(r["item_id"]), []).append(r)
+        for item in sorted(by_item)[:int(len(by_item) * share)]:
+            group = sorted(by_item[item], key=lambda r: r.get("repeat", 0))
+            for k, r in enumerate(group):
+                # Half pass, half fail: an item the model could not decide about
+                # itself. The OUTPUT moves with the verdict, not just the
+                # verdict, so the recorded answer still re-scores to what it
+                # says. Flipping only the verdict would trip R8 as well and the
+                # trial would no longer isolate R20.
+                if k >= len(group) // 2:
+                    r["output"] = "___not the answer___"
+                    r["score"] = dict(r.get("score") or {}, verdict="fail")
+        rf.write_text("\n".join(json.dumps(r) for r in records) + "\n", encoding="utf-8")
+        sp = rf.parents[1] / "results" / (rf.stem + "_summary.json")
+        published = json.loads(sp.read_text(encoding="utf-8"))
+        published.update(summarize(records))
+        sp.write_text(json.dumps(published), encoding="utf-8")
+
+
+def t_even_repeats_leave_items_undecided(root):
+    """An even `run.repeats` where the model splits its own vote.
+
+    The number this produces is not a shaded version of the truth, it is a
+    different quantity: with ties scored 0, a target measured at a true 50% per
+    item reported 24% at repeats=2 behind an interval that excluded 50%
+    (N-008). Ties are undecided now, and R20 has to say how much of the pod that
+    covers, because "50% on 58 items" is only honest when the 62 undecided ones
+    are printed next to it.
+    """
+    sp = ran(root, items=arith_items(), models=FLEET, repeats=2)
+    _split_votes(root, share=0.5)
+    return sp
+
+
+def t_clean_odd_repeats(root):
+    """The specificity arm for R20: repeats present, every item decided.
+
+    An odd `run.repeats` cannot tie, so this pod must come out silent. Without
+    it, "warns on ties" and "warns whenever repeats are set" would be the same
+    trial.
+    """
+    return ran(root, items=arith_items(), models=FLEET, repeats=3)
+
+
 def _write_template_probe(root, sp, model, framing, verdicts, stamp="20260808_000000"):
     """One hand-built template-probe run file. The dry provider is deliberately
     framing-blind (it hashes the item id), which is correct for a deterministic
@@ -1367,6 +1425,7 @@ TRIALS = [
     ("every record comes back unscoreable", t_nothing_scoreable, ("R17", "fail")),
     ("provider bills more tokens than the text accounts for", t_provider_overbills, ("R18", "warn")),
     ("runs produced by a different engine than the audit", t_run_from_a_different_engine, ("R19", "warn")),
+    ("an even run.repeats leaves items undecided", t_even_repeats_leave_items_undecided, ("R20", "warn")),
     ("boundary: gold favours a position by 35%", t_boundary_position_margin, ("S3", "warn")),
     ("boundary: gold longest 20% over expectation", t_boundary_length_margin, ("S4", "warn")),
     ("boundary: 35% of records uncheckable", t_boundary_uncheckable_warn, ("R6", "warn")),
@@ -1521,6 +1580,7 @@ def clean_forced_choice(root):
 
 CLEAN_TRIALS = [
     ("clean free-form fleet", lambda root: ran(root, items=arith_items(), models=FLEET)),
+    ("clean pod whose odd repeats decide every item", t_clean_odd_repeats),
     ("clean choice fleet", lambda root: ran(root, items=choice_items(), models=FLEET)),
     ("clean single-model pod (incomplete, but zero findings)",
      lambda root: ran(root, items=arith_items())),

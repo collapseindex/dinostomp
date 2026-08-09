@@ -356,8 +356,15 @@ def test_summarize_excludes_uncheckable_from_denominator():
 
 def test_summarize_repeats_switch_to_item_majority():
     """With repeats, the interval must bracket the same estimator the fleet
-    matrix uses: item-majority outcomes, ties scoring 0, computed over items
-    so correlated repeats cannot narrow it (reviewer-2 round 3, finding 1)."""
+    matrix uses: item-majority outcomes computed over items, so correlated
+    repeats cannot narrow it (reviewer-2 round 3, finding 1).
+
+    A TIE is undecided, not failed. This assertion used to read "the b tie
+    scores 0, conservative", and conservative was the wrong word: scoring ties 0
+    changes the estimand rather than shading it. At repeats=2 a model with true
+    per-item rate p reports p squared, which put a measured 50% model at 24%
+    behind an interval that excluded the truth (N-008).
+    """
     records = []
     for item, verdicts in (("a", ["pass", "pass"]), ("b", ["pass", "fail"]),
                            ("c", ["fail", "fail"]), ("d", ["uncheckable", "uncheckable"])):
@@ -365,11 +372,43 @@ def test_summarize_repeats_switch_to_item_majority():
             records.append({"item_id": item, "score": {"verdict": v}, "usage": {}})
     s = summarize(records)
     assert s["estimator"] == "item_majority"
-    assert s["n_checkable"] == 3, "three items with judgeable outcomes"
-    assert s["accuracy_on_checkable"] == pytest.approx(1 / 3), "the b tie scores 0, conservative"
-    assert s["judgeability"] == pytest.approx(3 / 4)
+    assert s["n_checkable"] == 2, "a and c decided; b tied and d was never scoreable"
+    assert s["n_repeat_ties"] == 1, "b split its own vote"
+    assert s["accuracy_on_checkable"] == pytest.approx(1 / 2)
+    # Items, not records, in every count this estimator prints.
+    assert s["n_uncheckable"] == 2, "the tie and the unscoreable item, both counted in items"
+    assert s["judgeability"] == pytest.approx(2 / 4)
     lo, hi = s["accuracy_ci95"]
-    assert hi - lo > 0.5, "an interval over 3 items is honestly enormous"
+    assert hi - lo > 0.5, "an interval over 2 items is honestly enormous"
+
+
+def test_summarize_odd_repeats_never_tie_and_are_unchanged():
+    """The negative direction: the tie rule must not touch odd repeats, or the
+    fix would silently re-estimate every pod already using them."""
+    records = []
+    for item, verdicts in (("a", ["pass", "pass", "fail"]), ("b", ["fail", "fail", "pass"])):
+        for v in verdicts:
+            records.append({"item_id": item, "score": {"verdict": v}, "usage": {}})
+    s = summarize(records)
+    assert s["estimator"] == "item_majority"
+    assert s["n_repeat_ties"] == 0
+    assert s["n_checkable"] == 2 and s["n_uncheckable"] == 0
+    assert s["accuracy_on_checkable"] == pytest.approx(1 / 2)
+
+
+def test_an_even_repeat_tie_does_not_report_zero_accuracy():
+    """N-008 in miniature: 8 items, every one a 1-1 split, true rate 50%.
+
+    Ties-score-0 reported 0% here. Undecided reports that nothing was decided,
+    which is the honest answer and is visibly different from "the model failed".
+    """
+    records = [{"item_id": f"i{i}", "score": {"verdict": v}, "usage": {}}
+               for i in range(8) for v in ("pass", "fail")]
+    s = summarize(records)
+    assert s["n_repeat_ties"] == 8
+    assert s["n_checkable"] == 0
+    assert s["accuracy_on_checkable"] is None, "no decided item is not 0% accuracy"
+    assert s["judgeability"] == pytest.approx(0.0)
 
 
 def test_summarize_all_uncheckable_reports_none_not_zero():

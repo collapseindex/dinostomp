@@ -26,7 +26,7 @@ import dinostomp
 from dinostomp.fingerprint import engine_fingerprint
 from dinostomp.items import load_items
 from dinostomp.providers import ZERO_RATE_PROVIDERS, ProviderError, make_provider
-from dinostomp.psychometrics import wilson_ci
+from dinostomp.psychometrics import majority, wilson_ci
 from dinostomp.runlog import Budget, BudgetExceeded, Cost, RunLog, price_call, rates_for, utc_now
 from dinostomp.scorers import make_scorer, run_witnesses
 from dinostomp.spec import Issue, load_spec, spec_sha256
@@ -106,11 +106,17 @@ def summarize(records: list[dict]) -> dict:
     denominator and reported on its own line; that exclusion is the point.
 
     Estimator discipline: with repeats > 1, accuracy and its Wilson interval
-    are computed over ITEM-MAJORITY outcomes (strict majority per item, ties
-    score 0, matching the fleet-matrix cells) rather than pooled records.
-    Pooling correlated repeats narrows the interval optimistically and
+    are computed over ITEM-MAJORITY outcomes (strict majority per item, from
+    the same `majority()` the fleet-matrix cells use) rather than pooled
+    records. Pooling correlated repeats narrows the interval optimistically and
     brackets a different estimator than the matrix reasons about; the summary
     names which estimator it used.
+
+    An item whose repeats split evenly is UNDECIDED, not failed, and lands in
+    `n_repeat_ties` and `n_uncheckable` rather than in the denominator. Scoring
+    ties 0 was the original rule and it silently changed the estimand: at
+    repeats=2 a model with true per-item rate p reported p squared, so a 50%
+    model published 24% behind an interval that excluded the truth (N-008).
     """
     by_verdict = {"pass": 0, "fail": 0, "flag": 0, "uncheckable": 0}
     by_item: dict[str, list[int]] = {}
@@ -125,24 +131,49 @@ def summarize(records: list[dict]) -> dict:
         spend += float((r.get("usage") or {}).get("cost_usd") or 0.0)
 
     repeated = any(len(v) > 1 for v in by_item.values())
+    ties = 0
     if repeated:
         estimator = "item_majority"
-        outcomes = [1 if 2 * sum(v) > len(v) else 0 for v in by_item.values() if v]
-        checkable = len(outcomes)
-        passes = sum(outcomes)
+        decided = []
+        for v in by_item.values():
+            if not v:
+                continue
+            out = majority(v)
+            if out is None:
+                # An item the model could not decide about itself. Counted as
+                # uncheckable and excluded from the accuracy denominator, which
+                # is what every other undecided verdict here gets. Scoring it 0
+                # instead would report p-squared at repeats=2 (N-008); R20
+                # warns whenever this count is non-zero.
+                ties += 1
+            else:
+                decided.append(out)
+        checkable = len(decided)
+        passes = sum(decided)
         judge_denominator = len(by_item)
+        # In ITEMS, like the numerator. Every count this estimator reports has to
+        # share a unit or the report mixes items and records in one line: an item
+        # is undecided if its repeats tied, or if nothing it returned was
+        # scoreable at all.
+        uncheckable = judge_denominator - checkable
     else:
         estimator = "per_record"
         checkable = by_verdict["pass"] + by_verdict["fail"] + by_verdict["flag"]
         passes = by_verdict["pass"]
         judge_denominator = len(records)
+        uncheckable = by_verdict["uncheckable"]
 
     ci = wilson_ci(passes, checkable)
     return {
         "n_records": len(records),
         "estimator": estimator,
         "n_checkable": checkable,
-        "n_uncheckable": by_verdict["uncheckable"],
+        "n_uncheckable": uncheckable,
+        # Items whose repeats split evenly, so the majority vote reached no
+        # verdict. Reported separately from a scorer's own `uncheckable`
+        # because the cause and the remedy are different: this one is an odd
+        # `run.repeats` away from being decidable.
+        "n_repeat_ties": ties,
         # Conditional accuracy and judgeability travel together: 80% accurate
         # on 90%-judgeable output must never masquerade as plain 80%.
         "n_passes": passes,
