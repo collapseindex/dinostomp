@@ -2701,11 +2701,12 @@ def _overlap_check(rep: Reporter, items: list[dict], references: dict) -> None:
     named = ", ".join(f"{k} ({v} items)" for k, v in stats["references"].items())
     rep.check("S11", not hits,
               f"{len(hits)} of {len(items)} item(s) already appear in {named}: "
-              f"{stats['exact']} verbatim, {stats['near']} near-verbatim. Overlap is evidence "
+              f"{stats['exact']} the same item, {stats['stem_only']} the same question with "
+              f"different options, {stats['near']} near-verbatim. Overlap is evidence "
               "about THESE corpora only; finding none is not evidence about training data",
               n=len(items),
               examples=[f"{h['id']}: {h['kind']} match of {h['where']}"
                         + (f" (similarity {h['similarity']})" if h["kind"] == "near" else "")
                         for h in hits[:12]],
-              evidence={"exact": stats["exact"], "near": stats["near"],
-                        "references": stats["references"]})
+              evidence={"exact": stats["exact"], "same_question": stats["stem_only"],
+                        "near": stats["near"], "references": stats["references"]})

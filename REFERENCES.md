@@ -55,7 +55,14 @@ exactly what it downloaded. Nothing is vendored.
 | MMLU | Hendrycks, D. et al. (2021). *Measuring Massive Multitask Language Understanding.* [arXiv:2009.03300](https://arxiv.org/abs/2009.03300) | MIT |
 | TruthfulQA | Lin, S., Hilton, J. & Evans, O. (2022). *TruthfulQA: Measuring How Models Mimic Human Falsehoods.* [arXiv:2109.07958](https://arxiv.org/abs/2109.07958) | Apache-2.0 |
 | HellaSwag | Zellers, R. et al. (2019). *HellaSwag: Can a Machine Really Finish Your Sentence?* [arXiv:1905.07830](https://arxiv.org/abs/1905.07830) | MIT |
-| ARC | Clark, P. et al. (2018). *Think you have Solved Question Answering?* [arXiv:1803.05457](https://arxiv.org/abs/1803.05457) | CC-BY-SA-4.0 |
+| ARC (Easy and Challenge) | Clark, P. et al. (2018). *Think you have Solved Question Answering?* [arXiv:1803.05457](https://arxiv.org/abs/1803.05457) | CC-BY-SA-4.0 |
+| MMLU-Pro | Wang, Y. et al. (2024). *MMLU-Pro: A More Robust and Challenging Multi-Task Language Understanding Benchmark.* [arXiv:2406.01574](https://arxiv.org/abs/2406.01574) | MIT |
+| CommonsenseQA | Talmor, A. et al. (2019). *CommonsenseQA: A Question Answering Challenge Targeting Commonsense Knowledge.* [arXiv:1811.00937](https://arxiv.org/abs/1811.00937) | MIT |
+| OpenBookQA | Mihaylov, T. et al. (2018). *Can a Suit of Armor Conduct Electricity?* [arXiv:1809.02789](https://arxiv.org/abs/1809.02789) | Apache-2.0 |
+| BoolQ | Clark, C. et al. (2019). *BoolQ: Exploring the Surprising Difficulty of Natural Yes/No Questions.* [arXiv:1905.10044](https://arxiv.org/abs/1905.10044) | CC-BY-SA-3.0 |
+| WinoGrande | Sakaguchi, K. et al. (2020). *WinoGrande: An Adversarial Winograd Schema Challenge at Scale.* [arXiv:1907.10641](https://arxiv.org/abs/1907.10641) | CC-BY |
+| SciQ | Welbl, J., Liu, N. F. & Gardner, M. (2017). *Crowdsourcing Multiple Choice Science Questions.* [arXiv:1707.06209](https://arxiv.org/abs/1707.06209) | CC-BY-NC-3.0 |
+| MedMCQA | Pal, A., Umapathi, L. K. & Sankarasubbu, M. (2022). *MedMCQA: A Large-scale Multi-Subject Multi-Choice Dataset for Medical domain Question Answering.* [arXiv:2203.14371](https://arxiv.org/abs/2203.14371) | MIT |
 | iris | Fisher, R. A. (1936). *The use of multiple measurements in taxonomic problems.* Annals of Eugenics 7(2), 179–188. The UCI/scikit-learn lineage this repo pins differs from Fisher's table in two rows: Bezdek, J. C. et al. (1999). *Will the real iris data please stand up?* IEEE Trans. Fuzzy Systems 7(3), 368–369. | public domain |
 
 Findings against these datasets are in [FINDINGS.md](FINDINGS.md), series **F**.

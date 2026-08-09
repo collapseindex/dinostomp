@@ -96,10 +96,10 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.35.4
+- tool: dinostomp 0.36.0
 - statistical power: at n=1172 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~6% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `9058d808897a9dd8d2ea0f7b23da2ca9cc2a3f0fbcdf993d47bb72f109e928bc`
-- data_sha256: `7e30ffbdf178bb1c4973755ab8626666e035179964b8c0fb92cc05125255cb28`
+- data_sha256: `2c4db362a09fc6e79841658444fe008d63468e89f528c8572eb74a61c48184a8`
 - thresholds: all defaults
 - reproducibility tiers, stated honestly: local inputs hash-pinned (spec, data, scorer); requests reproducible given each manifest's environment envelope; hosted-model immutability UNKNOWN unless the provider exposes a pinned revision (the runs table records what each provider claims answered)
 - raw report: [STOMP.json](STOMP.json) (both files omit volatile fields, so an unchanged pod re-reports to identical bytes; run manifests carry the timestamps)

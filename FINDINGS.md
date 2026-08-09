@@ -35,8 +35,15 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-005](#f-005) | GSM8K | two of four models move beyond sampling noise on seed alone | confirmed |
 | [F-006](#f-006) | GSM8K | unfinished responses credited as correct | confirmed |
 | [F-007](#f-007) | GSM8K | a formatting gap that reads as a capability gap | confirmed |
+| [F-008](#f-008) | CommonsenseQA | 24 items with a repeated option; 6 repeat the keyed answer | confirmed |
+| [F-009](#f-009) | MedMCQA | 16 items with a repeated option, 4 of them the answer | confirmed |
+| [F-010](#f-010) | SciQ | 9 items with a repeated option | confirmed |
+| [F-011](#f-011) | MMLU-Pro | 64 duplicate rows in the first 3000 | confirmed |
+| [F-012](#f-012) | MMLU-Pro vs MMLU | 158 of 3000 items reuse an MMLU question; 22 are unchanged | confirmed, expected |
 | [N-001](#n-001) | HellaSwag, ARC, MMLU | no position, length, or shortcut bias found | negative |
 | [N-002](#n-002) | dinostomp | the uncheckable path was untested, and said so | negative, later closed |
+| [N-003](#n-003) | ARC, OpenBookQA, HellaSwag, WinoGrande | no repeated options in four datasets | negative |
+| [N-004](#n-004) | six dataset pairs | no cross-benchmark reuse found | negative |
 | [D-001](#d-001) | dinostomp | the money invariant had only ever run at zero | fixed |
 | [D-002](#d-002) | dinostomp | pooling hid a model that never read the question | fixed |
 | [D-003](#d-003) | dinostomp | a collapsed model manufactured 8 phantom key errors | fixed |
@@ -50,6 +57,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-011](#d-011) | dinostomp | published reports only verified on the author's machine | fixed |
 | [D-012](#d-012) | dinostomp | line-ending translation is drift | fixed |
 | [D-013](#d-013) | dinostomp | smaller ones: a wrong hint, two wrong witnesses, a near-miss | fixed |
+| [D-014](#d-014) | dinostomp | the overlap check compared questions and ignored options | fixed |
 
 ---
 
@@ -177,6 +185,89 @@ lose none. Those leave the denominator instead of counting as wrong, which is
 why it reads 0.455 and not 0.417. A harness that scored them wrong would report
 part of a formatting gap as a capability gap.
 
+### F-008
+**CommonsenseQA · 24 items with a repeated option, 6 of them the keyed answer**
+`dup-options` (S5) · 2026-08-09 · confirmed
+
+```
+cs-00022: Though the thin film seemed fragile, for it's intended purpose it was ...
+  choices: ['indestructible', 'durable', 'undestroyable', 'indestructible', 'unbreakable']
+  keyed:   'indestructible'
+```
+
+Five options, two of which are the same word, and that word is the answer. A
+model that picks correctly has two letters to choose between and one of them is
+scored wrong. Eighteen more items repeat a **distractor** rather than the
+answer, which is milder: the item offers four distinct options while presenting
+five.
+
+### F-009
+**MedMCQA · 16 items with a repeated option, 4 of them the answer**
+`dup-options` (S5) · 2026-08-09 · confirmed
+
+```
+mm-00161: Tonsils developed from:
+  choices: ['Ventral part of 3rd pouch.', 'Ventral part of 2nd pouch.',
+            'Dorsal part of 2nd pouch.', 'Ventral part of 3rd pouch.']
+  keyed:   'Ventral part of 2nd pouch.'
+```
+
+Also `mm-00044`, whose option list is `['Africas', 'Caucians', 'Not Recalled',
+'Not Recalled']` — a repeated placeholder, and the keyed answer is `'Africas'`.
+
+### F-010
+**SciQ · 9 items with a repeated option**
+`dup-options` (S5) · 2026-08-09 · confirmed
+
+```
+sq-00067: Solute potential is also called osmotic potential because ...
+  choices: ['osmosis', 'permeability', 'electrolysis', 'electrolysis']
+  keyed:   'osmosis'
+```
+
+Seven repeat a distractor; two repeat the answer.
+
+**One thing this pod cannot tell you.** SciQ ships the correct answer and three
+distractors as separate columns, so option ORDER is reconstructed here rather
+than given. The pod's `position-bias` result is therefore about the
+reconstruction and not about SciQ, and the spec says so in a comment. It is
+excluded from the findings above for that reason.
+
+### F-011
+**MMLU-Pro · 64 duplicate rows in the first 3000**
+`dup-questions` (S1) · 2026-08-09 · confirmed
+
+Sixty-four items appear twice with identical question, identical options and
+identical key: 2.1% of the slice carrying double weight. None of the pairs
+disagree on the answer. First pair: `mp-00816` and `mp-00817`.
+
+### F-012
+**MMLU-Pro vs MMLU · 158 of 3000 items reuse an MMLU question**
+`corpus-overlap` (S11) · 2026-08-09 · confirmed, expected
+
+| | count |
+|---|---|
+| the same item (question **and** options identical) | 22 |
+| the same question, options rewritten | 136 |
+| near-verbatim | 0 |
+
+**Expected, and the magnitude is still worth publishing.** MMLU-Pro is
+documented as built from MMLU plus other sources, so this is a derivation and
+not a defect. What it means for a reader is concrete: a model evaluated on both
+is not being evaluated twice, and 5.3% of this slice is shared.
+
+The 22 identical items are the more interesting number. MMLU-Pro's stated method
+expands each question to ten options; these twenty-two carry MMLU's original
+four, unchanged. Receipt:
+
+```
+mp-02693 == mmlu-02786   "Which of the following statements is NOT correct about apoptosis?"
+   MMLU-Pro options (4) == MMLU options (4), same key
+```
+
+Reproduce with `dinostomp stomp benchmarks/mmlu-pro/eval.yaml --against
+benchmarks/mmlu/items.jsonl`.
+
 ---
 
 ## Negative results
@@ -201,6 +292,27 @@ Judgeability was 1.000 for every model and not one of 720 responses was
 unparseable, so the uncheckable branch had never run in anger. The study
 recorded that as a failed prediction and named what would fix it: a free-form
 task rather than smaller models. It was right; the GSM8K run exercised it.
+
+### N-003
+**ARC-Easy, ARC-Challenge, OpenBookQA, HellaSwag, WinoGrande · no repeated options**
+`dup-options` (S5) · 2026-08-09
+
+Zero items with a repeated option across 2376 + 1172 + 500 + 10042 + 1267 items.
+Recorded because [F-008](#f-008) to [F-010](#f-010) make repeated options look
+endemic and they are not: five of the nine choice datasets audited here are
+clean on this axis.
+
+### N-004
+**Six dataset pairs · no cross-benchmark reuse found**
+`corpus-overlap` (S11) · 2026-08-09
+
+OpenBookQA against ARC-Easy and ARC-Challenge, SciQ against both, CommonsenseQA
+against OpenBookQA, WinoGrande against HellaSwag, MedMCQA against MMLU: no
+shared items and no shared questions. Only [F-012](#f-012) turned anything up,
+and that pair is documented as derived.
+
+Stated limit, which the check prints itself: overlap is evidence about the
+corpora compared. Finding none here is **not** evidence about training data.
 
 ---
 
@@ -408,23 +520,65 @@ various · 2026-08-09 · fixed
   `BB Bb` in the genetics items, `Sc ⊃ Ej` against `sC ≡ eJ` in the
   predicate-logic ones. `dup-options` stays exact, with a test pinning it.
 
+### D-014
+**The overlap check compared questions and ignored options**
+`corpus-overlap` (S11) · 2026-08-09 · fixed
+
+Pointing S11 at nine datasets reported ARC-Easy and ARC-Challenge as sharing an
+item. They do not. Both ask *"Which is NOT an example of a chemical change?"*
+over completely different option blocks with different keys:
+
+```
+ARC-Easy       choices: ['Melting ice', 'corroding silver', 'Burning match', 'Rotting vegetation']
+ARC-Challenge  choices: ['Boiling water', 'Rusting iron', 'Burning wood', 'Baking bread']
+```
+
+**Same defect class as [D-005](#d-005), in a check written three releases later.**
+Knowing about a bug is not the same as not writing it again.
+
+The fix is not simply "add the options", because this check answers two
+questions that want different keys:
+
+- *is this literally the same item?* wants question **and** options.
+- *could a model have memorised this?* wants the **question alone**. A memorised
+  question survives an option rewrite, which is exactly what MMLU-Pro did to
+  MMLU.
+
+Collapsing those into one number would make a contamination finding mean
+different things depending on which dataset produced it. Both are now computed
+and reported separately, which is how [F-012](#f-012) can say 22 and 136 rather
+than one misleading 158.
+
 ---
 
 ## The honest scorecard
 
-Count it precisely. **Three receipt-backed defects in datasets**
-([F-002](#f-002), [F-003](#f-003), [F-004](#f-004)). **Three findings about what
-running an eval costs you in validity** ([F-005](#f-005), [F-006](#f-006),
-[F-007](#f-007)). **Two negative results**. And **thirteen entries of defects in
-dinostomp itself**.
+**Thirteen benchmarks audited**, all fetched from their authors and none
+vendored: MMLU, MMLU-Pro, HellaSwag, ARC-Easy, ARC-Challenge, GSM8K,
+TruthfulQA, CommonsenseQA, OpenBookQA, BoolQ, WinoGrande, SciQ, MedMCQA.
 
-That ratio is the useful number to publish, and it is the ratio you should expect
-from any validator's first contact with data it did not author. The reason to run
-it anyway is the direction: three of the self-defects made **gating** checks fire
-on correct data, one fabricated a blind accuracy, two were about to call sampling
-noise a finding, one let this repository publish a clean bill of health over runs
-from two different engines, and two were caught only when the tool ran somewhere
-its author's assumptions did not hold.
+Count it precisely.
+
+| | |
+|---|---|
+| findings in other people's evals (**F**) | **12** |
+| &nbsp;&nbsp;of which receipt-backed dataset defects | 9 (F-001 to F-004, F-008 to F-012) |
+| &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
+| negative results, recorded rather than dropped (**N**) | **4** |
+| defects in dinostomp itself (**D**) | **14** |
+
+Fourteen to twelve. That ratio is the useful number to publish, and it is the
+one to expect from any validator meeting data it did not author. The reason to
+run it anyway is the direction every self-defect took: three made **gating**
+checks fire on correct data, one fabricated a blind accuracy, two were about to
+call sampling noise a finding, one let this repository publish a clean bill of
+health over runs from two different engines, two were caught only when the tool
+ran somewhere its author's assumptions did not hold, and one
+([D-014](#d-014)) was a bug the project had already found and fixed elsewhere,
+written again three releases later in a different check.
+
+The most common shape across all fourteen is worth stating once: **a check that
+compared the wrong thing and returned a confident answer about it.**
 
 ## Adding an entry
 

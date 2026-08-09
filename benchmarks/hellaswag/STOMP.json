@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.35.4",
+  "version": "0.36.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -970,7 +970,7 @@
   ],
   "inputs": {
     "spec_sha256": "4d1bb90225d5dac83088e57aef3a9b40dabf5153760ed46daced2c10ae38f2e9",
-    "data_sha256": "7623f873bcc350896a406c94527b8c45403771a11ccaff51b3c5858f22204ce3"
+    "data_sha256": "0a519b594d7b397bdf1a38c6f4962b82cf6ca7e314eb913f4739d4b9567a7779"
   },
   "runs": [],
   "entitled_claims": [

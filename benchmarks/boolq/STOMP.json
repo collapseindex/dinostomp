@@ -1,0 +1,983 @@
+{
+  "tool": "dinostomp",
+  "version": "0.36.0",
+  "target": "eval.yaml",
+  "thresholds": {
+    "position_margin": {
+      "value": 0.2,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "length_margin": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "uncheckable_warn": {
+      "value": 0.2,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "guess_margin": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "calibrated",
+      "basis": "found live: a 1B model answering one label constantly sat at exactly chance and pooling hid it"
+    },
+    "min_choice_items": {
+      "value": 20.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "20 keyed choice items before position or length skew"
+    },
+    "min_checkable": {
+      "value": 20.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "20 records before a per-model rate is worth reporting"
+    },
+    "min_leak_len": {
+      "value": 2.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "2 characters before a target is long enough to 'appear' in a question"
+    },
+    "kr20_min": {
+      "value": 0.5,
+      "source": "default",
+      "provenance": "convention",
+      "basis": "0.5 is the low end of what psychometrics calls usable reliability; 0.7+ is the textbook bar and would skip most fleets"
+    },
+    "negative_discrimination": {
+      "value": -0.2,
+      "source": "default",
+      "provenance": "convention",
+      "basis": "item analysis treats r_pb below about -0.2 as a candidate key error"
+    },
+    "dead_weight_max": {
+      "value": 0.5,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "min_fleet": {
+      "value": 4.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "4 examinees before fleet statistics are attempted"
+    },
+    "min_fleet_discrimination": {
+      "value": 12.0,
+      "source": "default",
+      "provenance": "calibrated",
+      "basis": "measured: 0/5 detections at 6 examinees, 5/5 at 40, on 200 items with 10% of keys inverted"
+    },
+    "min_fleet_agree": {
+      "value": 3.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "3 models before unanimity is a word worth using"
+    },
+    "min_items_psycho": {
+      "value": 5.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "5 common items before a matrix means anything"
+    },
+    "spend_tolerance_usd": {
+      "value": 1e-06,
+      "source": "default",
+      "provenance": "structural",
+      "basis": "floating-point slack on a money comparison"
+    },
+    "candidate_list_min": {
+      "value": 3.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "3 other answer-space values before a question counts as offering a candidate list"
+    },
+    "ordering_flip_rate": {
+      "value": 0.05,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "bootstrap_trials": {
+      "value": 400.0,
+      "source": "default",
+      "provenance": "structural",
+      "basis": "how many resamples a bootstrap draws"
+    },
+    "ceiling_acc": {
+      "value": 0.9,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "floor_acc": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "min_dynamic_range": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "escape_margin": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "escape_min_rate": {
+      "value": 0.05,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "shortcut_z": {
+      "value": 3.0,
+      "source": "default",
+      "provenance": "convention",
+      "basis": "3 sigma against the per-item chance null, the usual bar for calling a surface feature real"
+    },
+    "shortcut_lift": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "collapse_margin": {
+      "value": 0.3,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "blind_lift_min": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "collapse_exclude_share": {
+      "value": 0.95,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "95% identical before a model is called constant"
+    },
+    "seed_spread_min": {
+      "value": 0.05,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "a practical floor beneath the noise band, so a significant 2-point move at huge n is not reported as a finding"
+    },
+    "min_billed_chars": {
+      "value": 40.0,
+      "source": "default",
+      "provenance": "calibrated",
+      "basis": "below 40 characters chars/4 is too noisy to bill against"
+    },
+    "billing_ratio_max": {
+      "value": 3.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "order_swing_min": {
+      "value": 0.05,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "same practical floor, for presentation order"
+    },
+    "template_swing_min": {
+      "value": 0.05,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "same practical floor, for instruction framing"
+    },
+    "noise_z": {
+      "value": 1.96,
+      "source": "default",
+      "provenance": "derived",
+      "basis": "1.96 standard errors is the 95% two-sided normal quantile"
+    },
+    "contains_target_max": {
+      "value": 0.25,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "min_scored_misses": {
+      "value": 5.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "ungrounded_max": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "min_grounding_evidence": {
+      "value": 5.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "underreport_ratio": {
+      "value": 0.5,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "redundant_call_max": {
+      "value": 0.25,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "judge_agreement_min": {
+      "value": 0.9,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "self_preference_max": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "judge_inconsistency_max": {
+      "value": 0.05,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    }
+  },
+  "coverage": {
+    "declared_total": 54,
+    "declared": 36,
+    "ran": 10,
+    "skipped": [
+      {
+        "id": "R1",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R3",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R4",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R5",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R6",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R7",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R8",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R9",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R10",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R11",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R12",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R13",
+        "reason": "no runs on disk yet"
+      },
+      {
+        "id": "R14",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R15",
+        "reason": "no runs on disk yet"
+      },
+      {
+        "id": "R16",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R17",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R18",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R19",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "P1",
+        "reason": "no runs on disk yet"
+      },
+      {
+        "id": "P2",
+        "reason": "no runs on disk yet"
+      },
+      {
+        "id": "P3",
+        "reason": "no runs on disk yet"
+      },
+      {
+        "id": "P4",
+        "reason": "no runs on disk yet"
+      },
+      {
+        "id": "P5",
+        "reason": "no runs on disk yet"
+      },
+      {
+        "id": "P6",
+        "reason": "no runs on disk yet"
+      },
+      {
+        "id": "P7",
+        "reason": "no runs on disk yet"
+      },
+      {
+        "id": "P8",
+        "reason": "no runs on disk yet"
+      }
+    ],
+    "not_applicable": [
+      {
+        "id": "S2",
+        "reason": "no free-form items in this dataset"
+      },
+      {
+        "id": "S10",
+        "reason": "regurgitation probes need a hosted model; this pod's runs are all local"
+      },
+      {
+        "id": "S11",
+        "reason": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot."
+      },
+      {
+        "id": "C1",
+        "reason": "no typed claims declared"
+      },
+      {
+        "id": "T1",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T2",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T3",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T4",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T5",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T6",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "J1",
+        "reason": "this eval does not score with a judge"
+      },
+      {
+        "id": "J2",
+        "reason": "this eval does not score with a judge"
+      },
+      {
+        "id": "J3",
+        "reason": "this eval does not score with a judge"
+      },
+      {
+        "id": "J4",
+        "reason": "this eval does not score with a judge"
+      },
+      {
+        "id": "P9",
+        "reason": "presentation-order probes need a real provider; this pod's runs are all local"
+      },
+      {
+        "id": "P10",
+        "reason": "the spec declares no extra seeds; a single seed cannot show its own spread (run.seeds is how you ask)"
+      },
+      {
+        "id": "P11",
+        "reason": "instruction-framing probes need runs on disk"
+      },
+      {
+        "id": "P12",
+        "reason": "instruction-framing probes need runs on disk"
+      }
+    ]
+  },
+  "summary": {
+    "fail": 0,
+    "warn": 1,
+    "skip": 26,
+    "verdict": "incomplete",
+    "scope": "pod"
+  },
+  "construct_validity": {
+    "measures_the_intended_construct": "NOT ESTABLISHED BY DINOSTOMP",
+    "why": "This battery checks mechanical integrity: that the data is not self-incriminating, the scorer can fail, the runs are honest, the numbers survive noise, and the claims have their evidence. None of that establishes that the eval measures what its author means it to measure. A trivial eval, a mis-aimed eval, and a saturated eval can all pass every check here.",
+    "what_would": "construct validity is argued, not computed: task analysis, comparison against an external criterion, and evidence that the score moves with the ability it claims to track. No tool can hand you that, and one that implied it could would be the worst instrument in this repository."
+  },
+  "findings": [
+    {
+      "id": "S1",
+      "slug": "dup-questions",
+      "check": "questions are unique",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 duplicated question(s) among 3000",
+      "witnesses": 3000
+    },
+    {
+      "id": "S2",
+      "slug": "answer-leak",
+      "check": "no answer leaks into its own question",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no free-form items in this dataset",
+      "witnesses": 0
+    },
+    {
+      "id": "S3",
+      "slug": "position-bias",
+      "check": "gold answer does not favour an option position",
+      "level": "pass",
+      "gating": false,
+      "detail": "gold overshoots position 0 by +12% over its per-item expectation (1865 of 3000)",
+      "witnesses": 3000,
+      "evidence": {
+        "position": 0,
+        "excess": 0.1217
+      }
+    },
+    {
+      "id": "S4",
+      "slug": "length-bias",
+      "check": "gold answer is not systematically the longest option",
+      "level": "warn",
+      "gating": false,
+      "detail": "gold is strictly longest +12% over its per-item expectation (1865 of 3000)",
+      "witnesses": 3000,
+      "evidence": {
+        "excess": 0.1217
+      }
+    },
+    {
+      "id": "S5",
+      "slug": "dup-options",
+      "check": "no option offered twice in one item",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 item(s) offer a duplicate option",
+      "witnesses": 3000
+    },
+    {
+      "id": "S6",
+      "slug": "target-not-offered",
+      "check": "every target is among its choices",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 item(s) whose target is not among their choices",
+      "witnesses": 3000
+    },
+    {
+      "id": "S7",
+      "slug": "conflicting-keys",
+      "check": "no identical question with contradictory targets",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 question(s) appear with conflicting targets",
+      "witnesses": 3000
+    },
+    {
+      "id": "S8",
+      "slug": "canary-present",
+      "check": "a contamination canary travels with the data",
+      "level": "pass",
+      "gating": false,
+      "detail": "canary present (dinostomp canary DO NOT TRAIN benchmarks)",
+      "witnesses": 1
+    },
+    {
+      "id": "S9",
+      "slug": "surface-shortcut",
+      "check": "no surface feature predicts the gold answer",
+      "level": "pass",
+      "gating": false,
+      "detail": "0 surface feature(s) beat the per-item chance null on 3000 keyed item(s)",
+      "witnesses": 3000
+    },
+    {
+      "id": "S10",
+      "slug": "canary-regurgitated",
+      "check": "no model reproduces the contamination canary",
+      "level": "n/a",
+      "gating": false,
+      "detail": "regurgitation probes need a hosted model; this pod's runs are all local",
+      "witnesses": 0
+    },
+    {
+      "id": "S11",
+      "slug": "corpus-overlap",
+      "check": "no item already appears in a reference dataset",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot.",
+      "witnesses": 0
+    },
+    {
+      "id": "W1",
+      "slug": "witness-coverage",
+      "check": "witnesses kill the mutant scorers",
+      "level": "pass",
+      "gating": false,
+      "detail": "0 of 4 applicable mutant scorer(s) survive the witness suite",
+      "witnesses": 4,
+      "evidence": {
+        "killed": [
+          "always-pass",
+          "always-fail",
+          "case-blind",
+          "prefix-lenient"
+        ],
+        "not_applicable": [
+          "space-blind",
+          "substring-lenient",
+          "negation-blind",
+          "uncheckable-credit"
+        ]
+      }
+    },
+    {
+      "id": "C1",
+      "slug": "claim-evidence",
+      "check": "every typed claim's evidence requirements hold",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no typed claims declared",
+      "witnesses": 0
+    },
+    {
+      "id": "R1",
+      "slug": "input-drift",
+      "check": "runs match the spec, data, and scorer on disk (no drift)",
+      "level": "skip",
+      "gating": true,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R2",
+      "slug": "witness-replay",
+      "check": "the witness gate replays clean",
+      "level": "pass",
+      "gating": true,
+      "detail": "replayed 7 witness(es): 7 behaved; 0 run manifest(s) checked",
+      "witnesses": 7
+    },
+    {
+      "id": "R3",
+      "slug": "spend-ledger",
+      "check": "ledger spend agrees with the manifest and the spec cap",
+      "level": "skip",
+      "gating": true,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R4",
+      "slug": "record-integrity",
+      "check": "every run record is schema-valid, unique, and its manifest's own",
+      "level": "skip",
+      "gating": true,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R5",
+      "slug": "truncation-credit",
+      "check": "truncated outputs are never credited",
+      "level": "skip",
+      "gating": true,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R6",
+      "slug": "uncheckable-rate",
+      "check": "uncheckable rate is sane",
+      "level": "skip",
+      "gating": false,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R7",
+      "slug": "above-guessing",
+      "check": "accuracy is distinguishable from guessing",
+      "level": "skip",
+      "gating": false,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R8",
+      "slug": "verdict-rederive",
+      "check": "recorded verdicts re-score identically",
+      "level": "skip",
+      "gating": true,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R9",
+      "slug": "summary-rederive",
+      "check": "summaries match their run records",
+      "level": "skip",
+      "gating": true,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R10",
+      "slug": "run-scope",
+      "check": "runs cover the spec's declared scope, nothing foreign",
+      "level": "skip",
+      "gating": false,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R11",
+      "slug": "selection-coverage",
+      "check": "records cover exactly the seeded selection",
+      "level": "skip",
+      "gating": true,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R12",
+      "slug": "scorer-escape",
+      "check": "no model selectively escapes the scorer",
+      "level": "skip",
+      "gating": false,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R13",
+      "slug": "blind-solvable",
+      "check": "the eval is not solvable blind",
+      "level": "skip",
+      "gating": false,
+      "detail": "no runs on disk yet",
+      "witnesses": 0
+    },
+    {
+      "id": "R14",
+      "slug": "response-collapse",
+      "check": "no model collapses onto one answer",
+      "level": "skip",
+      "gating": false,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R15",
+      "slug": "input-blind",
+      "check": "each model beats its own blind baseline",
+      "level": "skip",
+      "gating": false,
+      "detail": "no runs on disk yet",
+      "witnesses": 0
+    },
+    {
+      "id": "R16",
+      "slug": "scorer-artifact",
+      "check": "failed answers do not contain the reference",
+      "level": "skip",
+      "gating": false,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R17",
+      "slug": "nothing-scoreable",
+      "check": "every model produced something scoreable",
+      "level": "skip",
+      "gating": true,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R18",
+      "slug": "billing-mismatch",
+      "check": "billed output tokens match the recorded text",
+      "level": "skip",
+      "gating": false,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R19",
+      "slug": "engine-drift",
+      "check": "the runs were produced by this engine",
+      "level": "skip",
+      "gating": false,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "T1",
+      "slug": "forbidden-tool",
+      "check": "no forbidden tool is called",
+      "level": "n/a",
+      "gating": true,
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
+    },
+    {
+      "id": "T2",
+      "slug": "required-tool",
+      "check": "every required tool is actually called",
+      "level": "n/a",
+      "gating": true,
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
+    },
+    {
+      "id": "T3",
+      "slug": "trajectory-shape",
+      "check": "trajectories are well-formed",
+      "level": "n/a",
+      "gating": true,
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
+    },
+    {
+      "id": "T4",
+      "slug": "answer-grounding",
+      "check": "passing answers are grounded in tool evidence",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
+    },
+    {
+      "id": "T5",
+      "slug": "trace-underreport",
+      "check": "no model under-reports its trajectory",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
+    },
+    {
+      "id": "T6",
+      "slug": "redundant-calls",
+      "check": "tool calls are not redundant",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
+    },
+    {
+      "id": "J1",
+      "slug": "judge-agreement",
+      "check": "the judge agrees with cases whose answer is known",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this eval does not score with a judge",
+      "witnesses": 0
+    },
+    {
+      "id": "J2",
+      "slug": "judge-bias",
+      "check": "the judge is invariant to content-free perturbations",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this eval does not score with a judge",
+      "witnesses": 0
+    },
+    {
+      "id": "J3",
+      "slug": "judge-consistency",
+      "check": "the judge agrees with itself on identical input",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this eval does not score with a judge",
+      "witnesses": 0
+    },
+    {
+      "id": "J4",
+      "slug": "judge-self-preference",
+      "check": "the judge does not favour its own family",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this eval does not score with a judge",
+      "witnesses": 0
+    },
+    {
+      "id": "P1",
+      "slug": "fleet-reliability",
+      "check": "fleet score totals are reliable (KR-20)",
+      "level": "skip",
+      "gating": false,
+      "detail": "no runs on disk yet",
+      "witnesses": 0
+    },
+    {
+      "id": "P2",
+      "slug": "item-discrimination",
+      "check": "no item anti-correlates with fleet skill",
+      "level": "skip",
+      "gating": false,
+      "detail": "no runs on disk yet",
+      "witnesses": 0
+    },
+    {
+      "id": "P3",
+      "slug": "dead-weight",
+      "check": "dead-weight items stay a minority",
+      "level": "skip",
+      "gating": false,
+      "detail": "no runs on disk yet",
+      "witnesses": 0
+    },
+    {
+      "id": "P4",
+      "slug": "matrix-complete",
+      "check": "every model was asked the same items",
+      "level": "skip",
+      "gating": true,
+      "detail": "no runs on disk yet",
+      "witnesses": 0
+    },
+    {
+      "id": "P5",
+      "slug": "unanimous-wrong",
+      "check": "no unanimous identical wrong answers",
+      "level": "skip",
+      "gating": false,
+      "detail": "no runs on disk yet",
+      "witnesses": 0
+    },
+    {
+      "id": "P6",
+      "slug": "ordering-noise",
+      "check": "entitled ordering claims are separated beyond sampling noise",
+      "level": "skip",
+      "gating": false,
+      "detail": "no runs on disk yet",
+      "witnesses": 0
+    },
+    {
+      "id": "P7",
+      "slug": "ceiling-floor",
+      "check": "the fleet is not pinned at a ceiling or floor",
+      "level": "skip",
+      "gating": false,
+      "detail": "no runs on disk yet",
+      "witnesses": 0
+    },
+    {
+      "id": "P8",
+      "slug": "dynamic-range",
+      "check": "the eval separates the fleet (dynamic range)",
+      "level": "skip",
+      "gating": false,
+      "detail": "no runs on disk yet",
+      "witnesses": 0
+    },
+    {
+      "id": "P9",
+      "slug": "order-stability",
+      "check": "answers survive re-ordering the options",
+      "level": "n/a",
+      "gating": false,
+      "detail": "presentation-order probes need a real provider; this pod's runs are all local",
+      "witnesses": 0
+    },
+    {
+      "id": "P10",
+      "slug": "seed-stability",
+      "check": "the number survives changing the seed",
+      "level": "n/a",
+      "gating": false,
+      "detail": "the spec declares no extra seeds; a single seed cannot show its own spread (run.seeds is how you ask)",
+      "witnesses": 0
+    },
+    {
+      "id": "P11",
+      "slug": "prompt-stability",
+      "check": "the number survives re-phrasing the instruction",
+      "level": "n/a",
+      "gating": false,
+      "detail": "instruction-framing probes need runs on disk",
+      "witnesses": 0
+    },
+    {
+      "id": "P12",
+      "slug": "ranking-stability",
+      "check": "the fleet ORDERING survives re-phrasing the instruction",
+      "level": "n/a",
+      "gating": false,
+      "detail": "instruction-framing probes need runs on disk",
+      "witnesses": 0
+    }
+  ],
+  "inputs": {
+    "spec_sha256": "9e9e9a232af1f851ea587668529d7e935f55578cb7c2d4164c3a9f580afa4d2d",
+    "data_sha256": "e21fac30dfb9638145627c66773e3a24a49dad1aa05d836dd6934b36baacf4aa"
+  },
+  "runs": [],
+  "entitled_claims": [
+    "Which option each model picks on these BoolQ items, per model."
+  ],
+  "power": {
+    "n_items": 3000,
+    "mde_unpaired_80pct": 0.0362
+  }
+}

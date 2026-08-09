@@ -1,5 +1,19 @@
 # Changelog
 
+### v0.36.0 (2026-08-09)
+
+Eight more benchmarks, five new findings, and one defect in a check that had already been fixed once elsewhere.
+
+- **Thirteen benchmarks audited**, up from five: ARC-Easy, WinoGrande, CommonsenseQA, OpenBookQA, BoolQ, MMLU-Pro, SciQ and MedMCQA join MMLU, HellaSwag, ARC-Challenge, GSM8K and TruthfulQA. All fetched from their authors, none vendored, each credited with paper and licence in REFERENCES.md.
+- **Repeated options are not rare.** CommonsenseQA has 24 items with a duplicated option and **6 of those duplicate the keyed answer** (`cs-00022` offers `indestructible` twice and keys it). MedMCQA has 16, four of them the answer. SciQ has 9. Reported separately from duplicated distractors, because an item offering the right answer twice is a different problem from one offering four distinct options as five.
+- **MMLU-Pro has 64 duplicate rows in its first 3000**, identical question, options and key.
+- **MMLU-Pro shares 158 of 3000 items with MMLU**: 22 the same item, 136 the same question with rewritten options. Expected, since MMLU-Pro is documented as derived from MMLU, and the magnitude is still worth publishing: a model evaluated on both is not evaluated twice. The 22 identical ones are notable because MMLU-Pro's stated method expands every question to ten options and those twenty-two still carry MMLU's original four.
+- **Two negative results**, recorded because the findings above make repeated options look endemic and they are not: five of nine choice datasets are clean on that axis, and six dataset pairs showed no cross-benchmark reuse at all.
+- **D-014: `corpus-overlap` compared questions and ignored options**, the same defect class as D-005, in a check written three releases later. It reported ARC-Easy and ARC-Challenge as sharing an item when they share only the sentence "Which is NOT an example of a chemical change?" over different option blocks with different keys. Knowing about a bug is not the same as not writing it again.
+- **The fix is not "add the options"**, because the check answers two questions that want different keys: *is this the same item* wants question and options, while *could a model have memorised this* wants the question alone, since a memorised question survives an option rewrite. Both are now computed and reported separately, which is why F-012 can say 22 and 136 rather than one misleading 158.
+- `benchmarks/fetch.py` retries with backoff and is resumable: the datasets server rate-limits, and a 429 halfway through a paged download used to leave a truncated dataset on disk that looked complete.
+- The FINDINGS scorecard test now checks the counts arithmetically rather than against a spelled-out word, and it immediately caught the first draft omitting iris from its own totals.
+
 ### v0.35.4 (2026-08-09)
 
 A reference list, prompted by a label this repo had left unbacked.

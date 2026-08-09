@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.35.4",
+  "version": "0.36.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -516,14 +516,14 @@
       "detail": "12 of 12 run(s) no longer match the spec, data, or scorer on disk",
       "witnesses": 12,
       "examples": [
-        "20260809_032215_bench-gsm8k_meta-llama-llama-3.2-3b-instruct_n120_s7.jsonl: spec changed since this run",
-        "20260809_032358_bench-gsm8k_meta-llama-llama-3.2-3b-instruct_n120_s11.jsonl: spec changed since this run",
-        "20260809_032536_bench-gsm8k_meta-llama-llama-3.2-3b-instruct_n120_s23.jsonl: spec changed since this run",
-        "20260809_032722_bench-gsm8k_meta-llama-llama-3.1-8b-instruct_n120_s7.jsonl: spec changed since this run",
-        "20260809_033755_bench-gsm8k_meta-llama-llama-3.1-8b-instruct_n120_s11.jsonl: spec changed since this run",
-        "20260809_035251_bench-gsm8k_meta-llama-llama-3.1-8b-instruct_n120_s23.jsonl: spec changed since this run",
-        "20260809_040315_bench-gsm8k_mistralai-ministral-8b-2512_n120_s7.jsonl: spec changed since this run",
-        "20260809_040840_bench-gsm8k_mistralai-ministral-8b-2512_n120_s11.jsonl: spec changed since this run"
+        "20260809_032215_bench-gsm8k_meta-llama-llama-3.2-3b-instruct_n120_s7.jsonl: spec, data changed since this run",
+        "20260809_032358_bench-gsm8k_meta-llama-llama-3.2-3b-instruct_n120_s11.jsonl: spec, data changed since this run",
+        "20260809_032536_bench-gsm8k_meta-llama-llama-3.2-3b-instruct_n120_s23.jsonl: spec, data changed since this run",
+        "20260809_032722_bench-gsm8k_meta-llama-llama-3.1-8b-instruct_n120_s7.jsonl: spec, data changed since this run",
+        "20260809_033755_bench-gsm8k_meta-llama-llama-3.1-8b-instruct_n120_s11.jsonl: spec, data changed since this run",
+        "20260809_035251_bench-gsm8k_meta-llama-llama-3.1-8b-instruct_n120_s23.jsonl: spec, data changed since this run",
+        "20260809_040315_bench-gsm8k_mistralai-ministral-8b-2512_n120_s7.jsonl: spec, data changed since this run",
+        "20260809_040840_bench-gsm8k_mistralai-ministral-8b-2512_n120_s11.jsonl: spec, data changed since this run"
       ]
     },
     {
@@ -731,7 +731,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "12 of 12 run(s) were produced by a different engine than the one auditing them (now d66b6b3d658ad352); re-run to get numbers this report can stand behind",
+      "detail": "12 of 12 run(s) were produced by a different engine than the one auditing them (now 545e7e9d012de495); re-run to get numbers this report can stand behind",
       "witnesses": 12,
       "examples": [
         "engine 0c79d2fabc826532: meta-llama/llama-3.2-3b-instruct seed 23 (tool 0.29.0)",
@@ -1005,7 +1005,7 @@
   ],
   "inputs": {
     "spec_sha256": "e4434ae46b201444323f04e3a651d6aeb0e163130067bc83e14cd5fef649a39a",
-    "data_sha256": "a0917cec62a9d75e589e7ce559c88eaec8fe0cae1eb33f5aecdfa89df1935a55"
+    "data_sha256": "168ff4314b8164161ce2f6137ca4b2a3805c5509ad5a89152a6b3d3c090371cc"
   },
   "runs": [
     {

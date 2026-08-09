@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.35.4",
+  "version": "0.36.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -710,11 +710,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now d66b6b3d658ad352); re-run to get numbers this report can stand behind",
+      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now 545e7e9d012de495); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "evidence": {
         "engines": {
-          "d66b6b3d658ad352": 4
+          "545e7e9d012de495": 4
         }
       }
     },
@@ -953,7 +953,7 @@
   },
   "runs": [
     {
-      "run_file": "20260809_091615_judge-capitals_bot-bare_n26_s42.jsonl",
+      "run_file": "20260809_095121_judge-capitals_bot-bare_n26_s42.jsonl",
       "model": "bot-bare",
       "model_reported": "bot-bare",
       "provider": "python",
@@ -965,7 +965,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_091615_judge-capitals_bot-chatty_n26_s42.jsonl",
+      "run_file": "20260809_095121_judge-capitals_bot-chatty_n26_s42.jsonl",
       "model": "bot-chatty",
       "model_reported": "bot-chatty",
       "provider": "python",
@@ -977,7 +977,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_091615_judge-capitals_bot-hedged_n26_s42.jsonl",
+      "run_file": "20260809_095121_judge-capitals_bot-hedged_n26_s42.jsonl",
       "model": "bot-hedged",
       "model_reported": "bot-hedged",
       "provider": "python",
@@ -989,7 +989,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_091615_judge-capitals_bot-wrapped_n26_s42.jsonl",
+      "run_file": "20260809_095121_judge-capitals_bot-wrapped_n26_s42.jsonl",
       "model": "bot-wrapped",
       "model_reported": "bot-wrapped",
       "provider": "python",

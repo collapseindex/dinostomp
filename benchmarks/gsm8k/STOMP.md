@@ -74,7 +74,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | warn | failed answers do not contain the reference | 4 | 3 of 4 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | ok | billed output tokens match the recorded text | 4 | 0 of 4 model(s) report far more output tokens than their recorded text accounts for (expected for hidden-reasoning models; otherwise check your invoice) |
-| warn | the runs were produced by this engine | 12 | 12 of 12 run(s) were produced by a different engine than the one auditing them (now d66b6b3d658ad352); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 12 | 12 of 12 run(s) were produced by a different engine than the one auditing them (now 545e7e9d012de495); re-run to get numbers this report can stand behind |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no python targets; nothing produces a trajectory |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no python targets; nothing produces a trajectory |
 | n/a | tool calls are not redundant | 0 | this spec runs no python targets; nothing produces a trajectory |
@@ -103,14 +103,14 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[FAIL] runs match the spec, data, and scorer on disk (no drift)</summary>
 
-- 20260809_032215_bench-gsm8k_meta-llama-llama-3.2-3b-instruct_n120_s7.jsonl: spec changed since this run
-- 20260809_032358_bench-gsm8k_meta-llama-llama-3.2-3b-instruct_n120_s11.jsonl: spec changed since this run
-- 20260809_032536_bench-gsm8k_meta-llama-llama-3.2-3b-instruct_n120_s23.jsonl: spec changed since this run
-- 20260809_032722_bench-gsm8k_meta-llama-llama-3.1-8b-instruct_n120_s7.jsonl: spec changed since this run
-- 20260809_033755_bench-gsm8k_meta-llama-llama-3.1-8b-instruct_n120_s11.jsonl: spec changed since this run
-- 20260809_035251_bench-gsm8k_meta-llama-llama-3.1-8b-instruct_n120_s23.jsonl: spec changed since this run
-- 20260809_040315_bench-gsm8k_mistralai-ministral-8b-2512_n120_s7.jsonl: spec changed since this run
-- 20260809_040840_bench-gsm8k_mistralai-ministral-8b-2512_n120_s11.jsonl: spec changed since this run
+- 20260809_032215_bench-gsm8k_meta-llama-llama-3.2-3b-instruct_n120_s7.jsonl: spec, data changed since this run
+- 20260809_032358_bench-gsm8k_meta-llama-llama-3.2-3b-instruct_n120_s11.jsonl: spec, data changed since this run
+- 20260809_032536_bench-gsm8k_meta-llama-llama-3.2-3b-instruct_n120_s23.jsonl: spec, data changed since this run
+- 20260809_032722_bench-gsm8k_meta-llama-llama-3.1-8b-instruct_n120_s7.jsonl: spec, data changed since this run
+- 20260809_033755_bench-gsm8k_meta-llama-llama-3.1-8b-instruct_n120_s11.jsonl: spec, data changed since this run
+- 20260809_035251_bench-gsm8k_meta-llama-llama-3.1-8b-instruct_n120_s23.jsonl: spec, data changed since this run
+- 20260809_040315_bench-gsm8k_mistralai-ministral-8b-2512_n120_s7.jsonl: spec, data changed since this run
+- 20260809_040840_bench-gsm8k_mistralai-ministral-8b-2512_n120_s11.jsonl: spec, data changed since this run
 
 </details>
 <details><summary>[FAIL] truncated outputs are never credited</summary>
@@ -217,10 +217,10 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.35.4
+- tool: dinostomp 0.36.0
 - statistical power: at n=120 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~18% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `e4434ae46b201444323f04e3a651d6aeb0e163130067bc83e14cd5fef649a39a`
-- data_sha256: `a0917cec62a9d75e589e7ce559c88eaec8fe0cae1eb33f5aecdfa89df1935a55`
+- data_sha256: `168ff4314b8164161ce2f6137ca4b2a3805c5509ad5a89152a6b3d3c090371cc`
 - thresholds: all defaults
 - reproducibility tiers, stated honestly: local inputs hash-pinned (spec, data, scorer); requests reproducible given each manifest's environment envelope; hosted-model immutability UNKNOWN unless the provider exposes a pinned revision (the runs table records what each provider claims answered)
 - raw report: [STOMP.json](STOMP.json) (both files omit volatile fields, so an unchanged pod re-reports to identical bytes; run manifests carry the timestamps)

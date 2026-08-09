@@ -68,6 +68,34 @@ def normalise(text: str) -> str:
     return _WS.sub(" ", _PUNCT.sub(" ", str(text).lower())).strip()
 
 
+def comparable(item: dict) -> str:
+    """What makes two items the SAME item, for overlap purposes.
+
+    The question PLUS its options, which is what "the same item" means, exactly
+    as `dup-questions` (S1) learned the hard way.
+
+    But this check answers TWO questions and they want different keys, which is
+    a tension worth naming rather than picking a side of:
+
+      - "is this literally the same item?" wants question AND options. Stems
+        alone called ARC-Easy and ARC-Challenge overlapping because both ask
+        "Which is NOT an example of a chemical change?" over completely
+        different option blocks with different keys. That is not reuse.
+      - "could a model have memorised this?" wants the QUESTION alone. A
+        memorised question is still memorised when someone expands its option
+        list, which is precisely what MMLU-Pro did to MMLU.
+
+    So both are computed and both are reported, labelled. Collapsing them into
+    one number would make a contamination finding mean something different
+    depending on which dataset it came from.
+    """
+    text = str(item.get("input", ""))
+    choices = item.get("choices")
+    if isinstance(choices, list) and choices:
+        text += " || " + " | ".join(sorted(str(c) for c in choices))
+    return text
+
+
 def shingles(text: str, k: int = SHINGLE_K) -> set[str]:
     norm = normalise(text)
     if len(norm) < MIN_SHINGLE_CHARS:
@@ -106,31 +134,43 @@ def find_overlap(items: list[dict], references: dict[str, list[dict]]
     comparison from being 100 million string operations.
     """
     hits: list[dict] = []
-    stats = {"exact": 0, "near": 0, "template_siblings": 0, "references": {}}
+    stats = {"exact": 0, "near": 0, "stem_only": 0, "template_siblings": 0, "references": {}}
 
     exact_index: dict[str, str] = {}
+    stem_index: dict[str, str] = {}
     bucket_index: dict[str, list[tuple[str, str, set[str]]]] = {}
     for ref_name, ref_items in references.items():
         stats["references"][ref_name] = len(ref_items)
         for r in ref_items:
-            norm = normalise(r["input"])
+            stem_index.setdefault(normalise(str(r.get("input", ""))), f"{ref_name}:{r['id']}")
+            body = comparable(r)
+            norm = normalise(body)
             exact_index.setdefault(norm, f"{ref_name}:{r['id']}")
-            sh = shingles(r["input"])
+            sh = shingles(body)
             if sh:
                 # One bucket per item, keyed on a stable sample of its shingles,
                 # so only plausible pairs are ever compared in full.
                 for key in sorted(sh)[:3]:
                     bucket_index.setdefault(key, []).append(
-                        (ref_name, str(r["id"]), sh, str(r["input"])))
+                        (ref_name, str(r["id"]), sh, body))
 
     for item in items:
-        norm = normalise(item["input"])
+        body = comparable(item)
+        norm = normalise(body)
         if norm in exact_index:
             hits.append({"id": str(item["id"]), "kind": "exact",
                          "where": exact_index[norm], "similarity": 1.0})
             stats["exact"] += 1
             continue
-        sh = shingles(item["input"])
+        stem = normalise(str(item.get("input", "")))
+        if stem in stem_index:
+            # Same question, different options. Weaker than reuse and stronger
+            # than nothing: a memorised question survives an option rewrite.
+            hits.append({"id": str(item["id"]), "kind": "same-question",
+                         "where": stem_index[stem], "similarity": 1.0})
+            stats["stem_only"] += 1
+            continue
+        sh = shingles(body)
         if not sh:
             continue
         best = (0.0, "")
@@ -140,7 +180,7 @@ def find_overlap(items: list[dict], references: dict[str, list[dict]]
                 if (ref_name, ref_id) in seen:
                     continue
                 seen.add((ref_name, ref_id))
-                if is_template_sibling(item["input"], ref_text):
+                if is_template_sibling(body, ref_text):
                     stats["template_siblings"] += 1
                     continue
                 score = jaccard(sh, ref_sh)
