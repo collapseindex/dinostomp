@@ -66,7 +66,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | ok | each model beats its own blind baseline | 4 | 0 of 4 model(s) score no better informed than blind; their numbers are not evidence about this task (unpaired: separate runs) |
 | ok | failed answers do not contain the reference | 2 | 0 of 2 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 4 | 0 of 4 run(s) were produced by a different engine than the one auditing them (now d25f10ee73f4a734); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 4 | 0 of 4 run(s) were produced by a different engine than the one auditing them (now d93a85593bba948f); re-run to get numbers this report can stand behind |
 | ok | passing answers are grounded in tool evidence | 4 | 0 of 4 target(s) pass items their own evidence does not support (2 such answer(s) in total) |
 | ok | no model under-reports its trajectory | 4 | 0 of 4 target(s) report far fewer steps than the fleet (median 1.2); a thin trace can be efficiency OR omission |
 | ok | tool calls are not redundant | 4 | 0 of 4 target(s) repeat identical calls in more than 25% of their trajectories |
@@ -126,7 +126,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"d25f10ee73f4a734": 4}}`
+- evidence: `{"engines": {"d93a85593bba948f": 4}}`
 
 </details>
 <details><summary>[ok] passing answers are grounded in tool evidence</summary>
@@ -171,16 +171,16 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260809_083207_agent-capitals_agent-grounded_n26_s42.jsonl | agent-grounded | (same) | python | no | 42 | 26 | 0 |
-| 20260809_083207_agent-capitals_agent-lazy_n26_s42.jsonl | agent-lazy | (same) | python | no | 42 | 26 | 0 |
-| 20260809_083207_agent-capitals_agent-narrow_n26_s42.jsonl | agent-narrow | (same) | python | no | 42 | 26 | 0 |
-| 20260809_083207_agent-capitals_agent-partial_n26_s42.jsonl | agent-partial | (same) | python | no | 42 | 26 | 0 |
+| 20260809_084545_agent-capitals_agent-grounded_n26_s42.jsonl | agent-grounded | (same) | python | no | 42 | 26 | 0 |
+| 20260809_084545_agent-capitals_agent-narrow_n26_s42.jsonl | agent-narrow | (same) | python | no | 42 | 26 | 0 |
+| 20260809_084545_agent-capitals_agent-partial_n26_s42.jsonl | agent-partial | (same) | python | no | 42 | 26 | 0 |
+| 20260809_084546_agent-capitals_agent-lazy_n26_s42.jsonl | agent-lazy | (same) | python | no | 42 | 26 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.35.1
+- tool: dinostomp 0.35.2
 - statistical power: at n=26 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~39% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
-- spec_sha256: `17c54444cea01945ce7b27216b8726a7512c336a18554774705ff9ce98abc461`
+- spec_sha256: `66a70cdee88cac64a2400c41b4a919c92d4e2e8345f4b4257b9433215195aeb1`
 - data_sha256: `5dfd19b1348d90405cd81c07540d53a4583e766dfbb690420cf78bdeb5cb530c`
 - target_sha256: `{'agent-grounded': '56f6fd64ffda736e33f3c48b5232b8b9a13f071c4a13c343f961e021da40694c', 'agent-partial': '56f6fd64ffda736e33f3c48b5232b8b9a13f071c4a13c343f961e021da40694c', 'agent-narrow': '56f6fd64ffda736e33f3c48b5232b8b9a13f071c4a13c343f961e021da40694c', 'agent-lazy': '56f6fd64ffda736e33f3c48b5232b8b9a13f071c4a13c343f961e021da40694c'}`
 - thresholds: all defaults

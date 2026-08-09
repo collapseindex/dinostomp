@@ -54,7 +54,12 @@ def _atomic_write_json(path: Path, obj: dict) -> None:
     a virus scanner's curiosity, so the rename retries.
     """
     tmp = path.with_name(path.name + ".tmp")
-    with tmp.open("w", encoding="utf-8") as fh:
+    # newline="\n" on every writer in this toolkit. Without it Python
+    # translates to CRLF on Windows, the drift boundary hashes those exact
+    # bytes, and a pod generated here fails to re-derive anywhere else. CI on a
+    # Linux runner is what caught that; the local suite only ever saw one
+    # platform.
+    with tmp.open("w", encoding="utf-8", newline="\n") as fh:
         json.dump(obj, fh, indent=2)
         fh.flush()
         os.fsync(fh.fileno())
@@ -221,7 +226,7 @@ class RunLog:
         self.prior_spend_usd = 0.0
         if self.path.exists():
             self._load_existing()
-        self._fh = self.path.open("a", encoding="utf-8")
+        self._fh = self.path.open("a", encoding="utf-8", newline="\n")
 
     def _load_existing(self) -> None:
         text = self.path.read_text(encoding="utf-8")

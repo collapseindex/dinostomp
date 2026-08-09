@@ -1,5 +1,14 @@
 # Changelog
 
+### v0.35.2 (2026-08-09)
+
+The second half of the same bug. Git's line-ending translation is drift.
+
+- **Every file this toolkit wrote used Python's default newline handling**, which turns `\n` into `\r\n` on Windows. The drift boundary hashes EXACT BYTES, so a pod generated on Windows and checked out anywhere else hashed differently: `input-drift` fired, and all three published artifacts failed to re-derive. The badge failing was the tell, since a badge carries only the verdict and the coverage, so a check had to be changing result across platforms.
+- Every writer now passes `newline="\n"`: the ledger, manifests, summaries, STOMP.md/json, the badge, the repaired-dataset output, and the benchmark fetcher. A `.gitattributes` marks the byte-exact artifacts `-text` so git never translates them in either direction.
+- **Two regression tests, because neither existing test could see this.** One generates a pod and asserts nothing it wrote contains CRLF. One asserts no committed pod artifact carries CRLF on disk. The local suite was blind to the whole class: it only ever ran on one platform's checkout.
+- The lesson is the one this project keeps relearning. Dogfooding on a machine that shares none of the author's assumptions is what found both halves of this, and the CI that did it had been in the tree for two releases without ever running anywhere but here.
+
 ### v0.35.1 (2026-08-09)
 
 The first CI run on a machine that was not the author's failed all six jobs, and it was right to.

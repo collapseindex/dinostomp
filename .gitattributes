@@ -1,0 +1,17 @@
+# The drift boundary hashes EXACT BYTES. Git's line-ending translation changes
+# those bytes, so a pod generated on Windows and checked out on Linux hashed
+# differently and every published report failed to re-derive. CI on a fresh
+# Linux runner is what caught it; the local suite never could, because it only
+# ever saw one platform's checkout.
+#
+# `-text` means: never translate. These files are byte-exact artifacts, not
+# prose, and a pod is only portable if its bytes survive the trip.
+*.jsonl   -text
+*.json    -text
+*.yaml    -text
+*.yml     -text
+*.svg     -text
+STOMP.md  -text
+
+# Everything else is normal text; git may normalise it freely.
+* text=auto

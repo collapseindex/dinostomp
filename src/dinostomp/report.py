@@ -270,6 +270,9 @@ def write_report(spec_path: str | Path, trust_code: bool = False) -> tuple[dict 
         (BADGE_NAME, render_badge(report) + "\n"),
     ):
         path = pod / name
-        path.write_text(content, encoding="utf-8")
+        # newline="\n" always. Python otherwise translates to CRLF on Windows,
+        # and `verify` byte-compares these artifacts, so a report published from
+        # here would not re-derive anywhere else.
+        path.write_text(content, encoding="utf-8", newline="\n")
         written.append(path)
     return report, [], written

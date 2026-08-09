@@ -96,9 +96,9 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.35.1
+- tool: dinostomp 0.35.2
 - statistical power: at n=10042 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~2% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
-- spec_sha256: `ece06553dd0d50dd9fe809606c26c06576acb4bdc7bf0ca075d3a1e02f41d449`
+- spec_sha256: `4d1bb90225d5dac83088e57aef3a9b40dabf5153760ed46daced2c10ae38f2e9`
 - data_sha256: `7623f873bcc350896a406c94527b8c45403771a11ccaff51b3c5858f22204ce3`
 - thresholds: all defaults
 - reproducibility tiers, stated honestly: local inputs hash-pinned (spec, data, scorer); requests reproducible given each manifest's environment envelope; hosted-model immutability UNKNOWN unless the provider exposes a pinned revision (the runs table records what each provider claims answered)

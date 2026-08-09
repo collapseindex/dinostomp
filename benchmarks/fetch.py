@@ -168,7 +168,10 @@ def main() -> int:
         items = BUILDERS[name](payload)
         lines = [json.dumps({"_canary": CANARY})]
         lines += [json.dumps(it, ensure_ascii=False) for it in items]
-        (pod / "items.jsonl").write_text("\n".join(lines) + "\n", encoding="utf-8")
+        # newline="\n": the drift boundary hashes these exact bytes, so a pod
+        # fetched on Windows and shared would fail to re-derive anywhere else.
+        (pod / "items.jsonl").write_text("\n".join(lines) + "\n", encoding="utf-8",
+                                         newline="\n")
         print(f"  {len(items)} items -> {pod / 'items.jsonl'}")
         print(f"  source sha256: {digest}")
     print("\nNow:  dinostomp stomp benchmarks/<name>/eval.yaml")

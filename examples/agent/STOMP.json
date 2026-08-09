@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.35.1",
+  "version": "0.35.2",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -551,9 +551,9 @@
       "evidence": {
         "per_model_accuracy": {
           "agent-grounded": 0.9231,
-          "agent-lazy": 1.0,
           "agent-narrow": 0.3462,
-          "agent-partial": 0.6154
+          "agent-partial": 0.6154,
+          "agent-lazy": 1.0
         },
         "chance_floor": 0.0385,
         "uniform": 0.0,
@@ -608,9 +608,9 @@
       "evidence": {
         "rates": {
           "agent-grounded": 0.0,
-          "agent-lazy": 0.0,
           "agent-narrow": 0.0,
-          "agent-partial": 0.0
+          "agent-partial": 0.0,
+          "agent-lazy": 0.0
         }
       }
     },
@@ -650,9 +650,9 @@
       "evidence": {
         "lift": {
           "agent-grounded": 0.9231,
-          "agent-lazy": 1.0,
           "agent-narrow": 0.3462,
-          "agent-partial": 0.6154
+          "agent-partial": 0.6154,
+          "agent-lazy": 1.0
         }
       }
     },
@@ -689,11 +689,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now d25f10ee73f4a734); re-run to get numbers this report can stand behind",
+      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now d93a85593bba948f); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "evidence": {
         "engines": {
-          "d25f10ee73f4a734": 4
+          "d93a85593bba948f": 4
         }
       }
     },
@@ -932,7 +932,7 @@
     }
   ],
   "inputs": {
-    "spec_sha256": "17c54444cea01945ce7b27216b8726a7512c336a18554774705ff9ce98abc461",
+    "spec_sha256": "66a70cdee88cac64a2400c41b4a919c92d4e2e8345f4b4257b9433215195aeb1",
     "data_sha256": "5dfd19b1348d90405cd81c07540d53a4583e766dfbb690420cf78bdeb5cb530c",
     "target_sha256": {
       "agent-grounded": "56f6fd64ffda736e33f3c48b5232b8b9a13f071c4a13c343f961e021da40694c",
@@ -943,7 +943,7 @@
   },
   "runs": [
     {
-      "run_file": "20260809_083207_agent-capitals_agent-grounded_n26_s42.jsonl",
+      "run_file": "20260809_084545_agent-capitals_agent-grounded_n26_s42.jsonl",
       "model": "agent-grounded",
       "model_reported": "agent-grounded",
       "provider": "python",
@@ -955,19 +955,7 @@
       "trajectory_steps": 28
     },
     {
-      "run_file": "20260809_083207_agent-capitals_agent-lazy_n26_s42.jsonl",
-      "model": "agent-lazy",
-      "model_reported": "agent-lazy",
-      "provider": "python",
-      "dry_run": false,
-      "seed": 42,
-      "records": 26,
-      "uncheckable": 0,
-      "spend_source": "metered",
-      "trajectory_steps": 26
-    },
-    {
-      "run_file": "20260809_083207_agent-capitals_agent-narrow_n26_s42.jsonl",
+      "run_file": "20260809_084545_agent-capitals_agent-narrow_n26_s42.jsonl",
       "model": "agent-narrow",
       "model_reported": "agent-narrow",
       "provider": "python",
@@ -979,7 +967,7 @@
       "trajectory_steps": 43
     },
     {
-      "run_file": "20260809_083207_agent-capitals_agent-partial_n26_s42.jsonl",
+      "run_file": "20260809_084545_agent-capitals_agent-partial_n26_s42.jsonl",
       "model": "agent-partial",
       "model_reported": "agent-partial",
       "provider": "python",
@@ -989,6 +977,18 @@
       "uncheckable": 0,
       "spend_source": "metered",
       "trajectory_steps": 36
+    },
+    {
+      "run_file": "20260809_084546_agent-capitals_agent-lazy_n26_s42.jsonl",
+      "model": "agent-lazy",
+      "model_reported": "agent-lazy",
+      "provider": "python",
+      "dry_run": false,
+      "seed": 42,
+      "records": 26,
+      "uncheckable": 0,
+      "spend_source": "metered",
+      "trajectory_steps": 26
     }
   ],
   "entitled_claims": [

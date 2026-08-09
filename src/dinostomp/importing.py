@@ -212,9 +212,9 @@ def write_run(pod_dir: Path, records: list[dict], manifest: dict, stem: str
     runs = pod_dir / "data" / "runs"
     runs.mkdir(parents=True, exist_ok=True)
     rf = runs / f"{stem}.jsonl"
-    rf.write_text("\n".join(json.dumps(r) for r in records) + "\n", encoding="utf-8")
+    rf.write_text("\n".join(json.dumps(r) for r in records) + "\n", encoding="utf-8", newline="\n")
     mf = runs / f"{stem}_manifest.json"
-    mf.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    mf.write_text(json.dumps(manifest, indent=2), encoding="utf-8", newline="\n")
 
     results = pod_dir / "data" / "results"
     results.mkdir(parents=True, exist_ok=True)
@@ -222,5 +222,5 @@ def write_run(pod_dir: Path, records: list[dict], manifest: dict, stem: str
     summary = {"spec_name": manifest["spec_name"], "model": manifest["model"],
                "seed": manifest["seed"], "status": manifest["status"],
                "imported": True, **summarize(records)}
-    sf.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    sf.write_text(json.dumps(summary, indent=2), encoding="utf-8", newline="\n")
     return rf, mf, sf

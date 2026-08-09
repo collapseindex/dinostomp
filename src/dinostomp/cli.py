@@ -130,8 +130,8 @@ def cmd_new(args) -> int:
         return CANNOT_RUN
     name = re.sub(r"[^a-z0-9_-]+", "-", pod.name.lower()).strip("-") or "new-eval"
     pod.mkdir(parents=True)
-    (pod / "eval.yaml").write_text(POD_TEMPLATE.format(name=name), encoding="utf-8")
-    (pod / "items.jsonl").write_text(POD_ITEMS.format(canary=uuid.uuid4().hex), encoding="utf-8")
+    (pod / "eval.yaml").write_text(POD_TEMPLATE.format(name=name), encoding="utf-8", newline="\n")
+    (pod / "items.jsonl").write_text(POD_ITEMS.format(canary=uuid.uuid4().hex), encoding="utf-8", newline="\n")
     print(f"pod created: {pod}")
     print(f"  next: edit {pod / 'eval.yaml'} and {pod / 'items.jsonl'}")
     print(f"  then: dinostomp run {pod / 'eval.yaml'} && dinostomp stomp {pod / 'eval.yaml'}")
@@ -358,7 +358,7 @@ def _stomp_dataset(args) -> int:
     if getattr(args, "emit_fixes", False):
         _emit_fixes(args, report, ctx)
     if args.json:
-        Path(args.json).write_text(json.dumps(report, indent=2), encoding="utf-8")
+        Path(args.json).write_text(json.dumps(report, indent=2), encoding="utf-8", newline="\n")
         print(f"  wrote: {args.json}")
     return 1 if fails else 0
 
@@ -379,10 +379,10 @@ def _emit_fixes(args, report: dict, ctx: dict) -> None:
     logfile = out.with_name(out.stem + ".fixes.txt")
 
     body = "\n".join(json.dumps(i, ensure_ascii=False) for i in kept)
-    out.write_text(body + "\n", encoding="utf-8")
+    out.write_text(body + "\n", encoding="utf-8", newline="\n")
     header = [f"# dinostomp {dinostomp.__version__} (engine {engine_fingerprint()[:16]})",
               f"# source: {src.name}", f"# kept {len(kept)} of {len(items)} item(s)", ""]
-    logfile.write_text("\n".join(header + log) + "\n", encoding="utf-8")
+    logfile.write_text("\n".join(header + log) + "\n", encoding="utf-8", newline="\n")
 
     print()
     print(f"  fixes: {len(items) - len(kept)} item(s) dropped, {len(kept)} kept")
@@ -657,7 +657,7 @@ def cmd_stomp(args) -> int:
         print(f"  typed claim [{tag}]: {c['description']}")
 
     if args.json:
-        Path(args.json).write_text(json.dumps(report, indent=2), encoding="utf-8")
+        Path(args.json).write_text(json.dumps(report, indent=2), encoding="utf-8", newline="\n")
         print(f"  report: {args.json}")
     if verdict == "incomplete" and args.allow_incomplete:
         print("  --allow-incomplete: exiting 0 despite thin coverage, on your explicit say-so.")
