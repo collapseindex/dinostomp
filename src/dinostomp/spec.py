@@ -239,3 +239,23 @@ def spec_sha256(path: str | Path) -> str:
     the drift boundary the stomp battery checks against.
     """
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def jsonl_lines(text: str) -> list[str]:
+    """Split JSONL on NEWLINES, and on nothing else.
+
+    `str.splitlines()` also splits on \x0b, \x0c, \x1c, \x1d, \x1e, \x85,
+    U+2028 and U+2029. `json.dumps(..., ensure_ascii=False)` does not escape
+    any of those and they are legal inside a JSON string, so a valid JSONL file
+    containing one gets torn in half by the reader and then reported as the
+    DATA being malformed.
+
+    Not hypothetical: MMLU contains \x85 (NEL) twice, so auditing a
+    Redux-derived copy of it produced `invalid JSON: Unterminated string` for a
+    file whose 5,702 lines all parse (D-032). The error blamed the dataset for
+    a defect in the reader, which is the direction this project cares about.
+
+    A trailing \r is stripped so a CRLF file still reads, which is the one bit
+    of line-ending tolerance a JSONL reader owes its caller.
+    """
+    return [line[:-1] if line.endswith("\r") else line for line in text.split("\n")]

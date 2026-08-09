@@ -60,7 +60,7 @@ from dinostomp.dataset import (DATA_SUFFIXES, build_items, infer_mapping,
                                looks_like_dataset, read_rows, repair_items,
                                sniff_separator, unrepairable_findings)
 from dinostomp.fingerprint import engine_fingerprint
-from dinostomp.spec import Issue, load_spec, spec_sha256, validate_obj
+from dinostomp.spec import Issue, jsonl_lines, load_spec, spec_sha256, validate_obj
 
 # (id, display name, gating).
 #
@@ -1493,7 +1493,7 @@ def _canary_check(rep: Reporter, base: Path, data_cfg: dict) -> None:
         return
     canary = None
     try:
-        for line in (base / data_cfg["path"]).read_text(encoding="utf-8").splitlines():
+        for line in jsonl_lines((base / data_cfg["path"]).read_text(encoding="utf-8")):
             if not line.strip():
                 continue
             try:
@@ -1549,7 +1549,7 @@ def _discover_runs(base: Path, spec_name: str) -> tuple[list[dict], list[dict]]:
         records = []
         bad_lines = 0
         try:
-            lines = rf.read_text(encoding="utf-8").splitlines()
+            lines = jsonl_lines(rf.read_text(encoding="utf-8"))
         except OSError:
             lines = []
             bad_lines += 1

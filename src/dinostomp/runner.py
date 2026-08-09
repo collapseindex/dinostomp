@@ -29,7 +29,7 @@ from dinostomp.providers import ZERO_RATE_PROVIDERS, ProviderError, make_provide
 from dinostomp.psychometrics import majority, wilson_ci
 from dinostomp.runlog import Budget, BudgetExceeded, Cost, RunLog, price_call, rates_for, utc_now
 from dinostomp.scorers import make_scorer, run_witnesses
-from dinostomp.spec import Issue, load_spec, spec_sha256
+from dinostomp.spec import Issue, jsonl_lines, load_spec, spec_sha256
 from dinostomp.templates import DEFAULT_FRAMINGS, FRAMINGS_BY_NAME, framed_input
 
 
@@ -385,7 +385,7 @@ def run_crossjudge_probe(
             if m.get("probe") or m.get("spec_name") != spec["name"]:
                 continue
             graded = str(m.get("model"))
-            for line in rf.read_text(encoding="utf-8").splitlines():
+            for line in jsonl_lines(rf.read_text(encoding="utf-8")):
                 if not line.strip():
                     continue
                 try:

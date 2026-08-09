@@ -1,5 +1,38 @@
 # Changelog
 
+### v0.45.0 (2026-08-09)
+
+The first external validation in the repository, and the defect that found.
+
+- **N-012: the battery scored against human annotation.** MMLU-Redux 2.0 is
+  5,700 MMLU items re-read and labelled by people at Edinburgh who had never
+  heard of this tool; 370 (6.5%) carry a defect label. Against the one error
+  type a data-at-rest check can reach, `dup-options` scores **precision 14%,
+  recall 3%**. 38 of the 39 misses are SEMANTIC duplicates that no byte
+  comparison finds. A mechanical data audit does not substitute for reading the
+  questions, and that is the number saying by how much.
+- Split the 7 flags on the question that decides whether one is a defect: 3 have
+  the KEYED ANSWER duplicated (two identical correct options, by construction),
+  and 4 duplicate a non-key option, which is a real defect outside Redux's
+  taxonomy. S1 is reported and NOT scored, because Redux annotates whether an
+  item is answerable, not whether it is unique.
+- **F-018: two of those three, Redux labelled `ok`.** `international_law-03425`
+  and `sociology-05313` each key an answer whose exact string is offered twice.
+  Redux caught the third of that shape, so the category was in use. Two items in
+  5,700, in a paper whose contribution is finding what others missed, offered as
+  a receipt that mechanical and human auditing catch different things, which is
+  also what N-012 says pointing the other way.
+- **D-032: a valid JSONL file it refused to read, blaming the data.** Eight
+  readers used `str.splitlines()`, which splits on ``, U+2028 and six other
+  characters that `json.dumps(ensure_ascii=False)` does not escape and JSON
+  permits inside a string. MMLU contains `` twice, so 5,702 parseable lines
+  produced `invalid JSON: Unterminated string`. All eight now use
+  `spec.jsonl_lines`. Found by pointing the tool at somebody else's real data;
+  every dataset in this repo had been written by this tool.
+- New `benchmarks/mmlu-redux/` with `fetch.py` (parquet, cached, resumable after
+  the rows API rate-limited at 429) and `compare.py`, which asserts its
+  reproduced rules against the battery's own counts before comparing anything.
+
 ### v0.44.0 (2026-08-09)
 
 Adapters: the evidence contract's second foreign format.

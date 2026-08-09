@@ -30,6 +30,8 @@ import json
 import re
 from pathlib import Path
 
+from dinostomp.spec import jsonl_lines
+
 # Passages that are in every general-purpose model's training data many times
 # over. The tail is what the model must supply; short and unambiguous, so a
 # failure to produce it means the probe is blind rather than the model is coy.
@@ -57,7 +59,7 @@ MIN_CANARY_CHARS = 16
 def read_canary(data_path: Path) -> str | None:
     """The `_canary` string travelling with a jsonl dataset, if any."""
     try:
-        for line in data_path.read_text(encoding="utf-8").splitlines():
+        for line in jsonl_lines(data_path.read_text(encoding="utf-8")):
             if not line.strip():
                 continue
             try:

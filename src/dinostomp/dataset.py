@@ -27,7 +27,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from dinostomp.spec import Issue
+from dinostomp.spec import Issue, jsonl_lines
 
 DATA_SUFFIXES = {".csv": "csv", ".jsonl": "jsonl", ".ndjson": "jsonl", ".json": "json"}
 
@@ -89,7 +89,7 @@ def read_rows(path: Path) -> tuple[list[dict], list[Issue]]:
 
     rows: list[dict] = []
     if fmt == "jsonl":
-        for lineno, line in enumerate(text.splitlines(), 1):
+        for lineno, line in enumerate(jsonl_lines(text), 1):
             if not line.strip():
                 continue
             try:

@@ -45,6 +45,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-015](#f-015) | four small models | 87% to 97% preserve a source's hedge; the eval cannot separate them | confirmed, underpowered |
 | [F-016](#f-016) | llama-3.2-3b | "You are an expert." is worth 10 points, marginally | confirmed, marginal |
 | [F-017](#f-017) | a RAG agent | grounding it in its own retrieval made it 25 points WORSE | confirmed |
+| [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [N-001](#n-001) | HellaSwag, ARC, MMLU | no position, length, or shortcut bias found | negative |
 | [N-002](#n-002) | dinostomp | the uncheckable path was untested, and said so | negative, later closed |
 | [N-003](#n-003) | ARC, OpenBookQA, HellaSwag, WinoGrande | no repeated options in four datasets | negative |
@@ -56,6 +57,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-009](#n-009) | dinostomp | T4 sees 0%, T7 sees 100%, on the same agent | measured |
 | [N-010](#n-010) | dinostomp | what a process boundary buys, one claim at a time | measured |
 | [N-011](#n-011) | Inspect AI | the second foreign format cost one defect, not five | measured |
+| [N-012](#n-012) | dinostomp | scored against humans: 3% recall, and 2 items they missed | measured |
 | [D-001](#d-001) | dinostomp | the money invariant had only ever run at zero | fixed |
 | [D-002](#d-002) | dinostomp | pooling hid a model that never read the question | fixed |
 | [D-003](#d-003) | dinostomp | a collapsed model manufactured 8 phantom key errors | fixed |
@@ -87,6 +89,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-029](#d-029) | dinostomp | "policy is enforced at call time" held only for agents that asked | corrected |
 | [D-030](#d-030) | dinostomp | `inspect` called a pod codeless while it shipped an agent and tools | fixed |
 | [D-031](#d-031) | dinostomp | an imported trajectory could never reach the checks that read one | fixed |
+| [D-032](#d-032) | dinostomp | a valid JSONL file it refused to read, blaming the data | fixed |
 
 ---
 
@@ -419,6 +422,44 @@ in its worst light without ever saying why.
 
 ## Negative results
 
+### F-018
+**MMLU-Redux 2.0 · two items whose keyed answer is offered twice, labelled `ok` by the annotators**
+`dup-options` (S5) · 2026-08-09 · confirmed
+
+MMLU-Redux is 5,700 MMLU items re-read and labelled by hand (Gema et al., 2024).
+It is the ground truth this repository is scored against in
+[N-012](#n-012), and running the battery over the same file turned up two items
+it does not flag.
+
+```
+international_law-03425      human label: ok
+  keyed answer: "All the members of the arbitral tribunal are appointed by the parties"
+  that exact string is offered TWICE in the option list
+
+sociology-05313              human label: ok
+  keyed answer: "debt repayments with interest can be greater than the amount of money received"
+  that exact string is offered TWICE in the option list
+```
+
+Both are `multiple_correct_answers` by construction: the answer key points at a
+string that appears twice, so two options are correct and a model that picks the
+right ANSWER can still be marked wrong for picking the wrong LETTER. No subject
+knowledge is needed to see it and no judgement call is involved; it is a string
+comparison.
+
+Redux caught the third item of this shape (`high_school_macroeconomics-02425`)
+and labelled it `multiple_correct_answers`, so the category was in use and these
+two were missed rather than excluded by definition.
+
+**Scope, and it matters.** This is a defect in an ANNOTATION, on two items out of
+5,700, in a paper whose entire contribution is finding defects other people
+missed. It is offered as a receipt that mechanical and human auditing catch
+different things, which is also the finding in N-012 pointing the other way: the
+same comparison shows the humans catching 38 items the battery cannot see.
+Reproduce with `python benchmarks/mmlu-redux/compare.py`.
+
+---
+
 ### N-001
 **HellaSwag, ARC, MMLU · no position, length, or shortcut bias found**
 `position-bias` (S3), `length-bias` (S4), `surface-shortcut` (S9) · 2026-08-09
@@ -738,6 +779,72 @@ runner, or a harness with a genuinely different unit of work (a conversation
 rather than an item) has not been tried, and this says nothing about those. The
 honest claim is narrow: the contract survived a format that shares none of the
 first one's shape, and the second cost 20% of what the first did.
+
+---
+
+### N-012
+**dinostomp scored against human annotation: 3% recall, 14% precision, and 2 items the humans missed**
+`dup-options` (S5) vs MMLU-Redux 2.0 · 2026-08-09 · measured
+
+Every other entry in this ledger is self-graded: a defect dinostomp found that
+nobody independently confirmed, or a defect in dinostomp found by dinostomp. The
+scorecard below says so in its own words. This is the first entry that is not.
+
+**The ground truth**: MMLU-Redux 2.0, 5,700 MMLU items re-read and labelled by
+people at Edinburgh who had never heard of this tool. 370 of 5,700 (6.5%) carry
+a defect label.
+
+**What is even reachable.** The data-scope checks read a dataset AT REST. Of
+Redux's six error types, one is within reach and only its verbatim subset:
+
+| Redux error type | n | reachable by a data-at-rest check? |
+|---|---|---|
+| `bad_question_clarity` | 132 | no, needs judgement |
+| `wrong_groundtruth` | 106 | no, needs the truth or a fleet |
+| **`multiple_correct_answers`** | **39** | **the verbatim subset only** |
+| `no_correct_answer` | 36 | no, needs the truth |
+| `expert` | 32 | no, needs an expert |
+| `bad_options_clarity` | 25 | no, needs judgement |
+
+**The numbers, in the framing that flatters least first:**
+
+```
+S5 dup-options vs ANY human-annotated defect     precision 14%   recall  0%
+S5 dup-options vs multiple_correct_answers       precision 14%   recall  3%
+```
+
+**3% recall.** 38 of the 39 items are SEMANTIC duplicates, and no byte
+comparison finds those: *"steadily in one direction"* against *"in one
+direction"*, or a logic item whose options differ only in notation. A mechanical
+data audit does not substitute for reading the questions, and this is the number
+that says by how much.
+
+**The 14% precision is the wrong reading of the 7 flags.** Splitting them on the
+question that decides whether a flag is a defect, is the DUPLICATED option the
+one the key points at:
+
+- **3 of 7 have the keyed answer duplicated.** Two identical correct options, by
+  construction. Humans labelled **2 of those 3 as `ok`** ([F-018](#f-018)).
+- **4 of 7 duplicate a non-key option.** A four-option item effectively offering
+  three. A real defect, and outside Redux's taxonomy, so `ok` is not wrong there
+  and counting them as false positives is not either.
+
+**S1 is reported and not scored.** It flags 32 duplicated keys covering 64
+items, all labelled `ok`. Redux annotates whether an item is ANSWERABLE, not
+whether it is UNIQUE, so those are not false positives; the two instruments are
+answering different questions. Printing "0% precision" for that would be a
+number that looks like a measurement and is not one.
+
+**What this establishes**, stated narrowly because the temptation is to state it
+widely: on the one axis where the two overlap, mechanical auditing and human
+auditing each caught items the other missed. It says nothing about the other 47
+checks in the battery, which need runs rather than a dataset, and nothing about
+any dataset other than MMLU.
+
+Reproduce: `python benchmarks/mmlu-redux/fetch.py && python benchmarks/mmlu-redux/compare.py`.
+The script asserts its reproduced rules against the battery's own counts before
+comparing anything, because a comparison that quietly scores a different rule
+would be worse than no comparison.
 
 ---
 
@@ -1454,7 +1561,42 @@ instead of traces. All three looked green while being off.
 
 ---
 
+### D-032
+**A valid JSONL file it refused to read, and the error blamed the data**
+`items.py`, and seven other readers · 2026-08-09 · fixed in v0.45.0
+
+Pointing the battery at 5,700 real MMLU questions produced:
+
+```
+invalid JSON: Unterminated string starting at: line 1 column 37 (char 36)
+```
+
+The file was fine. Split on `\n`, all 5,702 lines parse. The reader used
+`str.splitlines()`, which also splits on `\x0b`, `\x0c`, `\x1c`, `\x1d`,
+`\x1e`, `\x85`, U+2028 and U+2029. `json.dumps(..., ensure_ascii=False)` does
+not escape any of those and they are legal inside a JSON string, so a line
+containing one gets torn in half and the fragment fails to parse.
+
+**MMLU contains `\x85` (NEL) twice.** That is all it took. Any JSONL file
+carrying one of those characters in a question was unreadable, and the error
+pointed at the dataset rather than at the reader, which is the direction that
+costs a user the most time: it says "your data is broken" when the truth is
+"this tool cannot read your data".
+
+Eight readers had it: `items.py`, `dataset.py`, `contamination.py`, two in
+`lint.py`, two in `runlog.py`, and one in `runner.py`. All eight now go through
+`spec.jsonl_lines`, which splits on `\n` and strips a trailing `\r` so a CRLF
+file still reads.
+
+Found by pointing the tool at somebody else's real data for the fifth time this
+week. Every check in the battery had passed on every dataset in this repository,
+because every one of those was written by this tool.
+
+---
+
 ## The honest scorecard
+
+**One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 14% and **recall 3%**. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
 
 **Thirteen benchmarks audited**, all fetched from their authors and none
 vendored: MMLU, MMLU-Pro, HellaSwag, ARC-Easy, ARC-Challenge, GSM8K,
@@ -1464,14 +1606,14 @@ Count it precisely.
 
 | | |
 |---|---|
-| findings in other people's evals (**F**) | **17** |
+| findings in other people's evals (**F**) | **18** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **11** |
-| defects in dinostomp itself (**D**) | **31** |
+| negative results, recorded rather than dropped (**N**) | **12** |
+| defects in dinostomp itself (**D**) | **32** |
 
-Thirty-one to seventeen. That ratio is the useful number to publish, and it is the
+Thirty-two to eighteen. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

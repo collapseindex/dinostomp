@@ -38,3 +38,7 @@ benchmarks/*/lm_eval_*.jsonl
 # going stale. fetch.py itself IS committed; what it downloads is not.
 benchmarks/inspect-import/*.eval
 benchmarks/inspect-import/*.json
+# MMLU-Redux: 5,700 items and their human labels, fetched not vendored.
+# fetch.py and compare.py are committed; what they download is not.
+benchmarks/mmlu-redux/*.jsonl
+benchmarks/mmlu-redux/.cache/

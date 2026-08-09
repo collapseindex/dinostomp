@@ -22,6 +22,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 
+from dinostomp.spec import jsonl_lines
+
 
 # USD per million tokens for models we can price without being told.
 # Anything absent is "unpriced": a network run then requires explicit rates.
@@ -237,7 +239,7 @@ class RunLog:
             keep = text.rfind("\n") + 1
             self.path.write_bytes(text[:keep].encode("utf-8"))
             text = text[:keep]
-        for line in text.splitlines():
+        for line in jsonl_lines(text):
             if not line.strip():
                 continue
             try:
@@ -274,7 +276,7 @@ class RunLog:
 
     def records(self) -> list[dict]:
         out = []
-        for line in self.path.read_text(encoding="utf-8").splitlines():
+        for line in jsonl_lines(self.path.read_text(encoding="utf-8")):
             if line.strip():
                 try:
                     out.append(json.loads(line))

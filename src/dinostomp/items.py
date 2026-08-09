@@ -10,7 +10,7 @@ import csv
 import json
 from pathlib import Path
 
-from dinostomp.spec import Issue, validate_obj
+from dinostomp.spec import Issue, jsonl_lines, validate_obj
 
 CANONICAL_FIELDS = ("id", "input", "target", "choices")
 
@@ -70,7 +70,7 @@ def load_items(data_cfg: dict, base_dir: Path) -> tuple[list[dict], list[Issue]]
 
     try:
         if fmt == "jsonl":
-            for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            for lineno, line in enumerate(jsonl_lines(path.read_text(encoding="utf-8")), 1):
                 if not line.strip():
                     continue
                 try:
