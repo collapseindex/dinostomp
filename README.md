@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.42.1 · Apache-2.0 · engine `f8e4d8b04c070917` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.43.0 · Apache-2.0 · engine `78e1176e87127425` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -244,10 +244,24 @@ an agent answering from memory that retrieves the right thing anyway sails past
 it. The second takes the evidence away and asks whether the answer changes. It
 did not, for any of them.
 
-**This is not a sandbox**, and the name is deliberate: the agent is ordinary
-Python in this process and can reach around the harness whenever it likes.
-Mediation makes the trace trustworthy, not the agent. The distinction is
-asserted in the test suite, not just written down.
+Mediation makes the trace trustworthy. It does **not** make the agent
+trustworthy: in-process, `tools._registry` reaches a forbidden tool in one
+attribute access and leaves the trajectory empty. For that, put a process
+boundary in the way:
+
+```yaml
+isolation: {mode: subprocess, timeout_s: 60}
+```
+
+The agent runs in a child with a credential-stripped environment, no tool code,
+a denied `socket` module and an enforced timeout. Every claim is tested against
+an in-process control, **including the two escapes that still work**: a re-exec
+gets a socket, and `open()` still reads the tool file. Those are asserted as
+passing tests so the boundary cannot quietly grow a reputation it has not
+earned.
+
+It is containment, not confinement: it defends a run against a careless agent,
+not a machine against a hostile one. Untrusted code belongs in a VM.
 
 ## Extending it
 
@@ -290,7 +304,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.42.1
+- uses: collapseindex/dinostomp@v0.43.0
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -304,7 +318,7 @@ It installs dinostomp from PyPI by default, which does not exist yet, so pass
 `version:` pointing at this repo until it does:
 
 ```yaml
-    version: "git+https://github.com/collapseindex/dinostomp@v0.42.1"
+    version: "git+https://github.com/collapseindex/dinostomp@v0.43.0"
 ```
 
 That is stated rather than hidden because a copy-pasteable block that fails for
@@ -348,7 +362,7 @@ published next to the tool's own defects.
 **The battery ships with its own validation, and you can run it.**
 
 ```bash
-python trials/run_trials.py        # 86 planted defects, 14 pods that must stay clean
+python trials/run_trials.py        # 86 planted defects, 15 pods that must stay clean
 python trials/pin_thresholds.py    # which of its own thresholds are load-bearing
 ```
 
@@ -369,7 +383,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`f8e4d8b04c070917450a1a731502806173ffa1898f2ee13976bdc050c0a87307`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`78e1176e871274256856cf237c867cff9c651479edd9796541a34ca9011a4f94`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

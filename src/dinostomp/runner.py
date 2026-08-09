@@ -939,7 +939,8 @@ def run_spec(
                      "tools": spec.get("tools") or {},
                      "forbidden": set(traj.get("forbidden_tools") or ()),
                      "max_steps": traj.get("max_steps"),
-                     "ablate": probe == "ablate"}
+                     "ablate": probe == "ablate",
+                     "isolation": spec.get("isolation") or {}}
         try:
             provider = provider_factory(provider_name, model, **extra)
         except ProviderError as exc:
@@ -976,12 +977,17 @@ def run_spec(
         if provider_name in ("python", "mediated") and model in target_hashes:
             manifest["target_sha256"] = target_hashes[model]
         if provider_name == "mediated":
+            iso = spec.get("isolation") or {}
             # The rail is recorded, not inferred at audit time. A reader must be
             # able to tell an OBSERVED trajectory from a self-reported one
             # without knowing which provider string means which, and the checks
             # must not have to guess either.
             manifest["trajectory_source"] = "harness_observed"
             manifest["tool_sha256_by_name"] = tool_hashes(spec, base)
+            # Recorded, because "the harness watched this" and "the harness
+            # watched this from another process" are different claims and a
+            # reader of a report cannot tell them apart otherwise.
+            manifest["isolation"] = str(iso.get("mode") or "inprocess")
         elif provider_name == "python":
             manifest["trajectory_source"] = "self_reported"
         if probe:

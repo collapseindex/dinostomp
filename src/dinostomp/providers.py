@@ -268,14 +268,21 @@ def make_provider(provider: str, model: str, **kw):
             raise ProviderError("a python target requires an entrypoint (e.g. agent.py:run)")
         return PythonTarget(model, entrypoint, kw.get("base_dir") or Path("."))
     if provider == "mediated":
-        from dinostomp.harness import MediatedTarget  # local: harness imports Completion from here
-
         entrypoint = kw.get("entrypoint")
         if not entrypoint:
             raise ProviderError("a mediated agent requires an entrypoint (e.g. agent.py:answer)")
-        return MediatedTarget(model, entrypoint, kw.get("base_dir") or Path("."),
-                              tools=kw.get("tools"), forbidden=kw.get("forbidden"),
-                              max_steps=kw.get("max_steps"), ablate=bool(kw.get("ablate")))
+        shared = dict(tools=kw.get("tools"), forbidden=kw.get("forbidden"),
+                      max_steps=kw.get("max_steps"), ablate=bool(kw.get("ablate")))
+        base = kw.get("base_dir") or Path(".")
+        if (kw.get("isolation") or {}).get("mode") == "subprocess":
+            from dinostomp.sandbox import SandboxedTarget  # local: imports Completion from here
+
+            return SandboxedTarget(model, entrypoint, base,
+                                   timeout_s=(kw.get("isolation") or {}).get("timeout_s"),
+                                   **shared)
+        from dinostomp.harness import MediatedTarget  # local: imports Completion from here
+
+        return MediatedTarget(model, entrypoint, base, **shared)
     if provider not in PROVIDERS:
         raise ProviderError(f"unknown provider: {provider!r}")
     return PROVIDERS[provider](model)

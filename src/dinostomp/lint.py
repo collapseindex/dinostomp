@@ -1124,11 +1124,14 @@ def _trajectory_checks(rep: Reporter, mine: list[dict], spec: dict, items: list[
     # different thing: T1-T6 then mean different things for different models in
     # one table, and comparing them across the fleet compares a log to a claim.
     sources: dict[str, list[str]] = {}
+    isolations: set[str] = set()
     for e in mine:
         m = e["manifest"] or {}
         if m.get("provider") in CODE_RAILS:
             sources.setdefault(m.get("trajectory_source") or "self_reported", []).append(
                 str(m.get("model")))
+            isolations.add(str(m.get("isolation") or "inprocess")
+                           if m.get("provider") == "mediated" else "n/a")
     if not sources:
         rep.not_applicable("T8", "this spec runs no code targets; nothing produces a trajectory")
     else:
@@ -1147,14 +1150,23 @@ def _trajectory_checks(rep: Reporter, mine: list[dict], spec: dict, items: list[
                       f"Provider `mediated` moves the tools into the harness if you want the trace "
                       f"to be a log")
         else:
-            detail = (f"all {len(observed)} agent(s) reached their tools through the harness, so "
-                      f"T1-T6 read an observed log rather than testimony. Mediation is not "
-                      f"isolation: it makes the trace trustworthy, not the agent")
+            sandboxed = isolations == {"subprocess"}
+            how = ("in a child process, with the tools left in the parent"
+                   if sandboxed else "in this process")
+            caveat = ("Containment, not confinement: the filesystem is not confined and the "
+                      "network denial is defeatable"
+                      if sandboxed else
+                      "Mediation is not isolation: it makes the trace trustworthy, not the agent, "
+                      "and `isolation: subprocess` is the stronger setting")
+            detail = (f"all {len(observed)} agent(s) reached their tools through the harness, "
+                      f"running {how}, so T1-T6 read an observed log rather than testimony. "
+                      f"{caveat}")
         rep.check("T8", not mixed, detail,
                   n=sum(len(set(v)) for v in sources.values()),
                   examples=([f"{m}: harness-observed" for m in observed]
                             + [f"{m}: self-reported" for m in testified]) if mixed else [],
-                  evidence={"trajectory_sources": {k: sorted(set(v)) for k, v in sources.items()}})
+                  evidence={"trajectory_sources": {k: sorted(set(v)) for k, v in sources.items()},
+                            "isolation": sorted(isolations - {"n/a"}) or ["n/a"]})
 
     # T5: the only instrument pointed at the trust boundary itself. A target
     # that under-reports its trace looks exactly like an honest one when read

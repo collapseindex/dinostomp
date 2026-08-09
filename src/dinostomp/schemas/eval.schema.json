@@ -198,6 +198,27 @@
         "pattern": "^[A-Za-z_][A-Za-z0-9_.]*$"
       },
       "description": "Tools the harness offers a mediated agent: {name: 'file.py:symbol'}. Each is pod-local code, hashed into every manifest like a scorer, so swapping one between runs is drift. An agent on the mediated rail can reach a tool ONLY through the harness, which is what makes its trajectory a log rather than a claim. Required by provider `mediated` and meaningless without it."
+    },
+    "isolation": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "How a mediated agent is run. Default `inprocess`: the agent shares this Python process, so the harness owns the TRACE but not the machine. `subprocess` runs it in a child with a credential-stripped environment, no tool code, a denied socket module and an enforced timeout. That is CONTAINMENT, not confinement: it defends a run against a careless or overreaching agent, not a machine against a hostile one. The filesystem is not confined and the network denial is defeatable; METHODOLOGY states exactly what each layer stops.",
+      "properties": {
+        "mode": {
+          "enum": [
+            "inprocess",
+            "subprocess"
+          ],
+          "default": "inprocess"
+        },
+        "timeout_s": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3600,
+          "default": 60,
+          "description": "Wall-clock budget per item. The child is killed on expiry and the run stops cleanly with its ledger intact; a hang is contained rather than left to sit."
+        }
+      }
     }
   },
   "$defs": {

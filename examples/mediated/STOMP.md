@@ -56,13 +56,13 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 1 | 0 of 1 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 3 | 0 of 3 run(s) were produced by a different engine than the one auditing them (now f8e4d8b04c070917); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 3 | 0 of 3 run(s) were produced by a different engine than the one auditing them (now 78e1176e87127425); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | passing answers are grounded in tool evidence | 3 | 0 of 3 target(s) pass items whose answer does not APPEAR in their own evidence (0 such answer(s) in total). This is co-occurrence, not causation: an answer recalled from memory that also happens to appear in a retrieved snippet counts as grounded here, so this count is a floor |
 | ok | no model under-reports its trajectory | 3 | 0 of 3 target(s) report far fewer steps than the fleet (median 1.0); a thin trace can be efficiency OR omission |
 | warn | tool calls are not redundant | 3 | 1 of 3 target(s) repeat identical calls in more than 25% of their trajectories |
 | warn | passing answers CHANGE when their evidence is withheld | 3 | 1 of 3 agent(s) answer identically with their evidence withheld, so those answers did not causally depend on it. Unlike T4 this is a counterfactual, not a co-occurrence: the two runs differ only in whether the agent could see what its tools returned |
-| ok | the trajectory was observed, not self-reported | 3 | all 3 agent(s) reached their tools through the harness, so T1-T6 read an observed log rather than testimony. Mediation is not isolation: it makes the trace trustworthy, not the agent |
+| ok | the trajectory was observed, not self-reported | 3 | all 3 agent(s) reached their tools through the harness, running in this process, so T1-T6 read an observed log rather than testimony. Mediation is not isolation: it makes the trace trustworthy, not the agent, and `isolation: subprocess` is the stronger setting |
 | n/a | the judge agrees with cases whose answer is known | 0 | this eval does not score with a judge |
 | n/a | the judge is invariant to content-free perturbations | 0 | this eval does not score with a judge |
 | n/a | the judge agrees with itself on identical input | 0 | this eval does not score with a judge |
@@ -104,7 +104,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"f8e4d8b04c070917": 3}}`
+- evidence: `{"engines": {"78e1176e87127425": 3}}`
 
 </details>
 <details><summary>[ok] passing answers are grounded in tool evidence</summary>
@@ -136,7 +136,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the trajectory was observed, not self-reported</summary>
 
-- evidence: `{"trajectory_sources": {"harness_observed": ["greedy", "grounded", "oneshot"]}}`
+- evidence: `{"isolation": ["inprocess"], "trajectory_sources": {"harness_observed": ["greedy", "grounded", "oneshot"]}}`
 
 </details>
 <details><summary>[ok] the fleet is not pinned at a ceiling or floor</summary>
@@ -154,13 +154,13 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260809_150726_mediated-grounding_grounded_n24_s7.jsonl | grounded | (same) | mediated | no | 7 | 24 | 0 |
-| 20260809_150726_mediated-grounding_oneshot_n24_s7.jsonl | oneshot | (same) | mediated | no | 7 | 24 | 0 |
-| 20260809_150727_mediated-grounding_greedy_n24_s7.jsonl | greedy | (same) | mediated | no | 7 | 24 | 0 |
+| 20260809_185112_mediated-grounding_greedy_n24_s7.jsonl | greedy | (same) | mediated | no | 7 | 24 | 0 |
+| 20260809_185112_mediated-grounding_grounded_n24_s7.jsonl | grounded | (same) | mediated | no | 7 | 24 | 0 |
+| 20260809_185112_mediated-grounding_oneshot_n24_s7.jsonl | oneshot | (same) | mediated | no | 7 | 24 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.42.1
+- tool: dinostomp 0.43.0
 - statistical power: at n=24 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~40% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `ae79cfd0e8319d80f9c565515d96632b8b952160f7f84a8c94f34075d9a6c15a`
 - data_sha256: `36fe2258536e2eb42b78699d92ab85fff93108c55cea33795f90f40f7be53c27`

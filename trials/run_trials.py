@@ -1099,6 +1099,22 @@ def t_fleet_mixes_observed_and_self_reported_traces(root):
     return sp
 
 
+def t_clean_sandboxed_pod(root):
+    """Specificity for the process boundary: isolation must not invent findings.
+
+    Same pod, same agent, run in a child instead of in-process. If the battery
+    behaves differently across the boundary, the boundary is changing the
+    measurement rather than protecting it.
+    """
+    sp = mediated_pod(root, ["grounded"])
+    spec = yaml.safe_load(sp.read_text(encoding="utf-8"))
+    spec["isolation"] = {"mode": "subprocess", "timeout_s": 30}
+    sp.write_text(yaml.safe_dump(spec), encoding="utf-8")
+    assert run_spec(sp).exit_code == OK
+    assert run_spec(sp, probe="ablate").exit_code == OK
+    return sp
+
+
 def t_clean_mediated_pod(root):
     """Specificity for T7: agents that genuinely read their evidence.
 
@@ -1749,6 +1765,7 @@ CLEAN_TRIALS = [
     ("clean free-form fleet", lambda root: ran(root, items=arith_items(), models=FLEET)),
     ("clean pod whose odd repeats decide every item", t_clean_odd_repeats),
     ("clean mediated pod whose answers need their evidence", t_clean_mediated_pod),
+    ("clean mediated pod run behind a process boundary", t_clean_sandboxed_pod),
     ("clean choice fleet", lambda root: ran(root, items=choice_items(), models=FLEET)),
     ("clean single-model pod (incomplete, but zero findings)",
      lambda root: ran(root, items=arith_items())),

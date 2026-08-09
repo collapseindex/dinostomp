@@ -87,7 +87,7 @@ Eighty-two deliberately defective evals, each with a stated expectation of what 
   one model escapes the scorer              R12 warn   R12=warn                   CAUGHT
   ...
   sensitivity: 86 of 86 defects caught, 0 missed
-  specificity: 0 findings on 14 of 14 clean pods
+  specificity: 0 findings on 15 of 15 clean pods
 ```
 
 The suite tests both tails: sensitivity (seventy-seven planted defects, drawn from described eval-defect classes (cited in [REFERENCES.md](REFERENCES.md)) plus this project's own adversarial reviews, NOT enumerated from the check registry) and specificity (seven expected-CLEAN pods asserted to produce zero findings, including a mixed-format pod with a bootstrap-separated ordering claim; current score 0 false alarms). The scorecard exits nonzero on a miss in either direction, and the scoring rubric is fixed: is the defect caught automatically, by default, with evidence preserved. Never "does the tool have feature X". During development, trial expectations had to be corrected because the battery behaved differently (better) than predicted, which is only possible when expectations come from outside the implementation.
@@ -355,7 +355,7 @@ Rates belong in the spec rather than on the command line for the same reason eve
 python -m pytest
 ```
 
-The suite follows a house rule: every validator has a negative test that breaks something on purpose and asserts the breakage is caught. Beyond the unit suite, `python trials/run_trials.py` runs DinoTrials, both tails: 86 planted defects (sensitivity) and 14 expected-CLEAN pods (specificity), printed as a scorecard that exits nonzero on a miss in either direction.
+The suite follows a house rule: every validator has a negative test that breaks something on purpose and asserts the breakage is caught. Beyond the unit suite, `python trials/run_trials.py` runs DinoTrials, both tails: 86 planted defects (sensitivity) and 15 expected-CLEAN pods (specificity), printed as a scorecard that exits nonzero on a miss in either direction.
 
 ## Status
 
@@ -710,18 +710,53 @@ makes T7 UNDERSTATE ungroundedness, in the same one-sided direction as T4. And
 an identical answer proves the evidence made no difference to THAT answer, not
 that the agent has no way to use evidence at all.
 
-### What it is not
+### Two rails, and what each one actually buys
 
-**Not a sandbox.** The agent is ordinary Python in this process. Nothing here
-stops it importing `os`, opening a socket, reading your environment, or
-monkeypatching the harness. Mediation makes the TRACE trustworthy; it does not
-make the AGENT trustworthy, and those are different claims. `tests/test_harness.py`
-asserts this rather than leaving it in a docstring, so that adding real
-isolation later has to break a test and rewrite this paragraph deliberately.
+Mediation alone buys **trace integrity**. It does not buy **policy integrity**,
+and v0.42.0 said it did, which was wrong. In-process, `Tools` keeps the live
+callables on an attribute:
 
-Real isolation means a subprocess with a sanitised environment and a denied
-network, with tools crossing an IPC boundary. That is the next increment, and
-until it exists the word sandbox does not appear on this rail.
+```python
+tools._registry["shell"](cmd="rm -rf /")     # runs. policy never consulted.
+                                             # and the trajectory stays EMPTY.
+```
+
+That is [D-029](FINDINGS.md#d-029). It is not patched, because hiding a registry
+in Python is theatre: a closure is reachable through `__closure__`, and shipping
+"harder to reach" as though it were "prevented" is the move this whole document
+argues against. What changed is the claim.
+
+`isolation: subprocess` is what buys policy integrity:
+
+```yaml
+isolation: {mode: subprocess, timeout_s: 60}
+```
+
+The agent runs in a child; the tools stay in the parent. Every row below is a
+test with an in-process CONTROL, because "the key was not visible" could
+otherwise just mean nobody set one ([N-010](FINDINGS.md#n-010)):
+
+| an agent that tries to | sandboxed | in-process |
+|---|---|---|
+| read `OPENROUTER_API_KEY` | `NO-KEY-VISIBLE` | `sk-do-not-leak-this` |
+| call the forbidden tool via `_registry` | `NOTHING-TO-REACH` | `ran rm -rf /` |
+| open a socket | denied | (opens) |
+| forge a `{"op":"done"}` line on stdout | ignored | n/a |
+| hang forever | killed at `timeout_s` | hangs the run |
+| **re-exec a fresh interpreter** | **works** | works |
+| **read the tool file with `open()`** | **works** | works |
+
+The last two rows are asserted as PASSING tests. Strengthening the boundary
+later breaks them and forces this table to be rewritten deliberately.
+
+**Still not a sandbox in the security sense.** `subprocess` is CONTAINMENT, not
+confinement: it defends a RUN against an agent that is careless, buggy or quietly
+overreaching, and it does not defend a MACHINE against a hostile one. The
+filesystem is not confined and the network denial is defeatable. Untrusted agent
+code belongs in a VM, and no amount of Python here changes that.
+
+Cost: roughly 130ms per item of process startup, so `inprocess` remains the
+default and `subprocess` is a choice you make when the agent is not yours.
 
 ## Agents get stomped too
 

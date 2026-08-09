@@ -19,14 +19,20 @@
     "run_file"
   ],
   "properties": {
-    "tool_version": {"type": "string"},
+    "tool_version": {
+      "type": "string"
+    },
     "tool_sha256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$",
       "description": "SHA-256 of the engine that produced this run: its own code and schema pack. Everything else influencing a run is hashed into the manifest, and the engine influences every run, so it is hashed too. Recompute with `dinostomp fingerprint`."
     },
-    "spec_name": {"type": "string"},
-    "spec_version": {"type": "string"},
+    "spec_name": {
+      "type": "string"
+    },
+    "spec_version": {
+      "type": "string"
+    },
     "spec_sha256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$",
@@ -54,7 +60,10 @@
     },
     "mount_sha256": {
       "type": "object",
-      "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      },
       "description": "{declared path: sha256} for files this pod depends on from OUTSIDE itself. Declaring a mount is what makes referencing it legal; hashing it is what the declaration buys."
     },
     "target_sha256": {
@@ -63,40 +72,96 @@
       "description": "SHA-256 of the target entrypoint file, present whenever this run used a python target. The agent is an input like any other: editing it after a run is drift."
     },
     "spend_source": {
-      "enum": ["metered", "target_reported"],
+      "enum": [
+        "metered",
+        "target_reported"
+      ],
       "description": "Where spend_usd came from. `metered` prices provider-returned tokens against the rate table. `target_reported` means the target priced its own calls: the ledger records the claim and cannot audit it, which the report states rather than implying the number is metered."
     },
-    "provider": {"type": "string"},
-    "model": {"type": "string"},
-    "seed": {"type": "integer"},
-    "n_items": {"type": "integer", "minimum": 0},
-    "repeats": {"type": "integer", "minimum": 1},
-    "dry_run": {"type": "boolean"},
-    "budget_cap_usd": {"type": "number", "minimum": 0},
-    "spend_usd": {"type": "number", "minimum": 0},
-    "rate_in_per_mtok": {"type": "number", "minimum": 0},
-    "rate_out_per_mtok": {"type": "number", "minimum": 0},
+    "provider": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "seed": {
+      "type": "integer"
+    },
+    "n_items": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "repeats": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "dry_run": {
+      "type": "boolean"
+    },
+    "budget_cap_usd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "spend_usd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "rate_in_per_mtok": {
+      "type": "number",
+      "minimum": 0
+    },
+    "rate_out_per_mtok": {
+      "type": "number",
+      "minimum": 0
+    },
     "witness_report": {
       "type": "object",
-      "required": ["n_witnesses", "verdict"],
+      "required": [
+        "n_witnesses",
+        "verdict"
+      ],
       "description": "Outcome of running the scorer's witness cases before real data. A run whose witnesses failed carries that mark permanently.",
       "properties": {
-        "n_witnesses": {"type": "integer", "minimum": 0},
-        "n_behaved": {"type": "integer", "minimum": 0},
-        "verdict": {"enum": ["validated", "failed", "absent"]}
+        "n_witnesses": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "n_behaved": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "verdict": {
+          "enum": [
+            "validated",
+            "failed",
+            "absent"
+          ]
+        }
       }
     },
     "env": {
       "type": "object",
       "description": "Environment fingerprint: python version, platform, package versions. Requests are reproducible given this envelope; hosted-model immutability stays UNKNOWN.",
       "properties": {
-        "python": {"type": "string"},
-        "platform": {"type": "string"},
-        "packages": {"type": "object"}
+        "python": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "packages": {
+          "type": "object"
+        }
       }
     },
     "probe": {
-      "enum": ["blind", "judge", "canary", "shuffle", "crossjudge"],
+      "enum": [
+        "blind",
+        "judge",
+        "canary",
+        "shuffle",
+        "crossjudge"
+      ],
       "description": "Present when this run is a probe, not a result. Blind probes strip every input before the call (read only by R13). Judge probes grade constructed cases whose right verdict is known by construction (read only by J1/J2). Neither ever pools with real runs."
     },
     "model_reported": {
@@ -106,20 +171,63 @@
     "git": {
       "type": "object",
       "properties": {
-        "commit": {"type": "string"},
-        "dirty": {"type": "boolean"}
+        "commit": {
+          "type": "string"
+        },
+        "dirty": {
+          "type": "boolean"
+        }
       },
       "description": "State of the eval directory's repo at run time, when one exists."
     },
     "status": {
-      "enum": ["running", "complete", "stopped_early"],
+      "enum": [
+        "running",
+        "complete",
+        "stopped_early"
+      ],
       "description": "Run lifecycle state. Load-bearing: C1 and the psychometric checks only trust records from a `complete` run."
     },
-    "stopped_reason": {"type": "string"},
-    "resumed_from": {"type": "string"},
-    "prior_spend_usd": {"type": "number", "minimum": 0},
-    "started_at": {"type": "string"},
-    "finished_at": {"type": "string"},
-    "run_file": {"type": "string", "description": "Relative path of the JSONL run file this manifest describes."}
+    "stopped_reason": {
+      "type": "string"
+    },
+    "resumed_from": {
+      "type": "string"
+    },
+    "prior_spend_usd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "started_at": {
+      "type": "string"
+    },
+    "finished_at": {
+      "type": "string"
+    },
+    "run_file": {
+      "type": "string",
+      "description": "Relative path of the JSONL run file this manifest describes."
+    },
+    "isolation": {
+      "enum": [
+        "inprocess",
+        "subprocess"
+      ],
+      "description": "How a mediated agent was run for this run."
+    },
+    "trajectory_source": {
+      "enum": [
+        "self_reported",
+        "harness_observed"
+      ],
+      "description": "Who wrote the trajectory: the target itself, or the harness that held its tools. T8 reports it."
+    },
+    "tool_sha256_by_name": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "SHA-256 of each pod-local tool the harness offered."
+    }
   }
 }

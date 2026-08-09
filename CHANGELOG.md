@@ -1,5 +1,46 @@
 # Changelog
 
+### v0.43.0 (2026-08-09)
+
+`isolation: subprocess`. The agent runs in a child process and the tools stay
+behind in the parent.
+
+```yaml
+isolation: {mode: subprocess, timeout_s: 60}
+```
+
+- **Credential isolation.** The child's environment is stripped of everything
+  matching *KEY*, *TOKEN*, *SECRET*, *PASSWORD* and friends. Verified against a
+  control: the same agent in-process reads `OPENROUTER_API_KEY`; sandboxed it
+  gets `NO-KEY-VISIBLE`.
+- **Tool isolation.** The tool code is loaded only in the parent and the pod
+  directory is kept off the child's `sys.path`. The child is not even told the
+  NAME of a forbidden tool.
+- **Fault and hang containment.** `timeout_s` kills the child and the run stops
+  cleanly with its ledger intact. An agent that calls `os._exit` takes down its
+  own process, not the eval.
+- **Protocol integrity.** The child rebinds `sys.stdout` to stderr before any
+  pod code exists, so an agent printing a forged `{"op":"done"}` message cannot
+  hijack the channel. Tested with an agent that tries.
+- **Network denial: best effort.** `socket.socket` is replaced before the agent
+  is imported, which stops requests, urllib and every SDK on top of them. It
+  does not stop a re-exec, and **a test asserts that escape works** rather than
+  claiming otherwise.
+- **Filesystem confinement: NOT PROVIDED**, and said in those words.
+
+- **D-029: v0.42.0's "policy is enforced at call time" was an overclaim.** True
+  for an agent that goes through `tools.call`; in-process, `tools._registry`
+  reaches the forbidden tool in one attribute access AND leaves the trajectory
+  empty, so the bypass looks tidier than asking. Corrected rather than patched:
+  hiding the registry in Python is theatre, and shipping "harder" as "prevented"
+  is the move this project exists to object to. A second one, found and fixed
+  the same hour and never shipped: the sandbox child originally put the pod
+  directory on `sys.path`, which made it WEAKER than in-process.
+- **N-010** tabulates every claim against an in-process control, including the
+  two escapes that still work.
+- Cost: about 130ms per item for process startup, so `inprocess` stays default.
+- New suite `tests/test_sandbox.py`; trials 86 -> 87.
+
 ### v0.42.1 (2026-08-09)
 
 - **D-028: the CRLF guard was blind to new files.** It listed candidates with
@@ -29,6 +70,10 @@ deliberately NOT called a sandbox.
   refused when the agent reaches for them, not audited afterwards, and the
   attempt is recorded before it is refused. A denial that left no trace would
   make a thwarted agent look like a well-behaved one.
+  **CORRECTED in v0.43.0 ([D-029](FINDINGS.md#d-029)): this held only for an
+  agent that ASKED.** In-process, `tools._registry` reaches the live callables
+  in one attribute access and leaves no trace. Mediation buys trace integrity;
+  only `isolation: subprocess` buys policy integrity.
 - **New probe `--probe ablate`, and T7 `answer-grounding-causal`.** The probe
   re-runs every item with each tool RESULT replaced by a marker. T7 compares the
   arms: an answer that comes out identical did not causally depend on the

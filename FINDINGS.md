@@ -54,6 +54,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-007](#n-007) | lm-eval-harness log | both reported metrics re-derive from the raw log-probs | negative |
 | [N-008](#n-008) | dinostomp | an even `run.repeats` reported p-squared, not p | measured, fixed |
 | [N-009](#n-009) | dinostomp | T4 sees 0%, T7 sees 100%, on the same agent | measured |
+| [N-010](#n-010) | dinostomp | what a process boundary buys, one claim at a time | measured |
 | [D-001](#d-001) | dinostomp | the money invariant had only ever run at zero | fixed |
 | [D-002](#d-002) | dinostomp | pooling hid a model that never read the question | fixed |
 | [D-003](#d-003) | dinostomp | a collapsed model manufactured 8 phantom key errors | fixed |
@@ -82,6 +83,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-026](#d-026) | dinostomp | the item-majority estimator was never run live until now | fixed |
 | [D-027](#d-027) | dinostomp | two defects in the pod written to demonstrate the new rail | fixed |
 | [D-028](#d-028) | dinostomp | the line-ending guard could not see a file until after it shipped | fixed |
+| [D-029](#d-029) | dinostomp | "policy is enforced at call time" held only for agents that asked | corrected |
 
 ---
 
@@ -653,6 +655,41 @@ agent differs between the two arms by chance, which makes T7 UNDERSTATE
 ungroundedness; it needs a deterministic agent or repeats. And an identical
 answer proves the evidence made no difference to THAT answer, not that the agent
 could never use evidence.
+
+---
+
+### N-010
+**What the process boundary actually buys, measured claim by claim**
+`tests/test_sandbox.py` · 2026-08-09 · measured
+
+`isolation: subprocess` runs a mediated agent in a child with a stripped
+environment, no tool code, a replaced `socket` module and an enforced timeout.
+Every claim below is a test with a CONTROL: the same agent, on the same pod,
+with `isolation: inprocess`. Without the control, "the key was not visible"
+could just mean nobody set one.
+
+| claim | sandboxed | in-process control | verdict |
+|---|---|---|---|
+| reads `OPENROUTER_API_KEY` | `NO-KEY-VISIBLE` | `sk-do-not-leak-this` | **stopped** |
+| calls the FORBIDDEN tool via `tools._registry` | `NOTHING-TO-REACH` | `ran rm -rf /` | **stopped** |
+| opens a socket | `SOCKET-DENIED` | (not attempted) | **stopped** |
+| prints a forged protocol message | answer intact | n/a | **stopped** |
+| hangs forever | killed at `timeout_s` | would hang the run | **stopped** |
+| re-execs a fresh interpreter to get a socket | works | works | **NOT stopped** |
+| reads the tool file with `open()` | works | works | **NOT stopped** |
+
+The last two rows are the point of the table. They are asserted as PASSING tests,
+so strengthening the boundary later breaks them and forces the documentation to
+be rewritten on purpose instead of quietly drifting into an overclaim.
+
+**The honest summary**: `subprocess` is CONTAINMENT, not confinement. It defends
+a run against an agent that is careless, buggy, or quietly overreaching. It does
+not defend a machine against a hostile one, and nothing written in Python would.
+Untrusted agent code belongs in a VM.
+
+**Cost, since it is not free**: about 130ms per item for process startup, on a
+24-item three-agent pod that is 9.5s instead of under a second. `inprocess`
+stays the default for that reason.
 
 ---
 
@@ -1237,6 +1274,48 @@ reason and against the same failure.
 
 ---
 
+### D-029
+**"Policy is enforced at call time" was true only for an agent that asked**
+`harness.py` · 2026-08-09 · corrected in v0.43.0
+
+v0.42.0 shipped the mediated rail with this in its release notes:
+
+> **Policy is enforced at call time.** `forbidden_tools` and `max_steps` are
+> refused when the agent reaches for them, not audited afterwards.
+
+True for any agent that goes through `tools.call`. `Tools` keeps the live
+callables on `self._registry`, so an in-process agent reaches the forbidden tool
+in one attribute access:
+
+```python
+tools._registry["shell"](cmd="rm -rf /")     # runs. policy never consulted.
+```
+
+**And the trace is empty afterwards**, because nothing went through `call`, so
+the harness has no idea it happened. A pod doing this looks cleaner than one
+that asked politely and was refused.
+
+Found by writing the control for the subprocess rail rather than by reasoning:
+the test asks the same agent to do the same thing on both rails and compares.
+
+**Corrected rather than patched.** The in-process registry is not being hidden,
+because hiding it in Python is theatre: a closure is still reachable through
+`__closure__`, and shipping "harder to reach" as though it were "prevented" is
+the exact move this project exists to object to. What changed is the claim.
+Mediation buys TRACE integrity; only the process boundary buys POLICY integrity,
+and `isolation: subprocess` now exists for that. Both are stated in
+METHODOLOGY, in the module docstring, and in the test that demonstrates the
+bypass.
+
+**A second one, caught in the same hour and never shipped.** The first version
+of the sandbox child did `sys.path.insert(0, base_dir)`, which let the agent
+`import tools` and take the corpus and the forbidden function directly. That
+made the SANDBOXED child weaker than the in-process rail on that axis, in the
+module whose whole purpose was to be stronger. The pod directory is off the
+child's path now; the agent module is loaded by file path and needs no entry.
+
+---
+
 ## The honest scorecard
 
 **Thirteen benchmarks audited**, all fetched from their authors and none
@@ -1251,10 +1330,10 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **9** |
-| defects in dinostomp itself (**D**) | **28** |
+| negative results, recorded rather than dropped (**N**) | **10** |
+| defects in dinostomp itself (**D**) | **29** |
 
-Twenty-eight to seventeen. That ratio is the useful number to publish, and it is the
+Twenty-nine to seventeen. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

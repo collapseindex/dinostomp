@@ -1,0 +1,40 @@
+{
+  "tool_version": "0.43.0",
+  "tool_sha256": "78e1176e871274256856cf237c867cff9c651479edd9796541a34ca9011a4f94",
+  "spec_name": "agent-capitals",
+  "spec_version": "0.1.0",
+  "spec_sha256": "66a70cdee88cac64a2400c41b4a919c92d4e2e8345f4b4257b9433215195aeb1",
+  "data_sha256": "5dfd19b1348d90405cd81c07540d53a4583e766dfbb690420cf78bdeb5cb530c",
+  "provider": "python",
+  "model": "agent-narrow",
+  "seed": 42,
+  "n_items": 26,
+  "repeats": 1,
+  "dry_run": false,
+  "budget_cap_usd": 0.0,
+  "rate_in_per_mtok": 0.0,
+  "rate_out_per_mtok": 0.0,
+  "witness_report": {
+    "n_witnesses": 5,
+    "n_behaved": 5,
+    "verdict": "validated"
+  },
+  "env": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "dinostomp": "0.29.0",
+      "jsonschema": "4.25.1",
+      "PyYAML": "6.0.2"
+    }
+  },
+  "started_at": "2026-08-09T18:51:10.039199+00:00",
+  "status": "complete",
+  "target_sha256": "56f6fd64ffda736e33f3c48b5232b8b9a13f071c4a13c343f961e021da40694c",
+  "trajectory_source": "self_reported",
+  "model_reported": "agent-narrow",
+  "spend_usd": 0.0,
+  "spend_source": "metered",
+  "finished_at": "2026-08-09T18:51:10.076160+00:00",
+  "run_file": "20260809_185110_agent-capitals_agent-narrow_n26_s42.jsonl"
+}

@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.42.1",
+  "version": "0.43.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -704,7 +704,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now f8e4d8b04c070917); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 78e1176e87127425); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine b86e910b6f5616ed: meta-llama/llama-3.2-3b-instruct seed 7 (tool 0.36.2), meta-llama/llama-3.1-8b-instruct seed 7 (tool 0.36.2), mistralai/ministral-8b-2512 seed 7 (tool 0.36.2) and 1 more"
