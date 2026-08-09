@@ -143,12 +143,52 @@ def _cross_checks(spec: dict[str, Any], base: Path) -> list[Issue]:
     # Target entrypoints are pod-local code hashed into every manifest, so they
     # get the same traversal treatment as a custom scorer.
     for idx, mc in enumerate(spec.get("models") or []):
-        if not isinstance(mc, dict) or mc.get("provider") != "python":
+        if not isinstance(mc, dict) or mc.get("provider") not in ("python", "mediated"):
             continue
         entry = mc.get("entrypoint")
         if isinstance(entry, str):
             rel = entry.rpartition(":")[0] if ":" in entry else entry
             check_pod_path(f"$.models[{idx}].entrypoint", rel, "target entrypoint")
+
+    # A tool is pod-local code the agent executes, so it gets the same traversal
+    # treatment as a scorer or a target: an unhashed input is outside the drift
+    # boundary, and a tool outside the pod is an unhashed input.
+    tools = spec.get("tools")
+    if isinstance(tools, dict):
+        for name, entry in tools.items():
+            if isinstance(entry, str):
+                rel = entry.rpartition(":")[0] if ":" in entry else entry
+                check_pod_path(f"$.tools.{name}", rel, f"tool {name!r}")
+
+    mediated = [mc for mc in spec.get("models") or []
+                if isinstance(mc, dict) and mc.get("provider") == "mediated"]
+    if mediated and not tools:
+        issues.append(Issue(
+            loc="$.tools", check="tools",
+            message="a mediated agent is declared but this spec offers no tools. The mediated rail "
+                    "exists so the HARNESS holds the tools; an agent with none can only answer from "
+                    "memory, and `python` is the rail for that"))
+    if tools and not mediated:
+        issues.append(Issue(
+            loc="$.tools", check="tools",
+            message="a `tools` block is declared but no model uses provider `mediated`; nothing in "
+                    "this spec can reach these tools. A `python` target calls its own functions and "
+                    "self-reports the trace"))
+
+    # A forbidden tool the harness never offers is a policy about nothing. Worth
+    # saying, because a typo here reads as an enforced ban and enforces nothing.
+    if isinstance(tools, dict) and mediated:
+        traj_block = spec.get("trajectory")
+        if isinstance(traj_block, dict):
+            for key in ("required_tools", "forbidden_tools"):
+                unknown = sorted({t for t in (traj_block.get(key) or [])
+                                  if isinstance(t, str)} - set(tools))
+                if unknown:
+                    issues.append(Issue(
+                        loc=f"$.trajectory.{key}", check="trajectory",
+                        message=f"{', '.join(unknown)} named in {key} but not offered in $.tools. On "
+                                "the mediated rail the harness can only enforce policy about tools "
+                                "it holds, so this line does nothing"))
 
     # A tool cannot be both mandatory and banned; the policy would be
     # unsatisfiable and T1/T2 would contradict each other on every item.
@@ -162,11 +202,13 @@ def _cross_checks(spec: dict[str, Any], base: Path) -> list[Issue]:
                                 message=f"tool(s) {', '.join(both)} are both required and forbidden; "
                                         "no trajectory could satisfy this policy"))
         if (required or forbidden or traj.get("max_steps")) and not any(
-            isinstance(mc, dict) and mc.get("provider") == "python" for mc in spec.get("models") or []
+            isinstance(mc, dict) and mc.get("provider") in ("python", "mediated")
+            for mc in spec.get("models") or []
         ):
             issues.append(Issue(loc="$.trajectory", check="trajectory",
                                 message="a trajectory policy is declared but no model uses a python "
-                                        "target; nothing in this spec can produce a trajectory"))
+                                        "or mediated target; nothing in this spec can produce a "
+                                        "trajectory"))
 
     # Typed claims must reference models this spec actually runs: a claim
     # about a phantom model is an authoring error, caught before any money.

@@ -42,7 +42,7 @@ dinostomp plan   examples/smoke/eval.yaml   # power, cost, and witness preview B
 smoke-arith | dry-strong | complete | acc 1.000 [0.61, 1.00] on 6 checkable (0 uncheckable excluded) | $0.0000
 ...
   [skip] fleet score totals are reliable (KR-20)    only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics
-INCOMPLETE: no failures, but only 18 of 28 checks ran (27 n/a of 55 declared). Not a clean bill of health.
+INCOMPLETE: no failures, but only 18 of 28 checks ran (29 n/a of 57 declared). Not a clean bill of health.
   note: all runs used the offline dry provider; results exercise the benchmark, not any real model.
 ```
 
@@ -62,7 +62,7 @@ fleet-arith | dry-charlie | complete | acc 0.375 [0.21, 0.57] on 24 checkable (0
   [ok]   fleet score totals are reliable (KR-20)    KR-20 0.94 across 6 models x 24 items; small fleet (6 examinees), treat as a noisy estimate
   [ok]   accuracy is distinguishable from guessing   0 of 6 model(s) score no better than guessing; fleet spans 38% to 100% vs chance ~4% (modal target floor)
   [ok]   the fleet is not pinned at a ceiling or floor  fleet accuracy spans 38% to 100% on 24 item(s)
-STOMPED CLEAN (29 of 29 ran; 26 n/a of 55 declared)
+STOMPED CLEAN (29 of 29 ran; 28 n/a of 57 declared)
   note: all runs used the offline dry provider; results exercise the benchmark, not any real model.
   this result is entitled to claim:
     - Exact-match accuracy with a 95% interval on these 24 addition items, bare-number format, per model.
@@ -86,8 +86,8 @@ Eighty-two deliberately defective evals, each with a stated expectation of what 
   worst miss deleted from a complete run    R11 fail   R11=fail, verdict=broken   CAUGHT
   one model escapes the scorer              R12 warn   R12=warn                   CAUGHT
   ...
-  sensitivity: 83 of 83 defects caught, 0 missed
-  specificity: 0 findings on 13 of 13 clean pods
+  sensitivity: 86 of 86 defects caught, 0 missed
+  specificity: 0 findings on 14 of 14 clean pods
 ```
 
 The suite tests both tails: sensitivity (seventy-seven planted defects, drawn from described eval-defect classes (cited in [REFERENCES.md](REFERENCES.md)) plus this project's own adversarial reviews, NOT enumerated from the check registry) and specificity (seven expected-CLEAN pods asserted to produce zero findings, including a mixed-format pod with a bootstrap-separated ordering claim; current score 0 false alarms). The scorecard exits nonzero on a miss in either direction, and the scoring rubric is fixed: is the defect caught automatically, by default, with evidence preserved. Never "does the tool have feature X". During development, trial expectations had to be corrected because the battery behaved differently (better) than predicted, which is only possible when expectations come from outside the implementation.
@@ -140,13 +140,13 @@ Rules the engine enforces, not conventions it hopes for:
 
 10. **A judge earns the right to judge.** A judge scorer passes the witness gate, then faces a probe on cases whose verdict is known by construction and a gauntlet of perturbations that change no meaning. Its calls are priced and capped like any other calls. Its verbatim response is recorded, so every verdict re-derives offline and forging one is a gated finding; what cannot be re-derived (would it rule the same way twice?) is named as a limit instead of assumed away.
 
-11. **Agents answer for their traces.** A target's tool policy is declared in the spec (`required_tools`, `forbidden_tools`, `max_steps`) and checked as fact, not opinion: a banned call, a skipped mandatory call, a nameless step, or a runaway trajectory is a gated finding. A correct answer that appears in none of the target's own tool results is flagged per model, so one ungrounded agent cannot hide inside an honest fleet. That check measures CO-OCCURRENCE and not causal use: on a live agent that answered from memory and retrieved afterwards, the true ungrounded rate was 100% and it reported 16% ([D-020](FINDINGS.md#d-020)). The error is one-sided, so its count is a floor and its silence is not a clean bill. Money keeps its rules here too: a target that spends inside itself must report that spend, the ledger labels it `target_reported` rather than pretending it was metered, and the cap is enforced against it either way. The boundary is stated everywhere it matters: traces are self-reported, so these verify the record, not the execution.
+11. **Agents answer for their traces.** A target's tool policy is declared in the spec (`required_tools`, `forbidden_tools`, `max_steps`) and checked as fact, not opinion: a banned call, a skipped mandatory call, a nameless step, or a runaway trajectory is a gated finding. A correct answer that appears in none of the target's own tool results is flagged per model, so one ungrounded agent cannot hide inside an honest fleet. That check measures CO-OCCURRENCE and not causal use: on a live agent that answered from memory and retrieved afterwards, the true ungrounded rate was 100% and it reported 16% ([D-020](FINDINGS.md#d-020)). The error is one-sided, so its count is a floor and its silence is not a clean bill. **T7 asks the causal question instead**, by withholding the evidence and checking whether the answer moves; it needs the mediated rail, which is the section above. Money keeps its rules here too: a target that spends inside itself must report that spend, the ledger labels it `target_reported` rather than pretending it was metered, and the cap is enforced against it either way. The boundary is stated everywhere it matters: traces are self-reported, so these verify the record, not the execution.
 
 Two tiers of check, and the report never blurs them. **Invariants** are deterministic facts (a duplicate exists, a hash changed, a summary does not re-derive): they gate, and a failure means mechanical invalidity. **Diagnostics** are statistical signals over thresholds (position bias, KR-20, discrimination, chance-level accuracy): they warn, expose their underlying values, and can have legitimate explanations. dinostomp treats every derived evaluation artifact as untrusted and re-derives it from the closest available primary evidence; where re-derivation is impossible and only inference remains, it says "suspicious," never "proven invalid."
 
 ## The check table
 
-All 55 checks, their tier, and when they apply. The **slug** is what appears in output and in `--only`/`--skip`; it is an API, so renaming one is a MAJOR change. The id stays the primary key that every trial and threshold is wired to. (Reviewer note answered here once: R7 was choice-only until v0.11.0, when the informed-guesser floor made it universal; that is why the choice-only class shrank from five checks to four.)
+All 57 checks, their tier, and when they apply. The **slug** is what appears in output and in `--only`/`--skip`; it is an API, so renaming one is a MAJOR change. The id stays the primary key that every trial and threshold is wired to. (Reviewer note answered here once: R7 was choice-only until v0.11.0, when the informed-guesser floor made it universal; that is why the choice-only class shrank from five checks to four.)
 
 | id | slug | check | tier | applies when |
 |---|---|---|---|---|
@@ -189,6 +189,8 @@ All 55 checks, their tier, and when they apply. The **slug** is what appears in 
 | T4 | `answer-grounding` | passing answers are grounded in tool evidence | diagnostic (warns) | trajectories carrying tool results |
 | T5 | `trace-underreport` | no model under-reports its trajectory | diagnostic (warns) | 2+ python-target models on disk |
 | T6 | `redundant-calls` | tool calls are not redundant | diagnostic (warns) | python-target runs on disk |
+| T7 | `answer-grounding-causal` | passing answers CHANGE when their evidence is withheld | diagnostic (warns) | a mediated agent plus an ablation probe |
+| T8 | `trace-observed` | the trajectory was observed, not self-reported | diagnostic (warns) | target runs on disk |
 | J1 | `judge-agreement` | the judge agrees with cases whose answer is known | diagnostic (warns) | judge probe on disk |
 | J2 | `judge-bias` | the judge is invariant to content-free perturbations | diagnostic (warns) | judge probe on disk |
 | J3 | `judge-consistency` | the judge agrees with itself on identical input | diagnostic (warns) | judge probe on disk |
@@ -353,7 +355,7 @@ Rates belong in the spec rather than on the command line for the same reason eve
 python -m pytest
 ```
 
-The suite follows a house rule: every validator has a negative test that breaks something on purpose and asserts the breakage is caught. Beyond the unit suite, `python trials/run_trials.py` runs DinoTrials, both tails: 83 planted defects (sensitivity) and 13 expected-CLEAN pods (specificity), printed as a scorecard that exits nonzero on a miss in either direction.
+The suite follows a house rule: every validator has a negative test that breaks something on purpose and asserts the breakage is caught. Beyond the unit suite, `python trials/run_trials.py` runs DinoTrials, both tails: 86 planted defects (sensitivity) and 14 expected-CLEAN pods (specificity), printed as a scorecard that exits nonzero on a miss in either direction.
 
 ## Status
 
@@ -594,7 +596,7 @@ accounted for, including the ones it cannot supply.
 ### The verdict names its inputs
 
 ```
-MECHANICALLY SOUND: no integrity findings, full coverage (29 of 29 ran; 26 n/a of 55 declared)
+MECHANICALLY SOUND: no integrity findings, full coverage (29 of 29 ran; 28 n/a of 57 declared)
   extension: gsm8k-extras 0.2.1 (a41f9c22b7e05d18), 3 check(s), validated
 ```
 
@@ -626,18 +628,100 @@ architecture below is.
 **After publishing.** Deliberately after, because each one changes what the tool
 claims rather than how well it does what it already claims.
 
-- **A sandboxed agent harness, as a MOUNT.** This is the agent rail's ceiling
-  made visible: trajectories are SELF-REPORTED, so T1 to T6 audit the diary
-  rather than the behaviour, and an agent that omits a tool call from its trace
-  cannot be caught by reading the trace. The fix is a thin wrapper that runs a
-  target's tool calls through dinostomp-controlled stubs (HTTP, file,
-  retrieval), so the trace is PRODUCED by the harness instead of testified to.
-  It ships as an attachment on the target rail, not in the core: the core
-  evaluates a bounded artifact and does not observe production, and that line is
-  the reason the core stays small. Until it exists, every trajectory finding in
-  this repo carries the self-reported caveat, and it should.
+- ~~A sandboxed agent harness, as a MOUNT.~~ **Shipped in v0.42.0 as the
+  MEDIATED rail, and renamed on purpose.** See "The mediated rail" below: it
+  does what this roadmap entry asked for, and it is not called a sandbox
+  because in-process Python is not a security boundary and saying otherwise
+  would be the flattering claim this whole document argues against.
 - Local UI (Astro + SQLite index over files; files stay the source of truth).
 - Importers for other runners' logs, on the contract above.
+
+## The mediated rail: a trace the harness observed
+
+Everything in the section below this one is the SELF-REPORTED rail. The target
+writes its own trajectory, and `targets.py` has always said what that means: an
+agent that omits a call from its trace cannot be caught by reading the trace.
+Six checks read that trace, so for those pods all six read testimony.
+
+The mediated rail moves the tools out of the agent and into the harness:
+
+```yaml
+tools:                                # the HARNESS holds these
+  retrieve: tools.py:retrieve
+  shell: tools.py:shell
+models:
+  - {provider: mediated, model: grounded, entrypoint: agent.py:answer}
+trajectory:
+  required_tools: [retrieve]
+  forbidden_tools: [shell]            # DENIED at call time, not audited after
+  max_steps: 6
+```
+
+```python
+# agent.py. Three arguments, and the signature is the tell: `run(item, ctx)` is
+# the self-reported rail, `answer(item, tools, ctx)` is this one.
+def answer(item, tools, ctx):
+    hit = tools.retrieve(key=item["topic"])     # recorded by the harness
+    return extract(hit)
+```
+
+An agent on this rail **cannot** return a `trajectory`. Doing so stops the run,
+rather than being ignored: steps the harness never saw are unverifiable evidence
+sitting in a record that claims to be a log.
+
+### What it buys, exactly
+
+- **The trace is observed.** T1, T2, T3 and T6 stop reading testimony. The
+  manifest records `trajectory_source`, and **T8** prints which kind of trace the
+  T-checks read, so a report is legible without knowing the provider strings.
+- **Policy is enforced when the agent reaches for the tool**, not noticed
+  afterwards. The attempt is recorded either way: a denial that left no trace
+  would make a thwarted agent look like a well-behaved one.
+- **Evidence can be withheld**, which is the part that mattered.
+
+### The ablation probe, and why D-020 needed it
+
+T4 asks whether a passing answer APPEARS in the trace's tool results. That is
+co-occurrence. An agent that answers from memory and retrieves the right topic
+afterwards is 100% causally ungrounded and T4 reported **16%** on a live pod
+([D-020](FINDINGS.md#d-020)). Reading the trace harder cannot fix it, because a
+trace records what was FETCHED and not what was READ.
+
+`--probe ablate` asks the counterfactual instead. Same agent, same items, same
+calls, every RESULT replaced by a marker. **T7** compares the two arms: an answer
+that comes out identical did not depend on the evidence. Not "might not have":
+did not, because the only thing that differed was whether the agent could see
+what came back.
+
+On [examples/mediated](examples/mediated/), where one of three agents answers
+from memory first and retrieves anyway:
+
+```
+[ok]   answer-grounding         0 of 3 target(s) pass items whose answer does not APPEAR ...
+[warn] answer-grounding-causal  1 of 3 agent(s) answer identically with their evidence withheld
+         - oneshot: 18 of 18 passing answer(s) (100%) are unchanged when the evidence is withheld
+```
+
+T4 sees nothing. T7 sees all of it. That gap is the reason the rail exists.
+
+**T7's own limits, stated because they are real.** It needs a deterministic
+agent or repeats: a nondeterministic agent differs between arms by chance, which
+makes T7 UNDERSTATE ungroundedness, in the same one-sided direction as T4. And
+an identical answer proves the evidence made no difference to THAT answer, not
+that the agent has no way to use evidence at all.
+
+### What it is not
+
+**Not a sandbox.** The agent is ordinary Python in this process. Nothing here
+stops it importing `os`, opening a socket, reading your environment, or
+monkeypatching the harness. Mediation makes the TRACE trustworthy; it does not
+make the AGENT trustworthy, and those are different claims. `tests/test_harness.py`
+asserts this rather than leaving it in a docstring, so that adding real
+isolation later has to break a test and rewrite this paragraph deliberately.
+
+Real isolation means a subprocess with a sanitised environment and a denied
+network, with tools crossing an IPC boundary. That is the next increment, and
+until it exists the word sandbox does not appear on this rail.
 
 ## Agents get stomped too
 
@@ -675,7 +759,7 @@ agent-capitals | agent-grounded | complete | acc 0.923 [0.76, 0.98] on 26 checka
   [ok]   passing answers are grounded in tool evidence   0 of 4 target(s) pass items their own evidence does not support (2 such answer(s) in total)
            - cap-santiago (agent-lazy): passed, but its answer appears in no tool result
            - cap-tunis (agent-lazy): passed, but its answer appears in no tool result
-INCOMPLETE: no failures, but only 37 of 41 checks ran (14 n/a of 55 declared).
+INCOMPLETE: no failures, but only 38 of 42 checks ran (15 n/a of 57 declared).
 ```
 
 `agent-lazy` is the pod's teaching case. It scores a perfect 100%, it calls the required tool on every single item, and every policy check passes it, because it really does retrieve. What T4 notices is that two of its correct answers appear in no retrieved evidence at all: it answered from memory and retrieved afterwards. That is the Clever Hans of tool use, and it is judge-free, since "does the answer occur in the tool output" is a fact rather than an opinion. Note also what the check did NOT do: two ungrounded answers out of twenty-six is under the threshold, so T4 passed, printed both receipts, and left the call to you.
@@ -723,7 +807,7 @@ Edit the spec, the data, the scorer, the agent, or the judge after a run and sto
 ```
   [FAIL] runs match the spec, data, and scorer on disk (no drift)  1 of 6 run(s) no longer match ...
            - 20260808_..._dry-alpha_n24_s42.jsonl: data changed since this run
-BROKEN: 1 gated finding(s) (29 of 29 ran; 26 n/a of 55 declared)
+BROKEN: 1 gated finding(s) (29 of 29 ran; 28 n/a of 57 declared)
 ```
 
 Exit codes for `run`: `0` complete, `1` gated (witnesses failed, nothing ran), `2` cannot run (invalid spec or data, unpriced model, missing key), `3` stopped early (budget, provider, or scorer; partial on disk, resume with `--resume <run file>`). For `stomp` and `report`: `0` clean or ok, `1` broken, `2` cannot stomp, `4` incomplete. Incomplete is nonzero **by default**: an unattended pipeline must never accept thin coverage because someone forgot a flag; `--allow-incomplete` is the explicit, loudly-printed escape hatch.

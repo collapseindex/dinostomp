@@ -66,11 +66,32 @@ def judge_entrypoint(spec: dict) -> str | None:
 
 
 def target_entrypoint(model_cfg: dict) -> str | None:
-    """The pod-local file a python target loads, without its symbol suffix."""
-    if model_cfg.get("provider") != "python":
+    """The pod-local file a target loads, without its symbol suffix.
+
+    Both code rails, because both are pod-local code inside the drift boundary:
+    editing a mediated agent after a run is exactly as much drift as editing a
+    self-reporting one.
+    """
+    if model_cfg.get("provider") not in ("python", "mediated"):
         return None
     entry = model_cfg.get("entrypoint") or ""
     return entry.rpartition(":")[0] if ":" in entry else entry or None
+
+
+def tool_hashes(spec: dict, base: Path) -> dict:
+    """{tool name: sha256} for every pod-local tool the harness offers.
+
+    Hashed for the same reason the agent is: a tool is code that produces the
+    evidence an answer is judged against, so swapping one between runs changes
+    the experiment and the manifest has to say so.
+    """
+    out = {}
+    for name, entry in (spec.get("tools") or {}).items():
+        rel = str(entry).rpartition(":")[0] if ":" in str(entry) else str(entry)
+        path = base / rel
+        if path.is_file():
+            out[str(name)] = spec_sha256(path)
+    return out
 
 
 def _env_envelope() -> dict:
@@ -828,6 +849,14 @@ def run_spec(
             message=f"judge model {judge_cfg.get('model')!r} has no known price; a judge that "
                     "cannot be priced cannot be capped, and an uncapped grader is not free")])
 
+    if probe == "ablate" and not any(mc.get("provider") == "mediated" for mc in spec["models"]):
+        return RunOutcome(CANNOT_RUN, issues=[Issue(
+            loc="--probe ablate", check="probe",
+            message="the ablation probe withholds TOOL results, and only a `mediated` agent reaches "
+                    "its tools through the harness. A `python` target calls its own functions "
+                    "directly, so there would be nothing to withhold and the probe run would "
+                    "silently be an ordinary one")])
+
     render_choices = bool(spec["data"].get("render_choices"))
     if probe == "shuffle" and not render_choices:
         return RunOutcome(CANNOT_RUN, issues=[Issue(
@@ -900,6 +929,17 @@ def run_spec(
         extra = {}
         if provider_name == "python":
             extra = {"entrypoint": model_cfg.get("entrypoint"), "base_dir": base}
+        elif provider_name == "mediated":
+            # Policy travels to the HARNESS, not just to the checks. On this
+            # rail a forbidden tool is denied when the agent reaches for it, so
+            # T1 reads a record of something that was stopped rather than a
+            # record of something that happened.
+            traj = spec.get("trajectory") or {}
+            extra = {"entrypoint": model_cfg.get("entrypoint"), "base_dir": base,
+                     "tools": spec.get("tools") or {},
+                     "forbidden": set(traj.get("forbidden_tools") or ()),
+                     "max_steps": traj.get("max_steps"),
+                     "ablate": probe == "ablate"}
         try:
             provider = provider_factory(provider_name, model, **extra)
         except ProviderError as exc:
@@ -933,8 +973,17 @@ def run_spec(
             "started_at": utc_now().isoformat(),
             "status": "running",
         }
-        if provider_name == "python" and model in target_hashes:
+        if provider_name in ("python", "mediated") and model in target_hashes:
             manifest["target_sha256"] = target_hashes[model]
+        if provider_name == "mediated":
+            # The rail is recorded, not inferred at audit time. A reader must be
+            # able to tell an OBSERVED trajectory from a self-reported one
+            # without knowing which provider string means which, and the checks
+            # must not have to guess either.
+            manifest["trajectory_source"] = "harness_observed"
+            manifest["tool_sha256_by_name"] = tool_hashes(spec, base)
+        elif provider_name == "python":
+            manifest["trajectory_source"] = "self_reported"
         if probe:
             # Probe runs carry their nature in the manifest so the battery can
             # never confuse a blind baseline with a real result.

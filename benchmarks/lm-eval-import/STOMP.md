@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 18 of 38 checks ran (18 of 38 ran; 17 n/a of 55 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 18 of 38 checks ran (18 of 38 ran; 19 n/a of 57 declared). Not a clean bill of health.
 
 ## Entitled claims
 
@@ -29,9 +29,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | ok | summaries match their run records | 1 | 0 summary discrepanc(ies) across 1 run(s) |
 | ok | records cover exactly the seeded selection | 1 | 0 of 1 run(s) do not cover their seeded selection |
 | ok | every model produced something scoreable | 1 | 0 of 1 model(s) produced nothing scoreable |
-| n/a | no forbidden tool is called | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | every required tool is actually called | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | trajectories are well-formed | 0 | this spec runs no python targets; nothing produces a trajectory |
+| n/a | no forbidden tool is called | 0 | this spec runs no code targets; nothing produces a trajectory |
+| n/a | every required tool is actually called | 0 | this spec runs no code targets; nothing produces a trajectory |
+| n/a | trajectories are well-formed | 0 | this spec runs no code targets; nothing produces a trajectory |
 | skip | every model was asked the same items | 0 | only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics |
 
 ### Diagnostics (statistical, advisory)
@@ -58,9 +58,11 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
 | n/a | the runs were produced by this engine | 0 | no run manifest records a tool_sha256 |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
-| n/a | passing answers are grounded in tool evidence | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | no model under-reports its trajectory | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | tool calls are not redundant | 0 | this spec runs no python targets; nothing produces a trajectory |
+| n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets; nothing produces a trajectory |
+| n/a | no model under-reports its trajectory | 0 | this spec runs no code targets; nothing produces a trajectory |
+| n/a | tool calls are not redundant | 0 | this spec runs no code targets; nothing produces a trajectory |
+| n/a | passing answers CHANGE when their evidence is withheld | 0 | this spec runs no code targets; nothing produces a trajectory |
+| n/a | the trajectory was observed, not self-reported | 0 | this spec runs no code targets; nothing produces a trajectory |
 | n/a | the judge agrees with cases whose answer is known | 0 | this eval does not score with a judge |
 | n/a | the judge is invariant to content-free perturbations | 0 | this eval does not score with a judge |
 | n/a | the judge agrees with itself on identical input | 0 | this eval does not score with a judge |
@@ -140,7 +142,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.41.0
+- tool: dinostomp 0.42.0
 - statistical power: at n=1172 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~6% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `967c38cc964d1369f96ddf6ab68a1c52eaac0c25d27a13b6e9bb1995c3491cb1`
 - data_sha256: `63af045e1154054f7927b7969aa0fb23c7b80cc11ce1921605744124e6005267`

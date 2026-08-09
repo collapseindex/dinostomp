@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.41.0",
+  "version": "0.42.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -263,9 +263,9 @@
     }
   },
   "coverage": {
-    "declared_total": 55,
-    "declared": 41,
-    "ran": 37,
+    "declared_total": 57,
+    "declared": 42,
+    "ran": 38,
     "skipped": [
       {
         "id": "S10",
@@ -316,6 +316,10 @@
       {
         "id": "R20",
         "reason": "no run on disk repeats an item; a single pass per item cannot tie"
+      },
+      {
+        "id": "T7",
+        "reason": "no mediated agent on disk; only the harness can withhold a tool result, and a self-reporting target calls its own functions"
       },
       {
         "id": "J1",
@@ -693,14 +697,14 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 4beacd9962bd02c8); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now ec7785ff635370d3); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
-        "engine b1fa98e4f374809f: agent-grounded seed 42 (tool 0.39.0), agent-lazy seed 42 (tool 0.39.0), agent-narrow seed 42 (tool 0.39.0) and 1 more"
+        "engine 3a8937a85c81506e: agent-grounded seed 42 (tool 0.41.0), agent-lazy seed 42 (tool 0.41.0), agent-narrow seed 42 (tool 0.41.0) and 1 more"
       ],
       "evidence": {
         "engines": {
-          "b1fa98e4f374809f": 4
+          "3a8937a85c81506e": 4
         }
       }
     },
@@ -778,6 +782,34 @@
       "gating": false,
       "detail": "0 of 4 target(s) repeat identical calls in more than 25% of their trajectories",
       "witnesses": 4
+    },
+    {
+      "id": "T7",
+      "slug": "answer-grounding-causal",
+      "check": "passing answers CHANGE when their evidence is withheld",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no mediated agent on disk; only the harness can withhold a tool result, and a self-reporting target calls its own functions",
+      "witnesses": 0
+    },
+    {
+      "id": "T8",
+      "slug": "trace-observed",
+      "check": "the trajectory was observed, not self-reported",
+      "level": "pass",
+      "gating": false,
+      "detail": "all 4 target(s) write their own trajectory, so T1-T6 verify the RECORD and not the EXECUTION: a target that omits a call from its own trace cannot be caught by reading it. Supported and stated, not a defect. Provider `mediated` moves the tools into the harness if you want the trace to be a log",
+      "witnesses": 4,
+      "evidence": {
+        "trajectory_sources": {
+          "self_reported": [
+            "agent-grounded",
+            "agent-lazy",
+            "agent-narrow",
+            "agent-partial"
+          ]
+        }
+      }
     },
     {
       "id": "J1",
@@ -960,7 +992,7 @@
   },
   "runs": [
     {
-      "run_file": "20260809_120809_agent-capitals_agent-grounded_n26_s42.jsonl",
+      "run_file": "20260809_145000_agent-capitals_agent-grounded_n26_s42.jsonl",
       "model": "agent-grounded",
       "model_reported": "agent-grounded",
       "provider": "python",
@@ -972,7 +1004,7 @@
       "trajectory_steps": 28
     },
     {
-      "run_file": "20260809_120809_agent-capitals_agent-lazy_n26_s42.jsonl",
+      "run_file": "20260809_145001_agent-capitals_agent-lazy_n26_s42.jsonl",
       "model": "agent-lazy",
       "model_reported": "agent-lazy",
       "provider": "python",
@@ -984,7 +1016,7 @@
       "trajectory_steps": 26
     },
     {
-      "run_file": "20260809_120809_agent-capitals_agent-narrow_n26_s42.jsonl",
+      "run_file": "20260809_145001_agent-capitals_agent-narrow_n26_s42.jsonl",
       "model": "agent-narrow",
       "model_reported": "agent-narrow",
       "provider": "python",
@@ -996,7 +1028,7 @@
       "trajectory_steps": 43
     },
     {
-      "run_file": "20260809_120809_agent-capitals_agent-partial_n26_s42.jsonl",
+      "run_file": "20260809_145001_agent-capitals_agent-partial_n26_s42.jsonl",
       "model": "agent-partial",
       "model_reported": "agent-partial",
       "provider": "python",

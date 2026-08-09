@@ -58,19 +58,24 @@ STEP_KEYS = ("tool", "args", "result", "ok")
 DEFAULT_SYMBOL = "run"
 
 
-def split_entrypoint(entrypoint: str) -> tuple[str, str]:
-    """`agent.py:run` -> ("agent.py", "run"). A bare path defaults to `run`."""
+def split_entrypoint(entrypoint: str, default_symbol: str = DEFAULT_SYMBOL) -> tuple[str, str]:
+    """`agent.py:run` -> ("agent.py", "run"). A bare path takes the default.
+
+    The mediated rail passes its own default (`answer`), because the two rails
+    take different signatures and a pod that lands on the wrong one should fail
+    to import rather than be called with the wrong number of arguments.
+    """
     raw = str(entrypoint)
     if ":" in raw:
         path, _, symbol = raw.rpartition(":")
-        return path, (symbol or DEFAULT_SYMBOL)
-    return raw, DEFAULT_SYMBOL
+        return path, (symbol or default_symbol)
+    return raw, default_symbol
 
 
-def load_target(entrypoint: str, base_dir: Path):
+def load_target(entrypoint: str, base_dir: Path, default_symbol: str = DEFAULT_SYMBOL):
     """Import the pod-local callable. Path traversal is rejected by the spec
     cross-checks before this is ever reached."""
-    rel, symbol = split_entrypoint(entrypoint)
+    rel, symbol = split_entrypoint(entrypoint, default_symbol)
     path = Path(base_dir) / rel
     spec = importlib.util.spec_from_file_location("dinostomp_user_target", path)
     if spec is None or spec.loader is None:
@@ -82,7 +87,7 @@ def load_target(entrypoint: str, base_dir: Path):
         raise ProviderError(f"target module {rel} failed to import: {type(exc).__name__}: {exc}") from exc
     fn = getattr(module, symbol, None)
     if not callable(fn):
-        raise ProviderError(f"{rel} must define {symbol}(item, ctx)")
+        raise ProviderError(f"{rel} must define {symbol}(...)")
     return fn
 
 

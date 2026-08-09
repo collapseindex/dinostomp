@@ -1,0 +1,26 @@
+{
+  "spec_name": "agent-capitals",
+  "model": "agent-narrow",
+  "provider": "python",
+  "seed": 42,
+  "status": "complete",
+  "n_records": 26,
+  "estimator": "per_record",
+  "n_checkable": 26,
+  "n_uncheckable": 0,
+  "n_repeat_ties": 0,
+  "n_passes": 0,
+  "accuracy_on_checkable": 0.0,
+  "accuracy_ci95": [
+    0.0,
+    0.1287
+  ],
+  "judgeability": 1.0,
+  "by_verdict": {
+    "pass": 0,
+    "fail": 26,
+    "flag": 0,
+    "uncheckable": 0
+  },
+  "spend_usd": 0.0
+}

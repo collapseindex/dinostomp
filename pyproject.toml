@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dinostomp"
-version = "0.41.0"
+version = "0.42.0"
 description = "Build evals fast. Everything gets stomped before it gets believed."
 readme = "README.md"
 requires-python = ">=3.10"

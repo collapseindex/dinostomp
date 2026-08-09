@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 28 of 37 checks ran (28 of 37 ran; 18 n/a of 55 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 31 of 37 checks ran (31 of 37 ran; 20 n/a of 57 declared). Not a clean bill of health.
 
 ## Entitled claims
 
@@ -56,14 +56,16 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 3 | 0 of 3 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 4beacd9962bd02c8); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now ec7785ff635370d3); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |
 | n/a | no model under-reports its trajectory | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |
 | n/a | tool calls are not redundant | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |
-| skip | the judge agrees with cases whose answer is known | 0 | no judge probe on disk; run `dinostomp run <spec> --probe judge` to make the judge earn the right to judge |
-| skip | the judge is invariant to content-free perturbations | 0 | no judge probe on disk; run `dinostomp run <spec> --probe judge` to make the judge earn the right to judge |
-| skip | the judge agrees with itself on identical input | 0 | no judge probe on disk; run `dinostomp run <spec> --probe judge` to make the judge earn the right to judge |
+| n/a | passing answers CHANGE when their evidence is withheld | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |
+| n/a | the trajectory was observed, not self-reported | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |
+| ok | the judge agrees with cases whose answer is known | 16 | the judge agrees with 100% of 16 case(s) whose verdict is known by construction (0 wrong answer(s) passed) |
+| ok | the judge is invariant to content-free perturbations | 96 | 0 of 6 content-free perturbation(s) change the judge's mind across 96 regraded case(s) |
+| ok | the judge agrees with itself on identical input | 16 | the judge contradicts itself on 0 of 16 case(s) (0%) regraded on byte-identical input |
 | n/a | the judge does not favour its own family | 0 | no `cross_judge` declared; self-preference is not measurable with one judge, so this is a missing instrument rather than a clean result |
 | ok | fleet score totals are reliable (KR-20) | 104 | KR-20 0.94 across 4 models x 26 items; small fleet (4 examinees), treat as a noisy estimate |
 | ok | no item anti-correlates with fleet skill | 26 | 0 item(s) that strong models miss and weak models hit, against 0 expected by chance at this fleet size; candidate key errors; at 4 examinees this check has little power, so a quiet result is NOT evidence of a clean answer key |
@@ -101,8 +103,23 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[warn] the runs were produced by this engine</summary>
 
-- engine b1fa98e4f374809f: bot-bare seed 42 (tool 0.39.0), bot-chatty seed 42 (tool 0.39.0), bot-hedged seed 42 (tool 0.39.0) and 1 more
-- evidence: `{"engines": {"b1fa98e4f374809f": 4}}`
+- engine 3a8937a85c81506e: bot-bare seed 42 (tool 0.41.0), bot-chatty seed 42 (tool 0.41.0), bot-hedged seed 42 (tool 0.41.0) and 1 more
+- evidence: `{"engines": {"3a8937a85c81506e": 4}}`
+
+</details>
+<details><summary>[ok] the judge agrees with cases whose answer is known</summary>
+
+- evidence: `{"agreement": 1.0, "false_passes": 0}`
+
+</details>
+<details><summary>[ok] the judge is invariant to content-free perturbations</summary>
+
+- evidence: `{"biased_perturbations": [], "inflating": []}`
+
+</details>
+<details><summary>[ok] the judge agrees with itself on identical input</summary>
+
+- evidence: `{"inconsistency": 0.0}`
 
 </details>
 <details><summary>[ok] fleet score totals are reliable (KR-20)</summary>
@@ -135,14 +152,14 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260809_120810_judge-capitals_bot-bare_n26_s42.jsonl | bot-bare | (same) | python | no | 42 | 26 | 0 |
-| 20260809_120810_judge-capitals_bot-chatty_n26_s42.jsonl | bot-chatty | (same) | python | no | 42 | 26 | 0 |
-| 20260809_120810_judge-capitals_bot-hedged_n26_s42.jsonl | bot-hedged | (same) | python | no | 42 | 26 | 0 |
-| 20260809_120810_judge-capitals_bot-wrapped_n26_s42.jsonl | bot-wrapped | (same) | python | no | 42 | 26 | 0 |
+| 20260809_144959_judge-capitals_bot-bare_n26_s42.jsonl | bot-bare | (same) | python | no | 42 | 26 | 0 |
+| 20260809_144959_judge-capitals_bot-chatty_n26_s42.jsonl | bot-chatty | (same) | python | no | 42 | 26 | 0 |
+| 20260809_144959_judge-capitals_bot-hedged_n26_s42.jsonl | bot-hedged | (same) | python | no | 42 | 26 | 0 |
+| 20260809_144959_judge-capitals_bot-wrapped_n26_s42.jsonl | bot-wrapped | (same) | python | no | 42 | 26 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.41.0
+- tool: dinostomp 0.42.0
 - statistical power: at n=26 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~39% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `414280db41465402b15aef657631b3c41dea335c4b29ee7de348d500cdc5c58d`
 - data_sha256: `ceb8609c45e8daed58a6ca30757e45bbce202303e6cb1c8324b741d2e11b24d4`

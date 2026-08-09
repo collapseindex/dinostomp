@@ -186,6 +186,18 @@
     },
     "metadata": {
       "type": "object"
+    },
+    "tools": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      },
+      "propertyNames": {
+        "pattern": "^[A-Za-z_][A-Za-z0-9_.]*$"
+      },
+      "description": "Tools the harness offers a mediated agent: {name: 'file.py:symbol'}. Each is pod-local code, hashed into every manifest like a scorer, so swapping one between runs is drift. An agent on the mediated rail can reach a tool ONLY through the harness, which is what makes its trajectory a log rather than a claim. Required by provider `mediated` and meaningless without it."
     }
   },
   "$defs": {
@@ -204,9 +216,10 @@
             "openrouter",
             "dry",
             "python",
+            "mediated",
             "imported"
           ],
-          "description": "dry is the offline deterministic provider: zero network, zero spend, always available. python mounts a pod-local callable (agent, RAG pipeline, workflow) on the target rail. imported declares a model this engine cannot call, whose evidence arrives via `dinostomp import`; `run` refuses it rather than inventing a way to produce the numbers itself."
+          "description": "dry is the offline deterministic provider: zero network, zero spend, always available. python mounts a pod-local callable (agent, RAG pipeline, workflow) on the target rail. imported declares a model this engine cannot call, whose evidence arrives via `dinostomp import`; `run` refuses it rather than inventing a way to produce the numbers itself. mediated mounts a pod-local agent whose TOOLS the harness holds, so the recorded trajectory is observed rather than self-reported; it takes answer(item, tools, ctx) and requires a top-level `tools` block. It is not a security sandbox and the docs say why."
         },
         "model": {
           "type": "string",
@@ -215,7 +228,7 @@
         "entrypoint": {
           "type": "string",
           "pattern": "^[^:]+\\.py(:[A-Za-z_][A-Za-z0-9_]*)?$",
-          "description": "Required when provider=python. `agent.py:run`, relative to the spec file; the symbol defaults to `run`. The file is hashed into every manifest, so editing it after a run is drift."
+          "description": "Pod-local callable this target mounts. `python` takes run(item, ctx) and writes its own trajectory; `mediated` takes answer(item, tools, ctx) and cannot, because the harness holds the tools and records the calls itself. The file is hashed into every manifest, so editing it after a run is drift."
         },
         "price_in": {
           "type": "number",
@@ -248,7 +261,10 @@
           "if": {
             "properties": {
               "provider": {
-                "const": "python"
+                "enum": [
+                  "python",
+                  "mediated"
+                ]
               }
             },
             "required": [
@@ -297,7 +313,7 @@
     "trajectory": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Declarative policy over what a target may and must do while answering. Judge-free by construction: these are facts about the recorded trace, not opinions about it. Checked by T1-T6. Note the trust boundary: the trace is self-reported by the target, so these verify the RECORD, not the EXECUTION.",
+      "description": "Declarative policy over what a target may and must do while answering. Judge-free by construction: these are facts about the recorded trace, not opinions about it. Checked by T1-T6. The trust boundary depends on the rail: a `python` target SELF-REPORTS its trace, so these verify the RECORD and not the EXECUTION; a `mediated` agent's trace is written by the harness, and forbidden_tools and max_steps are additionally ENFORCED at call time rather than audited afterwards.",
       "properties": {
         "required_tools": {
           "type": "array",

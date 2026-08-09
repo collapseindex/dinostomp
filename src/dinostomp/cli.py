@@ -856,7 +856,7 @@ def main(argv=None) -> int:
     p_run.add_argument("--framings", help="template probe: comma-separated framing names "
                                           "(default: all six)")
     p_run.add_argument("--probe", choices=["blind", "judge", "canary", "shuffle", "crossjudge",
-                                           "template"],
+                                           "template", "ablate"],
                        help="probe mode: 'blind' strips every input before the call and feeds R13; "
                             "'judge' grades constructed cases whose right verdict is known, then "
                             "regrades them under content-free perturbations, and feeds J1/J2. "
@@ -864,7 +864,10 @@ def main(argv=None) -> int:
                             "the real results. 'canary' asks each hosted model to continue "
                             "this pod's canary, alongside a passage it certainly memorised, and "
                             "feeds S10. 'shuffle' re-asks every choice item with its options "
-                            "permuted, and feeds P9")
+                            "permuted, and feeds P9. 'ablate' re-runs a MEDIATED agent "
+                            "with every tool result withheld: an answer that does not change "
+                            "when its evidence is taken away did not causally depend on it, "
+                            "which is what T7 reads and what T4 could only ever guess at")
     p_run.set_defaults(func=cmd_run)
 
     p_inspect = sub.add_parser("inspect", help="what a pod's Python touches, without running it")

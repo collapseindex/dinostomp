@@ -53,6 +53,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-006](#n-006) | four models | probe demonstrably sensitive, and no canary reproduced | negative |
 | [N-007](#n-007) | lm-eval-harness log | both reported metrics re-derive from the raw log-probs | negative |
 | [N-008](#n-008) | dinostomp | an even `run.repeats` reported p-squared, not p | measured, fixed |
+| [N-009](#n-009) | dinostomp | T4 sees 0%, T7 sees 100%, on the same agent | measured |
 | [D-001](#d-001) | dinostomp | the money invariant had only ever run at zero | fixed |
 | [D-002](#d-002) | dinostomp | pooling hid a model that never read the question | fixed |
 | [D-003](#d-003) | dinostomp | a collapsed model manufactured 8 phantom key errors | fixed |
@@ -72,13 +73,14 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-017](#d-017) | dinostomp | a truncated judge was diagnosed as a judge with no opinion | fixed |
 | [D-018](#d-018) | dinostomp | EVERY non-judge probe crashed the CLI, not just cross-judge | fixed |
 | [D-019](#d-019) | dinostomp | the docs claimed a 28-point swing with no run behind it | WITHDRAWN |
-| [D-020](#d-020) | dinostomp | the grounding check undercounts by 6x, by construction | scoped, not fixed |
+| [D-020](#d-020) | dinostomp | the grounding check undercounts by 6x, by construction | superseded by T7 |
 | [D-021](#d-021) | dinostomp | the most common eval-log shape in the field was unimportable | fixed |
 | [D-022](#d-022) | dinostomp | a check overwrote the contract's skip reason with a false one | fixed |
 | [D-023](#d-023) | dinostomp | a rival score column was chosen silently, and it was the wrong one | fixed |
 | [D-024](#d-024) | dinostomp | `run --dry` would fabricate records for a model it cannot call | fixed |
 | [D-025](#d-025) | dinostomp | an error message named a flag nobody can type | fixed |
 | [D-026](#d-026) | dinostomp | the item-majority estimator was never run live until now | fixed |
+| [D-027](#d-027) | dinostomp | two defects in the pod written to demonstrate the new rail | fixed |
 
 ---
 
@@ -89,7 +91,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 `dup-questions` (S1) · 2026-07 · confirmed
 
 The battery's first contact with real data was the most famous dataset in
-statistics. Transcript re-run under the current 55-check battery; the original
+statistics. Transcript re-run under the current 57-check battery; the original
 catch happened at 23 checks.
 
 ```
@@ -114,7 +116,7 @@ published report, which is what the fix looks like from the other side:
 
 ```
   [ok]   dup-questions   questions are unique   0 duplicated question(s) among 149
-MECHANICALLY SOUND: no integrity findings, full coverage (29 of 29 ran; 26 n/a of 55 declared)
+MECHANICALLY SOUND: no integrity findings, full coverage (29 of 29 ran; 28 n/a of 57 declared)
 ```
 
 ### F-002
@@ -616,6 +618,43 @@ k happened to be even.
 
 ---
 
+### N-009
+**The same agent, the same run: co-occurrence says 0%, the counterfactual says 100%**
+`answer-grounding` (T4) against `answer-grounding-causal` (T7) · 2026-08-09 · measured
+
+D-020 said T4 undercounts causally ungrounded answers by construction, and
+estimated the gap at 6x from a live pod. The mediated rail can measure it
+directly instead, because it can withhold the evidence and re-ask.
+
+[examples/mediated](examples/mediated/) runs three agents over 24 items.
+`oneshot` answers from memory FIRST and retrieves the right topic afterwards,
+so its trace is immaculate and its answer owes that trace nothing:
+
+```
+[ok]   answer-grounding         0 of 3 target(s) pass items whose answer does not APPEAR ...
+[warn] answer-grounding-causal  1 of 3 agent(s) answer identically with their evidence withheld
+         - oneshot: 18 of 18 passing answer(s) (100%) are unchanged when the evidence is withheld
+```
+
+**T4: 0 of 18. T7: 18 of 18.** Not a 6x gap, a total one, on this pod. T4 is not
+wrong about what it measures; it measures whether the answer APPEARS in the
+retrieved text, and here it always did, because `oneshot` retrieves the correct
+topic every time. Appearing is not using.
+
+**Why this is a negative result and not a victory lap.** T7 caught this on a
+SCRIPTED agent built to be caught, so what it demonstrates is that the
+instrument distinguishes two agents whose traces are identical, not that it
+finds ungrounded behaviour in the wild. The live-agent pod that produced D-020
+is on the self-reported rail and cannot be ablated without being rewritten.
+
+**T7's limits, one-sided in the same direction as T4's.** A nondeterministic
+agent differs between the two arms by chance, which makes T7 UNDERSTATE
+ungroundedness; it needs a deterministic agent or repeats. And an identical
+answer proves the evidence made no difference to THAT answer, not that the agent
+could never use evidence.
+
+---
+
 ### D-001
 **The money invariant had only ever run at zero**
 `spend-ledger` (R3) · first live fleet · fixed
@@ -967,12 +1006,15 @@ whether the answer **came from** them, because a trace records what was fetched
 and not what was used. When an agent answers from memory and retrieves the right
 topic anyway, the two coincide and the check sees nothing.
 
-**Not fixed, because the honest fix is not available from the trace.** Causal
-grounding needs either a counterfactual (does the answer change when the
-evidence is withheld?) or an execution harness that can tell what the model
-actually read. The first is a probe this tool could add and has not; the second
-is the sandboxed agent harness on the roadmap, and is the whole reason it is
-there.
+**SUPERSEDED in v0.42.0 by T7 `answer-grounding-causal`.** The fix named here
+was right and is now built: the mediated rail holds the tools, so `--probe
+ablate` can withhold every tool result and re-ask. An answer that does not move
+did not depend on the evidence. On a pod where T4 reports 0 of 18, T7 reports 18
+of 18 ([N-009](#n-009)).
+
+T4 is NOT removed and NOT softened. It is the only grounding check available on
+the self-reported rail, which is where most agent pods live, and its finding
+still says what it measures and which way it errs.
 
 What changes now is the claim. T4's finding text and METHODOLOGY said grounding
 was checked; they now say what is actually checked, which is co-occurrence, and
@@ -1130,6 +1172,32 @@ conservative.
 
 ---
 
+### D-027
+**Two defects in the pod written to demonstrate the new rail**
+`dup-questions` (S1), `forbidden-tool` (T1) · 2026-08-09 · fixed in v0.42.0
+
+The first run of `examples/mediated` came back **BROKEN, 2 gated findings**, in a
+pod written that hour by the person who wrote the checks:
+
+- **8 duplicated questions among 24.** The items were generated as three
+  repetitions of eight topics. The intent was three phrasings each; the loop
+  emitted the same phrasing three times. A pod meant to demonstrate careful
+  measurement shipped a third of the dataset as copies.
+- **24 forbidden tool calls.** A `rulebreaker` agent was included to show
+  call-time denial working, which gated the pod. Correct behaviour, wrong place:
+  a planted violation belongs in the trials, where the expectation is recorded,
+  not in a committed example whose verdict then reads BROKEN forever.
+
+Fixed by writing 24 genuinely distinct questions and moving the denial
+demonstration into `trials/run_trials.py`, where it now has an expectation
+(`T1 fail`) that the suite enforces.
+
+Recorded because the tool caught its own author, immediately, on the pod built
+to advertise it, and because the alternative was to notice neither and publish a
+duplicate-riddled example as a showcase.
+
+---
+
 ## The honest scorecard
 
 **Thirteen benchmarks audited**, all fetched from their authors and none
@@ -1144,10 +1212,10 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **8** |
-| defects in dinostomp itself (**D**) | **26** |
+| negative results, recorded rather than dropped (**N**) | **9** |
+| defects in dinostomp itself (**D**) | **27** |
 
-Twenty-six to seventeen. That ratio is the useful number to publish, and it is the
+Twenty-seven to seventeen. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

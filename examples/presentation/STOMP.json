@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.41.0",
+  "version": "0.42.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -263,7 +263,7 @@
     }
   },
   "coverage": {
-    "declared_total": 55,
+    "declared_total": 57,
     "declared": 38,
     "ran": 36,
     "skipped": [
@@ -299,27 +299,35 @@
       },
       {
         "id": "T1",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets; nothing produces a trajectory"
       },
       {
         "id": "T2",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets; nothing produces a trajectory"
       },
       {
         "id": "T3",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets; nothing produces a trajectory"
       },
       {
         "id": "T4",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets; nothing produces a trajectory"
       },
       {
         "id": "T5",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets; nothing produces a trajectory"
       },
       {
         "id": "T6",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T7",
+        "reason": "this spec runs no code targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T8",
+        "reason": "this spec runs no code targets; nothing produces a trajectory"
       },
       {
         "id": "J1",
@@ -689,7 +697,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 4beacd9962bd02c8); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now ec7785ff635370d3); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine cf11e5de89c91221: meta-llama/llama-3.2-3b-instruct seed 7 (tool 0.37.0), meta-llama/llama-3.1-8b-instruct seed 7 (tool 0.37.0), mistralai/ministral-8b-2512 seed 7 (tool 0.37.0) and 1 more"
@@ -715,7 +723,7 @@
       "check": "no forbidden tool is called",
       "level": "n/a",
       "gating": true,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets; nothing produces a trajectory",
       "witnesses": 0
     },
     {
@@ -724,7 +732,7 @@
       "check": "every required tool is actually called",
       "level": "n/a",
       "gating": true,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets; nothing produces a trajectory",
       "witnesses": 0
     },
     {
@@ -733,7 +741,7 @@
       "check": "trajectories are well-formed",
       "level": "n/a",
       "gating": true,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets; nothing produces a trajectory",
       "witnesses": 0
     },
     {
@@ -742,7 +750,7 @@
       "check": "passing answers are grounded in tool evidence",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets; nothing produces a trajectory",
       "witnesses": 0
     },
     {
@@ -751,7 +759,7 @@
       "check": "no model under-reports its trajectory",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets; nothing produces a trajectory",
       "witnesses": 0
     },
     {
@@ -760,7 +768,25 @@
       "check": "tool calls are not redundant",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "witnesses": 0
+    },
+    {
+      "id": "T7",
+      "slug": "answer-grounding-causal",
+      "check": "passing answers CHANGE when their evidence is withheld",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "witnesses": 0
+    },
+    {
+      "id": "T8",
+      "slug": "trace-observed",
+      "check": "the trajectory was observed, not self-reported",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this spec runs no code targets; nothing produces a trajectory",
       "witnesses": 0
     },
     {

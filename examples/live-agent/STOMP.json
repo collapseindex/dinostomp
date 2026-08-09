@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.41.0",
+  "version": "0.42.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -263,9 +263,9 @@
     }
   },
   "coverage": {
-    "declared_total": 55,
-    "declared": 40,
-    "ran": 31,
+    "declared_total": 57,
+    "declared": 41,
+    "ran": 32,
     "skipped": [
       {
         "id": "S10",
@@ -340,6 +340,10 @@
       {
         "id": "R20",
         "reason": "no run on disk repeats an item; a single pass per item cannot tie"
+      },
+      {
+        "id": "T7",
+        "reason": "no mediated agent on disk; only the harness can withhold a tool result, and a self-reporting target calls its own functions"
       },
       {
         "id": "J1",
@@ -706,7 +710,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now 4beacd9962bd02c8); re-run to get numbers this report can stand behind",
+      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now ec7785ff635370d3); re-run to get numbers this report can stand behind",
       "witnesses": 3,
       "examples": [
         "engine be4c83d7129cec32: live-grounded seed 7 (tool 0.38.0), live-oneshot seed 7 (tool 0.38.0), live-greedy seed 7 (tool 0.38.0)"
@@ -803,6 +807,33 @@
         "la-01 (live-greedy): 2 repeated identical call(s)",
         "la-02 (live-greedy): 1 repeated identical call(s)"
       ]
+    },
+    {
+      "id": "T7",
+      "slug": "answer-grounding-causal",
+      "check": "passing answers CHANGE when their evidence is withheld",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no mediated agent on disk; only the harness can withhold a tool result, and a self-reporting target calls its own functions",
+      "witnesses": 0
+    },
+    {
+      "id": "T8",
+      "slug": "trace-observed",
+      "check": "the trajectory was observed, not self-reported",
+      "level": "pass",
+      "gating": false,
+      "detail": "all 3 target(s) write their own trajectory, so T1-T6 verify the RECORD and not the EXECUTION: a target that omits a call from its own trace cannot be caught by reading it. Supported and stated, not a defect. Provider `mediated` moves the tools into the harness if you want the trace to be a log",
+      "witnesses": 3,
+      "evidence": {
+        "trajectory_sources": {
+          "self_reported": [
+            "live-greedy",
+            "live-grounded",
+            "live-oneshot"
+          ]
+        }
+      }
     },
     {
       "id": "J1",

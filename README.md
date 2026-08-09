@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.41.0 · Apache-2.0 · engine `4beacd9962bd02c8` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.42.0 · Apache-2.0 · engine `ec7785ff635370d3` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -26,7 +26,7 @@ One invariant runs under all of it: **nothing becomes evidence merely because an
 earlier stage said it was.** Summaries are recomputed from records, verdicts are
 re-scored from recorded text, and the engine hashes itself into its own output.
 
-Fifty-five checks, each negative-tested to prove it fires, most invisible until
+Fifty-seven checks, each negative-tested to prove it fires, most invisible until
 something breaks.
 
 | stage | what goes wrong there | something it caught |
@@ -128,7 +128,7 @@ Four things then happen that you did not ask for, and they are the product:
   between seeds is a finding; another moving 11.5 points is not, if its sample
   is smaller. The battery does that arithmetic so nobody has to eyeball it.
 - **Coverage is stated, always.** `MECHANICALLY SOUND: no integrity findings,
-  full coverage (29 of 29 ran; 26 n/a of 55 declared)` is a different claim from
+  full coverage (29 of 29 ran; 28 n/a of 57 declared)` is a different claim from
   a green tick, and the difference is printed every time.
 - **Nothing is trusted downstream of the run.** Summaries are recomputed from
   records, verdicts are re-scored offline, and hand-editing either is a gated
@@ -209,6 +209,46 @@ dinostomp itself, written up as D-021 to D-025. The log's own numbers came back
 clean: both metrics it reports re-derive exactly from the raw log-probabilities
 in the same file (N-007).
 
+## Agents: audit the execution, not the diary
+
+Point a spec at pod-local Python and it mounts as an examinee, with the budget
+cap, the ledger, the witness gate and the whole battery applied unchanged. Two
+rails, and the difference is who writes the trace.
+
+On the **self-reported** rail the agent writes its own trajectory, and an agent
+that omits a call from its trace cannot be caught by reading it. On the
+**mediated** rail the harness holds the tools:
+
+```yaml
+tools:
+  retrieve: tools.py:retrieve
+models:
+  - {provider: mediated, model: grounded, entrypoint: agent.py:answer}
+```
+
+Now the trajectory is a log, a forbidden tool is denied when the agent reaches
+for it rather than noticed afterwards, and evidence can be **withheld**:
+
+```bash
+dinostomp run examples/mediated/eval.yaml --probe ablate
+```
+
+```
+[ok]   answer-grounding         0 of 3 target(s) pass items whose answer does not APPEAR ...
+[warn] answer-grounding-causal  1 of 3 agent(s) answer identically with their evidence withheld
+         - oneshot: 18 of 18 passing answer(s) (100%) are unchanged when the evidence is withheld
+```
+
+The first check asks whether the answer *appears* in the retrieved evidence, and
+an agent answering from memory that retrieves the right thing anyway sails past
+it. The second takes the evidence away and asks whether the answer changes. It
+did not, for any of them.
+
+**This is not a sandbox**, and the name is deliberate: the agent is ordinary
+Python in this process and can reach around the harness whenever it likes.
+Mediation makes the trace trustworthy, not the agent. The distinction is
+asserted in the test suite, not just written down.
+
 ## Extending it
 
 The core is small and owns what `BROKEN` means. Two rails grow around it, and
@@ -235,7 +275,7 @@ extension is named, versioned and hashed in the report, so a `SOUND` is always a
 claim about a specific set of code.
 
 The full contract, including why an extension is trusted when a stranger's pod
-is not, is in **[METHODOLOGY.md](METHODOLOGY.md)** along with all fifty-five
+is not, is in **[METHODOLOGY.md](METHODOLOGY.md)** along with all fifty-seven
 checks and why each one exists.
 
 ## In CI
@@ -250,7 +290,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.41.0
+- uses: collapseindex/dinostomp@v0.42.0
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -264,7 +304,7 @@ It installs dinostomp from PyPI by default, which does not exist yet, so pass
 `version:` pointing at this repo until it does:
 
 ```yaml
-    version: "git+https://github.com/collapseindex/dinostomp@v0.41.0"
+    version: "git+https://github.com/collapseindex/dinostomp@v0.42.0"
 ```
 
 That is stated rather than hidden because a copy-pasteable block that fails for
@@ -272,7 +312,7 @@ the first person who tries it is a credibility wound in a document whose whole
 thesis is receipts.
 
 `dinostomp report` also writes `stomp-badge.svg`, which carries the verdict and
-its coverage fraction together (`sound 55/55`) so a badge on a README cannot
+its coverage fraction together (`sound 57/57`) so a badge on a README cannot
 outrun the evidence behind it.
 
 ## Before you trust it
@@ -293,10 +333,10 @@ measures the intended construct: NOT ESTABLISHED BY DINOSTOMP
 That is a constant. There is no flag and no code path that sets it to anything
 else, and a test walks the source to keep it that way. This battery checks
 mechanical integrity; construct validity is argued, not computed, and a trivial,
-mis-aimed, or saturated eval can pass every check here. Fifty-five is not a
+mis-aimed, or saturated eval can pass every check here. Fifty-seven is not a
 number that bounds the ways an eval can be invalid.
 
-**The self-tests are not independent validation.** 83 of 83 caught means every
+**The self-tests are not independent validation.** 86 of 86 caught means every
 check fires on the failure it was built for. Those failures were planted by the
 same hands that wrote the checks, so it says nothing about defects nobody here
 imagined, and the scorecard prints that caveat under its own score. The next
@@ -308,11 +348,11 @@ published next to the tool's own defects.
 **The battery ships with its own validation, and you can run it.**
 
 ```bash
-python trials/run_trials.py        # 83 planted defects, 13 pods that must stay clean
+python trials/run_trials.py        # 86 planted defects, 14 pods that must stay clean
 python trials/pin_thresholds.py    # which of its own thresholds are load-bearing
 ```
 
-The current answers are 83 of 83 caught, 0 false alarms, and 25 of 33 thresholds
+The current answers are 86 of 86 caught, 0 false alarms, and 25 of 33 thresholds
 pinned. That last number is published because it is uncomfortable: eight
 thresholds could be quietly loosened today without a single trial noticing, and
 the tool names them.
@@ -321,7 +361,7 @@ the tool names them.
 
 - **[AUTHORING.md](AUTHORING.md)** — writing a spec, or having a model write one: the schema contract and the self-correction loop
 - **[FINDINGS.md](FINDINGS.md)** — what it found, in MMLU, GSM8K, TruthfulQA, and in itself
-- **[METHODOLOGY.md](METHODOLOGY.md)** — the fifty-five checks, the pod format, the philosophy, the self-audit
+- **[METHODOLOGY.md](METHODOLOGY.md)** — the fifty-seven checks, the pod format, the philosophy, the self-audit
 - **[SECURITY.md](SECURITY.md)** — pod code, untrusted model output, money, what this does not do
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — the entry fee for a new check is a planted defect, not an argument
 - **[REFERENCES.md](REFERENCES.md)** — where the borrowed methods come from, what the audited benchmarks are, and what this deliberately does not borrow
@@ -329,7 +369,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`4beacd9962bd02c88c5e5a102e630431621b2689120ac4d3bc26dd6eda3de364`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`ec7785ff635370d398ff21a7e8ce5b48518bf451e4f0257b21a8170be6d66fd5`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

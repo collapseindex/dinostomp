@@ -1,5 +1,48 @@
 # Changelog
 
+### v0.42.0 (2026-08-09)
+
+The agent harness that has been on the roadmap since v0.11, built, and
+deliberately NOT called a sandbox.
+
+- **New rail: `provider: mediated`.** The harness holds the tools. An agent gets
+  `answer(item, tools, ctx)` and reaches a tool only through the `tools` object,
+  so the recorded trajectory is a log of calls that happened rather than the
+  agent's account of them. A mediated agent that returns its own `trajectory`
+  **stops the run** rather than having it ignored: steps the harness never saw
+  are unverifiable evidence inside a record that claims to be a log.
+- **Policy is enforced at call time.** `forbidden_tools` and `max_steps` are
+  refused when the agent reaches for them, not audited afterwards, and the
+  attempt is recorded before it is refused. A denial that left no trace would
+  make a thwarted agent look like a well-behaved one.
+- **New probe `--probe ablate`, and T7 `answer-grounding-causal`.** The probe
+  re-runs every item with each tool RESULT replaced by a marker. T7 compares the
+  arms: an answer that comes out identical did not causally depend on the
+  evidence. This is what D-020 said was needed and is now **superseded by**.
+- **N-009: T4 reports 0 of 18 where T7 reports 18 of 18**, on the same agent in
+  the same pod. `oneshot` answers from memory and retrieves the right topic
+  afterwards, so its answer always APPEARS in its evidence and never depends on
+  it. Not the 6x gap D-020 estimated: a total one, on this pod.
+- **T8 `trace-observed`** records and prints which rail wrote a trajectory. It
+  warns only on a fleet that MIXES rails, where T1-T6 mean different things per
+  model in one table. Self-report alone is a supported choice with a stated
+  limit, and a warning that fires on every pod of a kind teaches people to
+  ignore warnings.
+- Battery 55 -> 57. Trials 83 -> 86 planted, 13 -> 14 clean, covering T7 in both
+  directions, T8 on a mixed fleet, and T1 denying a call on the mediated rail.
+- **NOT A SANDBOX.** The agent is ordinary in-process Python and can import
+  `os`, open a socket, or monkeypatch the harness. Mediation makes the TRACE
+  trustworthy, not the AGENT. `tests/test_harness.py` asserts that rather than
+  leaving it in a docstring, so adding real isolation later has to break a test
+  and rewrite the claim on purpose. Real isolation needs a subprocess with a
+  sanitised environment and a denied network, and is the next increment.
+- **D-027: the demo pod shipped with two defects and the battery caught both.**
+  8 of 24 questions were duplicates (a generator loop that emitted one phrasing
+  three times instead of three), and a planted policy violation gated a
+  committed example. Both fixed; the violation moved to the trials, where a
+  planted defect carries an expectation.
+- New pod `examples/mediated`, new suite `tests/test_harness.py`.
+
 ### v0.41.0 (2026-08-09)
 
 `run.repeats` run live for the first time. It had unit tests, two

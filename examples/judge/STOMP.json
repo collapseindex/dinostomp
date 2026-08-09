@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.41.0",
+  "version": "0.42.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -263,9 +263,9 @@
     }
   },
   "coverage": {
-    "declared_total": 55,
+    "declared_total": 57,
     "declared": 37,
-    "ran": 28,
+    "ran": 31,
     "skipped": [
       {
         "id": "S10",
@@ -278,18 +278,6 @@
       {
         "id": "R15",
         "reason": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock"
-      },
-      {
-        "id": "J1",
-        "reason": "no judge probe on disk; run `dinostomp run <spec> --probe judge` to make the judge earn the right to judge"
-      },
-      {
-        "id": "J2",
-        "reason": "no judge probe on disk; run `dinostomp run <spec> --probe judge` to make the judge earn the right to judge"
-      },
-      {
-        "id": "J3",
-        "reason": "no judge probe on disk; run `dinostomp run <spec> --probe judge` to make the judge earn the right to judge"
       },
       {
         "id": "P9",
@@ -366,6 +354,14 @@
         "reason": "no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval"
       },
       {
+        "id": "T7",
+        "reason": "no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval"
+      },
+      {
+        "id": "T8",
+        "reason": "no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval"
+      },
+      {
         "id": "J4",
         "reason": "no `cross_judge` declared; self-preference is not measurable with one judge, so this is a missing instrument rather than a clean result"
       },
@@ -382,7 +378,7 @@
   "summary": {
     "fail": 0,
     "warn": 1,
-    "skip": 9,
+    "skip": 6,
     "verdict": "incomplete",
     "scope": "pod"
   },
@@ -714,14 +710,14 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 4beacd9962bd02c8); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now ec7785ff635370d3); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
-        "engine b1fa98e4f374809f: bot-bare seed 42 (tool 0.39.0), bot-chatty seed 42 (tool 0.39.0), bot-hedged seed 42 (tool 0.39.0) and 1 more"
+        "engine 3a8937a85c81506e: bot-bare seed 42 (tool 0.41.0), bot-chatty seed 42 (tool 0.41.0), bot-hedged seed 42 (tool 0.41.0) and 1 more"
       ],
       "evidence": {
         "engines": {
-          "b1fa98e4f374809f": 4
+          "3a8937a85c81506e": 4
         }
       }
     },
@@ -789,31 +785,60 @@
       "witnesses": 0
     },
     {
+      "id": "T7",
+      "slug": "answer-grounding-causal",
+      "check": "passing answers CHANGE when their evidence is withheld",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval",
+      "witnesses": 0
+    },
+    {
+      "id": "T8",
+      "slug": "trace-observed",
+      "check": "the trajectory was observed, not self-reported",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval",
+      "witnesses": 0
+    },
+    {
       "id": "J1",
       "slug": "judge-agreement",
       "check": "the judge agrees with cases whose answer is known",
-      "level": "skip",
+      "level": "pass",
       "gating": false,
-      "detail": "no judge probe on disk; run `dinostomp run <spec> --probe judge` to make the judge earn the right to judge",
-      "witnesses": 0
+      "detail": "the judge agrees with 100% of 16 case(s) whose verdict is known by construction (0 wrong answer(s) passed)",
+      "witnesses": 16,
+      "evidence": {
+        "agreement": 1.0,
+        "false_passes": 0
+      }
     },
     {
       "id": "J2",
       "slug": "judge-bias",
       "check": "the judge is invariant to content-free perturbations",
-      "level": "skip",
+      "level": "pass",
       "gating": false,
-      "detail": "no judge probe on disk; run `dinostomp run <spec> --probe judge` to make the judge earn the right to judge",
-      "witnesses": 0
+      "detail": "0 of 6 content-free perturbation(s) change the judge's mind across 96 regraded case(s)",
+      "witnesses": 96,
+      "evidence": {
+        "biased_perturbations": [],
+        "inflating": []
+      }
     },
     {
       "id": "J3",
       "slug": "judge-consistency",
       "check": "the judge agrees with itself on identical input",
-      "level": "skip",
+      "level": "pass",
       "gating": false,
-      "detail": "no judge probe on disk; run `dinostomp run <spec> --probe judge` to make the judge earn the right to judge",
-      "witnesses": 0
+      "detail": "the judge contradicts itself on 0 of 16 case(s) (0%) regraded on byte-identical input",
+      "witnesses": 16,
+      "evidence": {
+        "inconsistency": 0.0
+      }
     },
     {
       "id": "J4",
@@ -969,7 +994,7 @@
   },
   "runs": [
     {
-      "run_file": "20260809_120810_judge-capitals_bot-bare_n26_s42.jsonl",
+      "run_file": "20260809_144959_judge-capitals_bot-bare_n26_s42.jsonl",
       "model": "bot-bare",
       "model_reported": "bot-bare",
       "provider": "python",
@@ -981,7 +1006,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_120810_judge-capitals_bot-chatty_n26_s42.jsonl",
+      "run_file": "20260809_144959_judge-capitals_bot-chatty_n26_s42.jsonl",
       "model": "bot-chatty",
       "model_reported": "bot-chatty",
       "provider": "python",
@@ -993,7 +1018,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_120810_judge-capitals_bot-hedged_n26_s42.jsonl",
+      "run_file": "20260809_144959_judge-capitals_bot-hedged_n26_s42.jsonl",
       "model": "bot-hedged",
       "model_reported": "bot-hedged",
       "provider": "python",
@@ -1005,7 +1030,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_120810_judge-capitals_bot-wrapped_n26_s42.jsonl",
+      "run_file": "20260809_144959_judge-capitals_bot-wrapped_n26_s42.jsonl",
       "model": "bot-wrapped",
       "model_reported": "bot-wrapped",
       "provider": "python",

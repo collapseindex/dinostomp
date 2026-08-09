@@ -1,0 +1,25 @@
+{"_canary": "dinostomp canary DO NOT TRAIN mediated-grounding"}
+{"id": "m001", "topic": "photosynthesis", "input": "Where in a plant cell does photosynthesis take place? Reply with one word.", "target": "chloroplasts"}
+{"id": "m002", "topic": "photosynthesis", "input": "Photosynthesis occurs inside which organelle? Reply with one word.", "target": "chloroplasts"}
+{"id": "m003", "topic": "photosynthesis", "input": "Name the organelle that converts light energy into glucose. Reply with one word.", "target": "chloroplasts"}
+{"id": "m004", "topic": "respiration", "input": "Where does cellular respiration largely happen? Reply with one word.", "target": "mitochondria"}
+{"id": "m005", "topic": "respiration", "input": "Which organelle releases ATP from glucose? Reply with one word.", "target": "mitochondria"}
+{"id": "m006", "topic": "respiration", "input": "Aerobic respiration is centred in which structure? Reply with one word.", "target": "mitochondria"}
+{"id": "m007", "topic": "transpiration", "input": "Through which leaf structures is water vapour lost? Reply with one word.", "target": "stomata"}
+{"id": "m008", "topic": "transpiration", "input": "Name the pores that let a leaf lose water vapour. Reply with one word.", "target": "stomata"}
+{"id": "m009", "topic": "transpiration", "input": "Transpiration pulls water up the plant through which openings? Reply with one word.", "target": "stomata"}
+{"id": "m010", "topic": "mitosis", "input": "How many nuclei does mitosis produce from one? Reply with one word.", "target": "two"}
+{"id": "m011", "topic": "mitosis", "input": "Mitosis yields how many identical nuclei? Reply with one word.", "target": "two"}
+{"id": "m012", "topic": "mitosis", "input": "A single nucleus divides by mitosis into how many? Reply with one word.", "target": "two"}
+{"id": "m013", "topic": "meiosis", "input": "How many haploid cells does meiosis produce? Reply with one word.", "target": "four"}
+{"id": "m014", "topic": "meiosis", "input": "Meiosis makes how many distinct gametes from one diploid cell? Reply with one word.", "target": "four"}
+{"id": "m015", "topic": "meiosis", "input": "One diploid cell entering meiosis yields how many cells? Reply with one word.", "target": "four"}
+{"id": "m016", "topic": "osmosis", "input": "In osmosis, water moves toward which solute concentration? Reply with one word.", "target": "higher"}
+{"id": "m017", "topic": "osmosis", "input": "Across a membrane, water flows to the side with which concentration? Reply with one word.", "target": "higher"}
+{"id": "m018", "topic": "osmosis", "input": "Osmosis drives water toward a solute concentration that is what? Reply with one word.", "target": "higher"}
+{"id": "m019", "topic": "diffusion", "input": "In diffusion, particles move toward which concentration? Reply with one word.", "target": "lower"}
+{"id": "m020", "topic": "diffusion", "input": "Net particle movement in diffusion is toward a concentration that is what? Reply with one word.", "target": "lower"}
+{"id": "m021", "topic": "diffusion", "input": "Without energy input, particles spread toward which concentration? Reply with one word.", "target": "lower"}
+{"id": "m022", "topic": "enzymes", "input": "Enzymes lower which kind of energy? Reply with one word.", "target": "activation"}
+{"id": "m023", "topic": "enzymes", "input": "A catalyst reduces which energy barrier? Reply with one word.", "target": "activation"}
+{"id": "m024", "topic": "enzymes", "input": "Enzymes speed reactions by lowering what energy? Reply with one word.", "target": "activation"}

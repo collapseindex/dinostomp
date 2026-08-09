@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.41.0",
+  "version": "0.42.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -263,7 +263,7 @@
     }
   },
   "coverage": {
-    "declared_total": 55,
+    "declared_total": 57,
     "declared": 28,
     "ran": 18,
     "skipped": [
@@ -359,27 +359,35 @@
       },
       {
         "id": "T1",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets; nothing produces a trajectory"
       },
       {
         "id": "T2",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets; nothing produces a trajectory"
       },
       {
         "id": "T3",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets; nothing produces a trajectory"
       },
       {
         "id": "T4",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets; nothing produces a trajectory"
       },
       {
         "id": "T5",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets; nothing produces a trajectory"
       },
       {
         "id": "T6",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T7",
+        "reason": "this spec runs no code targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T8",
+        "reason": "this spec runs no code targets; nothing produces a trajectory"
       },
       {
         "id": "J1",
@@ -734,14 +742,14 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "1 of 1 run(s) were produced by a different engine than the one auditing them (now 4beacd9962bd02c8); re-run to get numbers this report can stand behind",
+      "detail": "1 of 1 run(s) were produced by a different engine than the one auditing them (now ec7785ff635370d3); re-run to get numbers this report can stand behind",
       "witnesses": 1,
       "examples": [
-        "engine b1fa98e4f374809f: dry-strong seed 42 (tool 0.39.0)"
+        "engine 3a8937a85c81506e: dry-strong seed 42 (tool 0.41.0)"
       ],
       "evidence": {
         "engines": {
-          "b1fa98e4f374809f": 1
+          "3a8937a85c81506e": 1
         }
       }
     },
@@ -760,7 +768,7 @@
       "check": "no forbidden tool is called",
       "level": "n/a",
       "gating": true,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets; nothing produces a trajectory",
       "witnesses": 0
     },
     {
@@ -769,7 +777,7 @@
       "check": "every required tool is actually called",
       "level": "n/a",
       "gating": true,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets; nothing produces a trajectory",
       "witnesses": 0
     },
     {
@@ -778,7 +786,7 @@
       "check": "trajectories are well-formed",
       "level": "n/a",
       "gating": true,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets; nothing produces a trajectory",
       "witnesses": 0
     },
     {
@@ -787,7 +795,7 @@
       "check": "passing answers are grounded in tool evidence",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets; nothing produces a trajectory",
       "witnesses": 0
     },
     {
@@ -796,7 +804,7 @@
       "check": "no model under-reports its trajectory",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets; nothing produces a trajectory",
       "witnesses": 0
     },
     {
@@ -805,7 +813,25 @@
       "check": "tool calls are not redundant",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "witnesses": 0
+    },
+    {
+      "id": "T7",
+      "slug": "answer-grounding-causal",
+      "check": "passing answers CHANGE when their evidence is withheld",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "witnesses": 0
+    },
+    {
+      "id": "T8",
+      "slug": "trace-observed",
+      "check": "the trajectory was observed, not self-reported",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this spec runs no code targets; nothing produces a trajectory",
       "witnesses": 0
     },
     {
@@ -959,7 +985,7 @@
   },
   "runs": [
     {
-      "run_file": "20260809_120804_smoke-arith_dry-strong_n6_s42.jsonl",
+      "run_file": "20260809_144953_smoke-arith_dry-strong_n6_s42.jsonl",
       "model": "dry-strong",
       "model_reported": "dry-strong",
       "provider": "dry",

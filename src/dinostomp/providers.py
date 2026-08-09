@@ -253,7 +253,7 @@ PROVIDERS = {
 # Providers whose calls cost nothing the ledger has to price. `python` targets
 # may still report their OWN spend (an agent calling a paid API inside itself);
 # that number is target-reported and the manifest labels it as such.
-ZERO_RATE_PROVIDERS = frozenset({"dry", "python"})
+ZERO_RATE_PROVIDERS = frozenset({"dry", "python", "mediated"})
 
 
 def make_provider(provider: str, model: str, **kw):
@@ -267,6 +267,15 @@ def make_provider(provider: str, model: str, **kw):
         if not entrypoint:
             raise ProviderError("a python target requires an entrypoint (e.g. agent.py:run)")
         return PythonTarget(model, entrypoint, kw.get("base_dir") or Path("."))
+    if provider == "mediated":
+        from dinostomp.harness import MediatedTarget  # local: harness imports Completion from here
+
+        entrypoint = kw.get("entrypoint")
+        if not entrypoint:
+            raise ProviderError("a mediated agent requires an entrypoint (e.g. agent.py:answer)")
+        return MediatedTarget(model, entrypoint, kw.get("base_dir") or Path("."),
+                              tools=kw.get("tools"), forbidden=kw.get("forbidden"),
+                              max_steps=kw.get("max_steps"), ablate=bool(kw.get("ablate")))
     if provider not in PROVIDERS:
         raise ProviderError(f"unknown provider: {provider!r}")
     return PROVIDERS[provider](model)

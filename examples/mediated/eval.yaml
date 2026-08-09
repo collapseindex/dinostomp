@@ -1,0 +1,77 @@
+name: mediated-grounding
+version: 0.1.0
+question: "Do these agents' correct answers actually depend on the evidence they retrieved?"
+
+# THE POD THAT CLOSES D-020.
+#
+# T4 asks whether a passing answer APPEARS in the trace's tool results. That is
+# co-occurrence. On a live pod the gap was 6x: an agent that answered from
+# memory and retrieved the right topic afterwards was 100% causally ungrounded
+# and T4 reported 16%. No amount of reading the trace harder fixes it, because a
+# trace records what was FETCHED, not what was READ.
+#
+# This pod is on the `mediated` rail, where the harness holds the tools. Two
+# things follow that the self-reported rail cannot offer:
+#
+#   1. the trajectory is a LOG, not testimony (T8 says which you are reading)
+#   2. tool results can be WITHHELD, which turns grounding into a counterfactual
+#
+#      dinostomp run   examples/mediated/eval.yaml
+#      dinostomp run   examples/mediated/eval.yaml --probe ablate
+#      dinostomp stomp examples/mediated/eval.yaml
+#
+# `oneshot` is the arm that matters: it scores well, its trace looks diligent,
+# and its answers do not move when the evidence disappears. `greedy` is the
+# control, because "flags ungrounded agents" and "flags agents with messy
+# traces" have to be different experiments.
+#
+# NOT A SANDBOX, and the name is deliberate. The agent is ordinary Python in
+# this process; nothing stops it importing os or opening a socket. What
+# mediation buys is an observed trace and call-time policy, which is real and
+# narrower than the word "sandbox" would promise. See METHODOLOGY.
+
+entitled_claims:
+  - "Whether each agent's correct answers change when its retrieved evidence is withheld, on these 24 items."
+  - "Nothing about biology: the corpus is eight authored sentences and the agents are scripted."
+  - "Nothing about security: mediation is not isolation, and this pod's agents are trusted code."
+
+data: {path: items.jsonl, format: jsonl}
+
+# Tools live with the HARNESS. The agent never imports tools.py; it is handed a
+# `tools` object and every call through it is recorded by dinostomp. Each tool
+# is hashed into every manifest, so swapping one between runs is drift.
+tools:
+  retrieve: tools.py:retrieve
+  shell: tools.py:shell
+
+models:
+  - {provider: mediated, model: grounded, entrypoint: agent.py:answer}
+  - {provider: mediated, model: oneshot, entrypoint: agent.py:answer}
+  - {provider: mediated, model: greedy, entrypoint: agent.py:answer}
+
+# On this rail the policy is ENFORCED, not just audited: `shell` is denied when
+# an agent reaches for it, and the attempt is recorded either way. A denial that
+# left no trace would make a thwarted agent look like a well-behaved one.
+#
+# No agent here reaches for it, so this pod stays clean. The denial path is
+# proven where planted violations belong: `trials/run_trials.py` runs an agent
+# that calls a forbidden tool and asserts T1 fires on the recorded attempt.
+trajectory:
+  required_tools: [retrieve]
+  forbidden_tools: [shell]
+  max_steps: 6
+
+scorer:
+  kind: exact
+  witnesses:
+    - {output: "chloroplasts", target: "chloroplasts", expect: pass}
+    - {output: "mitochondria", target: "chloroplasts", expect: fail}
+    - {output: "", target: "chloroplasts", expect: fail}
+    - {output: "Chloroplasts", target: "chloroplasts", expect: fail,
+       why: "case matters here, and the pod says so"}
+    - {output: "in chloroplasts", target: "chloroplasts", expect: fail,
+       why: "a wrapper is not a bare answer; this kills the substring-lenient mutant"}
+    - {output: "not chloroplasts", target: "chloroplasts", expect: fail,
+       why: "negation must not be credited"}
+
+run: {n: 24, seed: 7, budget_usd: 0}

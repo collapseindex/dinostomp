@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**OK**: no failures, 1 warning(s) (29 of 29 ran; 26 n/a of 55 declared)
+**OK**: no failures, 1 warning(s) (29 of 29 ran; 28 n/a of 57 declared)
 
 > All runs used the offline dry provider; results exercise the benchmark, not any real model.
 
@@ -35,9 +35,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | ok | summaries match their run records | 6 | 0 summary discrepanc(ies) across 6 run(s) |
 | ok | records cover exactly the seeded selection | 6 | 0 of 6 run(s) do not cover their seeded selection |
 | ok | every model produced something scoreable | 6 | 0 of 6 model(s) produced nothing scoreable |
-| n/a | no forbidden tool is called | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | every required tool is actually called | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | trajectories are well-formed | 0 | this spec runs no python targets; nothing produces a trajectory |
+| n/a | no forbidden tool is called | 0 | this spec runs no code targets; nothing produces a trajectory |
+| n/a | every required tool is actually called | 0 | this spec runs no code targets; nothing produces a trajectory |
+| n/a | trajectories are well-formed | 0 | this spec runs no code targets; nothing produces a trajectory |
 | ok | every model was asked the same items | 6 | 0 of 6 model(s) were asked a different item set |
 
 ### Diagnostics (statistical, advisory)
@@ -62,11 +62,13 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | ok | failed answers do not contain the reference | 5 | 0 of 5 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 6 | 6 of 6 run(s) were produced by a different engine than the one auditing them (now 4beacd9962bd02c8); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 6 | 6 of 6 run(s) were produced by a different engine than the one auditing them (now ec7785ff635370d3); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
-| n/a | passing answers are grounded in tool evidence | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | no model under-reports its trajectory | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | tool calls are not redundant | 0 | this spec runs no python targets; nothing produces a trajectory |
+| n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets; nothing produces a trajectory |
+| n/a | no model under-reports its trajectory | 0 | this spec runs no code targets; nothing produces a trajectory |
+| n/a | tool calls are not redundant | 0 | this spec runs no code targets; nothing produces a trajectory |
+| n/a | passing answers CHANGE when their evidence is withheld | 0 | this spec runs no code targets; nothing produces a trajectory |
+| n/a | the trajectory was observed, not self-reported | 0 | this spec runs no code targets; nothing produces a trajectory |
 | n/a | the judge agrees with cases whose answer is known | 0 | this eval does not score with a judge |
 | n/a | the judge is invariant to content-free perturbations | 0 | this eval does not score with a judge |
 | n/a | the judge agrees with itself on identical input | 0 | this eval does not score with a judge |
@@ -107,8 +109,8 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[warn] the runs were produced by this engine</summary>
 
-- engine b1fa98e4f374809f: dry-alpha seed 42 (tool 0.39.0), dry-bravo seed 42 (tool 0.39.0), dry-charlie seed 42 (tool 0.39.0) and 3 more
-- evidence: `{"engines": {"b1fa98e4f374809f": 6}}`
+- engine 3a8937a85c81506e: dry-alpha seed 42 (tool 0.41.0), dry-bravo seed 42 (tool 0.41.0), dry-charlie seed 42 (tool 0.41.0) and 3 more
+- evidence: `{"engines": {"3a8937a85c81506e": 6}}`
 
 </details>
 <details><summary>[ok] fleet score totals are reliable (KR-20)</summary>
@@ -141,16 +143,16 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260809_120806_iris-species_dry-alpha_n149_s42.jsonl | dry-alpha | (same) | dry | yes | 42 | 149 | 0 |
-| 20260809_120807_iris-species_dry-bravo_n149_s42.jsonl | dry-bravo | (same) | dry | yes | 42 | 149 | 0 |
-| 20260809_120807_iris-species_dry-charlie_n149_s42.jsonl | dry-charlie | (same) | dry | yes | 42 | 149 | 0 |
-| 20260809_120807_iris-species_dry-delta_n149_s42.jsonl | dry-delta | (same) | dry | yes | 42 | 149 | 0 |
-| 20260809_120807_iris-species_dry-echo_n149_s42.jsonl | dry-echo | (same) | dry | yes | 42 | 149 | 0 |
-| 20260809_120807_iris-species_dry-foxtrot_n149_s42.jsonl | dry-foxtrot | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_144956_iris-species_dry-alpha_n149_s42.jsonl | dry-alpha | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_144956_iris-species_dry-bravo_n149_s42.jsonl | dry-bravo | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_144957_iris-species_dry-charlie_n149_s42.jsonl | dry-charlie | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_144957_iris-species_dry-delta_n149_s42.jsonl | dry-delta | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_144957_iris-species_dry-echo_n149_s42.jsonl | dry-echo | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_144957_iris-species_dry-foxtrot_n149_s42.jsonl | dry-foxtrot | (same) | dry | yes | 42 | 149 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.41.0
+- tool: dinostomp 0.42.0
 - statistical power: at n=149 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~16% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `b6443a36d9d3b0e15c9885a555de15cfffc25e25a646884f4f4d460787b6bc60`
 - data_sha256: `153c4dcefb332e38221e8a27b3f46b179d6dbf46ef834bbd87e188b0acda5942`

@@ -111,6 +111,9 @@ CHECKS: list[tuple[str, str, bool, str]] = [
     ("T4", "passing answers are grounded in tool evidence", False, "trajectories carrying tool results"),
     ("T5", "no model under-reports its trajectory", False, "2+ python-target models on disk"),
     ("T6", "tool calls are not redundant", False, "python-target runs on disk"),
+    ("T7", "passing answers CHANGE when their evidence is withheld", False,
+     "a mediated agent plus an ablation probe"),
+    ("T8", "the trajectory was observed, not self-reported", False, "target runs on disk"),
     ("J1", "the judge agrees with cases whose answer is known", False, "judge probe on disk"),
     ("J2", "the judge is invariant to content-free perturbations", False, "judge probe on disk"),
     ("J3", "the judge agrees with itself on identical input", False, "judge probe on disk"),
@@ -229,6 +232,7 @@ SLUGS = {
     "R19": "engine-drift", "R20": "repeat-ties",
     "T1": "forbidden-tool", "T2": "required-tool", "T3": "trajectory-shape",
     "T4": "answer-grounding", "T5": "trace-underreport", "T6": "redundant-calls",
+    "T7": "answer-grounding-causal", "T8": "trace-observed",
     "J1": "judge-agreement", "J2": "judge-bias", "J3": "judge-consistency",
     "J4": "judge-self-preference",
     "P1": "fleet-reliability", "P2": "item-discrimination", "P3": "dead-weight",
@@ -337,7 +341,7 @@ RUN_CHECK_IDS = ("R1", "R3", "R4", "R5", "R6", "R8", "R9", "R10", "R11", "R12", 
                  "R18", "R19", "R20")
 PSYCHO_CHECK_IDS = ("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8")
 # P9 lives with the probes, not the fleet matrix: it needs a probe run, not more models.
-TRAJECTORY_CHECK_IDS = ("T1", "T2", "T3", "T4", "T5", "T6")
+TRAJECTORY_CHECK_IDS = ("T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8")
 JUDGE_CHECK_IDS = ("J1", "J2", "J3", "J4")
 
 # entitled_claims phrases that assert one model beats another; P6 only
@@ -902,7 +906,8 @@ def collapsed_models(runs: list[dict], modal_share: float,
     return out
 
 
-def _trajectory_checks(rep: Reporter, mine: list[dict], spec: dict, items: list[dict]) -> None:
+def _trajectory_checks(rep: Reporter, mine: list[dict], spec: dict, items: list[dict],
+                       probes: list[dict] | None = None) -> None:
     """T1-T6: the agent rail's battery, over SELF-REPORTED execution traces.
 
     Scope discipline, because this is the easiest place in the toolkit to
@@ -916,17 +921,20 @@ def _trajectory_checks(rep: Reporter, mine: list[dict], spec: dict, items: list[
     forbidden = set(policy.get("forbidden_tools") or [])
     max_steps = policy.get("max_steps")
 
-    if not any(mc.get("provider") == "python" for mc in spec["models"]):
+    # BOTH code rails produce a trajectory. They differ in who WROTE it, which
+    # is T8's job to state, not a reason to skip the other seven.
+    CODE_RAILS = ("python", "mediated")
+    if not any(mc.get("provider") in CODE_RAILS for mc in spec["models"]):
         for cid in TRAJECTORY_CHECK_IDS:
-            rep.not_applicable(cid, "this spec runs no python targets; nothing produces a trajectory")
+            rep.not_applicable(cid, "this spec runs no code targets; nothing produces a trajectory")
         return
 
     agentic = [e for e in mine
-               if e["manifest"] and e["manifest"].get("provider") == "python"
+               if e["manifest"] and e["manifest"].get("provider") in CODE_RAILS
                and not e["manifest"].get("probe")]
     if not agentic:
         for cid in TRAJECTORY_CHECK_IDS:
-            rep.skip(cid, "no python-target runs on disk yet")
+            rep.skip(cid, "no code-target runs on disk yet")
         return
 
     recs = [(e, r) for e in agentic for r in e["records"]]
@@ -1035,6 +1043,118 @@ def _trajectory_checks(rep: Reporter, mine: list[dict], spec: dict, items: list[
                   n=len(judged), examples=flagged + receipts,
                   evidence={"models_judged": len(judged), "ungrounded_records": len(receipts),
                             "measures": "co-occurrence in the recorded trace, not causal use"})
+
+    # T7: the CAUSAL question T4 cannot ask.
+    #
+    # T4 asks whether a passing answer APPEARS in the trace's tool results. That
+    # is co-occurrence: an agent answering from memory that also retrieved the
+    # right topic scores as grounded, and on a live pod that gap was 6x (D-020).
+    # No amount of reading the trace harder closes it, because a trace records
+    # what was fetched and not what was read.
+    #
+    # The ablation probe asks the counterfactual instead. Same agent, same items,
+    # same tool calls, every RESULT withheld. An answer that comes out identical
+    # did not depend on the evidence: not "might not have", did not. The only
+    # thing that differed between the two runs is whether the agent could see
+    # what came back.
+    # The probe list is passed separately because `mine` is real runs only, by
+    # design: a probe must never pool with a result. T7 is the one check here
+    # that needs BOTH arms, since a counterfactual is a comparison.
+    ablate = [e for e in (probes or []) if (e["manifest"] or {}).get("probe") == "ablate"]
+    real = agentic
+    if not any((e["manifest"] or {}).get("provider") == "mediated" for e in mine):
+        rep.not_applicable(
+            "T7", "no mediated agent on disk; only the harness can withhold a tool result, and a "
+                  "self-reporting target calls its own functions")
+    elif not ablate:
+        rep.skip("T7", "no ablation probe on disk; run `dinostomp run <spec> --probe ablate` to "
+                       "unlock the causal grounding question")
+    else:
+        def answers(entries):
+            out = {}
+            for e in entries:
+                model = str((e["manifest"] or {}).get("model"))
+                for r in e["records"]:
+                    out.setdefault(model, {})[str(r.get("item_id"))] = r
+            return out
+
+        withheld, normal = answers(ablate), answers(real)
+        flagged, receipts, judged = [], [], {}
+        for model, base in sorted(normal.items()):
+            paired = withheld.get(model) or {}
+            # Only PASSING answers. An answer that was wrong anyway tells us
+            # nothing about whether evidence was used to get it right.
+            pool = [(i, r) for i, r in base.items()
+                    if (r.get("score") or {}).get("verdict") == "pass" and i in paired]
+            if len(pool) < THRESHOLDS["min_grounding_evidence"]:
+                continue
+            judged[model] = pool
+            unmoved = [i for i, r in pool
+                       if _norm(r.get("output") or "") == _norm(paired[i].get("output") or "")]
+            share = len(unmoved) / len(pool)
+            receipts.extend(f"{model}/{i}: identical answer with its evidence withheld"
+                            for i in sorted(unmoved)[:3])
+            if share > THRESHOLDS["ungrounded_max"]:
+                flagged.append(f"{model}: {len(unmoved)} of {len(pool)} passing answer(s) "
+                               f"({share:.0%}) are unchanged when the evidence is withheld")
+        if not judged:
+            rep.skip("T7", f"no model has {THRESHOLDS['min_grounding_evidence']}+ passing answers "
+                           "present in both the real run and the ablation probe")
+        else:
+            rep.check("T7", not flagged,
+                      f"{len(flagged)} of {len(judged)} agent(s) answer identically with their "
+                      f"evidence withheld, so those answers did not causally depend on it. Unlike "
+                      f"T4 this is a counterfactual, not a co-occurrence: the two runs differ only "
+                      f"in whether the agent could see what its tools returned",
+                      n=len(judged), examples=flagged + receipts,
+                      evidence={"models_judged": len(judged),
+                                "measures": "causal dependence, by withholding tool results"})
+
+    # T8: which rail produced the trace, stated rather than assumed.
+    #
+    # Six checks read the trajectory. On the self-reported rail all six read an
+    # examinee's testimony; on the mediated rail they read the harness's log.
+    # That difference was documented only in prose, which meant a reader of a
+    # REPORT could not tell which they were holding. It is recorded now, and
+    # printed whatever the level.
+    #
+    # It WARNS on a mixed fleet, not on self-report. Self-report is a supported
+    # choice with a stated limit, and a warning that fires on every pod of a
+    # kind teaches people to ignore warnings. A pod that mixes rails is a
+    # different thing: T1-T6 then mean different things for different models in
+    # one table, and comparing them across the fleet compares a log to a claim.
+    sources: dict[str, list[str]] = {}
+    for e in mine:
+        m = e["manifest"] or {}
+        if m.get("provider") in CODE_RAILS:
+            sources.setdefault(m.get("trajectory_source") or "self_reported", []).append(
+                str(m.get("model")))
+    if not sources:
+        rep.not_applicable("T8", "this spec runs no code targets; nothing produces a trajectory")
+    else:
+        observed = sorted(set(sources.get("harness_observed") or ()))
+        testified = sorted(set(sources.get("self_reported") or ()))
+        mixed = bool(observed and testified)
+        if mixed:
+            detail = (f"this fleet mixes rails: {len(observed)} agent(s) have harness-observed "
+                      f"trajectories and {len(testified)} wrote their own. T1-T6 therefore mean "
+                      f"different things per model in one table, and a fleet comparison over them "
+                      f"compares a log against a claim")
+        elif testified:
+            detail = (f"all {len(testified)} target(s) write their own trajectory, so T1-T6 verify "
+                      f"the RECORD and not the EXECUTION: a target that omits a call from its own "
+                      f"trace cannot be caught by reading it. Supported and stated, not a defect. "
+                      f"Provider `mediated` moves the tools into the harness if you want the trace "
+                      f"to be a log")
+        else:
+            detail = (f"all {len(observed)} agent(s) reached their tools through the harness, so "
+                      f"T1-T6 read an observed log rather than testimony. Mediation is not "
+                      f"isolation: it makes the trace trustworthy, not the agent")
+        rep.check("T8", not mixed, detail,
+                  n=sum(len(set(v)) for v in sources.values()),
+                  examples=([f"{m}: harness-observed" for m in observed]
+                            + [f"{m}: self-reported" for m in testified]) if mixed else [],
+                  evidence={"trajectory_sources": {k: sorted(set(v)) for k, v in sources.items()}})
 
     # T5: the only instrument pointed at the trust boundary itself. A target
     # that under-reports its trace looks exactly like an honest one when read
@@ -2490,7 +2610,7 @@ def lint_eval(spec_path: str | Path, trust_code: bool = False,
     _order_check(rep, probes, mine)
     _seed_check(rep, mine, spec)
     _template_checks(rep, probes, mine)
-    _trajectory_checks(rep, mine, spec, items)
+    _trajectory_checks(rep, mine, spec, items, probes)
     _judge_checks(rep, probes, mine, spec)
     _self_preference_check(rep, probes, mine, spec)
     _psychometric_checks(rep, mine, spec,

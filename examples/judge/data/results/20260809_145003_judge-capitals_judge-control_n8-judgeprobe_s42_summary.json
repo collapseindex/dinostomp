@@ -1,0 +1,14 @@
+{
+  "spec_name": "judge-capitals",
+  "model": "judge-control",
+  "provider": "dry",
+  "seed": 42,
+  "status": "complete",
+  "probe": "judge",
+  "estimator": "judge_probe",
+  "n_records": 128,
+  "n_baseline_cases": 16,
+  "agreement_with_construction": 1.0,
+  "n_perturbations": 6,
+  "spend_usd": 0.0
+}
