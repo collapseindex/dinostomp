@@ -1,5 +1,15 @@
 # Changelog
 
+### v0.35.4 (2026-08-09)
+
+A reference list, prompted by a label this repo had left unbacked.
+
+- **[REFERENCES.md](REFERENCES.md).** The threshold table marks three values `convention`, defined as "a value the surrounding literature uses, defensible by citation", and for a while it cited nothing. An appeal to convention with no reference is an unfalsifiable claim, which is the thing this tool exists to object to. Every borrowed method now names its source: Wilson intervals, KR-20, point-biserial with the rest-score correction, the fixed-margins null by swap randomisation, McNemar, the paired bootstrap, and mutation testing.
+- **A test fails the build if a `convention` threshold has no source.** Relabelling something `convention` without citing it is now caught, and the negative test confirms it fires. Either cite it or call it `judgment`, which 34 of 43 thresholds already are.
+- The five audited benchmarks are credited with paper, arXiv id and licence, since they are other people's work fetched rather than vendored. iris carries both Fisher and the Bezdek note about the UCI lineage this repo actually pins.
+- The eval-defect classes the trials are drawn from are cited too, which matters for a specific reason: the trials are NOT enumerated from the check registry, so a check and the defect proving it are supposed to come from different places. Naming those places is what makes that claim checkable.
+- **A section on what is deliberately NOT borrowed**, because absence reads as oversight: no LLM judge anywhere in the battery's own verdicts, no learned model in any check, and no claim about construct validity, with Messick (1995) as the standard statement of what that argument would actually require.
+
 ### v0.35.3 (2026-08-09)
 
 FINDINGS.md is a ledger now, not an essay, so entries can be appended without a rewrite.

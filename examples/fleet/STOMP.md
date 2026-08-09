@@ -71,7 +71,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | ok | failed answers do not contain the reference | 4 | 0 of 4 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 6 | 0 of 6 run(s) were produced by a different engine than the one auditing them (now fba5f8974906b6b2); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 6 | 0 of 6 run(s) were produced by a different engine than the one auditing them (now d66b6b3d658ad352); re-run to get numbers this report can stand behind |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no python targets; nothing produces a trajectory |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no python targets; nothing produces a trajectory |
 | n/a | tool calls are not redundant | 0 | this spec runs no python targets; nothing produces a trajectory |
@@ -115,7 +115,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"fba5f8974906b6b2": 6}}`
+- evidence: `{"engines": {"d66b6b3d658ad352": 6}}`
 
 </details>
 <details><summary>[ok] fleet score totals are reliable (KR-20)</summary>
@@ -148,16 +148,16 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260809_085852_fleet-arith_dry-alpha_n24_s42.jsonl | dry-alpha | (same) | dry | yes | 42 | 24 | 0 |
-| 20260809_085852_fleet-arith_dry-bravo_n24_s42.jsonl | dry-bravo | (same) | dry | yes | 42 | 24 | 0 |
-| 20260809_085852_fleet-arith_dry-charlie_n24_s42.jsonl | dry-charlie | (same) | dry | yes | 42 | 24 | 0 |
-| 20260809_085852_fleet-arith_dry-delta_n24_s42.jsonl | dry-delta | (same) | dry | yes | 42 | 24 | 0 |
-| 20260809_085852_fleet-arith_dry-echo_n24_s42.jsonl | dry-echo | (same) | dry | yes | 42 | 24 | 0 |
-| 20260809_085852_fleet-arith_dry-foxtrot_n24_s42.jsonl | dry-foxtrot | (same) | dry | yes | 42 | 24 | 0 |
+| 20260809_091610_fleet-arith_dry-alpha_n24_s42.jsonl | dry-alpha | (same) | dry | yes | 42 | 24 | 0 |
+| 20260809_091610_fleet-arith_dry-bravo_n24_s42.jsonl | dry-bravo | (same) | dry | yes | 42 | 24 | 0 |
+| 20260809_091610_fleet-arith_dry-charlie_n24_s42.jsonl | dry-charlie | (same) | dry | yes | 42 | 24 | 0 |
+| 20260809_091610_fleet-arith_dry-delta_n24_s42.jsonl | dry-delta | (same) | dry | yes | 42 | 24 | 0 |
+| 20260809_091610_fleet-arith_dry-echo_n24_s42.jsonl | dry-echo | (same) | dry | yes | 42 | 24 | 0 |
+| 20260809_091610_fleet-arith_dry-foxtrot_n24_s42.jsonl | dry-foxtrot | (same) | dry | yes | 42 | 24 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.35.3
+- tool: dinostomp 0.35.4
 - statistical power: at n=24 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~40% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `cc280622dc0f91aa3809e0072bf4125add1a99825319f4f97a681fb4e23657cc`
 - data_sha256: `742d30fda48436edace090596fe7659588d02761e788be1acdd3fbf2573437dd`

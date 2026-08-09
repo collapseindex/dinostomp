@@ -2,7 +2,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.35.3 · Apache-2.0 · engine `fba5f8974906b6b2` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.35.4 · Apache-2.0 · engine `d66b6b3d658ad352` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -235,7 +235,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.35.3
+- uses: collapseindex/dinostomp@v0.35.4
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -249,7 +249,7 @@ It installs dinostomp from PyPI by default, which does not exist yet, so pass
 `version:` pointing at this repo until it does:
 
 ```yaml
-    version: "git+https://github.com/collapseindex/dinostomp@v0.35.3"
+    version: "git+https://github.com/collapseindex/dinostomp@v0.35.4"
 ```
 
 That is stated rather than hidden because a copy-pasteable block that fails for
@@ -309,11 +309,12 @@ the tool names them.
 - **[METHODOLOGY.md](METHODOLOGY.md)** — the fifty-four checks, the pod format, the philosophy, the self-audit
 - **[SECURITY.md](SECURITY.md)** — pod code, untrusted model output, money, what this does not do
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — the entry fee for a new check is a planted defect, not an argument
+- **[REFERENCES.md](REFERENCES.md)** — where the borrowed methods come from, what the audited benchmarks are, and what this deliberately does not borrow
 - **[CHANGELOG.md](CHANGELOG.md)** — every release, including the ones that fixed its own flattering bugs
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`fba5f8974906b6b267e6a6a614518da23aa576b2dea4e32b9a43a330429ac9e7`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`d66b6b3d658ad35273dc970ce51dda31628d76805b4a034d86f83651aa06a131`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

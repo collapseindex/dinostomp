@@ -90,7 +90,7 @@ Eighty-two deliberately defective evals, each with a stated expectation of what 
   specificity: 0 findings on 12 of 12 clean pods
 ```
 
-The suite tests both tails: sensitivity (seventy-seven planted defects, drawn from the benchmark-defect literature plus this project's own adversarial reviews, NOT enumerated from the check registry) and specificity (seven expected-CLEAN pods asserted to produce zero findings, including a mixed-format pod with a bootstrap-separated ordering claim; current score 0 false alarms). The scorecard exits nonzero on a miss in either direction, and the scoring rubric is fixed: is the defect caught automatically, by default, with evidence preserved. Never "does the tool have feature X". During development, trial expectations had to be corrected because the battery behaved differently (better) than predicted, which is only possible when expectations come from outside the implementation.
+The suite tests both tails: sensitivity (seventy-seven planted defects, drawn from described eval-defect classes (cited in [REFERENCES.md](REFERENCES.md)) plus this project's own adversarial reviews, NOT enumerated from the check registry) and specificity (seven expected-CLEAN pods asserted to produce zero findings, including a mixed-format pod with a bootstrap-separated ordering claim; current score 0 false alarms). The scorecard exits nonzero on a miss in either direction, and the scoring rubric is fixed: is the defect caught automatically, by default, with evidence preserved. Never "does the tool have feature X". During development, trial expectations had to be corrected because the battery behaved differently (better) than predicted, which is only possible when expectations come from outside the implementation.
 
 ## Philosophy
 
@@ -225,9 +225,14 @@ which is which beside every value:
 |---|---|---|
 | `derived` | 1 | statistical theory fixes it; changing it means disagreeing with the maths |
 | `calibrated` | 3 | measured on real data in this repo, with the measurement on record |
-| `convention` | 3 | a value the surrounding literature uses; defensible by citation |
+| `convention` | 3 | a value the surrounding literature uses, cited in [REFERENCES.md](REFERENCES.md) |
 | `structural` | 2 | not a sensitivity dial: it changes what an eval IS, or what a probe spends |
 | `judgment` | 34 | the author picked it |
+
+Every `convention` threshold names its source in
+[REFERENCES.md](REFERENCES.md), and a test fails the build if one does not:
+an appeal to convention with nothing behind it is an unfalsifiable claim, which
+is the thing this tool exists to object to.
 
 Thirty-four of forty-three are author judgment. That is the honest label for "it
 seemed about right", and it is by far the largest class. If a finding of yours

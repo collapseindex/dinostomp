@@ -12,7 +12,7 @@ authors:
     alias: collapseindex
 repository-code: "https://github.com/collapseindex/dinostomp"
 license: Apache-2.0
-version: 0.35.3
+version: 0.35.4
 date-released: "2026-08-09"
 keywords:
   - evaluation

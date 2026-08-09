@@ -233,3 +233,50 @@ def test_the_scorecard_counts_match_the_entries():
     n_d = sum(1 for e in entries if e.startswith("D"))
     assert f"**thirteen entries of defects in\ndinostomp itself**" in doc or n_d == 13, (
         f"the scorecard says thirteen D entries; the file has {n_d}")
+
+
+# --- REFERENCES.md: an appeal to convention must name its source --------------
+
+
+def test_every_convention_threshold_is_actually_cited():
+    """The label `convention` means "defensible by citation".
+
+    For a while it cited nothing, which made it an unfalsifiable claim sitting
+    inside a tool built to object to those. If a threshold leans on prior art,
+    REFERENCES.md has to name the prior art.
+    """
+    from dinostomp.lint import THRESHOLDS, threshold_provenance
+
+    refs = (REPO / "REFERENCES.md").read_text(encoding="utf-8")
+    for name in sorted(THRESHOLDS):
+        kind, _ = threshold_provenance(name)
+        if kind == "convention":
+            assert f"`{name}" in refs, (
+                f"{name} is labelled `convention` but REFERENCES.md does not name a source; "
+                "either cite it or relabel it `judgment`")
+
+
+def test_every_borrowed_method_names_a_year():
+    """A reference without a year is a gesture at a literature, not a citation."""
+    import re as _re
+
+    refs = (REPO / "REFERENCES.md").read_text(encoding="utf-8")
+    rows = [l for l in refs.splitlines() if l.startswith("| ") and "|" in l[2:]]
+    cited = [l for l in rows if _re.search(r"\((?:19|20)\d{2}\)", l)]
+    assert len(cited) >= 20, f"only {len(cited)} rows carry a year; a bibliography needs dates"
+
+
+def test_references_is_linked_from_the_docs():
+    for doc in ("README.md", "METHODOLOGY.md"):
+        assert "REFERENCES.md" in (REPO / doc).read_text(encoding="utf-8"), (
+            f"{doc} does not link REFERENCES.md, so nobody will find it")
+
+
+def test_every_audited_benchmark_states_a_licence():
+    """These datasets are other people's work, fetched not vendored."""
+    refs = (REPO / "REFERENCES.md").read_text(encoding="utf-8")
+    for dataset in ("GSM8K", "MMLU", "TruthfulQA", "HellaSwag", "ARC", "iris"):
+        row = [l for l in refs.splitlines() if l.startswith(f"| {dataset} ")]
+        assert row, f"{dataset} is audited but not credited in REFERENCES.md"
+        assert row[0].rstrip().rstrip("|").split("|")[-1].strip(), (
+            f"{dataset} is credited without a licence")
