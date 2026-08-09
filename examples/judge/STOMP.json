@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.46.0",
+  "version": "0.46.1",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -710,11 +710,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now d8a536056f82044b); re-run to get numbers this report can stand behind",
+      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now 99033f87021a9e44); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "evidence": {
         "engines": {
-          "d8a536056f82044b": 4
+          "99033f87021a9e44": 4
         }
       }
     },
@@ -991,7 +991,7 @@
   },
   "runs": [
     {
-      "run_file": "20260809_215541_judge-capitals_bot-bare_n26_s42.jsonl",
+      "run_file": "20260809_230728_judge-capitals_bot-bare_n26_s42.jsonl",
       "model": "bot-bare",
       "model_reported": "bot-bare",
       "provider": "python",
@@ -1003,7 +1003,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_215541_judge-capitals_bot-chatty_n26_s42.jsonl",
+      "run_file": "20260809_230729_judge-capitals_bot-chatty_n26_s42.jsonl",
       "model": "bot-chatty",
       "model_reported": "bot-chatty",
       "provider": "python",
@@ -1015,7 +1015,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_215541_judge-capitals_bot-hedged_n26_s42.jsonl",
+      "run_file": "20260809_230729_judge-capitals_bot-hedged_n26_s42.jsonl",
       "model": "bot-hedged",
       "model_reported": "bot-hedged",
       "provider": "python",
@@ -1027,7 +1027,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_215541_judge-capitals_bot-wrapped_n26_s42.jsonl",
+      "run_file": "20260809_230729_judge-capitals_bot-wrapped_n26_s42.jsonl",
       "model": "bot-wrapped",
       "model_reported": "bot-wrapped",
       "provider": "python",

@@ -39,10 +39,14 @@ REDUX = REPO / "benchmarks" / "mmlu-redux"
 CACHE = (Path(__file__).resolve().parent
          / f"validation-cache-{(os.environ.get(chr(83)+chr(69)+chr(77)+chr(68)+chr(85)+chr(80)+chr(95)+chr(74)+chr(85)+chr(68)+chr(71)+chr(69)) or chr(56)+chr(98)).replace(chr(47), chr(45))}.json")
 MODEL = os.environ.get("SEMDUP_JUDGE") or "meta-llama/llama-3.1-8b-instruct"
-RATE_IN, RATE_OUT = 0.05, 0.08          # USD per Mtok, as OpenRouter lists it
+# Rates and cap come from the environment because the judge does. Leaving the
+# 8b rates hardcoded while pointing this at a frontier model would make the cap
+# fire a third of the way through and look like a provider failure.
+RATE_IN = float(os.environ.get("SEMDUP_RATE_IN") or 0.05)     # USD per Mtok
+RATE_OUT = float(os.environ.get("SEMDUP_RATE_OUT") or 0.08)
+BUDGET_USD = float(os.environ.get("SEMDUP_BUDGET") or 0.25)   # a hard stop
 N_NEGATIVES = 250
 SEED = 7
-BUDGET_USD = 0.25                        # a hard stop; this should cost ~1 cent
 
 
 def load(name):
@@ -67,7 +71,7 @@ def main() -> int:
     if CACHE.is_file():
         cache = json.loads(CACHE.read_text(encoding="utf-8"))
     todo = [i for i in subset if _key(items[i], MODEL) not in cache]
-    print(f"{len(todo)} not cached")
+    print(f"{len(todo)} not cached; cap ${BUDGET_USD:.2f} at ${RATE_IN}/${RATE_OUT} per Mtok")
 
     if todo:
         if not os.environ.get("OPENROUTER_API_KEY"):
@@ -79,7 +83,7 @@ def main() -> int:
         for n, iid in enumerate(todo, 1):
             try:
                 verdict, usage_in, usage_out, raw = _ask(
-                    provider, items[iid], {"temperature": 0, "max_tokens": 40})
+                    provider, items[iid], {"temperature": 0, "max_tokens": int(os.environ.get("SEMDUP_MAXTOK") or 300)})
             except Exception as exc:  # noqa: BLE001 - keep what was paid for
                 print(f"stopped after {n - 1}: {exc}", file=sys.stderr)
                 break
@@ -95,6 +99,7 @@ def main() -> int:
                 print(f"budget cap {BUDGET_USD} reached at {n}", file=sys.stderr)
                 break
         _save(CACHE, cache)
+        print(f"  spent ${spent:.4f}")
 
     got = {i: cache[_key(items[i], MODEL)] for i in subset if _key(items[i], MODEL) in cache}
     pos = [i for i in positives if i in got]

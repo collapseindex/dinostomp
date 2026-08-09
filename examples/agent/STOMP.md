@@ -66,7 +66,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | ok | each model beats its own blind baseline | 4 | 0 of 4 model(s) score no better informed than blind; their numbers are not evidence about this task (unpaired: separate runs) |
 | ok | failed answers do not contain the reference | 2 | 0 of 2 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 4 | 0 of 4 run(s) were produced by a different engine than the one auditing them (now d8a536056f82044b); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 4 | 0 of 4 run(s) were produced by a different engine than the one auditing them (now 99033f87021a9e44); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | passing answers are grounded in tool evidence | 4 | 0 of 4 target(s) pass items whose answer does not APPEAR in their own evidence (2 such answer(s) in total). This is co-occurrence, not causation: an answer recalled from memory that also happens to appear in a retrieved snippet counts as grounded here, so this count is a floor |
 | ok | no model under-reports its trajectory | 4 | 0 of 4 target(s) report far fewer steps than the fleet (median 1.2); a thin trace can be efficiency OR omission |
@@ -129,7 +129,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"d8a536056f82044b": 4}}`
+- evidence: `{"engines": {"99033f87021a9e44": 4}}`
 
 </details>
 <details><summary>[ok] passing answers are grounded in tool evidence</summary>
@@ -179,14 +179,14 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260809_215544_agent-capitals_agent-grounded_n26_s42.jsonl | agent-grounded | (same) | python | no | 42 | 26 | 0 |
-| 20260809_215544_agent-capitals_agent-lazy_n26_s42.jsonl | agent-lazy | (same) | python | no | 42 | 26 | 0 |
-| 20260809_215544_agent-capitals_agent-narrow_n26_s42.jsonl | agent-narrow | (same) | python | no | 42 | 26 | 0 |
-| 20260809_215544_agent-capitals_agent-partial_n26_s42.jsonl | agent-partial | (same) | python | no | 42 | 26 | 0 |
+| 20260809_230731_agent-capitals_agent-grounded_n26_s42.jsonl | agent-grounded | (same) | python | no | 42 | 26 | 0 |
+| 20260809_230731_agent-capitals_agent-lazy_n26_s42.jsonl | agent-lazy | (same) | python | no | 42 | 26 | 0 |
+| 20260809_230731_agent-capitals_agent-narrow_n26_s42.jsonl | agent-narrow | (same) | python | no | 42 | 26 | 0 |
+| 20260809_230731_agent-capitals_agent-partial_n26_s42.jsonl | agent-partial | (same) | python | no | 42 | 26 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.46.0
+- tool: dinostomp 0.46.1
 - statistical power: at n=26 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~39% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `66a70cdee88cac64a2400c41b4a919c92d4e2e8345f4b4257b9433215195aeb1`
 - data_sha256: `5dfd19b1348d90405cd81c07540d53a4583e766dfbb690420cf78bdeb5cb530c`

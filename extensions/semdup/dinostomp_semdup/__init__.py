@@ -38,25 +38,27 @@ cannot run. A check that spends money by default, or that turns an offline audit
 into a network call without being asked, would be a worse defect than the one it
 detects.
 
-MEASURED, AND NOT RECOMMENDED
-============================
+MEASURED ACROSS THREE CAPABILITY TIERS
+======================================
 
-It was validated before shipping, against 39 human-confirmed positives and 250
-human-labelled clean items, and it does not work well enough to use:
+Validated before shipping, against 39 human-confirmed positives and 250
+human-labelled clean items, identical prompt and cap throughout:
 
-    "do any two mean the same?"   llama-3.1-8b   recall 100%  FPR 98.4%
-    "do any two mean the same?"   qwen3-30b      recall  38%  FPR 27.6%
-    "is any OTHER also correct?"  qwen3-30b      recall  95%  FPR 69.2%
+    llama-3.1-8b       recall 97%   precision 13%   FPR 80.8%
+    qwen3-30b          recall 33%   precision 42%   FPR  6.0%
+    claude-opus-4.8    recall 10%   precision 60%   FPR  0.8%
 
-Precision is 14-18% across all three. On a 3,000-item benchmark that is 830 to
-2,950 false flags to find ~37 real ones. Changing the prompt slides recall and
-the false-positive rate along one curve without improving the discrimination,
-which is the signature of a task limit rather than a prompt limit: a good
-multiple-choice question has distractors DESIGNED to be confusable, so "could a
-second option be defended?" is close to the question the item exists to ask.
+Capability buys PRECISION and costs RECALL. The small model says yes to almost
+everything; the frontier model almost never false-alarms and almost never fires.
+Neither is a check you would run unattended, and the frontier row is a
+defensible advisory at 24 false flags per 3,000 items, at roughly $15 per
+3,000-item benchmark, catching 3 of the 29 positives it could judge.
 
-See README.md and N-013. The code is kept because the apparatus is reusable and
-the negative result is worth more than another untested plugin.
+An earlier version of this docstring claimed precision was flat at 14-18% and
+that the approach hit a task limit. RETRACTED: that flatness was substantially
+an artifact of a 40-token cap truncating every model that reasons before
+answering (D-033, which is D-017 reproduced by its own author). See README.md
+and N-013.
 
 Its findings are advisory (`warn`), never gating, and every finding states its
 own measured false-positive rate. A judge is fallible, this one is measurably
@@ -91,10 +93,12 @@ judge only whether two options assert the same thing.
 Be strict. Options that are merely SIMILAR, or that describe related but
 distinct things, are NOT duplicates. Most questions have no duplicates.
 
-Answer with exactly one line:
-DUPLICATE: <option letter>, <option letter>
+Reason briefly first if you need to. Then END your reply with exactly one line,
+and nothing after it:
+
+VERDICT: DUPLICATE <option letter>, <option letter>
 or
-NONE"""
+VERDICT: NONE"""
 
 DEFAULT_MAX_ITEMS = 300
 
@@ -123,21 +127,34 @@ def _key(item, model: str) -> str:
 def parse(text: str) -> bool | None:
     """Did the judge say two options are equivalent?
 
-    Returns None for an unparseable reply, which is counted and reported rather
-    than folded into either answer. A judge that returned prose is a fact about
-    the run, not a NONE.
+    Reads the LAST verdict line, not the first. The first version read line one
+    and used a 40-token cap, which truncated every model that reasons before
+    answering: Claude Opus was cut off mid-sentence on 24 of 289 items and each
+    one was counted as "no opinion", deflating its recall to 11%. That is D-017
+    exactly (a token cap eating a verdict and being read as a judge's failure),
+    reproduced by the person who wrote D-017.
+
+    Returns None for a genuinely unparseable reply, which is counted and
+    reported rather than folded into either answer.
     """
     if not text:
         return None
-    head = text.strip().splitlines()[0].strip().upper() if text.strip() else ""
-    if head.startswith("NONE"):
-        return False
-    if head.startswith("DUPLICATE"):
-        return True
+    verdict = None
+    for line in text.strip().splitlines():
+        upper = line.strip().upper().lstrip("*# ").replace("**", "")
+        if not upper.startswith("VERDICT"):
+            continue
+        body = upper.split(":", 1)[-1].strip()
+        if body.startswith("DUPLICATE"):
+            verdict = True
+        elif body.startswith("NONE"):
+            verdict = False
+    if verdict is not None:
+        return verdict
+    # No tagged line at all. Fall back only on an unambiguous whole-reply signal,
+    # so a truncated mid-sentence reply stays None instead of being guessed at.
     body = text.strip().upper()
-    if "DUPLICATE:" in body:
-        return True
-    if "NONE" in body:
+    if body.endswith("NONE"):
         return False
     return None
 
@@ -224,10 +241,10 @@ def run(ctx, out) -> None:
     skipped = len(items) - len(judged)
 
     detail = (f"{len(flagged)} of {len(judged)} item(s) offer two options a judge reads as "
-              f"equivalent. ADVISORY, AND MEASURABLY UNRELIABLE: on MMLU-Redux this check's "
-              f"false-positive rate was 28% to 98% depending on the judge, so most flags here "
-              f"are expected to be wrong. It is published as a negative result (N-013). The "
-              f"core's dup-options finding is the deterministic one")
+              f"equivalent. ADVISORY, AND JUDGE-DEPENDENT: on MMLU-Redux this check measured "
+              f"13% precision with a small judge and 60% with a frontier one, at 97% and 10% "
+              f"recall respectively (N-013). Read the flags, do not count them, and check which "
+              f"judge produced them. The core's dup-options finding is the deterministic one")
     if skipped:
         detail += f"; {skipped} item(s) were not judged (max_items={max_items})"
     if undecided:

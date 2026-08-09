@@ -1,5 +1,33 @@
 # Changelog
 
+### v0.46.1 (2026-08-09)
+
+N-013's headline was wrong. This corrects it, and records why.
+
+- **Retracted: "precision does not move, this is a task limit".** Re-run across
+  three capability tiers under identical conditions, precision moves 13% -> 42%
+  -> 60% and recall collapses 97% -> 33% -> 10%. The corrected finding is
+  **capability buys precision and costs recall, and no judge tested is both**.
+
+  | judge | recall | precision | FPR | false flags / 3,000 |
+  |---|---|---|---|---|
+  | llama-3.1-8b | 97% | 13% | 80.8% | ~2,420 |
+  | qwen3-30b | 33% | 42% | 6.0% | ~180 |
+  | claude-opus-4.8 | 10% | 60% | 0.8% | ~24 |
+
+- **D-033: the flat curve was my harness, and it was D-017 again.** A 40-token
+  cap truncated every model that reasons before answering; 24 of 289 Opus
+  replies were cut mid-sentence and counted as "no opinion", including a correct
+  DUPLICATE verdict on a known positive. D-017 is two days old, is written up in
+  this repository, and names the defect in its own title. Reproduced by its
+  author, in a harness built to measure something else.
+- Fixed three ways: a tagged `VERDICT:` line, a parser that reads the LAST one
+  so reasoning before it is fine, and a 300-token cap. A genuinely truncated
+  reply still returns `None` and is reported as unparseable rather than guessed.
+- The frontier configuration is now a defensible advisory (24 false flags per
+  3,000 items) and stays off by default: it caught 3 of 29 judgeable positives,
+  and costs ~$15 per 3,000-item benchmark.
+
 ### v0.46.0 (2026-08-09)
 
 The first real extension, and it is a negative result.

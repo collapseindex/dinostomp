@@ -58,7 +58,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-010](#n-010) | dinostomp | what a process boundary buys, one claim at a time | measured |
 | [N-011](#n-011) | Inspect AI | the second foreign format cost one defect, not five | measured |
 | [N-012](#n-012) | dinostomp | scored against humans: 5% recall, and 2 items they missed | measured, acted on |
-| [N-013](#n-013) | LLM-as-judge | the obvious AI fix for N-012 does not work, across 3 framings | measured, not shipped |
+| [N-013](#n-013) | LLM-as-judge | capability buys precision and costs recall; first version retracted | measured, corrected |
 | [D-001](#d-001) | dinostomp | the money invariant had only ever run at zero | fixed |
 | [D-002](#d-002) | dinostomp | pooling hid a model that never read the question | fixed |
 | [D-003](#d-003) | dinostomp | a collapsed model manufactured 8 phantom key errors | fixed |
@@ -91,6 +91,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-030](#d-030) | dinostomp | `inspect` called a pod codeless while it shipped an agent and tools | fixed |
 | [D-031](#d-031) | dinostomp | an imported trajectory could never reach the checks that read one | fixed |
 | [D-032](#d-032) | dinostomp | a valid JSONL file it refused to read, blaming the data | fixed |
+| [D-033](#d-033) | dinostomp | D-017 again, in the harness written by the person who wrote D-017 | fixed |
 
 ---
 
@@ -891,69 +892,64 @@ would be worse than no comparison.
 ---
 
 ### N-013
-**The obvious AI fix does not work: 14-18% precision across three framings and two model tiers**
-`semdup` extension · 2026-08-09 · measured, NOT shipped
+**Capability buys PRECISION and costs RECALL. No judge tested is both.**
+`semdup` extension · 2026-08-09 · measured · **supersedes this entry's first version, which was wrong**
 
 [N-012](#n-012) measured where a byte comparison runs out: of 39 items humans
-label `multiple_correct_answers`, the deterministic check reaches 2, and the
-other 37 are semantic. Recognising *"steadily in one direction"* against *"in
-one direction"* needs a reader, so the obvious next move is to ask a model.
+label `multiple_correct_answers`, the deterministic check reaches 2. The other
+37 are semantic, so the obvious move is to ask a model. This is what asking
+costs, on 39 human-confirmed positives and 250 human-labelled `ok` items sampled
+at seed 7.
 
-It was built, validated against the human labels BEFORE shipping, and it does
-not work.
+| judge | recall | precision | FPR on clean items | false flags per 3,000 |
+|---|---|---|---|---|
+| llama-3.1-8b | **97%** | 13% | 80.8% | ~2,420 |
+| qwen3-30b | 33% | 42% | 6.0% | ~180 |
+| claude-opus-4.8 | 10% | **60%** | **0.8%** | **~24** |
 
-**The set**: all 39 human-confirmed positives, plus 250 human-labelled `ok`
-items sampled at seed 7. The negatives are the ones that matter. A check that
-flags everything has perfect recall, and a real 3,000-item benchmark contains
-~50x more clean items than dirty ones, so the false-positive rate decides
-whether a check is usable at all.
+**Precision rises monotonically with capability and recall collapses.** The
+small model says yes to almost everything: 97% recall, and 2,400 false flags to
+find them. The frontier model is the mirror image: it almost never false-alarms,
+and it almost never fires. Neither is a usable dataset check on its own, and the
+failure mode is opposite at each end.
 
-| framing | judge | recall | precision | FPR on clean items | false flags per 3,000 |
-|---|---|---|---|---|---|
-| "do any two mean the same?" | llama-3.1-8b | 100% | 14% | **98.4%** | ~2,950 |
-| "do any two mean the same?" | qwen3-30b | 38% | 18% | **27.6%** | ~830 |
-| "is any OTHER option also correct?" | qwen3-30b | 95% | 18% | **69.2%** | ~2,080 |
+**WHAT THIS ENTRY GOT WRONG THE FIRST TIME, and it was the headline.** The first
+version reported precision of 14%, 18%, 18% across three configurations and
+concluded:
 
-To find roughly 37 real defects.
+> Changing the prompt and the model tier slides recall and the false-positive
+> rate along one curve without improving the DISCRIMINATION, which is the
+> signature of a task limit rather than a prompt limit.
 
-**The diagnostic is that precision does not move.** 14%, 18%, 18%. Changing the
-prompt and the model tier slides recall and the false-positive rate along one
-curve without improving the DISCRIMINATION, which is the signature of a task
-limit rather than a prompt limit. Three attempts is not a proof, and it is
-enough to stop before publishing a tool.
+That claim is **retracted**. Precision moves from 13% to 60%, which is a large
+capability effect, and the flatness that produced the conclusion was
+substantially an artifact of the harness (see [D-033](#d-033)): a 40-token cap
+truncated every model that reasons before answering, and the truncations were
+counted as "no opinion". The structural story about confusable distractors is
+still a reasonable account of why precision is 60% rather than 95%. It is no
+longer an account of why the approach fails, because at the frontier it does not
+fail in the way the entry claimed.
 
-**Why, and it is structural.** The false positives are sets like:
+**Is it shippable now?** At 60% precision and 24 false flags per 3,000 items,
+the frontier configuration is a defensible ADVISORY check: the reading cost is
+tolerable and every flag it raised was worth looking at. Two caveats keep it
+marked not-recommended by default. It caught 3 of the 29 positives it managed to
+judge, so it is nearly blind, and 3 is a number with enormous error bars. And it
+cost $1.42 to judge 289 items, which is roughly $15 per 3,000-item benchmark, to
+surface a handful of items.
 
-```
-econometrics: ['Unbiased and consistent', 'Biased but consistent',
-               'Biased and inconsistent', ...]
-```
+**One of its two false alarms is not one.** `high_school_physics-02754` offers
+`['0.16 N', '0.16 N', '0.32 N', '0.36 N']`. Redux labels it `ok`; the option is
+duplicated verbatim and the core's own S5 flags it. Counting it against the
+judge is scoring it against an annotation error, which is the same asymmetry
+[F-018](#f-018) records in the other direction.
 
-Those distractors are DESIGNED to be confusable; that is what makes a
-multiple-choice item discriminate. So "could a second option be defended as
-correct?" is close to the question the item exists to ask, and a judge answering
-it reliably would be a judge that can sit the exam. The prior probability of a
-false positive is structurally high in a way no wording fixes.
+**Scope.** One dataset, one task, three judges, 289 items, and the frontier row
+rests on 3 true positives out of 29 judgeable ones. It is enough to say the
+capability/recall trade exists and nowhere near enough to put a number on where
+it crosses. Reproduce with `SEMDUP_JUDGE=<model> python extensions/semdup/validate.py`.
 
-**Not shipped, and kept.** The extension stays in `extensions/semdup/` with its
-numbers in its README, its module docstring, and in the text of every finding it
-emits. Three reasons: "use an LLM to find duplicate options" is an obvious idea
-someone will have again; the apparatus (per-pod opt-in, verdicts cached by
-(item, judge) so re-runs are free and offline, a spend cap priced from recorded
-usage, a skip rather than a crash without a key) is reusable for a check that
-does work; and a plugin that is wrong four times in five should be discoverable
-as such rather than quietly absent.
-
-**What would change this.** Precision above ~80% on this set. The harness takes
-`SEMDUP_JUDGE=<model>`, so a frontier judge is one command away, and this entry
-should be replaced by whoever gets that number.
-
-**Scope.** One dataset, one task, three framings, two judges, 289 items. It says
-nothing about LLM-as-judge in general, and it is not evidence that judges are
-bad at semantics. It is evidence that THIS question, on data engineered to be
-confusable, is not answerable at a precision that makes a check worth running.
-
-Total cost of finding this out: about 3 cents.
+Total spend across every version of this experiment: about $1.50.
 
 ---
 
@@ -1703,6 +1699,45 @@ because every one of those was written by this tool.
 
 ---
 
+### D-033
+**D-017 again, in the validation harness, written by the person who wrote D-017**
+`extensions/semdup/validate.py` · 2026-08-09 · fixed
+
+[D-017](#d-017) was a judge scoring 50% agreement because a 200-token cap ate
+its verdict before it could state one. It is written up in this file, two days
+old at the time, with the lesson in its own title.
+
+The validation harness for [N-013](#n-013) capped the judge at **40 tokens** and
+parsed the FIRST line of the reply. Claude Opus reasons before answering, so it
+was cut off mid-sentence on 24 of 289 items:
+
+```
+'Options A and B both describe charges flowing in one direction. Option A adds
+ "steadily," but the core assertion is the same-charges'          <- truncated
+```
+
+That is a correct DUPLICATE verdict on `conceptual_physics-01237`, a known
+positive, counted as "no opinion". The reported recall of 11% was an artifact of
+the cap. Worse, the artifact was one-sided by construction: it penalised exactly
+the models that reason, which are the ones the experiment existed to test, and
+it produced the flat precision curve that the first version of N-013 built its
+headline on.
+
+Fixed three ways rather than one, because a cap is not the only thing that can
+eat a verdict: the reply must end with a tagged `VERDICT:` line, the parser
+reads the LAST such line so reasoning before it is fine, and the cap is 300. A
+genuinely truncated reply still returns `None` and is counted as unparseable
+rather than guessed at, which is why the corrected table still reports 13 to 42
+unparseable replies per judge instead of hiding them.
+
+The lesson is not "raise the cap". It is that a known defect, documented in this
+repository, with a title that names it, was reproduced two days later by its own
+author in a harness built to measure something else. A finding written down is
+not a finding internalised, and the only thing that caught it was reading the
+raw replies before trusting the numbers.
+
+---
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -1720,9 +1755,9 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **13** |
-| defects in dinostomp itself (**D**) | **32** |
+| defects in dinostomp itself (**D**) | **33** |
 
-Thirty-two to eighteen. That ratio is the useful number to publish, and it is the
+Thirty-three to eighteen. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to
