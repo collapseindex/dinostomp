@@ -1,5 +1,32 @@
 # Changelog
 
+### v0.43.1 (2026-08-09)
+
+Documentation caught up with the last three releases, and doing that found a
+defect in the one command whose job is informed consent.
+
+- **D-030: `dinostomp inspect` called a mediated pod codeless.** It collected
+  paths from the scorer, the judge and `python` targets only, so a pod shipping
+  `agent.py` and `tools.py` printed "ships no pod-local Python. Nothing here can
+  run on your machine." That is an active reassurance rather than an omission,
+  and the code it hid included TOOLS, which are the most privileged code in a
+  pod: they run in dinostomp's own process, and still do under
+  `isolation: subprocess`. Fixed, with tools labelled `[runs in the PARENT
+  process]`, and the test written against the SPEC rather than a provider list,
+  because a provider list is what failed.
+- **SECURITY.md**: three claims were stale. "Trajectories are self-reported" is
+  now rail-specific; "it does not time out pod code" is now true of everything
+  EXCEPT a mediated agent; "it does not sandbox pod code" carries the one narrow
+  exception. New section on the two agent rails with the containment table, the
+  child-environment guarantee under Secrets, and tools named as the thing to
+  read first in a stranger's pod.
+- **AUTHORING.md**: had no mention of the agent rails at all. Now documents
+  both, the four things that catch people out on the mediated one, the ablation
+  probe, and when to turn isolation on.
+- **CONTRIBUTING.md**: two lessons added, both earned this week. A checker that
+  skips the newest surface is OFF, not weak (D-028, D-030). And: name a boundary
+  for what it does, not what you wish it did.
+
 ### v0.43.0 (2026-08-09)
 
 `isolation: subprocess`. The agent runs in a child process and the tools stay

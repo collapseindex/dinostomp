@@ -56,6 +56,20 @@ Written down because each one cost real time or real money:
 - **Pooling hides the outlier.** Four separate checks (R7, R13, T4, T6) had to
   be rewritten per model after a fleet average concealed a single bad examinee.
   Treat any new fleet-level statistic as guilty until you have checked it.
+- **A checker that skips the newest surface is off, not weak.** Two in one
+  week: the CRLF guard listed only TRACKED files, so a brand-new pod was
+  invisible until the commit that broke it had happened (D-028); and `inspect`
+  listed only `python` targets, so a mediated pod was told it "ships no
+  pod-local Python" while shipping an agent and tools (D-030). Both looked green
+  while being switched off, and both were caught by writing a test against the
+  SPEC rather than against a list of providers someone has to remember to
+  extend.
+- **Name a boundary for what it does, not what you wish it did.** The agent
+  harness is called `mediated`, not `sandboxed`, because in-process Python is
+  not a security boundary. When a real process boundary arrived it still did not
+  take the word: it is documented as containment, with the escapes that survive
+  asserted as PASSING tests (N-010), so strengthening it later has to break a
+  test and rewrite the claim deliberately.
 - **An instrument that cannot fire tells you nothing.** A canary probe against a
   fresh canary comes back clean whether the model is contaminated or the probe
   is broken, which is why every probe carries a positive control and skips when

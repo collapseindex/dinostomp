@@ -84,6 +84,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-027](#d-027) | dinostomp | two defects in the pod written to demonstrate the new rail | fixed |
 | [D-028](#d-028) | dinostomp | the line-ending guard could not see a file until after it shipped | fixed |
 | [D-029](#d-029) | dinostomp | "policy is enforced at call time" held only for agents that asked | corrected |
+| [D-030](#d-030) | dinostomp | `inspect` called a pod codeless while it shipped an agent and tools | fixed |
 
 ---
 
@@ -1316,6 +1317,46 @@ child's path now; the agent module is loaded by file path and needs no entry.
 
 ---
 
+### D-030
+**The consent mechanism told you a pod ships no code, while it shipped an agent and its tools**
+`dinostomp inspect` · 2026-08-09 · fixed in v0.43.1
+
+`inspect` exists so `--trust-code` can be an informed decision: it reads a pod's
+Python statically and reports what it reaches for. It collected paths from the
+scorer, the judge, and `provider == "python"` targets. The mediated rail was
+added in v0.42.0 and nobody extended the list.
+
+```
+$ dinostomp inspect examples/mediated/eval.yaml
+mediated-grounding: ships no pod-local Python. Nothing here can run on your machine.
+```
+
+That pod ships `agent.py` and `tools.py`.
+
+Two things make this worse than a missing feature. The sentence is not silence,
+it is an **active reassurance**, and it is the single most flattering thing the
+tool could have said. And the code it hid includes **tools**, which are the most
+privileged code in a pod: they are imported and called in dinostomp's own
+process, and that stays true under `isolation: subprocess`, because the boundary
+exists to keep the AGENT away from the tools rather than to contain them. The
+one file a reader most needs to see before typing `--trust-code` was the file it
+did not mention.
+
+Fixed: `inspect` now covers both target rails and every tool, and labels tools
+`[runs in the PARENT process]` so their privilege is legible rather than
+inferred.
+
+**The test is written against the SPEC, not against a list of providers.** The
+bug was a list someone had to remember to extend, so a test that also enumerates
+providers would reproduce it. It asserts instead that any spec naming pod-local
+Python anywhere must produce a listing, which the next rail cannot quietly slip
+past.
+
+Same shape as [D-028](#d-028) four hours earlier: a checker that skipped the
+newest surface, looked green, and was off rather than weak.
+
+---
+
 ## The honest scorecard
 
 **Thirteen benchmarks audited**, all fetched from their authors and none
@@ -1331,9 +1372,9 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **10** |
-| defects in dinostomp itself (**D**) | **29** |
+| defects in dinostomp itself (**D**) | **30** |
 
-Twenty-nine to seventeen. That ratio is the useful number to publish, and it is the
+Thirty to seventeen. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

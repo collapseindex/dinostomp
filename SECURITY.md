@@ -6,8 +6,14 @@ Report anything here that turns out to be wrong to **ask@collapseindex.org**.
 
 ## The one that matters: a pod is code
 
-A pod can ship Python. A custom scorer, a python judge, and a python target are
-all files that get **imported**, and importing a file runs it.
+A pod can ship Python. A custom scorer, a python judge, a python target, a
+mediated agent, and a **tool** are all files that get **imported**, and
+importing a file runs it.
+
+**Tools are the most privileged code in a pod.** They are imported and called in
+dinostomp's own process, and that stays true under `isolation: subprocess`: the
+boundary exists to keep the AGENT away from the tools, not to contain the tools.
+If you read one file in a stranger's pod before running it, read the tools.
 
 That collides with the workflow this tool advertises, which is *clone a
 stranger's pod and verify it*. So:
@@ -25,7 +31,11 @@ stranger's pod and verify it*. So:
   statements run at IMPORT time). That turns `--trust-code` from blind consent
   into informed consent. It is not a sandbox and not a malware detector; a
   determined author can hide any of it, and a clean report is not a
-  certificate.
+  certificate. `inspect` covers the scorer, the judge, BOTH target rails, and
+  every tool. It listed `python` targets only until v0.43.1, which made it print
+  "ships no pod-local Python" for a mediated pod that shipped an agent and tools
+  ([D-030](FINDINGS.md#d-030)); a test now asserts it can never call a pod
+  codeless while the spec names code.
 - **`run` always executes**, because running an eval IS executing it. Running a
   pod you did not write is equivalent to running a script you did not write.
 
@@ -41,11 +51,15 @@ those offline either way.
 - Keys are never written to a manifest, a record, a report, or an error message.
   Provider errors carry status codes and response bodies, never headers.
 - Keep `.env` out of git. The shipped `.gitignore` covers `.env` and `.env.*`.
+- A child spawned by `isolation: subprocess` gets an environment with every
+  variable whose name contains key/token/secret/password/credential/auth/session
+  removed. That is removal, not an allow-list, so an unfamiliar credential
+  variable is stripped too. The parent's own environment is untouched.
 
 ## Filesystem
 
-- Every pod-relative path (data, scorer, target entrypoint, judge entrypoint) is
-  resolved and checked to be inside the pod. Absolute paths and traversal are
+- Every pod-relative path (data, scorer, target entrypoint, judge entrypoint,
+  and every tool) is resolved and checked to be inside the pod. Absolute paths and traversal are
   refused at load time, before anything opens a file.
 - Datasets are capped at 100MB, because they are read whole and an accidental
   or hostile giant file should be a sentence rather than an out-of-memory kill.
@@ -66,12 +80,55 @@ Model output is untrusted input, and dinostomp handles it in three places:
   by construction, which is where a talked-over judge shows up. **This is
   mitigation, not defence.** Judge scores on adversarial inputs deserve
   suspicion.
-- **Trajectories are self-reported.** T1-T6 verify the record, not the
-  execution. An agent that omits a tool call from its trace cannot be caught by
-  reading the trace.
+- **Trajectories are self-reported ON THE `python` RAIL.** There, T1-T6 verify
+  the record and not the execution, and an agent that omits a tool call from its
+  trace cannot be caught by reading the trace. On the `mediated` rail the
+  harness holds the tools and writes the trace itself, so it is a log; T8 prints
+  which kind you are reading, and a mediated agent that returns its own
+  trajectory stops the run.
 - **Example agents that evaluate expressions** parse with `ast` and walk the
   tree, rejecting anything that is not a number, an arithmetic operator or a
   parenthesis. `eval` on model output is remote code execution with extra steps.
+
+## Running an agent: two rails, and what each is worth
+
+Neither rail is a security boundary for the machine. They differ in what they
+make trustworthy, and the difference is worth stating precisely because "sandbox"
+is the word people reach for and neither one earns it.
+
+**`mediated`, in-process (the default).** The harness holds the tools, so the
+trajectory is an observed log rather than the agent's own account, and
+`forbidden_tools` / `max_steps` are refused at the moment of the call. That is
+TRACE integrity. It is not POLICY integrity: `Tools` keeps the live callables on
+an attribute, so an agent that reaches for `tools._registry` calls a forbidden
+tool directly **and leaves the trajectory empty**, because nothing went through
+`call`. v0.42.0 claimed otherwise and was corrected
+([D-029](FINDINGS.md#d-029)). The registry is not hidden, because hiding it in
+Python is theatre and "harder to reach" is not "prevented".
+
+**`isolation: subprocess`.** The agent runs in a child; the tools stay in the
+parent. This is what buys policy integrity, and several other things worth
+having:
+
+| an agent that tries to | sandboxed | in-process |
+|---|---|---|
+| read `OPENROUTER_API_KEY` | stripped from the child's environment | reads it |
+| call a forbidden tool via `_registry` | nothing to reach | runs it, trace stays empty |
+| open a socket | denied before the agent is imported | opens |
+| forge a protocol message on stdout | ignored; stdout is rebound first | n/a |
+| hang forever | killed at `timeout_s` | hangs the run |
+| **re-exec a fresh interpreter** | **works** | works |
+| **read the tool file with `open()`** | **works** | works |
+
+Every row is a test with an in-process control ([N-010](FINDINGS.md#n-010)), and
+the last two are asserted as PASSING, so a future change that strengthens the
+boundary has to break them and rewrite this table on purpose.
+
+**So: containment, not confinement.** It defends a RUN against an agent that is
+careless, buggy or quietly overreaching. It does not defend a MACHINE against a
+hostile one. The filesystem is not confined, the network denial is Python-level
+and defeatable, and the tools themselves are unconfined by construction. Run
+untrusted agent code in a VM.
 
 ## Money
 
@@ -109,8 +166,12 @@ signature, and it does not establish who published it.
 
 - It does not sandbox pod code. `--trust-code` means what it says; `inspect`
   informs the decision, it does not constrain the result.
-- It does not time out pod code. A scorer with an infinite loop will hang a
-  paid run, and killing it safely needs a subprocess this tool does not spawn.
+  `isolation: subprocess` is the one exception and it is deliberately narrow: it
+  contains a MEDIATED AGENT, and nothing else in a pod. A scorer, a judge, a
+  `python` target and every TOOL still run unconfined in this process.
+- It does not time out most pod code. `isolation.timeout_s` kills a hanging
+  mediated agent, because that one runs in a child this tool spawns. A scorer, a
+  judge or a `python` target with an infinite loop will still hang a paid run.
 - It does not sign anything. There is no key, no chain of trust, no attestation.
 - It does not fully protect against a hostile *provider*, though R18 now does
   the one cross-check available: you are billed on the provider's token count

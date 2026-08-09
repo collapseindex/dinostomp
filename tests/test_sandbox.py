@@ -342,3 +342,47 @@ def test_the_parent_process_keeps_its_own_environment(tmp_path, monkeypatch):
     monkeypatch.setenv("OPENROUTER_API_KEY", "sk-still-here")
     sanitised_env()
     assert os.environ["OPENROUTER_API_KEY"] == "sk-still-here"
+
+
+# --- informed consent must see every executable surface ----------------------
+
+
+def test_inspect_reports_the_agent_and_the_tools(tmp_path, capsys):
+    """`inspect` is what makes `--trust-code` informed rather than blind.
+
+    It listed `python` targets only, so a mediated pod printed "ships no
+    pod-local Python. Nothing here can run on your machine." while shipping an
+    agent AND tools (D-030). That is the most flattering falsehood the sentence
+    could have carried.
+    """
+    from dinostomp.cli import main
+
+    sp = pod(tmp_path)
+    # Exit 1 means "flags found", which is correct here: this fixture's agent
+    # imports os and socket on purpose. Both codes mean it looked.
+    assert main(["inspect", str(sp)]) in (0, 1)
+    out = capsys.readouterr().out
+    assert "ships no pod-local Python" not in out
+    assert "agent.py" in out and "tools.py" in out
+    # Tools run in the PARENT even under isolation, and that has to be said.
+    assert "PARENT process" in out
+
+
+def test_inspect_never_claims_a_pod_is_codeless_when_it_ships_code(tmp_path, capsys):
+    """The general form, so the next rail cannot reintroduce this quietly.
+
+    Any spec that names pod-local Python anywhere must produce a listing. The
+    check is written against the SPEC rather than against a list of providers,
+    because the bug was a list of providers that someone forgot to extend.
+    """
+    from dinostomp.cli import main
+    from dinostomp.spec import load_spec
+
+    sp = pod(tmp_path)
+    spec, issues = load_spec(sp)
+    assert spec is not None, issues
+    ships_python = bool(spec.get("tools")) or any(
+        mc.get("entrypoint") for mc in spec.get("models") or [])
+    assert ships_python, "fixture no longer ships code; the test would be vacuous"
+    assert main(["inspect", str(sp)]) in (0, 1)
+    assert "ships no pod-local Python" not in capsys.readouterr().out

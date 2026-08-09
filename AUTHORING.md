@@ -140,6 +140,102 @@ A superiority claim requires a seeded paired bootstrap to clear `min_effect`.
 at your `n` **before** any money moves, and authoring nonsense (a model that
 does not exist, a model beating itself) dies at load time.
 
+## Evaluating an agent, not a completion
+
+An examinee does not have to be a hosted model. Point a spec at pod-local Python
+and it mounts on the same rail as everything else: same budget cap, same ledger,
+same witness gate, same drift boundary, same battery.
+
+There are two rails, and choosing between them is the only real decision here.
+
+**`python` — the agent writes its own trace.**
+
+```yaml
+models:
+  - {provider: python, model: agent-a, entrypoint: agent.py:run}
+trajectory:
+  required_tools: [retrieve]
+  forbidden_tools: [shell]
+  max_steps: 6
+```
+
+```python
+# agent.py.  ctx carries model, seed and params.
+def run(item, ctx):
+    hits = retrieve(item["input"])
+    return {"output": answer(hits),
+            "trajectory": [{"tool": "retrieve", "args": {"q": item["input"]},
+                            "result": hits[0], "ok": True}]}
+```
+
+Simple, and honest about its limit: that trajectory is TESTIMONY. T1-T6 read it,
+so they verify the record, not the execution, and an agent that leaves a call
+out of its own trace cannot be caught by reading the trace.
+
+**`mediated` — the harness holds the tools.**
+
+```yaml
+tools:                                    # required by this rail
+  retrieve: tools.py:retrieve
+  shell: tools.py:shell
+models:
+  - {provider: mediated, model: agent-a, entrypoint: agent.py:answer}
+trajectory:
+  forbidden_tools: [shell]                # DENIED at the call, not audited after
+  max_steps: 6
+isolation: {mode: subprocess, timeout_s: 60}    # optional; default is inprocess
+```
+
+```python
+# agent.py.  THREE arguments, and the signature is how you tell the rails apart.
+def answer(item, tools, ctx):
+    hit = tools.retrieve(key=item["topic"])      # recorded by the harness
+    return extract(hit)
+```
+
+Things that catch people out on this rail:
+
+- **You cannot return a `trajectory`.** Doing so stops the run rather than being
+  ignored, because steps the harness never saw would be unverifiable evidence in
+  a record that claims to be a log.
+- **A denied tool RAISES.** `tools.shell(...)` raises `ToolDenied` rather than
+  returning empty, so an agent cannot mistake a refusal for a miss. Catch it if
+  you want the agent to recover; the attempt is recorded either way.
+- **A forbidden tool must still be listed in `tools`.** The harness can only
+  enforce policy about tools it holds, and a `forbidden_tools` entry naming
+  something the harness never offers is refused at load time as a line that does
+  nothing.
+- **`tools` and `mediated` require each other.** Either alone is refused.
+
+### The ablation probe: is the answer actually using the evidence?
+
+Only this rail can withhold a tool result, which is what makes the interesting
+question askable:
+
+```bash
+dinostomp run examples/mediated/eval.yaml --probe ablate
+```
+
+Every tool RESULT is replaced by a marker; the calls, the items and the policy
+are unchanged. **T7** compares the two runs. An answer that comes out identical
+did not causally depend on its evidence, which is a different and much stronger
+statement than **T4**'s "the answer appears somewhere in the retrieved text".
+
+Write your agent to be DETERMINISTIC if you want T7 to mean anything, or use
+`repeats`. A nondeterministic agent differs between the two arms by chance,
+which makes T7 understate ungroundedness rather than overstate it.
+
+### Should I turn on `isolation: subprocess`?
+
+Use it when the agent is not yours, or when it is yours and you would rather it
+could not read your API keys by accident. It runs the agent in a child process
+with a credential-stripped environment, no tool code, a denied `socket` module
+and an enforced timeout, at a cost of roughly 130ms per item.
+
+Do not use it as a security boundary. It is containment, not confinement: the
+filesystem is not confined and the network denial is defeatable. SECURITY.md has
+the table of what it stops and the two escapes that still work.
+
 ## The loop, end to end
 
 ```bash

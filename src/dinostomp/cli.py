@@ -162,9 +162,21 @@ def cmd_inspect(args) -> int:
     if judge.get("provider") == "python" and judge.get("entrypoint"):
         paths.append(("judge", judge["entrypoint"].rpartition(":")[0] or judge["entrypoint"]))
     for mc in spec.get("models") or []:
-        if mc.get("provider") == "python" and mc.get("entrypoint"):
+        # BOTH code rails. A mediated agent is imported and run exactly like a
+        # python target; only its tools are held elsewhere. Listing one and not
+        # the other told a reader of a mediated pod that it "ships no pod-local
+        # Python", which was the most flattering possible falsehood (D-030).
+        if mc.get("provider") in ("python", "mediated") and mc.get("entrypoint"):
             rel = mc["entrypoint"].rpartition(":")[0] or mc["entrypoint"]
             paths.append((f"target {mc['model']}", rel))
+
+    # TOOLS ARE THE MOST PRIVILEGED CODE IN A POD. They are imported and called
+    # in the PARENT process, which is true even under `isolation: subprocess`:
+    # the boundary exists to keep the AGENT away from them, not to contain them.
+    # A reader deciding on --trust-code needs these more than anything else here.
+    for name, entry in (spec.get("tools") or {}).items():
+        rel = str(entry).rpartition(":")[0] or str(entry)
+        paths.append((f"tool {name} [runs in the PARENT process]", rel))
 
     if not paths:
         print(f"{spec['name']}: ships no pod-local Python. Nothing here can run on your machine.")
