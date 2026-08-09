@@ -148,3 +148,81 @@ including the ones it cannot supply. Without them your work still runs and is
 still reported, labelled `UNVALIDATED` and excluded from coverage, because
 suppressing findings would be its own dishonesty and counting unproven ones
 would be worse.
+
+## Break it, please
+
+**82 of 82 planted defects caught is not independent validation.** Those defects
+were planted by the same hands that wrote the checks. A battery can become
+extremely good at catching exactly the mutants designed for it, and that number
+measures internal consistency: strong evidence each check fires on the failure it
+was built for, and no evidence at all about failures nobody here imagined.
+
+The credibility jump this project needs is not checks 55 through 70. It is
+outsiders attacking the battery and the misses being published.
+
+**The rules of engagement**, and the second one is the important one:
+
+1. Read [AUTHORING.md](AUTHORING.md) and the JSON Schemas in
+   `src/dinostomp/schemas/`.
+2. **Do not read the check implementations.** Building a pathological pod against
+   `lint.py` is how you rediscover the mutants that already exist. The whole
+   value of an outside attempt is that it comes from outside.
+3. Construct a pod that is genuinely invalid and which `stomp` calls
+   `MECHANICALLY SOUND`, or one that is genuinely fine and it calls `BROKEN`.
+4. Open an issue with the pod attached, or a PR adding it to `trials/`.
+
+A miss is worth more than a feature request, and it will be added to the trials
+with attribution rather than quietly patched.
+
+## Contributing a finding
+
+[FINDINGS.md](FINDINGS.md) is a ledger, and it takes entries from anyone. Three
+series, and they are not interchangeable:
+
+| series | what it records | example |
+|---|---|---|
+| **F** | a defect in someone else's eval, dataset, or scoring | MMLU keys a subtraction item to two identical options |
+| **D** | a defect in dinostomp itself | a gating check returned BROKEN on all of GSM8K |
+| **N** | a negative result: a check that found nothing | no repeated options across five choice datasets |
+
+**What an entry needs.** Take the next id in the series; ids are permanent.
+
+```markdown
+### F-014
+**Dataset · one line stating the defect**
+`check-slug` (ID) · YYYY-MM-DD · confirmed | scoped | WITHDRAWN
+
+A receipt someone else can re-derive: the item id, the verbatim option list,
+the key, and the command that reproduces it.
+
+**Scope it honestly.** What the finding does NOT show.
+```
+
+Then add the row to the index table at the top. A test fails the build if the
+index and the entries disagree, if an id is reused or a series has a gap, or if
+the scorecard's counts stop matching the file.
+
+**Five things that will get an entry sent back**, all of them mistakes made here
+first and recorded in the D series:
+
+- **A finding you have not looked at.** Every F entry in this file was inspected
+  item by item before it was written. The first pass at GSM8K produced 27 answer
+  leaks and every one was a false positive ([D-004](FINDINGS.md#d-004)).
+- **A finding about the loader.** If your fetcher reconstructs option order, a
+  position result is about your fetcher ([D-016](FINDINGS.md#d-016)).
+- **A statistic without a null.** "31 of 303 items look wrong" is not a finding
+  until you know what chance produces at that fleet size
+  ([D-008](FINDINGS.md#d-008)).
+- **An unscoped claim.** TruthfulQA's item is passable under a substring scorer,
+  which is not TruthfulQA's own protocol, and the entry says so
+  ([F-004](FINDINGS.md#f-004)).
+- **A defect in a benchmark treated as a verdict on its authors.** These are the
+  most-scrutinised datasets in the field, which is exactly why anything found in
+  them is worth publishing and exactly why the finding is about an artifact and
+  not about the people who built it.
+
+**Withdrawing.** If an entry turns out to be wrong, it keeps its id and gains
+`WITHDRAWN` plus the evidence that killed it. Deleting a published claim is how a
+findings page becomes a marketing page, and this project has already withdrawn
+its own reading of a result once ([D-008](FINDINGS.md#d-008)) rather than quietly
+editing it.

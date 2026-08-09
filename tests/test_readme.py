@@ -255,3 +255,30 @@ def test_every_image_the_readme_embeds_exists():
     assert local, "the README embeds no local image; the logo went missing"
     for src in local:
         assert (REPO / src).is_file(), f"README embeds {src}, which does not exist"
+
+
+def test_no_doc_links_a_heading_that_does_not_exist():
+    """FINDINGS.md pointed at CONTRIBUTING.md#break-it-please for two releases
+    while that section did not exist. A dead in-repo anchor is invisible until
+    someone clicks it, which is the worst kind of stale."""
+    import re as _re
+
+    docs = ["README.md", "FINDINGS.md", "METHODOLOGY.md", "AUTHORING.md",
+            "CONTRIBUTING.md", "REFERENCES.md", "SECURITY.md"]
+
+    def anchors(text):
+        out = set()
+        for level, title in _re.findall(r"^(#{2,4}) (.+)$", text, _re.M):
+            out.add(_re.sub(r"[^a-z0-9\s-]", "", title.lower()).strip().replace(" ", "-"))
+        return out
+
+    cache = {d: (REPO / d).read_text(encoding="utf-8") for d in docs if (REPO / d).is_file()}
+    dead = []
+    for name, text in cache.items():
+        for target, anchor in _re.findall(r"\(([A-Za-z0-9_.-]*\.md)#([a-z0-9-]+)\)", text):
+            if target in cache and anchor not in anchors(cache[target]):
+                dead.append(f"{name} -> {target}#{anchor}")
+        for anchor in _re.findall(r"\(#([a-z0-9-]+)\)", text):
+            if anchor not in anchors(text):
+                dead.append(f"{name} -> #{anchor} (same file)")
+    assert not dead, "dead in-repo anchors: " + "; ".join(sorted(set(dead))[:6])

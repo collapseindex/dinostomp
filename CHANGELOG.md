@@ -1,5 +1,11 @@
 # Changelog
 
+### v0.36.2 (2026-08-09)
+
+- **A section on contributing findings**, which also repairs a link that had been dead for two releases: FINDINGS.md pointed at `CONTRIBUTING.md#break-it-please` and that section did not exist. It covers the three series, the entry template, and the five ways an entry gets sent back, each one a mistake made here first and cited to the D entry that records it: a finding nobody looked at, a finding about the loader, a statistic without a null, an unscoped claim, and treating a benchmark defect as a verdict on its authors.
+- **A test for dead in-repo anchors.** Every `doc.md#heading` link across the seven docs is resolved against that file's actual headings. A dead anchor is invisible until somebody clicks it, which is the worst kind of stale; negative-tested by breaking one.
+- Logo swapped from JPEG to PNG, resized 1254px to 720px (1.9 MB to 705 KB). The README renders it at 360px, so the original meant every visitor to the front page downloaded five times what they saw.
+
 ### v0.36.1 (2026-08-09)
 
 Two false-positive classes the thirteen-benchmark sweep exposed, plus one real finding they were hiding.
