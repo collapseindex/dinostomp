@@ -1,0 +1,45 @@
+{
+  "tool_version": "0.45.1",
+  "tool_sha256": "661871140c862913fd7aee52a6ae4e4d0e98a138d3115a138afe052f41f8cc99",
+  "spec_name": "mediated-grounding",
+  "spec_version": "0.1.0",
+  "spec_sha256": "ae79cfd0e8319d80f9c565515d96632b8b952160f7f84a8c94f34075d9a6c15a",
+  "data_sha256": "36fe2258536e2eb42b78699d92ab85fff93108c55cea33795f90f40f7be53c27",
+  "provider": "mediated",
+  "model": "greedy",
+  "seed": 7,
+  "n_items": 24,
+  "repeats": 1,
+  "dry_run": false,
+  "budget_cap_usd": 0.0,
+  "rate_in_per_mtok": 0.0,
+  "rate_out_per_mtok": 0.0,
+  "witness_report": {
+    "n_witnesses": 6,
+    "n_behaved": 6,
+    "verdict": "validated"
+  },
+  "env": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "dinostomp": "0.29.0",
+      "jsonschema": "4.25.1",
+      "PyYAML": "6.0.2"
+    }
+  },
+  "started_at": "2026-08-09T21:01:29.675312+00:00",
+  "status": "complete",
+  "target_sha256": "f22417f9d9c11c1183e5489c3960fcd0e3c0ee3e52ada32d6870d7a2f70aa488",
+  "trajectory_source": "harness_observed",
+  "tool_sha256_by_name": {
+    "retrieve": "3d4259687429edefa2ea89c86192044a6f9a677e4b2a46ab844fc2fd5150ec4c",
+    "shell": "3d4259687429edefa2ea89c86192044a6f9a677e4b2a46ab844fc2fd5150ec4c"
+  },
+  "isolation": "inprocess",
+  "model_reported": "greedy",
+  "spend_usd": 0.0,
+  "spend_source": "metered",
+  "finished_at": "2026-08-09T21:01:29.703899+00:00",
+  "run_file": "20260809_210129_mediated-grounding_greedy_n24_s7.jsonl"
+}

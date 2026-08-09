@@ -797,11 +797,12 @@ def test_s1_ignores_option_ORDER_when_deciding_identity(tmp_path):
     assert finding(report, "S1")["level"] == "fail"
 
 
-def test_s5_does_not_case_fold_because_case_can_be_the_answer(tmp_path):
-    """MMLU's Punnett-square items offer 'Bb Bb' against 'BB Bb'.
+def test_s5_leaves_notation_alone_when_case_carries_the_content(tmp_path):
+    """MMLU's Punnett-square items offer 'BB Bb' against 'Bb bb'.
 
-    Case-folding option comparison looks like an obvious improvement and calls
-    four correct MMLU items defective.
+    Naive case-folding calls four correct MMLU items defective. The rule is not
+    "never fold case", it is that a WIDE collapse means the case is the content:
+    these four options fold to one string, so folding them proves nothing.
     """
     items = [_mc(f"i{i}", f"Cross {i}?", ["BB BB", "BB Bb", "Bb Bb", "Bb bb"], "Bb Bb")
              for i in range(20)]
@@ -810,6 +811,46 @@ def test_s5_does_not_case_fold_because_case_can_be_the_answer(tmp_path):
     items.append(_mc("real", "Cross X?", ["687", "687", "1,493", "1,695"], "687"))
     report = stomp(_mc_pod(tmp_path, items))
     assert finding(report, "S5")["level"] == "fail", "an exact repeat is still a defect"
+
+
+def test_s5_catches_a_case_only_duplicate_when_exactly_one_pair_collapses(tmp_path):
+    """The catch the strict rule was costing, confirmed by human annotation.
+
+    `Sc = Ej` against `sC = eJ` in MMLU's predicate logic is labelled
+    `multiple_correct_answers` by MMLU-Redux's annotators (N-012). Exactly one
+    pair collapses under folding, which is what separates it from the genetics
+    items above where all four do.
+    """
+    items = [_mc(f"i{i}", f"Which formula {i}?",
+                 ["Cs > Ej", "Sc = Ej", "sC = eJ", "Sx = Jy"], "Sc = Ej")
+             for i in range(20)]
+    report = stomp(_mc_pod(tmp_path, items))
+    assert finding(report, "S5")["level"] == "fail"
+    assert "case or spacing" in finding(report, "S5")["detail"]
+
+
+def test_s5_ignores_a_wide_case_collapse_even_at_three(tmp_path):
+    """The boundary, stated as a test rather than left to the reader.
+
+    Three of four options folding together is still a wide collapse and still
+    reads as notation. Only a single collapsed PAIR is treated as a duplicate.
+    """
+    items = [_mc(f"i{i}", f"Genotype {i}?", ["Aa Bb", "aa bb", "AA BB", "zz zz"], "zz zz")
+             for i in range(20)]
+    report = stomp(_mc_pod(tmp_path, items))
+    assert finding(report, "S5")["level"] == "pass", (
+        "three options folding to one is notation, not a duplicated option")
+
+
+def test_s5_treats_spacing_only_differences_as_duplicates(tmp_path):
+    """`Increase     Increase` against `Increase Increase` is one answer twice,
+    and MMLU ships exactly that (high_school_macroeconomics)."""
+    items = [_mc(f"i{i}", f"Effect {i}?",
+                 ["Increase     Increase", "Increase Increase", "Decrease", "No change"],
+                 "Decrease")
+             for i in range(20)]
+    report = stomp(_mc_pod(tmp_path, items))
+    assert finding(report, "S5")["level"] == "fail"
 
 
 # --- P2's null: a raw count of negative discriminations is not a finding -------

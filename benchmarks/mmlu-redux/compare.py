@@ -54,9 +54,28 @@ def load(name):
             if l.strip()]
 
 
+def _folded(text) -> str:
+    import re
+    return re.sub(r"\s+", " ", str(text).strip().lower())
+
+
 def duplicated_options(item) -> list[str]:
+    """S5's rule: a verbatim repeat, or a case/spacing repeat where exactly ONE
+    pair collapses. A wider collapse means the case carries the content, which
+    is what MMLU's genetics items do ('BB Bb' against 'Bb bb').
+
+    Kept in step with the battery by the assertion in main(), which has now
+    fired twice: once when this reproduced S1 with the wrong key, and once when
+    S5 gained the case rule and this file did not.
+    """
     ch = [str(c) for c in (item.get("choices") or [])]
-    return [c for c, n in Counter(ch).items() if n > 1]
+    exact = [c for c, n in Counter(ch).items() if n > 1]
+    if exact:
+        return exact
+    if len({_folded(c) for c in ch}) == len(ch) - 1:
+        folded = Counter(_folded(c) for c in ch)
+        return [c for c in ch if folded[_folded(c)] > 1]
+    return []
 
 
 def rule_dup_questions(items):

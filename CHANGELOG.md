@@ -1,5 +1,31 @@
 # Changelog
 
+### v0.45.1 (2026-08-09)
+
+The external measurement, used.
+
+- **S5 folds case and spacing when exactly ONE pair collapses.** Scoring against
+  MMLU-Redux (N-012) showed the strict rule was costing a real catch: MMLU's
+  predicate-logic item `['Cs ⊃ Ej', 'Sc ≡ Ej', 'sC ≡ eJ', 'Sx ≡ Jy']` is labelled
+  `multiple_correct_answers` by the human annotators. Precision **14% -> 25%**,
+  recall **3% -> 5%**, no new false positives on either dataset.
+- **The discriminator is how many options collapse.** Where case carries the
+  content, folding merges nearly everything: MMLU's Punnett items fold four
+  options into one. A genuine duplicate collapses exactly one pair.
+- **Three candidate rules measured and REJECTED, with their numbers in the
+  code** so nobody re-derives them: naive case-folding (+1 catch, +3 false
+  positives), stripping punctuation (+2, +75), substring containment (+3, +481).
+- **A near-miss worth more than the fix.** S5 already carried a comment saying
+  case-folding had been tried and rejected. Redux said it was free, because its
+  5,700-item sample does not contain the genetics items the original decision
+  was made on. Acting on the newer measurement alone would have shipped three
+  false positives into a GATING check. The prior decision was right and its
+  SCOPE was wrong; checking it against the repo's own MMLU copy before
+  overriding it is what caught that.
+- `compare.py` asserts its reproduced rules against the battery's own counts,
+  and that assertion has now fired twice: once for keying S1 wrongly, once when
+  S5 gained this rule and the script had not.
+
 ### v0.45.0 (2026-08-09)
 
 The first external validation in the repository, and the defect that found.

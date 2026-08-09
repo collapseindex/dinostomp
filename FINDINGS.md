@@ -57,7 +57,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-009](#n-009) | dinostomp | T4 sees 0%, T7 sees 100%, on the same agent | measured |
 | [N-010](#n-010) | dinostomp | what a process boundary buys, one claim at a time | measured |
 | [N-011](#n-011) | Inspect AI | the second foreign format cost one defect, not five | measured |
-| [N-012](#n-012) | dinostomp | scored against humans: 3% recall, and 2 items they missed | measured |
+| [N-012](#n-012) | dinostomp | scored against humans: 5% recall, and 2 items they missed | measured, acted on |
 | [D-001](#d-001) | dinostomp | the money invariant had only ever run at zero | fixed |
 | [D-002](#d-002) | dinostomp | pooling hid a model that never read the question | fixed |
 | [D-003](#d-003) | dinostomp | a collapsed model manufactured 8 phantom key errors | fixed |
@@ -783,7 +783,7 @@ first one's shape, and the second cost 20% of what the first did.
 ---
 
 ### N-012
-**dinostomp scored against human annotation: 3% recall, 14% precision, and 2 items the humans missed**
+**dinostomp scored against human annotation: 5% recall, 25% precision, and 2 items the humans missed**
 `dup-options` (S5) vs MMLU-Redux 2.0 · 2026-08-09 · measured
 
 Every other entry in this ledger is self-graded: a defect dinostomp found that
@@ -806,28 +806,69 @@ Redux's six error types, one is within reach and only its verbatim subset:
 | `expert` | 32 | no, needs an expert |
 | `bad_options_clarity` | 25 | no, needs judgement |
 
-**The numbers, in the framing that flatters least first:**
+**The numbers, in the framing that flatters least first.** As first measured,
+and after the fix this measurement paid for:
 
 ```
-S5 dup-options vs ANY human-annotated defect     precision 14%   recall  0%
-S5 dup-options vs multiple_correct_answers       precision 14%   recall  3%
+                                              as measured        after the fix
+S5 dup-options vs ANY human defect        precision 14% / recall 0%    25% / 1%
+S5 dup-options vs multiple_correct        precision 14% / recall 3%    25% / 5%
 ```
 
-**3% recall.** 38 of the 39 items are SEMANTIC duplicates, and no byte
+**5% recall.** 37 of the 39 items are SEMANTIC duplicates, and no byte
 comparison finds those: *"steadily in one direction"* against *"in one
-direction"*, or a logic item whose options differ only in notation. A mechanical
-data audit does not substitute for reading the questions, and this is the number
-that says by how much.
+direction"*, or a logic item whose options are equivalent under a notation
+convention. A mechanical data audit does not substitute for reading the
+questions, and this is the number that says by how much.
 
-**The 14% precision is the wrong reading of the 7 flags.** Splitting them on the
-question that decides whether a flag is a defect, is the DUPLICATED option the
-one the key points at:
+**The precision figure is the wrong reading of the 8 flags.** Splitting them on
+the question that decides whether a flag is a defect, is the DUPLICATED option
+the one the key points at:
 
-- **3 of 7 have the keyed answer duplicated.** Two identical correct options, by
-  construction. Humans labelled **2 of those 3 as `ok`** ([F-018](#f-018)).
-- **4 of 7 duplicate a non-key option.** A four-option item effectively offering
+- **4 of 8 have the keyed answer duplicated.** Two identical correct options, by
+  construction. Humans labelled **2 of those 4 as `ok`** ([F-018](#f-018)).
+- **4 of 8 duplicate a non-key option.** A four-option item effectively offering
   three. A real defect, and outside Redux's taxonomy, so `ok` is not wrong there
   and counting them as false positives is not either.
+
+### What this measurement bought, which is the point of taking it
+
+A 3% recall is not a verdict, it is a starting number, and having it made the
+next step an experiment instead of an argument. 38 misses, sorted by whether
+anything mechanical could reach them:
+
+| class | n | reachable |
+|---|---|---|
+| genuinely semantic | 30 | no |
+| substring containment | 5 | yes, at a price |
+| punctuation-only | 2 | yes, at a price |
+| case or spacing only | 1 | yes |
+
+Each candidate rule was then run against BOTH Redux and the repo's own MMLU
+copy, and the prices are why three of them are not in the tool:
+
+| rule | extra catches | extra false positives |
+|---|---|---|
+| **case/spacing, one collapsed pair** | **+1** | **0** |
+| naive case-folding | +1 | +3 (MMLU genetics: `BB Bb` vs `Bb bb`) |
+| strip punctuation | +2 | +75 (formal logic: `(F • L) • ~C` vs `F • L • ~C`) |
+| substring containment | +3 | +481 |
+
+S5 now folds case and spacing ONLY when exactly one pair collapses. Where case
+carries the content, folding merges nearly everything (MMLU's Punnett items fold
+four options into one), and a wide collapse is the signal that the case IS the
+answer. That distinction is the whole fix, and it is worth eleven precision
+points and one real catch.
+
+**The near-miss worth recording.** S5 already carried a comment saying
+case-folding had been tried and rejected. The Redux measurement said folding was
+free, and acting on that alone would have shipped three false positives into a
+GATING check, because Redux's 5,700-item sample does not happen to contain the
+genetics items the original decision was made on. The prior decision was right;
+it was the SCOPE that was wrong. Checking the old claim against the repo's own
+MMLU copy before overriding it is what caught that, and the general form is: a
+measurement on one sample is not a licence to reverse a decision made on
+another.
 
 **S1 is reported and not scored.** It flags 32 duplicated keys covering 64
 items, all labelled `ok`. Redux annotates whether an item is ANSWERABLE, not
@@ -1596,7 +1637,7 @@ because every one of those was written by this tool.
 
 ## The honest scorecard
 
-**One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 14% and **recall 3%**. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
+**One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
 
 **Thirteen benchmarks audited**, all fetched from their authors and none
 vendored: MMLU, MMLU-Pro, HellaSwag, ARC-Easy, ARC-Challenge, GSM8K,

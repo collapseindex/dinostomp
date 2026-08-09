@@ -601,15 +601,48 @@ def _duplicate_option_checks(rep: Reporter, choice_items: list[dict]) -> None:
     """
     # S5: same option twice in one item.
     #
-    # EXACT comparison, deliberately. Normalising case here looks like an
-    # obvious improvement and is a false-positive generator: MMLU's genetics
-    # items offer 'Bb Bb' against 'BB Bb', and its predicate-logic items offer
-    # 'Sc = Ej' against 'sC = eJ', where the case IS the answer. Case-folding
-    # would have called four correct items defective. Tried it, measured it,
-    # kept the strict version.
-    dup_opts = [str(i["id"]) for i in choice_items if len(set(i["choices"])) < len(i["choices"])]
-    rep.check("S5", not dup_opts, f"{len(dup_opts)} item(s) offer a duplicate option",
-              n=len(choice_items), examples=dup_opts)
+    # Exact comparison, PLUS one narrow case-insensitive rule. The history is
+    # worth keeping because both halves were measured rather than argued.
+    #
+    # Naive case-folding was tried first and rejected: MMLU's genetics items
+    # offer 'BB Bb' against 'Bb bb' and its predicate-logic items offer
+    # 'Sc = Ej' against 'sC = eJ', where the case IS the content. It called four
+    # correct items defective.
+    #
+    # Scoring the check against MMLU-Redux's human annotation (N-012) showed the
+    # rejection was costing a real catch: one of those four, the predicate-logic
+    # item, is labelled `multiple_correct_answers` by the annotators. So the
+    # question was never "fold case or not", it was how to tell the two apart.
+    #
+    # THE DISCRIMINATOR IS HOW MANY OPTIONS COLLAPSE. Where case carries the
+    # content, folding it merges nearly everything: 'BB BB', 'BB Bb', 'Bb Bb',
+    # 'Bb bb' become one string, and a four-way collapse means the case is the
+    # answer. A genuine duplicate collapses exactly ONE pair. Measured both
+    # ways: on the repo's MMLU copy the pair rule flags the true positive and
+    # none of the three genetics items; on Redux it keeps every catch the naive
+    # version had.
+    #
+    # Also measured and REJECTED, with their numbers, so the next person does
+    # not have to re-derive them: stripping punctuation costs 75 extra false
+    # positives on Redux for 2 extra catches (formal logic, where '(F • L) • ~C'
+    # and 'F • L • ~C' are different formulas), and substring containment costs
+    # 481 for 3.
+    def _folded(text) -> str:
+        return re.sub(r"\s+", " ", str(text).strip().lower())
+
+    dup_opts, case_only = [], []
+    for i in choice_items:
+        ch = list(i["choices"])
+        if len(set(ch)) < len(ch):
+            dup_opts.append(str(i["id"]))
+        elif len({_folded(c) for c in ch}) == len(ch) - 1:
+            dup_opts.append(str(i["id"]))
+            case_only.append(str(i["id"]))
+    detail = f"{len(dup_opts)} item(s) offer a duplicate option"
+    if case_only:
+        detail += (f" ({len(case_only)} differing only in case or spacing, where exactly one "
+                   f"pair collapses; a wider collapse is treated as case carrying the content)")
+    rep.check("S5", not dup_opts, detail, n=len(choice_items), examples=dup_opts)
 
     # S6: target among choices
     keyless = [str(i["id"]) for i in choice_items if not any(t in i["choices"] for t in _targets_of(i))]

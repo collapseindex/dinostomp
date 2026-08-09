@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**BROKEN**: 2 gated finding(s) (10 of 36 ran; 18 n/a of 54 declared)
+**BROKEN**: 2 gated finding(s) (10 of 37 ran; 20 n/a of 57 declared)
 
 ## Entitled claims
 
@@ -16,7 +16,7 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 |---|---|---:|---|
 | **FAIL** | questions are unique | 3000 | 90 duplicated question(s) among 3000 |
 | n/a | no answer leaks into its own question | 0 | no free-form items in this dataset |
-| **FAIL** | no option offered twice in one item | 3000 | 3 item(s) offer a duplicate option |
+| **FAIL** | no option offered twice in one item | 3000 | 4 item(s) offer a duplicate option (1 differing only in case or spacing, where exactly one pair collapses; a wider collapse is treated as case carrying the content) |
 | ok | every target is among its choices | 3000 | 0 item(s) whose target is not among their choices |
 | ok | no identical question with contradictory targets | 3000 | 0 question(s) appear with conflicting targets |
 | n/a | every typed claim's evidence requirements hold | 0 | no typed claims declared |
@@ -29,9 +29,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | skip | summaries match their run records | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | skip | records cover exactly the seeded selection | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | skip | every model produced something scoreable | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
-| n/a | no forbidden tool is called | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | every required tool is actually called | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | trajectories are well-formed | 0 | this spec runs no python targets; nothing produces a trajectory |
+| n/a | no forbidden tool is called | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | every required tool is actually called | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | trajectories are well-formed | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | skip | every model was asked the same items | 0 | no runs on disk yet |
 
 ### Diagnostics (statistical, advisory)
@@ -57,9 +57,12 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | failed answers do not contain the reference | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | skip | billed output tokens match the recorded text | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | skip | the runs were produced by this engine | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
-| n/a | passing answers are grounded in tool evidence | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | no model under-reports its trajectory | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | tool calls are not redundant | 0 | this spec runs no python targets; nothing produces a trajectory |
+| skip | repeated items reached a verdict | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
+| n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | tool calls are not redundant | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | passing answers CHANGE when their evidence is withheld | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | the trajectory was observed, not self-reported | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | the judge agrees with cases whose answer is known | 0 | this eval does not score with a judge |
 | n/a | the judge is invariant to content-free perturbations | 0 | this eval does not score with a judge |
 | n/a | the judge agrees with itself on identical input | 0 | this eval does not score with a judge |
@@ -105,6 +108,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 - mmlu-00389
 - mmlu-01941
 - mmlu-02178
+- mmlu-02501
 
 </details>
 <details><summary>[ok] witnesses kill the mutant scorers</summary>
@@ -115,7 +119,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.39.0
+- tool: dinostomp 0.45.1
 - statistical power: at n=3000 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~4% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `3e43402a87458a3fe5d448faf280c02e55453510ae8dd6406393aa4621c78968`
 - data_sha256: `b5f09b255f036e6edbd789fac88832ff54f552fb2e238148e3bdcf1bab23c36c`
