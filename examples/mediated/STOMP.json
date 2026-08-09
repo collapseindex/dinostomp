@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.42.0",
+  "version": "0.42.1",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -369,7 +369,7 @@
   },
   "summary": {
     "fail": 0,
-    "warn": 4,
+    "warn": 3,
     "skip": 9,
     "verdict": "incomplete",
     "scope": "pod"
@@ -580,9 +580,9 @@
       "witnesses": 3,
       "evidence": {
         "per_model_accuracy": {
-          "greedy": 1.0,
           "grounded": 1.0,
-          "oneshot": 0.75
+          "oneshot": 0.75,
+          "greedy": 1.0
         },
         "chance_floor": 0.125,
         "uniform": 0.0,
@@ -636,9 +636,9 @@
       "witnesses": 3,
       "evidence": {
         "rates": {
-          "greedy": 0.0,
           "grounded": 0.0,
-          "oneshot": 0.0
+          "oneshot": 0.0,
+          "greedy": 0.0
         }
       }
     },
@@ -700,16 +700,13 @@
       "id": "R19",
       "slug": "engine-drift",
       "check": "the runs were produced by this engine",
-      "level": "warn",
+      "level": "pass",
       "gating": false,
-      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now ec7785ff635370d3); re-run to get numbers this report can stand behind",
+      "detail": "0 of 3 run(s) were produced by a different engine than the one auditing them (now f8e4d8b04c070917); re-run to get numbers this report can stand behind",
       "witnesses": 3,
-      "examples": [
-        "engine 3a8937a85c81506e: greedy seed 7 (tool 0.41.0), grounded seed 7 (tool 0.41.0), oneshot seed 7 (tool 0.41.0)"
-      ],
       "evidence": {
         "engines": {
-          "3a8937a85c81506e": 3
+          "f8e4d8b04c070917": 3
         }
       }
     },
@@ -980,7 +977,7 @@
     }
   ],
   "inputs": {
-    "spec_sha256": "4cbb2b14b82f10aec825f707b32d29d2fdb1acc078b76a6739352c38a92c167e",
+    "spec_sha256": "ae79cfd0e8319d80f9c565515d96632b8b952160f7f84a8c94f34075d9a6c15a",
     "data_sha256": "36fe2258536e2eb42b78699d92ab85fff93108c55cea33795f90f40f7be53c27",
     "target_sha256": {
       "grounded": "f22417f9d9c11c1183e5489c3960fcd0e3c0ee3e52ada32d6870d7a2f70aa488",
@@ -990,19 +987,7 @@
   },
   "runs": [
     {
-      "run_file": "20260809_145004_mediated-grounding_greedy_n24_s7.jsonl",
-      "model": "greedy",
-      "model_reported": "greedy",
-      "provider": "mediated",
-      "dry_run": false,
-      "seed": 7,
-      "records": 24,
-      "uncheckable": 0,
-      "spend_source": "metered",
-      "trajectory_steps": 72
-    },
-    {
-      "run_file": "20260809_145004_mediated-grounding_grounded_n24_s7.jsonl",
+      "run_file": "20260809_150726_mediated-grounding_grounded_n24_s7.jsonl",
       "model": "grounded",
       "model_reported": "grounded",
       "provider": "mediated",
@@ -1014,7 +999,7 @@
       "trajectory_steps": 24
     },
     {
-      "run_file": "20260809_145004_mediated-grounding_oneshot_n24_s7.jsonl",
+      "run_file": "20260809_150726_mediated-grounding_oneshot_n24_s7.jsonl",
       "model": "oneshot",
       "model_reported": "oneshot",
       "provider": "mediated",
@@ -1024,6 +1009,18 @@
       "uncheckable": 0,
       "spend_source": "metered",
       "trajectory_steps": 24
+    },
+    {
+      "run_file": "20260809_150727_mediated-grounding_greedy_n24_s7.jsonl",
+      "model": "greedy",
+      "model_reported": "greedy",
+      "provider": "mediated",
+      "dry_run": false,
+      "seed": 7,
+      "records": 24,
+      "uncheckable": 0,
+      "spend_source": "metered",
+      "trajectory_steps": 72
     }
   ],
   "entitled_claims": [

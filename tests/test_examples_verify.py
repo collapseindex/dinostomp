@@ -65,12 +65,29 @@ def test_every_writer_emits_lf_so_pods_survive_a_checkout(tmp_path):
 
 
 def test_tracked_pod_artifacts_are_lf_on_disk():
-    """The committed receipts have to be byte-identical to what a clone sees."""
+    """The committed receipts have to be byte-identical to what a clone sees.
+
+    UNTRACKED files are checked too, and that is what the second command below
+    is for. This guard used `git ls-files` alone, which lists only what is
+    ALREADY tracked, so a brand-new pod was invisible to it until the commit
+    introducing that pod had already happened. `examples/mediated/eval.yaml`
+    went in carrying CRLF and this test passed locally on the very run that
+    produced it; CI caught it a minute later, once the file was tracked. A
+    checker that cannot fire on new work is switched off for exactly the change
+    most likely to need it (D-028).
+
+    `.gitattributes` marks `*.yaml -text`, so git stores those bytes verbatim: a
+    CRLF spec written by a Windows editor survives into a clone, where its hash
+    no longer matches the drift boundary its runs were produced under.
+    """
     import subprocess
 
-    tracked = subprocess.run(["git", "ls-files", "examples", "benchmarks"],
-                             capture_output=True, text=True, cwd=REPO).stdout.split()
-    crlf = [f for f in tracked
-            if Path(f).suffix in (".json", ".jsonl", ".svg", ".yaml", ".md")
+    def git(*args):
+        return subprocess.run(["git", *args, "examples", "benchmarks"],
+                              capture_output=True, text=True, cwd=REPO).stdout.split()
+
+    candidates = set(git("ls-files")) | set(git("ls-files", "--others", "--exclude-standard"))
+    crlf = [f for f in sorted(candidates)
+            if Path(f).suffix in (".json", ".jsonl", ".svg", ".yaml", ".md", ".py")
             and (REPO / f).is_file() and b"\r\n" in (REPO / f).read_bytes()]
-    assert not crlf, f"committed artifacts carry CRLF: {crlf[:5]}"
+    assert not crlf, f"pod artifacts carry CRLF: {crlf[:5]}"

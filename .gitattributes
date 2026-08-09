@@ -19,3 +19,11 @@
 *.yml     -text
 *.svg     -text
 STOMP.md  -text
+
+# Pod CODE is hashed too: `target_sha256`, `tool_sha256_by_name`, and a custom
+# scorer's hash all read these bytes. Under `text=auto` a Windows clone with
+# autocrlf would receive CRLF, hash differently, and fail to re-derive a report
+# that verifies perfectly on Linux. Same reasoning as the artifacts above, and
+# the same failure it would produce; found while widening the CRLF guard rather
+# than by anyone hitting it.
+*.py      -text

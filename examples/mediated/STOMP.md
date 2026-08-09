@@ -56,7 +56,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 1 | 0 of 1 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 3 | 3 of 3 run(s) were produced by a different engine than the one auditing them (now ec7785ff635370d3); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 3 | 0 of 3 run(s) were produced by a different engine than the one auditing them (now f8e4d8b04c070917); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | passing answers are grounded in tool evidence | 3 | 0 of 3 target(s) pass items whose answer does not APPEAR in their own evidence (0 such answer(s) in total). This is co-occurrence, not causation: an answer recalled from memory that also happens to appear in a retrieved snippet counts as grounded here, so this count is a floor |
 | ok | no model under-reports its trajectory | 3 | 0 of 3 target(s) report far fewer steps than the fleet (median 1.0); a thin trace can be efficiency OR omission |
@@ -102,10 +102,9 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 - evidence: `{"rates": {"greedy": 0.0, "grounded": 0.0, "oneshot": 0.0}}`
 
 </details>
-<details><summary>[warn] the runs were produced by this engine</summary>
+<details><summary>[ok] the runs were produced by this engine</summary>
 
-- engine 3a8937a85c81506e: greedy seed 7 (tool 0.41.0), grounded seed 7 (tool 0.41.0), oneshot seed 7 (tool 0.41.0)
-- evidence: `{"engines": {"3a8937a85c81506e": 3}}`
+- evidence: `{"engines": {"f8e4d8b04c070917": 3}}`
 
 </details>
 <details><summary>[ok] passing answers are grounded in tool evidence</summary>
@@ -155,15 +154,15 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260809_145004_mediated-grounding_greedy_n24_s7.jsonl | greedy | (same) | mediated | no | 7 | 24 | 0 |
-| 20260809_145004_mediated-grounding_grounded_n24_s7.jsonl | grounded | (same) | mediated | no | 7 | 24 | 0 |
-| 20260809_145004_mediated-grounding_oneshot_n24_s7.jsonl | oneshot | (same) | mediated | no | 7 | 24 | 0 |
+| 20260809_150726_mediated-grounding_grounded_n24_s7.jsonl | grounded | (same) | mediated | no | 7 | 24 | 0 |
+| 20260809_150726_mediated-grounding_oneshot_n24_s7.jsonl | oneshot | (same) | mediated | no | 7 | 24 | 0 |
+| 20260809_150727_mediated-grounding_greedy_n24_s7.jsonl | greedy | (same) | mediated | no | 7 | 24 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.42.0
+- tool: dinostomp 0.42.1
 - statistical power: at n=24 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~40% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
-- spec_sha256: `4cbb2b14b82f10aec825f707b32d29d2fdb1acc078b76a6739352c38a92c167e`
+- spec_sha256: `ae79cfd0e8319d80f9c565515d96632b8b952160f7f84a8c94f34075d9a6c15a`
 - data_sha256: `36fe2258536e2eb42b78699d92ab85fff93108c55cea33795f90f40f7be53c27`
 - target_sha256: `{'grounded': 'f22417f9d9c11c1183e5489c3960fcd0e3c0ee3e52ada32d6870d7a2f70aa488', 'oneshot': 'f22417f9d9c11c1183e5489c3960fcd0e3c0ee3e52ada32d6870d7a2f70aa488', 'greedy': 'f22417f9d9c11c1183e5489c3960fcd0e3c0ee3e52ada32d6870d7a2f70aa488'}`
 - thresholds: all defaults

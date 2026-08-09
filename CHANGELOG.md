@@ -1,5 +1,19 @@
 # Changelog
 
+### v0.42.1 (2026-08-09)
+
+- **D-028: the CRLF guard was blind to new files.** It listed candidates with
+  `git ls-files`, which reports only TRACKED files, so a brand-new pod was
+  invisible until the commit that introduced it had already happened.
+  `examples/mediated/eval.yaml` shipped with CRLF; the local suite passed 413 of
+  413 on the run that produced it and CI failed a minute later. Untracked files
+  are checked now, and the fix was negative-tested by planting one.
+- **`*.py` is now `-text`.** Pod code is hashed into manifests
+  (`target_sha256`, `tool_sha256_by_name`), and under `text=auto` a Windows
+  clone with autocrlf would have received CRLF agent code, hashed it
+  differently, and failed to re-derive a report that verifies on Linux. Latent,
+  not hit: every pod `.py` in the repo happened to be LF.
+
 ### v0.42.0 (2026-08-09)
 
 The agent harness that has been on the roadmap since v0.11, built, and

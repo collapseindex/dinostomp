@@ -1,0 +1,41 @@
+{
+  "tool_version": "0.42.1",
+  "tool_sha256": "f8e4d8b04c070917450a1a731502806173ffa1898f2ee13976bdc050c0a87307",
+  "spec_name": "judge-capitals",
+  "spec_version": "0.1.0",
+  "spec_sha256": "414280db41465402b15aef657631b3c41dea335c4b29ee7de348d500cdc5c58d",
+  "data_sha256": "ceb8609c45e8daed58a6ca30757e45bbce202303e6cb1c8324b741d2e11b24d4",
+  "provider": "python",
+  "model": "bot-hedged",
+  "seed": 42,
+  "n_items": 26,
+  "repeats": 1,
+  "dry_run": false,
+  "budget_cap_usd": 0.0,
+  "rate_in_per_mtok": 0.0,
+  "rate_out_per_mtok": 0.0,
+  "witness_report": {
+    "n_witnesses": 6,
+    "n_behaved": 6,
+    "verdict": "validated"
+  },
+  "env": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "dinostomp": "0.29.0",
+      "jsonschema": "4.25.1",
+      "PyYAML": "6.0.2"
+    }
+  },
+  "started_at": "2026-08-09T15:07:21.514661+00:00",
+  "status": "complete",
+  "target_sha256": "34daa2488fb051cf1728a4bba53c6b0c6a51667466c2fb85a2c8cd9483058b9d",
+  "trajectory_source": "self_reported",
+  "model_reported": "bot-hedged",
+  "spend_usd": 0.0,
+  "spend_source": "metered",
+  "judge_calls": 84,
+  "finished_at": "2026-08-09T15:07:21.546546+00:00",
+  "run_file": "20260809_150721_judge-capitals_bot-hedged_n26_s42.jsonl"
+}

@@ -81,6 +81,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-025](#d-025) | dinostomp | an error message named a flag nobody can type | fixed |
 | [D-026](#d-026) | dinostomp | the item-majority estimator was never run live until now | fixed |
 | [D-027](#d-027) | dinostomp | two defects in the pod written to demonstrate the new rail | fixed |
+| [D-028](#d-028) | dinostomp | the line-ending guard could not see a file until after it shipped | fixed |
 
 ---
 
@@ -1198,6 +1199,44 @@ duplicate-riddled example as a showcase.
 
 ---
 
+### D-028
+**The line-ending guard could not see a file until the commit that broke it had happened**
+`tests/test_examples_verify.py` · 2026-08-09 · fixed in v0.42.1
+
+`examples/mediated/eval.yaml` was committed with CRLF. The local suite passed on
+the very run that produced it, 413 of 413. CI failed a minute later.
+
+The guard listed candidates with `git ls-files`, which reports only files that
+are ALREADY TRACKED. A brand-new pod is untracked until its first commit, so the
+check was blind to precisely the files most likely to carry a fresh mistake: new
+ones. It was not a weak check, it was an OFF check, and it looked green while
+being off.
+
+```
+local  (before commit):  413 passed          <- eval.yaml untracked, not examined
+CI     (after commit):   committed artifacts carry CRLF: ['examples/mediated/eval.yaml']
+```
+
+This matters here rather than being cosmetic because `.gitattributes` marks
+`*.yaml -text`: git stores those bytes verbatim, so a CRLF spec travels into
+every clone, where `spec_sha256` no longer matches the runs it was produced
+under and every published report fails to re-derive. That is D-012 again, from a
+new direction.
+
+Fixed by adding `git ls-files --others --exclude-standard`, so untracked files
+are checked too. Negative-tested by planting an untracked CRLF file and watching
+it fire, then removing it.
+
+**And a latent one found while fixing it.** Pod CODE is hashed as well
+(`target_sha256`, `tool_sha256_by_name`, a custom scorer's hash), and `*.py` was
+left on `text=auto`. A Windows clone with `autocrlf` would have received CRLF
+agent code, hashed it differently, and failed to re-derive a report that
+verifies perfectly on Linux. Nobody had hit it; every pod `.py` in the repo
+happened to be LF. `*.py` is now `-text` alongside the artifacts, for the same
+reason and against the same failure.
+
+---
+
 ## The honest scorecard
 
 **Thirteen benchmarks audited**, all fetched from their authors and none
@@ -1213,9 +1252,9 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **9** |
-| defects in dinostomp itself (**D**) | **27** |
+| defects in dinostomp itself (**D**) | **28** |
 
-Twenty-seven to seventeen. That ratio is the useful number to publish, and it is the
+Twenty-eight to seventeen. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

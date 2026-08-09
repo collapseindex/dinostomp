@@ -56,7 +56,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 3 | 0 of 3 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now ec7785ff635370d3); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 4 | 0 of 4 run(s) were produced by a different engine than the one auditing them (now f8e4d8b04c070917); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |
 | n/a | no model under-reports its trajectory | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |
@@ -101,10 +101,9 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 - evidence: `{"rates": {"bot-bare": 0.0, "bot-chatty": 0.0, "bot-hedged": 0.0, "bot-wrapped": 0.0}}`
 
 </details>
-<details><summary>[warn] the runs were produced by this engine</summary>
+<details><summary>[ok] the runs were produced by this engine</summary>
 
-- engine 3a8937a85c81506e: bot-bare seed 42 (tool 0.41.0), bot-chatty seed 42 (tool 0.41.0), bot-hedged seed 42 (tool 0.41.0) and 1 more
-- evidence: `{"engines": {"3a8937a85c81506e": 4}}`
+- evidence: `{"engines": {"f8e4d8b04c070917": 4}}`
 
 </details>
 <details><summary>[ok] the judge agrees with cases whose answer is known</summary>
@@ -152,14 +151,14 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260809_144959_judge-capitals_bot-bare_n26_s42.jsonl | bot-bare | (same) | python | no | 42 | 26 | 0 |
-| 20260809_144959_judge-capitals_bot-chatty_n26_s42.jsonl | bot-chatty | (same) | python | no | 42 | 26 | 0 |
-| 20260809_144959_judge-capitals_bot-hedged_n26_s42.jsonl | bot-hedged | (same) | python | no | 42 | 26 | 0 |
-| 20260809_144959_judge-capitals_bot-wrapped_n26_s42.jsonl | bot-wrapped | (same) | python | no | 42 | 26 | 0 |
+| 20260809_150721_judge-capitals_bot-bare_n26_s42.jsonl | bot-bare | (same) | python | no | 42 | 26 | 0 |
+| 20260809_150721_judge-capitals_bot-chatty_n26_s42.jsonl | bot-chatty | (same) | python | no | 42 | 26 | 0 |
+| 20260809_150721_judge-capitals_bot-hedged_n26_s42.jsonl | bot-hedged | (same) | python | no | 42 | 26 | 0 |
+| 20260809_150721_judge-capitals_bot-wrapped_n26_s42.jsonl | bot-wrapped | (same) | python | no | 42 | 26 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.42.0
+- tool: dinostomp 0.42.1
 - statistical power: at n=26 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~39% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `414280db41465402b15aef657631b3c41dea335c4b29ee7de348d500cdc5c58d`
 - data_sha256: `ceb8609c45e8daed58a6ca30757e45bbce202303e6cb1c8324b741d2e11b24d4`

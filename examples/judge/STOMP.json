@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.42.0",
+  "version": "0.42.1",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -377,7 +377,7 @@
   },
   "summary": {
     "fail": 0,
-    "warn": 1,
+    "warn": 0,
     "skip": 6,
     "verdict": "incomplete",
     "scope": "pod"
@@ -708,16 +708,13 @@
       "id": "R19",
       "slug": "engine-drift",
       "check": "the runs were produced by this engine",
-      "level": "warn",
+      "level": "pass",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now ec7785ff635370d3); re-run to get numbers this report can stand behind",
+      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now f8e4d8b04c070917); re-run to get numbers this report can stand behind",
       "witnesses": 4,
-      "examples": [
-        "engine 3a8937a85c81506e: bot-bare seed 42 (tool 0.41.0), bot-chatty seed 42 (tool 0.41.0), bot-hedged seed 42 (tool 0.41.0) and 1 more"
-      ],
       "evidence": {
         "engines": {
-          "3a8937a85c81506e": 4
+          "f8e4d8b04c070917": 4
         }
       }
     },
@@ -994,7 +991,7 @@
   },
   "runs": [
     {
-      "run_file": "20260809_144959_judge-capitals_bot-bare_n26_s42.jsonl",
+      "run_file": "20260809_150721_judge-capitals_bot-bare_n26_s42.jsonl",
       "model": "bot-bare",
       "model_reported": "bot-bare",
       "provider": "python",
@@ -1006,7 +1003,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_144959_judge-capitals_bot-chatty_n26_s42.jsonl",
+      "run_file": "20260809_150721_judge-capitals_bot-chatty_n26_s42.jsonl",
       "model": "bot-chatty",
       "model_reported": "bot-chatty",
       "provider": "python",
@@ -1018,7 +1015,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_144959_judge-capitals_bot-hedged_n26_s42.jsonl",
+      "run_file": "20260809_150721_judge-capitals_bot-hedged_n26_s42.jsonl",
       "model": "bot-hedged",
       "model_reported": "bot-hedged",
       "provider": "python",
@@ -1030,7 +1027,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_144959_judge-capitals_bot-wrapped_n26_s42.jsonl",
+      "run_file": "20260809_150721_judge-capitals_bot-wrapped_n26_s42.jsonl",
       "model": "bot-wrapped",
       "model_reported": "bot-wrapped",
       "provider": "python",

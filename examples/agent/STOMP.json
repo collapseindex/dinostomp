@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.42.0",
+  "version": "0.42.1",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -349,7 +349,7 @@
   },
   "summary": {
     "fail": 0,
-    "warn": 2,
+    "warn": 1,
     "skip": 4,
     "verdict": "incomplete",
     "scope": "pod"
@@ -695,16 +695,13 @@
       "id": "R19",
       "slug": "engine-drift",
       "check": "the runs were produced by this engine",
-      "level": "warn",
+      "level": "pass",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now ec7785ff635370d3); re-run to get numbers this report can stand behind",
+      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now f8e4d8b04c070917); re-run to get numbers this report can stand behind",
       "witnesses": 4,
-      "examples": [
-        "engine 3a8937a85c81506e: agent-grounded seed 42 (tool 0.41.0), agent-lazy seed 42 (tool 0.41.0), agent-narrow seed 42 (tool 0.41.0) and 1 more"
-      ],
       "evidence": {
         "engines": {
-          "3a8937a85c81506e": 4
+          "f8e4d8b04c070917": 4
         }
       }
     },
@@ -992,7 +989,7 @@
   },
   "runs": [
     {
-      "run_file": "20260809_145000_agent-capitals_agent-grounded_n26_s42.jsonl",
+      "run_file": "20260809_150724_agent-capitals_agent-grounded_n26_s42.jsonl",
       "model": "agent-grounded",
       "model_reported": "agent-grounded",
       "provider": "python",
@@ -1004,7 +1001,7 @@
       "trajectory_steps": 28
     },
     {
-      "run_file": "20260809_145001_agent-capitals_agent-lazy_n26_s42.jsonl",
+      "run_file": "20260809_150724_agent-capitals_agent-lazy_n26_s42.jsonl",
       "model": "agent-lazy",
       "model_reported": "agent-lazy",
       "provider": "python",
@@ -1016,7 +1013,7 @@
       "trajectory_steps": 26
     },
     {
-      "run_file": "20260809_145001_agent-capitals_agent-narrow_n26_s42.jsonl",
+      "run_file": "20260809_150724_agent-capitals_agent-narrow_n26_s42.jsonl",
       "model": "agent-narrow",
       "model_reported": "agent-narrow",
       "provider": "python",
@@ -1028,7 +1025,7 @@
       "trajectory_steps": 43
     },
     {
-      "run_file": "20260809_145001_agent-capitals_agent-partial_n26_s42.jsonl",
+      "run_file": "20260809_150724_agent-capitals_agent-partial_n26_s42.jsonl",
       "model": "agent-partial",
       "model_reported": "agent-partial",
       "provider": "python",
