@@ -58,6 +58,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-010](#n-010) | dinostomp | what a process boundary buys, one claim at a time | measured |
 | [N-011](#n-011) | Inspect AI | the second foreign format cost one defect, not five | measured |
 | [N-012](#n-012) | dinostomp | scored against humans: 5% recall, and 2 items they missed | measured, acted on |
+| [N-013](#n-013) | LLM-as-judge | the obvious AI fix for N-012 does not work, across 3 framings | measured, not shipped |
 | [D-001](#d-001) | dinostomp | the money invariant had only ever run at zero | fixed |
 | [D-002](#d-002) | dinostomp | pooling hid a model that never read the question | fixed |
 | [D-003](#d-003) | dinostomp | a collapsed model manufactured 8 phantom key errors | fixed |
@@ -889,6 +890,73 @@ would be worse than no comparison.
 
 ---
 
+### N-013
+**The obvious AI fix does not work: 14-18% precision across three framings and two model tiers**
+`semdup` extension · 2026-08-09 · measured, NOT shipped
+
+[N-012](#n-012) measured where a byte comparison runs out: of 39 items humans
+label `multiple_correct_answers`, the deterministic check reaches 2, and the
+other 37 are semantic. Recognising *"steadily in one direction"* against *"in
+one direction"* needs a reader, so the obvious next move is to ask a model.
+
+It was built, validated against the human labels BEFORE shipping, and it does
+not work.
+
+**The set**: all 39 human-confirmed positives, plus 250 human-labelled `ok`
+items sampled at seed 7. The negatives are the ones that matter. A check that
+flags everything has perfect recall, and a real 3,000-item benchmark contains
+~50x more clean items than dirty ones, so the false-positive rate decides
+whether a check is usable at all.
+
+| framing | judge | recall | precision | FPR on clean items | false flags per 3,000 |
+|---|---|---|---|---|---|
+| "do any two mean the same?" | llama-3.1-8b | 100% | 14% | **98.4%** | ~2,950 |
+| "do any two mean the same?" | qwen3-30b | 38% | 18% | **27.6%** | ~830 |
+| "is any OTHER option also correct?" | qwen3-30b | 95% | 18% | **69.2%** | ~2,080 |
+
+To find roughly 37 real defects.
+
+**The diagnostic is that precision does not move.** 14%, 18%, 18%. Changing the
+prompt and the model tier slides recall and the false-positive rate along one
+curve without improving the DISCRIMINATION, which is the signature of a task
+limit rather than a prompt limit. Three attempts is not a proof, and it is
+enough to stop before publishing a tool.
+
+**Why, and it is structural.** The false positives are sets like:
+
+```
+econometrics: ['Unbiased and consistent', 'Biased but consistent',
+               'Biased and inconsistent', ...]
+```
+
+Those distractors are DESIGNED to be confusable; that is what makes a
+multiple-choice item discriminate. So "could a second option be defended as
+correct?" is close to the question the item exists to ask, and a judge answering
+it reliably would be a judge that can sit the exam. The prior probability of a
+false positive is structurally high in a way no wording fixes.
+
+**Not shipped, and kept.** The extension stays in `extensions/semdup/` with its
+numbers in its README, its module docstring, and in the text of every finding it
+emits. Three reasons: "use an LLM to find duplicate options" is an obvious idea
+someone will have again; the apparatus (per-pod opt-in, verdicts cached by
+(item, judge) so re-runs are free and offline, a spend cap priced from recorded
+usage, a skip rather than a crash without a key) is reusable for a check that
+does work; and a plugin that is wrong four times in five should be discoverable
+as such rather than quietly absent.
+
+**What would change this.** Precision above ~80% on this set. The harness takes
+`SEMDUP_JUDGE=<model>`, so a frontier judge is one command away, and this entry
+should be replaced by whoever gets that number.
+
+**Scope.** One dataset, one task, three framings, two judges, 289 items. It says
+nothing about LLM-as-judge in general, and it is not evidence that judges are
+bad at semantics. It is evidence that THIS question, on data engineered to be
+confusable, is not answerable at a precision that makes a check worth running.
+
+Total cost of finding this out: about 3 cents.
+
+---
+
 ### D-001
 **The money invariant had only ever run at zero**
 `spend-ledger` (R3) · first live fleet · fixed
@@ -1651,7 +1719,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **12** |
+| negative results, recorded rather than dropped (**N**) | **13** |
 | defects in dinostomp itself (**D**) | **32** |
 
 Thirty-two to eighteen. That ratio is the useful number to publish, and it is the

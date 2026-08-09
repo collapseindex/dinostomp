@@ -1,0 +1,38 @@
+{
+  "tool_version": "0.46.0",
+  "tool_sha256": "d8a536056f82044b353b802acc6b2871dcd1b75ad05c37f792a066280e76209a",
+  "spec_name": "fleet-arith",
+  "spec_version": "0.1.0",
+  "spec_sha256": "cc280622dc0f91aa3809e0072bf4125add1a99825319f4f97a681fb4e23657cc",
+  "data_sha256": "742d30fda48436edace090596fe7659588d02761e788be1acdd3fbf2573437dd",
+  "provider": "dry",
+  "model": "dry-delta",
+  "seed": 42,
+  "n_items": 24,
+  "repeats": 1,
+  "dry_run": true,
+  "budget_cap_usd": 0.0,
+  "rate_in_per_mtok": 0.0,
+  "rate_out_per_mtok": 0.0,
+  "witness_report": {
+    "n_witnesses": 5,
+    "n_behaved": 5,
+    "verdict": "validated"
+  },
+  "env": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "dinostomp": "0.29.0",
+      "jsonschema": "4.25.1",
+      "PyYAML": "6.0.2"
+    }
+  },
+  "started_at": "2026-08-09T21:55:37.429002+00:00",
+  "status": "complete",
+  "model_reported": "dry-delta",
+  "spend_usd": 0.0,
+  "spend_source": "metered",
+  "finished_at": "2026-08-09T21:55:37.458936+00:00",
+  "run_file": "20260809_215537_fleet-arith_dry-delta_n24_s42.jsonl"
+}

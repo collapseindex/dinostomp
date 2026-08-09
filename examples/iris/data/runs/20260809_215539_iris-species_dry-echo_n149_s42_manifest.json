@@ -1,0 +1,38 @@
+{
+  "tool_version": "0.46.0",
+  "tool_sha256": "d8a536056f82044b353b802acc6b2871dcd1b75ad05c37f792a066280e76209a",
+  "spec_name": "iris-species",
+  "spec_version": "0.1.0",
+  "spec_sha256": "b6443a36d9d3b0e15c9885a555de15cfffc25e25a646884f4f4d460787b6bc60",
+  "data_sha256": "153c4dcefb332e38221e8a27b3f46b179d6dbf46ef834bbd87e188b0acda5942",
+  "provider": "dry",
+  "model": "dry-echo",
+  "seed": 42,
+  "n_items": 149,
+  "repeats": 1,
+  "dry_run": true,
+  "budget_cap_usd": 0.0,
+  "rate_in_per_mtok": 0.0,
+  "rate_out_per_mtok": 0.0,
+  "witness_report": {
+    "n_witnesses": 7,
+    "n_behaved": 7,
+    "verdict": "validated"
+  },
+  "env": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "dinostomp": "0.29.0",
+      "jsonschema": "4.25.1",
+      "PyYAML": "6.0.2"
+    }
+  },
+  "started_at": "2026-08-09T21:55:39.771765+00:00",
+  "status": "complete",
+  "model_reported": "dry-echo",
+  "spend_usd": 0.0,
+  "spend_source": "metered",
+  "finished_at": "2026-08-09T21:55:39.929657+00:00",
+  "run_file": "20260809_215539_iris-species_dry-echo_n149_s42.jsonl"
+}

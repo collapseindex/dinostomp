@@ -42,3 +42,6 @@ benchmarks/inspect-import/*.json
 # fetch.py and compare.py are committed; what they download is not.
 benchmarks/mmlu-redux/*.jsonl
 benchmarks/mmlu-redux/.cache/
+# Judge verdict caches: reproducible by re-running validate.py with a key,
+# and not evidence anybody should trust without re-deriving.
+extensions/*/validation-cache*.json

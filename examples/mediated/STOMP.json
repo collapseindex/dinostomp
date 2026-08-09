@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.45.1",
+  "version": "0.46.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -702,11 +702,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 3 run(s) were produced by a different engine than the one auditing them (now 661871140c862913); re-run to get numbers this report can stand behind",
+      "detail": "0 of 3 run(s) were produced by a different engine than the one auditing them (now d8a536056f82044b); re-run to get numbers this report can stand behind",
       "witnesses": 3,
       "evidence": {
         "engines": {
-          "661871140c862913": 3
+          "d8a536056f82044b": 3
         }
       }
     },
@@ -990,7 +990,7 @@
   },
   "runs": [
     {
-      "run_file": "20260809_210129_mediated-grounding_greedy_n24_s7.jsonl",
+      "run_file": "20260809_215547_mediated-grounding_greedy_n24_s7.jsonl",
       "model": "greedy",
       "model_reported": "greedy",
       "provider": "mediated",
@@ -1002,7 +1002,7 @@
       "trajectory_steps": 72
     },
     {
-      "run_file": "20260809_210129_mediated-grounding_grounded_n24_s7.jsonl",
+      "run_file": "20260809_215547_mediated-grounding_grounded_n24_s7.jsonl",
       "model": "grounded",
       "model_reported": "grounded",
       "provider": "mediated",
@@ -1014,7 +1014,7 @@
       "trajectory_steps": 24
     },
     {
-      "run_file": "20260809_210129_mediated-grounding_oneshot_n24_s7.jsonl",
+      "run_file": "20260809_215547_mediated-grounding_oneshot_n24_s7.jsonl",
       "model": "oneshot",
       "model_reported": "oneshot",
       "provider": "mediated",

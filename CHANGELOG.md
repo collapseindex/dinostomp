@@ -1,5 +1,38 @@
 # Changelog
 
+### v0.46.0 (2026-08-09)
+
+The first real extension, and it is a negative result.
+
+- **`extensions/semdup`: a judge-based semantic-duplicate check, measured and
+  NOT recommended.** N-012 showed the deterministic check reaches 2 of 39
+  human-confirmed `multiple_correct_answers` items; the other 37 need a reader.
+  So one was built and validated against the human labels before shipping.
+
+  | framing | judge | recall | precision | FPR |
+  |---|---|---|---|---|
+  | "do any two mean the same?" | llama-3.1-8b | 100% | 14% | 98.4% |
+  | "do any two mean the same?" | qwen3-30b | 38% | 18% | 27.6% |
+  | "is any OTHER also correct?" | qwen3-30b | 95% | 18% | 69.2% |
+
+  830 to 2,950 false flags per 3,000 items, to find ~37 real ones.
+- **Precision does not move: 14%, 18%, 18%.** Changing prompt and model tier
+  slides recall and FPR along one curve without improving discrimination. The
+  false positives are sets like `['Unbiased and consistent', 'Biased but
+  consistent', ...]`: distractors DESIGNED to be confusable, which is what makes
+  an item discriminate. A judge answering reliably would be one that can sit the
+  exam.
+- **Kept, not shipped.** The apparatus is reusable (per-pod opt-in, verdicts
+  cached by (item, judge) so re-runs are free and offline, a spend cap priced
+  from recorded usage, a skip rather than a crash without a key) and every
+  finding it emits states its own measured false-positive rate.
+- **It is an extension because the core may not do this.** REFERENCES.md commits
+  the core to being offline, deterministic, and to auditing judges rather than
+  asking them. A judge-based core check would have quietly ended that for
+  everyone, including people who never wanted the check.
+- The extension rail had never been exercised by anything real; this is its
+  first user. Total spend to find all of it out: about 3 cents.
+
 ### v0.45.1 (2026-08-09)
 
 The external measurement, used.
