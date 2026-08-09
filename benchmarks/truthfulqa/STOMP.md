@@ -91,7 +91,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.36.2
+- tool: dinostomp 0.37.0
 - statistical power: at n=790 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~7% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `75219bee95b007a37a09b1762663095446d6de6e4f288305688684b8e68b8823`
 - data_sha256: `86b412a583702a7304988c468f9d2c968cd3e4d4deebabdb4fb0ae53359105ea`

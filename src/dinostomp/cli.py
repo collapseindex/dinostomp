@@ -270,6 +270,26 @@ def cmd_run(args) -> int:
                 f"| ${s['spend_usd']:.4f}"
             )
             continue
+        if s.get("probe") == "crossjudge":
+            # A cross-judge run re-grades recorded outputs with a SECOND judge.
+            # It has no accuracy of its own; what it produces is a difference of
+            # differences that J4 reads. Printing it like a result would invite
+            # someone to quote a second judge's pass rate as a model's score.
+            print(
+                f"{s['spec_name']} | {s['model']} | {s['status']} | CROSS-JUDGE PROBE | "
+                f"{s['n_records']} regrading(s) of recorded outputs "
+                f"| ${s['spend_usd']:.4f}"
+            )
+            continue
+        if s.get("probe"):
+            # Any other probe: report it as a probe rather than crashing on a
+            # field its summary shape does not carry. `crossjudge` reached the
+            # accuracy line and raised KeyError on the first real cross-judge
+            # run this project ever did.
+            print(f"{s['spec_name']} | {s['model']} | {s['status']} | "
+                  f"{s['probe'].upper()} PROBE | {s['n_records']} record(s) "
+                  f"| ${s['spend_usd']:.4f}")
+            continue
         acc = s["accuracy_on_checkable"]
         if acc is None:
             acc_str = "n/a (nothing checkable)"

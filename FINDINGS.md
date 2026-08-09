@@ -41,6 +41,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-011](#f-011) | MMLU-Pro | 64 duplicate rows in the first 3000 | confirmed |
 | [F-012](#f-012) | MMLU-Pro vs MMLU | 158 of 3000 items reuse an MMLU question; 22 are unchanged | confirmed, expected |
 | [F-013](#f-013) | SciQ | the gold option reuses a question word no distractor does | confirmed, narrow |
+| [F-014](#f-014) | a judge (qwen3-30b) | stated confidence and authority flip its verdicts, always toward FAIL | confirmed |
+| [F-015](#f-015) | four small models | 87% to 97% preserve a source's hedge; the eval cannot separate them | confirmed, underpowered |
 | [N-001](#n-001) | HellaSwag, ARC, MMLU | no position, length, or shortcut bias found | negative |
 | [N-002](#n-002) | dinostomp | the uncheckable path was untested, and said so | negative, later closed |
 | [N-003](#n-003) | ARC, OpenBookQA, HellaSwag, WinoGrande | no repeated options in four datasets | negative |
@@ -61,6 +63,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-014](#d-014) | dinostomp | the overlap check compared questions and ignored options | fixed |
 | [D-015](#d-015) | dinostomp | position and length bias reported class balance on a fixed label set | fixed |
 | [D-016](#d-016) | dinostomp | the SciQ fetcher put the answer at index 0 on every item | fixed |
+| [D-017](#d-017) | dinostomp | a truncated judge was diagnosed as a judge with no opinion | fixed |
+| [D-018](#d-018) | dinostomp | the cross-judge probe crashed the CLI on its first real run | fixed |
 
 ---
 
@@ -292,6 +296,50 @@ the decidable subset rather than the whole set for exactly that reason.
 This finding only became visible after [D-016](#d-016): while the fetcher put
 the answer at index 0 on every item, position dominated and this was buried
 under an artifact of my own making.
+
+### F-014
+**A judge (qwen3-30b) · stated confidence and appeals to authority flip its verdicts**
+`judge-bias` (J2) · 2026-08-09 · confirmed · [examples/hedge](examples/hedge/)
+
+Regrading 16 known cases under six perturbations that change no meaning, three
+perturbations moved the judge:
+
+```
+confidence on settled-01: pass->fail      authority on settled-08: pass->fail
+confidence on hedged-05:  pass->fail      verbosity  on settled-01: pass->fail
+confidence on settled-09: pass->fail
+confidence on hedged-15:  pass->fail
+```
+
+**Every flip is pass to fail.** That direction matters: this judge is not being
+flattered into leniency, it is being made stricter by a response sounding more
+confident. For an eval whose whole subject is epistemic stance, a judge that
+punishes confident phrasing is measuring something adjacent to what it was asked
+to measure.
+
+The check reports the direction because a fail-to-pass flip is the one that
+manufactures accuracy, and these are not that. It is still a bias.
+
+### F-015
+**Four small models · 87% to 97% preserve a source's hedge, and the eval cannot separate them**
+`hedge-survival` · 2026-08-09 · confirmed, underpowered · costs $0.02 to reproduce
+
+| model | preserved stance |
+|---|---|
+| qwen3-30b-a3b | 0.967 [0.83, 0.99] |
+| ministral-8b | 0.933 [0.79, 0.98] |
+| llama-3.1-8b | 0.867 [0.70, 0.95] |
+| llama-3.2-3b | 0.867 [0.70, 0.95] |
+
+**The honest reading is the interval, not the ordering.** At n=30 the minimum
+detectable effect is about 36 points and the spread is 10, so this ranking is
+not a result. What the numbers do support is narrow and still worth having: all
+four models keep the source's stance most of the time, and none is near a floor
+that would make the task look impossible.
+
+`fleet-reliability` (KR-20 0.15) says the same thing from the other side: these
+30 items do not reliably order these four models. That is a property of the item
+set, and the fix is more items, not a stronger claim.
 
 ---
 
@@ -615,6 +663,44 @@ deterministic, reproducible, and position carries no information. Position bias
 dropped from +75% to +3%, the nine real duplicate options survived, and
 [F-013](#f-013) became visible underneath.
 
+### D-017
+**A truncated judge was diagnosed as a judge with no opinion**
+`judge-agreement` (J1) · 2026-08-09 · fixed
+
+The first real hosted judge run scored **50% agreement on cases whose verdict is
+known by construction**, which reads as "this judge cannot do the task". It was
+not. 39 of 128 gradings came back `uncheckable` with the message *"judge response
+contains no PASS/FAIL verdict"*, and the actual cause was a 200-token cap.
+
+The judge prompt asks for **reasoning, then the ruling on the last line**. That
+is the right order for grading quality and it means the single token that matters
+is the first thing truncation takes. The generic message sent the author to look
+at the rubric instead of at the cap.
+
+The parse now distinguishes the two, using the provider's own `finish_reason`
+rather than guessing:
+
+```
+judge response ends mid-sentence after 1031 chars with no PASS/FAIL; it was
+almost certainly truncated. Raise scorer.judge.params.max_tokens: this prompt
+asks for reasoning before the ruling, so a short cap loses the ruling
+```
+
+Raising the cap took agreement from 50% to **100%** with no change to the judge
+or the rubric.
+
+### D-018
+**The cross-judge probe crashed the CLI on its first real run**
+`--probe crossjudge` · 2026-08-09 · fixed
+
+`KeyError: 'accuracy_on_checkable'`. The CLI special-cased the judge probe's
+summary shape and no other, so the cross-judge summary, which carries no accuracy
+because it is a difference of differences, reached the line that prints one.
+
+The probe had only ever been exercised by trials that call the runner directly.
+Nobody had typed the command. Now every probe shape prints as a probe, and the
+fallback names the probe rather than assuming a field.
+
 ---
 
 ## The honest scorecard
@@ -627,13 +713,14 @@ Count it precisely.
 
 | | |
 |---|---|
-| findings in other people's evals (**F**) | **13** |
+| findings in other people's evals (**F**) | **15** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
+| &nbsp;&nbsp;of which findings about a judge or a model | 2 (F-014, F-015) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **4** |
-| defects in dinostomp itself (**D**) | **16** |
+| defects in dinostomp itself (**D**) | **18** |
 
-Sixteen to thirteen. That ratio is the useful number to publish, and it is the
+Eighteen to fifteen. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to
@@ -643,7 +730,7 @@ ran somewhere its author's assumptions did not hold, and one
 ([D-014](#d-014)) was a bug the project had already found and fixed elsewhere,
 written again three releases later in a different check.
 
-The most common shape across all sixteen is worth stating once: **a check that
+The most common shape across all eighteen is worth stating once: **a check that
 compared the wrong thing and returned a confident answer about it.**
 
 ## Adding an entry

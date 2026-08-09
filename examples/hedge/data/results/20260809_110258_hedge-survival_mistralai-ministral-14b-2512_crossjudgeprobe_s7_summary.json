@@ -1,0 +1,11 @@
+{
+  "spec_name": "hedge-survival",
+  "model": "mistralai/ministral-14b-2512",
+  "provider": "openrouter",
+  "seed": 7,
+  "status": "complete",
+  "probe": "crossjudge",
+  "estimator": "crossjudge_probe",
+  "n_records": 120,
+  "spend_usd": 0.0108848
+}

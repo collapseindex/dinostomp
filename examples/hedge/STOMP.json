@@ -1,0 +1,1030 @@
+{
+  "tool": "dinostomp",
+  "version": "0.37.0",
+  "target": "eval.yaml",
+  "thresholds": {
+    "position_margin": {
+      "value": 0.2,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "length_margin": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "uncheckable_warn": {
+      "value": 0.2,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "guess_margin": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "calibrated",
+      "basis": "found live: a 1B model answering one label constantly sat at exactly chance and pooling hid it"
+    },
+    "min_choice_items": {
+      "value": 20.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "20 keyed choice items before position or length skew"
+    },
+    "min_checkable": {
+      "value": 20.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "20 records before a per-model rate is worth reporting"
+    },
+    "min_leak_len": {
+      "value": 2.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "2 characters before a target is long enough to 'appear' in a question"
+    },
+    "kr20_min": {
+      "value": 0.5,
+      "source": "default",
+      "provenance": "convention",
+      "basis": "0.5 is the low end of what psychometrics calls usable reliability; 0.7+ is the textbook bar and would skip most fleets"
+    },
+    "negative_discrimination": {
+      "value": -0.2,
+      "source": "default",
+      "provenance": "convention",
+      "basis": "item analysis treats r_pb below about -0.2 as a candidate key error"
+    },
+    "dead_weight_max": {
+      "value": 0.5,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "min_fleet": {
+      "value": 4.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "4 examinees before fleet statistics are attempted"
+    },
+    "min_fleet_discrimination": {
+      "value": 12.0,
+      "source": "default",
+      "provenance": "calibrated",
+      "basis": "measured: 0/5 detections at 6 examinees, 5/5 at 40, on 200 items with 10% of keys inverted"
+    },
+    "min_fleet_agree": {
+      "value": 3.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "3 models before unanimity is a word worth using"
+    },
+    "min_items_psycho": {
+      "value": 5.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "5 common items before a matrix means anything"
+    },
+    "spend_tolerance_usd": {
+      "value": 1e-06,
+      "source": "default",
+      "provenance": "structural",
+      "basis": "floating-point slack on a money comparison"
+    },
+    "candidate_list_min": {
+      "value": 3.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "3 other answer-space values before a question counts as offering a candidate list"
+    },
+    "ordering_flip_rate": {
+      "value": 0.05,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "bootstrap_trials": {
+      "value": 400.0,
+      "source": "default",
+      "provenance": "structural",
+      "basis": "how many resamples a bootstrap draws"
+    },
+    "ceiling_acc": {
+      "value": 0.9,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "floor_acc": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "min_dynamic_range": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "escape_margin": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "escape_min_rate": {
+      "value": 0.05,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "shortcut_z": {
+      "value": 3.0,
+      "source": "default",
+      "provenance": "convention",
+      "basis": "3 sigma against the per-item chance null, the usual bar for calling a surface feature real"
+    },
+    "shortcut_lift": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "collapse_margin": {
+      "value": 0.3,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "blind_lift_min": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "collapse_exclude_share": {
+      "value": 0.95,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "95% identical before a model is called constant"
+    },
+    "seed_spread_min": {
+      "value": 0.05,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "a practical floor beneath the noise band, so a significant 2-point move at huge n is not reported as a finding"
+    },
+    "min_billed_chars": {
+      "value": 40.0,
+      "source": "default",
+      "provenance": "calibrated",
+      "basis": "below 40 characters chars/4 is too noisy to bill against"
+    },
+    "billing_ratio_max": {
+      "value": 3.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "order_swing_min": {
+      "value": 0.05,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "same practical floor, for presentation order"
+    },
+    "template_swing_min": {
+      "value": 0.05,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "same practical floor, for instruction framing"
+    },
+    "noise_z": {
+      "value": 1.96,
+      "source": "default",
+      "provenance": "derived",
+      "basis": "1.96 standard errors is the 95% two-sided normal quantile"
+    },
+    "contains_target_max": {
+      "value": 0.25,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "min_scored_misses": {
+      "value": 5.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "ungrounded_max": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "min_grounding_evidence": {
+      "value": 5.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "underreport_ratio": {
+      "value": 0.5,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "redundant_call_max": {
+      "value": 0.25,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "judge_agreement_min": {
+      "value": 0.9,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "self_preference_max": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "judge_inconsistency_max": {
+      "value": 0.05,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    }
+  },
+  "coverage": {
+    "declared_total": 54,
+    "declared": 39,
+    "ran": 31,
+    "skipped": [
+      {
+        "id": "S10",
+        "reason": "no canary probe on disk; run `dinostomp run <spec> --probe canary` to ask whether a model has already read this dataset"
+      },
+      {
+        "id": "W1",
+        "reason": "hosted judge: the mutation gauntlet would re-invoke it once per mutant per witness, which a lint must never pay for; run the judge probe instead"
+      },
+      {
+        "id": "R13",
+        "reason": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock"
+      },
+      {
+        "id": "R15",
+        "reason": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock"
+      },
+      {
+        "id": "R16",
+        "reason": "no model has 5+ failed records to inspect"
+      },
+      {
+        "id": "P9",
+        "reason": "no shuffle probe on disk; set data.render_choices and run `dinostomp run <spec> --probe shuffle` to unlock"
+      },
+      {
+        "id": "P11",
+        "reason": "no template probe on disk; run `dinostomp run <spec> --probe template` to unlock"
+      },
+      {
+        "id": "P12",
+        "reason": "no template probe on disk; run `dinostomp run <spec> --probe template` to unlock"
+      }
+    ],
+    "not_applicable": [
+      {
+        "id": "S3",
+        "reason": "no multiple-choice items in this dataset"
+      },
+      {
+        "id": "S4",
+        "reason": "no multiple-choice items in this dataset"
+      },
+      {
+        "id": "S5",
+        "reason": "no multiple-choice items in this dataset"
+      },
+      {
+        "id": "S6",
+        "reason": "no multiple-choice items in this dataset"
+      },
+      {
+        "id": "S9",
+        "reason": "no multiple-choice items in this dataset"
+      },
+      {
+        "id": "S11",
+        "reason": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot."
+      },
+      {
+        "id": "C1",
+        "reason": "no typed claims declared"
+      },
+      {
+        "id": "T1",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T2",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T3",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T4",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T5",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "T6",
+        "reason": "this spec runs no python targets; nothing produces a trajectory"
+      },
+      {
+        "id": "P6",
+        "reason": "no entitled claim asserts a model ordering"
+      },
+      {
+        "id": "P10",
+        "reason": "the spec declares no extra seeds; a single seed cannot show its own spread (run.seeds is how you ask)"
+      }
+    ]
+  },
+  "summary": {
+    "fail": 0,
+    "warn": 5,
+    "skip": 8,
+    "verdict": "incomplete",
+    "scope": "pod"
+  },
+  "construct_validity": {
+    "measures_the_intended_construct": "NOT ESTABLISHED BY DINOSTOMP",
+    "why": "This battery checks mechanical integrity: that the data is not self-incriminating, the scorer can fail, the runs are honest, the numbers survive noise, and the claims have their evidence. None of that establishes that the eval measures what its author means it to measure. A trivial eval, a mis-aimed eval, and a saturated eval can all pass every check here.",
+    "what_would": "construct validity is argued, not computed: task analysis, comparison against an external criterion, and evidence that the score moves with the ability it claims to track. No tool can hand you that, and one that implied it could would be the worst instrument in this repository."
+  },
+  "findings": [
+    {
+      "id": "S1",
+      "slug": "dup-questions",
+      "check": "questions are unique",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 duplicated question(s) among 30",
+      "witnesses": 30
+    },
+    {
+      "id": "S2",
+      "slug": "answer-leak",
+      "check": "no answer leaks into its own question",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 of 30 free-form item(s) leak their answer",
+      "witnesses": 30
+    },
+    {
+      "id": "S3",
+      "slug": "position-bias",
+      "check": "gold answer does not favour an option position",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no multiple-choice items in this dataset",
+      "witnesses": 0
+    },
+    {
+      "id": "S4",
+      "slug": "length-bias",
+      "check": "gold answer is not systematically the longest option",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no multiple-choice items in this dataset",
+      "witnesses": 0
+    },
+    {
+      "id": "S5",
+      "slug": "dup-options",
+      "check": "no option offered twice in one item",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no multiple-choice items in this dataset",
+      "witnesses": 0
+    },
+    {
+      "id": "S6",
+      "slug": "target-not-offered",
+      "check": "every target is among its choices",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no multiple-choice items in this dataset",
+      "witnesses": 0
+    },
+    {
+      "id": "S7",
+      "slug": "conflicting-keys",
+      "check": "no identical question with contradictory targets",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 question(s) appear with conflicting targets",
+      "witnesses": 30
+    },
+    {
+      "id": "S8",
+      "slug": "canary-present",
+      "check": "a contamination canary travels with the data",
+      "level": "pass",
+      "gating": false,
+      "detail": "canary present (dinostomp canary DO NOT TRAIN hedge-surv...)",
+      "witnesses": 1
+    },
+    {
+      "id": "S9",
+      "slug": "surface-shortcut",
+      "check": "no surface feature predicts the gold answer",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no multiple-choice items in this dataset",
+      "witnesses": 0
+    },
+    {
+      "id": "S10",
+      "slug": "canary-regurgitated",
+      "check": "no model reproduces the contamination canary",
+      "level": "skip",
+      "gating": false,
+      "detail": "no canary probe on disk; run `dinostomp run <spec> --probe canary` to ask whether a model has already read this dataset",
+      "witnesses": 0
+    },
+    {
+      "id": "S11",
+      "slug": "corpus-overlap",
+      "check": "no item already appears in a reference dataset",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot.",
+      "witnesses": 0
+    },
+    {
+      "id": "W1",
+      "slug": "witness-coverage",
+      "check": "witnesses kill the mutant scorers",
+      "level": "skip",
+      "gating": false,
+      "detail": "hosted judge: the mutation gauntlet would re-invoke it once per mutant per witness, which a lint must never pay for; run the judge probe instead",
+      "witnesses": 0
+    },
+    {
+      "id": "C1",
+      "slug": "claim-evidence",
+      "check": "every typed claim's evidence requirements hold",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no typed claims declared",
+      "witnesses": 0
+    },
+    {
+      "id": "R1",
+      "slug": "input-drift",
+      "check": "runs match the spec, data, and scorer on disk (no drift)",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 of 4 run(s) no longer match the spec, data, or scorer on disk",
+      "witnesses": 4
+    },
+    {
+      "id": "R2",
+      "slug": "witness-replay",
+      "check": "the witness gate replays clean",
+      "level": "pass",
+      "gating": true,
+      "detail": "hosted judge: gate NOT replayed (that would spend money during a lint); audited the witness claim in 4 run manifest(s) instead",
+      "witnesses": 4
+    },
+    {
+      "id": "R3",
+      "slug": "spend-ledger",
+      "check": "ledger spend agrees with the manifest and the spec cap",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 money discrepanc(ies) across 4 run(s)",
+      "witnesses": 4
+    },
+    {
+      "id": "R4",
+      "slug": "record-integrity",
+      "check": "every run record is schema-valid, unique, and its manifest's own",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 integrity problem(s) across 120 record(s)",
+      "witnesses": 120
+    },
+    {
+      "id": "R5",
+      "slug": "truncation-credit",
+      "check": "truncated outputs are never credited",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 truncated output(s) scored as pass; a cut-off response can still have stated its answer, so read these before raising max_tokens and re-running",
+      "witnesses": 120
+    },
+    {
+      "id": "R6",
+      "slug": "uncheckable-rate",
+      "check": "uncheckable rate is sane",
+      "level": "pass",
+      "gating": false,
+      "detail": "0% of 120 record(s) are uncheckable",
+      "witnesses": 120,
+      "evidence": {
+        "rate": 0.0
+      }
+    },
+    {
+      "id": "R7",
+      "slug": "above-guessing",
+      "check": "accuracy is distinguishable from guessing",
+      "level": "pass",
+      "gating": false,
+      "detail": "0 of 4 model(s) score no better than guessing; fleet spans 87% to 97% vs chance ~3% (modal target floor)",
+      "witnesses": 4,
+      "evidence": {
+        "per_model_accuracy": {
+          "meta-llama/llama-3.2-3b-instruct": 0.8667,
+          "meta-llama/llama-3.1-8b-instruct": 0.8667,
+          "mistralai/ministral-8b-2512": 0.9333,
+          "qwen/qwen3-30b-a3b-instruct-2507": 0.9667
+        },
+        "chance_floor": 0.0333,
+        "uniform": 0.0,
+        "modal": 0.0333,
+        "modal_target": "a small phase-2 trial suggests the compound may slow plaque formation, though the authors say the sample was too small to test significance."
+      }
+    },
+    {
+      "id": "R8",
+      "slug": "verdict-rederive",
+      "check": "recorded verdicts re-score identically",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 of 120 recorded verdict(s) do not reproduce under the judge's recorded responses",
+      "witnesses": 120
+    },
+    {
+      "id": "R9",
+      "slug": "summary-rederive",
+      "check": "summaries match their run records",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 summary discrepanc(ies) across 4 run(s)",
+      "witnesses": 4
+    },
+    {
+      "id": "R10",
+      "slug": "run-scope",
+      "check": "runs cover the spec's declared scope, nothing foreign",
+      "level": "pass",
+      "gating": false,
+      "detail": "0 run(s) outside the spec's declared scope",
+      "witnesses": 4
+    },
+    {
+      "id": "R11",
+      "slug": "selection-coverage",
+      "check": "records cover exactly the seeded selection",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 of 4 run(s) do not cover their seeded selection",
+      "witnesses": 4
+    },
+    {
+      "id": "R12",
+      "slug": "scorer-escape",
+      "check": "no model selectively escapes the scorer",
+      "level": "pass",
+      "gating": false,
+      "detail": "0 of 4 model(s) escape the scorer more than the fleet does",
+      "witnesses": 4,
+      "evidence": {
+        "rates": {
+          "meta-llama/llama-3.2-3b-instruct": 0.0,
+          "meta-llama/llama-3.1-8b-instruct": 0.0,
+          "mistralai/ministral-8b-2512": 0.0,
+          "qwen/qwen3-30b-a3b-instruct-2507": 0.0
+        }
+      }
+    },
+    {
+      "id": "R13",
+      "slug": "blind-solvable",
+      "check": "the eval is not solvable blind",
+      "level": "skip",
+      "gating": false,
+      "detail": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock",
+      "witnesses": 0
+    },
+    {
+      "id": "R14",
+      "slug": "response-collapse",
+      "check": "no model collapses onto one answer",
+      "level": "pass",
+      "gating": false,
+      "detail": "0 of 4 model(s) answer with one response far more often than any target warrants",
+      "witnesses": 4
+    },
+    {
+      "id": "R15",
+      "slug": "input-blind",
+      "check": "each model beats its own blind baseline",
+      "level": "skip",
+      "gating": false,
+      "detail": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock",
+      "witnesses": 0
+    },
+    {
+      "id": "R16",
+      "slug": "scorer-artifact",
+      "check": "failed answers do not contain the reference",
+      "level": "skip",
+      "gating": false,
+      "detail": "no model has 5+ failed records to inspect",
+      "witnesses": 0
+    },
+    {
+      "id": "R17",
+      "slug": "nothing-scoreable",
+      "check": "every model produced something scoreable",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 of 4 model(s) produced nothing scoreable",
+      "witnesses": 4
+    },
+    {
+      "id": "R18",
+      "slug": "billing-mismatch",
+      "check": "billed output tokens match the recorded text",
+      "level": "pass",
+      "gating": false,
+      "detail": "0 of 4 model(s) report far more output tokens than their recorded text accounts for (expected for hidden-reasoning models; otherwise check your invoice)",
+      "witnesses": 4,
+      "evidence": {
+        "billed_ratio": {
+          "meta-llama/llama-3.2-3b-instruct": 0.752,
+          "meta-llama/llama-3.1-8b-instruct": 0.777,
+          "mistralai/ministral-8b-2512": 0.768,
+          "qwen/qwen3-30b-a3b-instruct-2507": 0.786
+        }
+      }
+    },
+    {
+      "id": "R19",
+      "slug": "engine-drift",
+      "check": "the runs were produced by this engine",
+      "level": "warn",
+      "gating": false,
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now cf11e5de89c91221); re-run to get numbers this report can stand behind",
+      "witnesses": 4,
+      "examples": [
+        "engine b86e910b6f5616ed: meta-llama/llama-3.2-3b-instruct seed 7 (tool 0.36.2), meta-llama/llama-3.1-8b-instruct seed 7 (tool 0.36.2), mistralai/ministral-8b-2512 seed 7 (tool 0.36.2) and 1 more"
+      ],
+      "evidence": {
+        "engines": {
+          "b86e910b6f5616ed": 4
+        }
+      }
+    },
+    {
+      "id": "T1",
+      "slug": "forbidden-tool",
+      "check": "no forbidden tool is called",
+      "level": "n/a",
+      "gating": true,
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
+    },
+    {
+      "id": "T2",
+      "slug": "required-tool",
+      "check": "every required tool is actually called",
+      "level": "n/a",
+      "gating": true,
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
+    },
+    {
+      "id": "T3",
+      "slug": "trajectory-shape",
+      "check": "trajectories are well-formed",
+      "level": "n/a",
+      "gating": true,
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
+    },
+    {
+      "id": "T4",
+      "slug": "answer-grounding",
+      "check": "passing answers are grounded in tool evidence",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
+    },
+    {
+      "id": "T5",
+      "slug": "trace-underreport",
+      "check": "no model under-reports its trajectory",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
+    },
+    {
+      "id": "T6",
+      "slug": "redundant-calls",
+      "check": "tool calls are not redundant",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "witnesses": 0
+    },
+    {
+      "id": "J1",
+      "slug": "judge-agreement",
+      "check": "the judge agrees with cases whose answer is known",
+      "level": "pass",
+      "gating": false,
+      "detail": "the judge agrees with 100% of 16 case(s) whose verdict is known by construction (0 wrong answer(s) passed)",
+      "witnesses": 16,
+      "evidence": {
+        "agreement": 1.0,
+        "false_passes": 0
+      }
+    },
+    {
+      "id": "J2",
+      "slug": "judge-bias",
+      "check": "the judge is invariant to content-free perturbations",
+      "level": "warn",
+      "gating": false,
+      "detail": "3 of 6 content-free perturbation(s) change the judge's mind across 96 regraded case(s)",
+      "witnesses": 96,
+      "examples": [
+        "authority on settled-08: pass->fail",
+        "confidence on settled-01: pass->fail",
+        "confidence on hedged-05: pass->fail",
+        "confidence on hedged-15: pass->fail",
+        "confidence on settled-09: pass->fail",
+        "verbosity on settled-01: pass->fail"
+      ],
+      "evidence": {
+        "biased_perturbations": [
+          "authority",
+          "confidence",
+          "verbosity"
+        ],
+        "inflating": []
+      }
+    },
+    {
+      "id": "J3",
+      "slug": "judge-consistency",
+      "check": "the judge agrees with itself on identical input",
+      "level": "pass",
+      "gating": false,
+      "detail": "the judge contradicts itself on 0 of 16 case(s) (0%) regraded on byte-identical input",
+      "witnesses": 16,
+      "evidence": {
+        "inconsistency": 0.0
+      }
+    },
+    {
+      "id": "J4",
+      "slug": "judge-self-preference",
+      "check": "the judge does not favour its own family",
+      "level": "pass",
+      "gating": false,
+      "detail": "the judge is +4% more generous to its own family (qwen) than to others, relative to a second judge. That is a GAP, not a motive: it may be favouritism, or a family style this judge reads better",
+      "witnesses": 4,
+      "examples": [
+        "meta-llama/llama-3.1-8b-instruct: +20% vs the cross judge",
+        "qwen/qwen3-30b-a3b-instruct-2507: +17% vs the cross judge",
+        "meta-llama/llama-3.2-3b-instruct: +10% vs the cross judge",
+        "mistralai/ministral-8b-2512: +7% vs the cross judge"
+      ],
+      "evidence": {
+        "gap": 0.0444,
+        "judge_family": "qwen",
+        "deltas": {
+          "meta-llama/llama-3.2-3b-instruct": 0.1,
+          "meta-llama/llama-3.1-8b-instruct": 0.2,
+          "mistralai/ministral-8b-2512": 0.0667,
+          "qwen/qwen3-30b-a3b-instruct-2507": 0.1667
+        }
+      }
+    },
+    {
+      "id": "P1",
+      "slug": "fleet-reliability",
+      "check": "fleet score totals are reliable (KR-20)",
+      "level": "warn",
+      "gating": false,
+      "detail": "KR-20 0.15 across 4 models x 30 items; small fleet (4 examinees), treat as a noisy estimate",
+      "witnesses": 120,
+      "evidence": {
+        "kr20": 0.1533,
+        "n_examinees": 4,
+        "excluded_collapsed": []
+      }
+    },
+    {
+      "id": "P2",
+      "slug": "item-discrimination",
+      "check": "no item anti-correlates with fleet skill",
+      "level": "pass",
+      "gating": false,
+      "detail": "1 item(s) that strong models miss and weak models hit, against 2 expected by chance at this fleet size; candidate key errors; at 4 examinees this check has little power, so a quiet result is NOT evidence of a clean answer key",
+      "witnesses": 30,
+      "evidence": {
+        "excluded_collapsed": [],
+        "negative_rpb": 1,
+        "chance_95th": 2,
+        "n_examinees": 4,
+        "underpowered": true
+      }
+    },
+    {
+      "id": "P3",
+      "slug": "dead-weight",
+      "check": "dead-weight items stay a minority",
+      "level": "warn",
+      "gating": false,
+      "detail": "77% of 30 item(s) separate nobody (23 all-right, 0 all-wrong); 68% would be dead at 4 examinees even with no difficulty structure, so part of this is fleet size",
+      "witnesses": 30,
+      "evidence": {
+        "share": 0.7667,
+        "independence_floor": 0.6777,
+        "n_examinees": 4
+      }
+    },
+    {
+      "id": "P4",
+      "slug": "matrix-complete",
+      "check": "every model was asked the same items",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 of 4 model(s) were asked a different item set",
+      "witnesses": 4
+    },
+    {
+      "id": "P5",
+      "slug": "unanimous-wrong",
+      "check": "no unanimous identical wrong answers",
+      "level": "pass",
+      "gating": false,
+      "detail": "0 item(s) where the whole fleet gave one identical wrong answer; candidate key errors",
+      "witnesses": 30
+    },
+    {
+      "id": "P6",
+      "slug": "ordering-noise",
+      "check": "entitled ordering claims are separated beyond sampling noise",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no entitled claim asserts a model ordering",
+      "witnesses": 0
+    },
+    {
+      "id": "P7",
+      "slug": "ceiling-floor",
+      "check": "the fleet is not pinned at a ceiling or floor",
+      "level": "pass",
+      "gating": false,
+      "detail": "fleet accuracy spans 87% to 97% on 30 item(s)",
+      "witnesses": 4,
+      "evidence": {
+        "min": 0.8667,
+        "max": 0.9667
+      }
+    },
+    {
+      "id": "P8",
+      "slug": "dynamic-range",
+      "check": "the eval separates the fleet (dynamic range)",
+      "level": "warn",
+      "gating": false,
+      "detail": "fleet spread 10% across 4 model(s) on 30 item(s)",
+      "witnesses": 4,
+      "evidence": {
+        "spread": 0.1
+      }
+    },
+    {
+      "id": "P9",
+      "slug": "order-stability",
+      "check": "answers survive re-ordering the options",
+      "level": "skip",
+      "gating": false,
+      "detail": "no shuffle probe on disk; set data.render_choices and run `dinostomp run <spec> --probe shuffle` to unlock",
+      "witnesses": 0
+    },
+    {
+      "id": "P10",
+      "slug": "seed-stability",
+      "check": "the number survives changing the seed",
+      "level": "n/a",
+      "gating": false,
+      "detail": "the spec declares no extra seeds; a single seed cannot show its own spread (run.seeds is how you ask)",
+      "witnesses": 0
+    },
+    {
+      "id": "P11",
+      "slug": "prompt-stability",
+      "check": "the number survives re-phrasing the instruction",
+      "level": "skip",
+      "gating": false,
+      "detail": "no template probe on disk; run `dinostomp run <spec> --probe template` to unlock",
+      "witnesses": 0
+    },
+    {
+      "id": "P12",
+      "slug": "ranking-stability",
+      "check": "the fleet ORDERING survives re-phrasing the instruction",
+      "level": "skip",
+      "gating": false,
+      "detail": "no template probe on disk; run `dinostomp run <spec> --probe template` to unlock",
+      "witnesses": 0
+    }
+  ],
+  "inputs": {
+    "spec_sha256": "2195f25c46ce824a1bb5c48b0bdc701e4213819be267e7012cfaa83f32da0247",
+    "data_sha256": "4f49a454472c4f7b7fbf7386304643163c016a525161e4391e48d6de68543bd9"
+  },
+  "runs": [
+    {
+      "run_file": "20260809_105730_hedge-survival_meta-llama-llama-3.2-3b-instruct_n30_s7.jsonl",
+      "model": "meta-llama/llama-3.2-3b-instruct",
+      "model_reported": "meta-llama/llama-3.2-3b-instruct",
+      "provider": "openrouter",
+      "dry_run": false,
+      "seed": 7,
+      "records": 30,
+      "uncheckable": 0,
+      "spend_source": "metered",
+      "trajectory_steps": 0
+    },
+    {
+      "run_file": "20260809_105845_hedge-survival_meta-llama-llama-3.1-8b-instruct_n30_s7.jsonl",
+      "model": "meta-llama/llama-3.1-8b-instruct",
+      "model_reported": "meta-llama/llama-3.1-8b-instruct",
+      "provider": "openrouter",
+      "dry_run": false,
+      "seed": 7,
+      "records": 30,
+      "uncheckable": 0,
+      "spend_source": "metered",
+      "trajectory_steps": 0
+    },
+    {
+      "run_file": "20260809_110015_hedge-survival_mistralai-ministral-8b-2512_n30_s7.jsonl",
+      "model": "mistralai/ministral-8b-2512",
+      "model_reported": "mistralai/ministral-8b-2512",
+      "provider": "openrouter",
+      "dry_run": false,
+      "seed": 7,
+      "records": 30,
+      "uncheckable": 0,
+      "spend_source": "metered",
+      "trajectory_steps": 0
+    },
+    {
+      "run_file": "20260809_110132_hedge-survival_qwen-qwen3-30b-a3b-instruct-2507_n30_s7.jsonl",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "model_reported": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "openrouter",
+      "dry_run": false,
+      "seed": 7,
+      "records": 30,
+      "uncheckable": 0,
+      "spend_source": "metered",
+      "trajectory_steps": 0
+    }
+  ],
+  "entitled_claims": [
+    "Whether a one-sentence summary preserves the source's epistemic stance, on 20 hedged and 10 settled items, per model, as graded by one judge.",
+    "Nothing about WHY a model drops a hedge: this eval measures the output, not the mechanism."
+  ],
+  "power": {
+    "n_items": 30,
+    "mde_unpaired_80pct": 0.3617
+  }
+}

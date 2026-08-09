@@ -1,5 +1,16 @@
 # Changelog
 
+### v0.37.0 (2026-08-09)
+
+A real eval, built with the tool, graded by a hosted judge. It cost $0.022 and found two defects in the judge rail nobody had reached.
+
+- **[examples/hedge](examples/hedge/): does a one-sentence summary preserve its source's epistemic stance?** Twenty hedged sources (small sample, no control, modelled, unpublished) and **ten settled-fact controls**. The controls are what make it falsifiable: without them a model that hedges everything scores 100% and the eval measures verbosity. The receipts are committed, so `dinostomp verify examples/hedge/eval.yaml` re-derives every number for free; paying is only needed for NEW numbers.
+- **D-017: a truncated judge was diagnosed as a judge with no opinion.** The first hosted-judge run scored 50% agreement on cases known by construction, which reads as "this judge cannot do the task". It was a 200-token cap. The prompt asks for reasoning THEN the ruling, so the one token that matters is the first thing truncation takes, and 39 of 128 gradings came back "contains no PASS/FAIL verdict". The parse now uses the provider's `finish_reason` to tell "no verdict" from "cut off before the verdict" and says which. Raising the cap took agreement from 50% to 100%, with no change to the judge or the rubric.
+- **D-018: the cross-judge probe crashed the CLI on its first real run.** `KeyError: 'accuracy_on_checkable'`: the CLI special-cased the judge probe's summary and no other, so the cross-judge summary, which carries no accuracy because it is a difference of differences, reached the line that prints one. The probe had only ever been exercised by trials calling the runner directly; nobody had typed the command.
+- **The battery then caught the eval.** `answer-leak` failed 8 of 30 items because the reference summary appeared verbatim in the source: the settled sources were single sentences, so "summarise in one sentence" was a copy task. An eval whose answer sits in its question measures retrieval, not the thing it claims to. Sources rewritten as multi-sentence; it now reads 0 of 30.
+- **F-014: the judge is moved by stated confidence and appeals to authority**, three of six perturbations flipping verdicts, and every flip pass to fail. Not flattery into leniency: a response that sounds more confident gets marked stricter. For an eval about epistemic stance that is adjacent to what was asked.
+- **F-015: four models preserve stance 87% to 97%, and the eval cannot separate them.** At n=30 the minimum detectable effect is ~36 points against a spread of 10, and KR-20 is 0.15. The honest reading is the interval, not the ordering, and the fix is more items rather than a stronger claim.
+
 ### v0.36.2 (2026-08-09)
 
 - **A section on contributing findings**, which also repairs a link that had been dead for two releases: FINDINGS.md pointed at `CONTRIBUTING.md#break-it-please` and that section did not exist. It covers the three series, the entry template, and the five ways an entry gets sent back, each one a mistake made here first and cited to the D entry that records it: a finding nobody looked at, a finding about the loader, a statistic without a null, an unscoped claim, and treating a benchmark defect as a verdict on its authors.

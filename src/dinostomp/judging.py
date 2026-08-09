@@ -92,7 +92,7 @@ def fence_for(seed: int, rubric: str, output: str) -> str:
     return f"<<<{digest[:FENCE_CHARS]}>>>"
 
 
-def parse_verdict(text: str) -> ScoreResult:
+def parse_verdict(text: str, truncated: bool | None = None) -> ScoreResult:
     """Turn a judge's verbatim text into a verdict. Deterministic, offline, and
     the only place a judge's words become a number.
 
@@ -102,6 +102,22 @@ def parse_verdict(text: str) -> ScoreResult:
     """
     matches = VERDICT_RE.findall(text or "")
     if not matches:
+        # "No verdict" and "cut off before the verdict" are different diagnoses
+        # with different fixes, and the second is the common one: this prompt
+        # asks for reasoning THEN the ruling, so the single token that matters
+        # is the one truncation takes first. Found live, where a judge capped at
+        # 200 tokens produced 39 unparseable gradings out of 128 and the generic
+        # message sent the author looking at the rubric instead of the cap.
+        body = text or ""
+        cut = (truncated is True) or (truncated is None and len(body) > 200
+                                      and not body.rstrip().endswith((".", "!", "?", '"')))
+        if cut:
+            return ScoreResult(
+                "uncheckable",
+                evidence=f"judge response ends mid-sentence after {len(body)} chars with no "
+                         "PASS/FAIL; it was almost certainly truncated. Raise "
+                         "scorer.judge.params.max_tokens: this prompt asks for reasoning "
+                         "before the ruling, so a short cap loses the ruling")
         return ScoreResult("uncheckable", evidence="judge response contains no PASS/FAIL verdict")
     verdict = "pass" if matches[-1] == "PASS" else "fail"
     return ScoreResult(verdict, evidence=f"judge ruled {matches[-1]}")
@@ -374,6 +390,7 @@ class JudgeScorer:
                              fence=fence_for(self.seed, self.rubric, output))
 
     def __call__(self, output: str, target: Any) -> ScoreResult:
+        truncated = None
         try:
             if self._fn is not None:
                 text = self._fn(output, target, {"rubric": self.rubric, "model": self.model,
@@ -385,6 +402,9 @@ class JudgeScorer:
                 text = completion.text
                 self.input_tokens += completion.input_tokens
                 self.output_tokens += completion.output_tokens
+                # The provider knows whether it hit the cap. Guessing from the
+                # text is a fallback, not the primary signal.
+                truncated = completion.finish_reason in ("length", "max_tokens")
         except ProviderError:
             raise
         except Exception as exc:  # noqa: BLE001 - a judge that dies is uncheckable, not wrong
@@ -394,7 +414,7 @@ class JudgeScorer:
             text = text[:MAX_JUDGE_RESPONSE_CHARS]
         self.last_response = text
         self.calls += 1
-        return parse_verdict(text)
+        return parse_verdict(text, truncated=truncated)
 
     @staticmethod
     def rescore_offline(record: dict) -> ScoreResult | None:

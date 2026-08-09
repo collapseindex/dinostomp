@@ -1,0 +1,39 @@
+{
+  "tool_version": "0.36.2",
+  "tool_sha256": "b86e910b6f5616edfd550586242b64f0cc57b8adaa309ce937348813ad95b2c7",
+  "spec_name": "hedge-survival",
+  "spec_version": "0.1.0",
+  "spec_sha256": "2195f25c46ce824a1bb5c48b0bdc701e4213819be267e7012cfaa83f32da0247",
+  "data_sha256": "4f49a454472c4f7b7fbf7386304643163c016a525161e4391e48d6de68543bd9",
+  "provider": "openrouter",
+  "model": "mistralai/ministral-8b-2512",
+  "seed": 7,
+  "n_items": 30,
+  "repeats": 1,
+  "dry_run": false,
+  "budget_cap_usd": 0.6,
+  "rate_in_per_mtok": 0.15,
+  "rate_out_per_mtok": 0.15,
+  "witness_report": {
+    "n_witnesses": 6,
+    "n_behaved": 6,
+    "verdict": "validated"
+  },
+  "env": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "dinostomp": "0.29.0",
+      "jsonschema": "4.25.1",
+      "PyYAML": "6.0.2"
+    }
+  },
+  "started_at": "2026-08-09T11:00:15.167781+00:00",
+  "status": "complete",
+  "model_reported": "mistralai/ministral-8b-2512",
+  "spend_usd": 0.00152266,
+  "spend_source": "metered",
+  "judge_calls": 96,
+  "finished_at": "2026-08-09T11:01:32.560027+00:00",
+  "run_file": "20260809_110015_hedge-survival_mistralai-ministral-8b-2512_n30_s7.jsonl"
+}

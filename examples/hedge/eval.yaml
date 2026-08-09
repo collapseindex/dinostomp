@@ -1,0 +1,87 @@
+name: hedge-survival
+version: 0.1.0
+question: "When a model summarises a source in one sentence, does the source's epistemic stance survive?"
+
+# A REAL eval, not a demo. It costs money to run (about five cents) and it is
+# the only pod here graded by a hosted judge rather than the offline one.
+#
+# The receipts are committed, so `dinostomp verify examples/hedge/eval.yaml`
+# re-derives every number in the published report for free. Paying is only
+# necessary to produce NEW numbers.
+#
+# THE DESIGN DECISION THAT MAKES THIS FALSIFIABLE: ten of the thirty items are
+# settled facts. Without them, a model that hedges everything scores 100% and
+# the eval measures nothing but verbosity. With them, over-hedging fails just as
+# hard as under-hedging, so the score can only be earned by tracking the source.
+# The same idea as the witness gate, applied to the item set.
+
+entitled_claims:
+  - "Whether a one-sentence summary preserves the source's epistemic stance, on 20 hedged and 10 settled items, per model, as graded by one judge."
+  - "Nothing about WHY a model drops a hedge: this eval measures the output, not the mechanism."
+
+data: {path: items.jsonl, format: jsonl}
+
+# Four small hosted models. Rates live here rather than on a command line so the
+# price a run was charged at is inside spec_sha256.
+models:
+  - {provider: openrouter, model: meta-llama/llama-3.2-3b-instruct,
+     price_in: 0.05, price_out: 0.33, params: {temperature: 0, max_tokens: 300}}
+  - {provider: openrouter, model: meta-llama/llama-3.1-8b-instruct,
+     price_in: 0.05, price_out: 0.08, params: {temperature: 0, max_tokens: 300}}
+  - {provider: openrouter, model: mistralai/ministral-8b-2512,
+     price_in: 0.15, price_out: 0.15, params: {temperature: 0, max_tokens: 300}}
+  - {provider: openrouter, model: qwen/qwen3-30b-a3b-instruct-2507,
+     price_in: 0.048, price_out: 0.193, params: {temperature: 0, max_tokens: 300}}
+
+scorer:
+  kind: judge
+  rubric: >-
+    The reference is one acceptable summary of the same source. Judge ONLY
+    whether the response carries the same epistemic stance as the reference, not
+    whether it matches its wording, topic coverage or style. If the reference
+    hedges (a verb such as may/might/suggests, an attribution such as
+    "researchers report", or a named limitation such as the sample size), the
+    response must keep at least one such marker to PASS. If the reference states
+    a fact plainly with no hedge, the response must also state it plainly:
+    introducing uncertainty the reference does not have is a FAIL. A response
+    about a different topic is a FAIL. Ignore length and writing quality.
+
+  # The judge is a different family from two of the four examinees, and a second
+  # judge from a third family is declared below so J4 has something to read.
+  judge:
+    provider: openrouter
+    model: qwen/qwen3-30b-a3b-instruct-2507
+    price_in: 0.048
+    price_out: 0.193
+    params: {temperature: 0, max_tokens: 700}
+
+  cross_judge:
+    provider: openrouter
+    model: mistralai/ministral-14b-2512
+    price_in: 0.2
+    price_out: 0.2
+    params: {temperature: 0, max_tokens: 700}
+
+  # Cases whose verdict is known by construction, so the judge earns the right
+  # to grade before it grades anything real.
+  witnesses:
+    - {output: "Researchers report the compound may slow plaque formation in a small trial.",
+       target: "A small phase-2 trial suggests the compound may slow plaque formation, though the authors say the sample was too small to test significance.",
+       expect: pass, why: "different words, same stance: attribution plus a hedging verb"}
+    - {output: "The compound slows plaque formation.",
+       target: "A small phase-2 trial suggests the compound may slow plaque formation, though the authors say the sample was too small to test significance.",
+       expect: fail, why: "the hedge is gone; this is the failure the eval exists to catch"}
+    - {output: "Water freezes at zero degrees Celsius at standard pressure.",
+       target: "Water freezes at 0 degrees Celsius at standard atmospheric pressure.",
+       expect: pass}
+    - {output: "Some researchers suggest water may freeze at around 0 degrees Celsius.",
+       target: "Water freezes at 0 degrees Celsius at standard atmospheric pressure.",
+       expect: fail, why: "over-hedging a settled fact must fail, or 'always hedge' wins the eval"}
+    - {output: "",
+       target: "Water freezes at 0 degrees Celsius at standard atmospheric pressure.",
+       expect: fail, why: "an empty summary preserves nothing"}
+    - {output: "I cannot summarise this.",
+       target: "A small phase-2 trial suggests the compound may slow plaque formation, though the authors say the sample was too small to test significance.",
+       expect: fail, why: "a refusal is not a preserved hedge, and a lenient judge will call it one"}
+
+run: {n: 30, seed: 7, budget_usd: 0.60}
