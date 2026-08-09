@@ -62,7 +62,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | ok | failed answers do not contain the reference | 5 | 0 of 5 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 6 | 0 of 6 run(s) were produced by a different engine than the one auditing them (now d93a85593bba948f); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 6 | 0 of 6 run(s) were produced by a different engine than the one auditing them (now fba5f8974906b6b2); re-run to get numbers this report can stand behind |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no python targets; nothing produces a trajectory |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no python targets; nothing produces a trajectory |
 | n/a | tool calls are not redundant | 0 | this spec runs no python targets; nothing produces a trajectory |
@@ -116,7 +116,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"d93a85593bba948f": 6}}`
+- evidence: `{"engines": {"fba5f8974906b6b2": 6}}`
 
 </details>
 <details><summary>[ok] fleet score totals are reliable (KR-20)</summary>
@@ -149,16 +149,16 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260809_084543_iris-species_dry-alpha_n149_s42.jsonl | dry-alpha | (same) | dry | yes | 42 | 149 | 0 |
-| 20260809_084543_iris-species_dry-bravo_n149_s42.jsonl | dry-bravo | (same) | dry | yes | 42 | 149 | 0 |
-| 20260809_084544_iris-species_dry-charlie_n149_s42.jsonl | dry-charlie | (same) | dry | yes | 42 | 149 | 0 |
-| 20260809_084544_iris-species_dry-delta_n149_s42.jsonl | dry-delta | (same) | dry | yes | 42 | 149 | 0 |
-| 20260809_084544_iris-species_dry-echo_n149_s42.jsonl | dry-echo | (same) | dry | yes | 42 | 149 | 0 |
-| 20260809_084544_iris-species_dry-foxtrot_n149_s42.jsonl | dry-foxtrot | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_085853_iris-species_dry-alpha_n149_s42.jsonl | dry-alpha | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_085854_iris-species_dry-bravo_n149_s42.jsonl | dry-bravo | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_085854_iris-species_dry-charlie_n149_s42.jsonl | dry-charlie | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_085854_iris-species_dry-delta_n149_s42.jsonl | dry-delta | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_085854_iris-species_dry-echo_n149_s42.jsonl | dry-echo | (same) | dry | yes | 42 | 149 | 0 |
+| 20260809_085854_iris-species_dry-foxtrot_n149_s42.jsonl | dry-foxtrot | (same) | dry | yes | 42 | 149 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.35.2
+- tool: dinostomp 0.35.3
 - statistical power: at n=149 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~16% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `b6443a36d9d3b0e15c9885a555de15cfffc25e25a646884f4f4d460787b6bc60`
 - data_sha256: `153c4dcefb332e38221e8a27b3f46b179d6dbf46ef834bbd87e188b0acda5942`

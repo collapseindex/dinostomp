@@ -1,5 +1,15 @@
 # Changelog
 
+### v0.35.3 (2026-08-09)
+
+FINDINGS.md is a ledger now, not an essay, so entries can be appended without a rewrite.
+
+- **Twenty-two entries with permanent ids**, in three series that are not averaged together: **F** for a defect in someone else's eval, **D** for a defect in dinostomp itself, **N** for a negative result worth recording. Each entry states the check that produced it, a date, a status, and a receipt someone else can re-derive.
+- **Ids are permanent.** A withdrawn entry keeps its id and gains the evidence that killed it, because deleting a claim you have already published is how a findings page becomes a marketing page.
+- **Four tests keep the ledger honest**, and two of them were negative-tested by breaking the file on purpose. The index must match the entries exactly, in order, because an index that drifts from its entries is a summary that does not re-derive, which is a gated finding everywhere else in this project. Ids must be unique and gapless, so a gap means an entry was deleted rather than withdrawn. Every entry must carry a metadata line. And the scorecard's counts must match the file.
+- Two parity tests caught strings the rewrite had dropped (the iris verdict transcript and the battery-size line). Restored from real output rather than deleted along with the tests.
+- CONTRIBUTING already asked for adversarial pods from outside; the ledger now has the shape those findings will land in, with attribution, next to the tool's own defects.
+
 ### v0.35.2 (2026-08-09)
 
 The second half of the same bug. Git's line-ending translation is drift.

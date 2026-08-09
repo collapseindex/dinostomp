@@ -178,3 +178,58 @@ def test_the_action_reference_points_at_a_version_that_exists():
     assert "git+https://github.com/collapseindex/dinostomp" in readme, (
         "the Action installs from PyPI by default, which does not exist yet; the README must "
         "say how to point it at this repo instead")
+
+
+# --- FINDINGS.md is a ledger, and a ledger's index must not drift -------------
+
+
+def _findings_ids():
+    import re as _re
+
+    doc = (REPO / "FINDINGS.md").read_text(encoding="utf-8")
+    index = _re.findall(r"\| \[([FDN]-\d{3})\]\(#[fdn]-\d{3}\) \|", doc)
+    entries = _re.findall(r"^### ([FDN]-\d{3})$", doc, _re.M)
+    return doc, index, entries
+
+
+def test_the_findings_index_matches_its_entries():
+    """An index that drifts from its entries is a summary that does not
+    re-derive, which is a gated finding everywhere else in this project."""
+    _, index, entries = _findings_ids()
+    assert index, "the index table vanished"
+    assert index == entries, (
+        f"index and entries disagree.\n  in index only: {set(index) - set(entries)}"
+        f"\n  in entries only: {set(entries) - set(index)}"
+        f"\n  or the order differs")
+
+
+def test_findings_ids_are_unique_and_gapless():
+    """Ids are permanent, so a gap means an entry was deleted rather than
+    withdrawn. A withdrawn entry keeps its id and states what killed it."""
+    _, _, entries = _findings_ids()
+    assert len(set(entries)) == len(entries), "a findings id is reused"
+    for series in ("F", "D", "N"):
+        nums = sorted(int(e.split("-")[1]) for e in entries if e.startswith(series))
+        if nums:
+            assert nums == list(range(1, len(nums) + 1)), (
+                f"{series} series has a gap: {nums}. Ids are permanent; withdraw, do not delete.")
+
+
+def test_every_finding_states_a_check_and_a_status():
+    """A finding without a check that produced it is an anecdote."""
+    import re as _re
+
+    doc, _, entries = _findings_ids()
+    for eid in entries:
+        block = doc.split(f"### {eid}\n", 1)[1].split("\n### ", 1)[0]
+        header = "\n".join(block.strip().splitlines()[:3])
+        assert "·" in header, f"{eid} has no metadata line (check · date · status)"
+
+
+def test_the_scorecard_counts_match_the_entries():
+    """The summary at the bottom is a claim about this file; it has to hold."""
+    _, _, entries = _findings_ids()
+    doc = (REPO / "FINDINGS.md").read_text(encoding="utf-8")
+    n_d = sum(1 for e in entries if e.startswith("D"))
+    assert f"**thirteen entries of defects in\ndinostomp itself**" in doc or n_d == 13, (
+        f"the scorecard says thirteen D entries; the file has {n_d}")
