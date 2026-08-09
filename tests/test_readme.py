@@ -282,3 +282,24 @@ def test_no_doc_links_a_heading_that_does_not_exist():
             if anchor not in anchors(text):
                 dead.append(f"{name} -> #{anchor} (same file)")
     assert not dead, "dead in-repo anchors: " + "; ".join(sorted(set(dead))[:6])
+
+
+def test_readme_data_scope_prose_matches_the_registry():
+    """The headline count and the data-scope count drifted apart.
+
+    "fifty-seven checks" was updated by a sweep that missed "fifty-five checks
+    read data at rest" two paragraphs down, because the two sentences were
+    edited by different passes. This pins BOTH to the registry, in words,
+    because the README writes its numbers out.
+    """
+    from dinostomp.lint import CHECKS, SCOPE_CHECKS
+
+    words = {10: "Ten", 47: "forty-seven", 57: "fifty-seven"}
+    data_n = len(SCOPE_CHECKS["data"])
+    rest_n = len(CHECKS) - data_n
+    # The sentence wraps, so compare against normalised whitespace.
+    flat = " ".join(README.split())
+    assert f"{words[data_n]} of the {words[len(CHECKS)]} checks read data at rest" in flat, (
+        f"the data-scope sentence disagrees with the registry ({data_n} of {len(CHECKS)})")
+    assert f"for the other {words[rest_n]}" in flat, (
+        f"the 'other N' sentence disagrees with the registry ({rest_n})")

@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.43.1 · Apache-2.0 · engine `2b97fa82a084e721` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.44.0 · Apache-2.0 · engine `a7c65c13d6f315ff` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -64,9 +64,9 @@ BROKEN AT DATA SCOPE: 2 gated finding(s) in the dataset itself
 That is a real run against the real MMLU test split, and `mmlu-02178` is the
 subtraction item above: the answer is on its option list twice, so a model that
 computes it correctly picks the wrong letter half the time. Ten of the
-fifty-five checks read data at rest, which is why this costs nothing.
+fifty-seven checks read data at rest, which is why this costs nothing.
 
-**Five minutes, for the other forty-four.** They need evidence: outputs, a
+**Five minutes, for the other forty-seven.** They need evidence: outputs, a
 scorer, a ledger, a claim.
 
 ```bash
@@ -209,6 +209,14 @@ dinostomp itself, written up as D-021 to D-025. The log's own numbers came back
 clean: both metrics it reports re-derive exactly from the raw log-probabilities
 in the same file (N-007).
 
+A **second** format followed, and that is the one that says whether the contract
+generalises: [Inspect AI](https://github.com/UKGovernmentBEIS/inspect_ai), the UK
+AI Security Institute's framework. Nested documents rather than tables, `C`/`I`
+verdicts rather than 0/1, and real tool events, so an imported agent run reaches
+the trajectory checks. It cost **one** defect where the first cost five (N-011).
+An imported trace is labelled `foreign_observed`, never `harness_observed`: the
+exporting harness watched those calls, this engine did not.
+
 ## Agents: audit the execution, not the diary
 
 Point a spec at pod-local Python and it mounts as an examinee, with the budget
@@ -304,7 +312,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.43.1
+- uses: collapseindex/dinostomp@v0.44.0
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -318,7 +326,7 @@ It installs dinostomp from PyPI by default, which does not exist yet, so pass
 `version:` pointing at this repo until it does:
 
 ```yaml
-    version: "git+https://github.com/collapseindex/dinostomp@v0.43.1"
+    version: "git+https://github.com/collapseindex/dinostomp@v0.44.0"
 ```
 
 That is stated rather than hidden because a copy-pasteable block that fails for
@@ -383,7 +391,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`2b97fa82a084e721eadaddfd0202c5b88a37277fbc18e68a2c2ec18db4452028`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`a7c65c13d6f315ff3fe7f7f447f167c28182d434675ef09c53d06c89c87b1686`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

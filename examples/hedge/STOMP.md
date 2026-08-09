@@ -29,9 +29,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | ok | summaries match their run records | 4 | 0 summary discrepanc(ies) across 4 run(s) |
 | ok | records cover exactly the seeded selection | 4 | 0 of 4 run(s) do not cover their seeded selection |
 | ok | every model produced something scoreable | 4 | 0 of 4 model(s) produced nothing scoreable |
-| n/a | no forbidden tool is called | 0 | this spec runs no code targets; nothing produces a trajectory |
-| n/a | every required tool is actually called | 0 | this spec runs no code targets; nothing produces a trajectory |
-| n/a | trajectories are well-formed | 0 | this spec runs no code targets; nothing produces a trajectory |
+| n/a | no forbidden tool is called | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | every required tool is actually called | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | trajectories are well-formed | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | ok | every model was asked the same items | 4 | 0 of 4 model(s) were asked a different item set |
 
 ### Diagnostics (statistical, advisory)
@@ -56,13 +56,13 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | ok | billed output tokens match the recorded text | 4 | 0 of 4 model(s) report far more output tokens than their recorded text accounts for (expected for hidden-reasoning models; otherwise check your invoice) |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 2b97fa82a084e721); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now a7c65c13d6f315ff); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
-| n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets; nothing produces a trajectory |
-| n/a | no model under-reports its trajectory | 0 | this spec runs no code targets; nothing produces a trajectory |
-| n/a | tool calls are not redundant | 0 | this spec runs no code targets; nothing produces a trajectory |
-| n/a | passing answers CHANGE when their evidence is withheld | 0 | this spec runs no code targets; nothing produces a trajectory |
-| n/a | the trajectory was observed, not self-reported | 0 | this spec runs no code targets; nothing produces a trajectory |
+| n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | tool calls are not redundant | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | passing answers CHANGE when their evidence is withheld | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | the trajectory was observed, not self-reported | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | ok | the judge agrees with cases whose answer is known | 16 | the judge agrees with 100% of 16 case(s) whose verdict is known by construction (0 wrong answer(s) passed) |
 | warn | the judge is invariant to content-free perturbations | 96 | 3 of 6 content-free perturbation(s) change the judge's mind across 96 regraded case(s) |
 | ok | the judge agrees with itself on identical input | 16 | the judge contradicts itself on 0 of 16 case(s) (0%) regraded on byte-identical input |
@@ -174,7 +174,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.43.1
+- tool: dinostomp 0.44.0
 - statistical power: at n=30 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~36% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `2195f25c46ce824a1bb5c48b0bdc701e4213819be267e7012cfaa83f32da0247`
 - data_sha256: `4f49a454472c4f7b7fbf7386304643163c016a525161e4391e48d6de68543bd9`

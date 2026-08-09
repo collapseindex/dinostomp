@@ -218,9 +218,10 @@
     "trajectory_source": {
       "enum": [
         "self_reported",
-        "harness_observed"
+        "harness_observed",
+        "foreign_observed"
       ],
-      "description": "Who wrote the trajectory: the target itself, or the harness that held its tools. T8 reports it."
+      "description": "Who wrote the trajectory. `self_reported`: the target itself, so the T-checks read testimony. `harness_observed`: dinostomp's mediated rail held the tools and recorded the calls. `foreign_observed`: ANOTHER harness recorded them and the trace was imported, which is a third party to the agent but still not this engine's own observation. T8 reports it."
     },
     "tool_sha256_by_name": {
       "type": "object",

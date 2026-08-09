@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.43.1",
+  "version": "0.44.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -375,35 +375,35 @@
       },
       {
         "id": "T1",
-        "reason": "this spec runs no code targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T2",
-        "reason": "this spec runs no code targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T3",
-        "reason": "this spec runs no code targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T4",
-        "reason": "this spec runs no code targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T5",
-        "reason": "this spec runs no code targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T6",
-        "reason": "this spec runs no code targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T7",
-        "reason": "this spec runs no code targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T8",
-        "reason": "this spec runs no code targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "J1",
@@ -807,7 +807,7 @@
       "check": "no forbidden tool is called",
       "level": "n/a",
       "gating": true,
-      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -816,7 +816,7 @@
       "check": "every required tool is actually called",
       "level": "n/a",
       "gating": true,
-      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -825,7 +825,7 @@
       "check": "trajectories are well-formed",
       "level": "n/a",
       "gating": true,
-      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -834,7 +834,7 @@
       "check": "passing answers are grounded in tool evidence",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -843,7 +843,7 @@
       "check": "no model under-reports its trajectory",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -852,7 +852,7 @@
       "check": "tool calls are not redundant",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -861,7 +861,7 @@
       "check": "passing answers CHANGE when their evidence is withheld",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -870,7 +870,7 @@
       "check": "the trajectory was observed, not self-reported",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {

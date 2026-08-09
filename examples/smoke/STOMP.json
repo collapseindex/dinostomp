@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.43.1",
+  "version": "0.44.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -359,35 +359,35 @@
       },
       {
         "id": "T1",
-        "reason": "this spec runs no code targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T2",
-        "reason": "this spec runs no code targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T3",
-        "reason": "this spec runs no code targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T4",
-        "reason": "this spec runs no code targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T5",
-        "reason": "this spec runs no code targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T6",
-        "reason": "this spec runs no code targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T7",
-        "reason": "this spec runs no code targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T8",
-        "reason": "this spec runs no code targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "J1",
@@ -742,11 +742,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 1 run(s) were produced by a different engine than the one auditing them (now 2b97fa82a084e721); re-run to get numbers this report can stand behind",
+      "detail": "0 of 1 run(s) were produced by a different engine than the one auditing them (now a7c65c13d6f315ff); re-run to get numbers this report can stand behind",
       "witnesses": 1,
       "evidence": {
         "engines": {
-          "2b97fa82a084e721": 1
+          "a7c65c13d6f315ff": 1
         }
       }
     },
@@ -765,7 +765,7 @@
       "check": "no forbidden tool is called",
       "level": "n/a",
       "gating": true,
-      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -774,7 +774,7 @@
       "check": "every required tool is actually called",
       "level": "n/a",
       "gating": true,
-      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -783,7 +783,7 @@
       "check": "trajectories are well-formed",
       "level": "n/a",
       "gating": true,
-      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -792,7 +792,7 @@
       "check": "passing answers are grounded in tool evidence",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -801,7 +801,7 @@
       "check": "no model under-reports its trajectory",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -810,7 +810,7 @@
       "check": "tool calls are not redundant",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -819,7 +819,7 @@
       "check": "passing answers CHANGE when their evidence is withheld",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -828,7 +828,7 @@
       "check": "the trajectory was observed, not self-reported",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no code targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -982,7 +982,7 @@
   },
   "runs": [
     {
-      "run_file": "20260809_190538_smoke-arith_dry-strong_n6_s42.jsonl",
+      "run_file": "20260809_195635_smoke-arith_dry-strong_n6_s42.jsonl",
       "model": "dry-strong",
       "model_reported": "dry-strong",
       "provider": "dry",

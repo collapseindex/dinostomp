@@ -175,7 +175,7 @@ def test_trajectory_policy_without_a_target_is_rejected(tmp_path):
     obj["trajectory"] = {"required_tools": ["calc"]}
     spec.write_text(yaml.safe_dump(obj), encoding="utf-8")
     _, issues = load_spec(spec)
-    assert any("no model uses a python or mediated target" in i.message for i in issues)
+    assert any("python, mediated or imported target" in i.message for i in issues)
 
 
 # --- T1-T6, each broken on purpose ------------------------------------------

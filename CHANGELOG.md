@@ -1,5 +1,40 @@
 # Changelog
 
+### v0.44.0 (2026-08-09)
+
+Adapters: the evidence contract's second foreign format.
+
+- **New `dinostomp.adapters` package, and an Inspect AI adapter.** `dinostomp
+  import` sniffs a log and dispatches: a nested harness document is not a table,
+  and the flat column mapper cannot read one at all. Handles both the `.eval`
+  archive and the `.json` log, verified against four real logs from
+  `UKGovernmentBEIS/inspect_ai` (fetched by `benchmarks/inspect-import/fetch.py`,
+  never vendored).
+- **What Inspect brings that lm-eval could not**: generated text, a finish
+  reason, per-model token usage, `epoch` (which is a repeat, so R20 applies) and
+  REAL TOOL EVENTS, so an imported agent run reaches T1-T6, R5, R8 and R18.
+- **`C`/`I` map to pass/fail. `P` and `N` do not.** Inspect distinguishes partial
+  credit and no-answer from an incorrect answer; a binary verdict cannot hold
+  either, so both import as `uncheckable` and stay out of the accuracy
+  denominator rather than being rounded into a number nobody measured.
+- **Several scorers is a refusal**, not a silent pick. D-023 in a new costume.
+- **New manifest value `foreign_observed`.** A trajectory that arrives from
+  another harness is never labelled `harness_observed`: this engine did not
+  watch those calls. It is stronger than an agent's self-report, because the
+  exporting harness is a third party to the agent, and it is still someone
+  else's word. T8 prints the difference.
+- **D-031: an imported trajectory could never reach the checks that read one.**
+  A pod with `provider: imported` could not declare a trajectory policy, the
+  linter selected trajectory runs by provider, and T8 went `n/a` on a run
+  carrying four recorded browser calls. All three gated on a PROVIDER STRING
+  instead of on the evidence. Third time this week a gate keyed on a name rather
+  than the thing it cares about (D-028, D-030).
+- **N-011: the second format cost one defect, where the first cost five.** The
+  record schema, the witness gate, the drift boundary and the absent-field rule
+  all held unmodified against a format shaped nothing like the first.
+- New suite `tests/test_adapters.py` (26 cases; the real-log ones SKIP rather
+  than silently pass when the logs have not been fetched).
+
 ### v0.43.1 (2026-08-09)
 
 Documentation caught up with the last three releases, and doing that found a

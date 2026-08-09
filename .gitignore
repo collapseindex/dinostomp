@@ -33,3 +33,8 @@ benchmarks/*/items.jsonl
 # Same rule for a fetched third-party eval LOG: it embeds the questions
 # and options of a CC-BY-SA dataset, which this repo does not vendor.
 benchmarks/*/lm_eval_*.jsonl
+# Inspect AI logs, same rule: fetched by benchmarks/inspect-import/fetch.py,
+# owned by UKGovernmentBEIS, and a stale copy here would be one nobody notices
+# going stale. fetch.py itself IS committed; what it downloads is not.
+benchmarks/inspect-import/*.eval
+benchmarks/inspect-import/*.json

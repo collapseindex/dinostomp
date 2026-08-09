@@ -55,6 +55,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-008](#n-008) | dinostomp | an even `run.repeats` reported p-squared, not p | measured, fixed |
 | [N-009](#n-009) | dinostomp | T4 sees 0%, T7 sees 100%, on the same agent | measured |
 | [N-010](#n-010) | dinostomp | what a process boundary buys, one claim at a time | measured |
+| [N-011](#n-011) | Inspect AI | the second foreign format cost one defect, not five | measured |
 | [D-001](#d-001) | dinostomp | the money invariant had only ever run at zero | fixed |
 | [D-002](#d-002) | dinostomp | pooling hid a model that never read the question | fixed |
 | [D-003](#d-003) | dinostomp | a collapsed model manufactured 8 phantom key errors | fixed |
@@ -85,6 +86,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-028](#d-028) | dinostomp | the line-ending guard could not see a file until after it shipped | fixed |
 | [D-029](#d-029) | dinostomp | "policy is enforced at call time" held only for agents that asked | corrected |
 | [D-030](#d-030) | dinostomp | `inspect` called a pod codeless while it shipped an agent and tools | fixed |
+| [D-031](#d-031) | dinostomp | an imported trajectory could never reach the checks that read one | fixed |
 
 ---
 
@@ -691,6 +693,51 @@ Untrusted agent code belongs in a VM.
 **Cost, since it is not free**: about 130ms per item for process startup, on a
 24-item three-agent pod that is 9.5s instead of under a second. `inprocess`
 stays the default for that reason.
+
+---
+
+### N-011
+**Inspect AI · the second foreign format cost one defect, where the first cost five**
+`dinostomp import` (adapter) · 2026-08-09 · measured
+
+The evidence contract claims *anything that can write conforming evidence is
+auditable*. After the lm-evaluation-harness import that claim rested on n=1, and
+n=1 had produced [D-021](#d-021) to [D-025](#d-025). Five defects on first
+contact is evidence that first contact is expensive, not evidence that the
+contract generalises. This is the second data point.
+
+**The artifact**: Inspect AI, the UK AI Security Institute's eval framework.
+Four real logs from `UKGovernmentBEIS/inspect_ai` (MIT), fetched by
+`benchmarks/inspect-import/fetch.py` and not vendored: a `.eval` archive
+(MMLU), two `.json` task logs, and one agent run with real browser tool calls.
+
+**What did NOT transfer, and needed adapter code rather than a fix:**
+
+| Inspect | what it needed |
+|---|---|
+| nested document, not a table | an adapter; the flat column mapper cannot read one at all |
+| verdicts are `C` / `I` / `P` / `N` | `C`/`I` map; **`P` and `N` do not** and import as `uncheckable` |
+| several scorers per task | the [D-023](#d-023) rule again, in a new costume: listed, and the caller chooses |
+| `epoch` | Inspect's word for a repeat, so it becomes `repeat` and R20 applies |
+| tool `events` | a real trajectory, which is what makes T1-T6 reachable |
+
+The partial-credit case is the one worth naming. Inspect distinguishes a PARTIAL
+score and a NOANSWER from an incorrect answer, and this battery's verdict is
+binary. Rounding either into a pass or a fail would invent a number, so both
+import as `uncheckable` and stay out of the accuracy denominator, which is
+machinery that already existed for exactly this.
+
+**What it cost: one defect, [D-031](#d-031).** Not five. The record schema, the
+witness gate, the drift boundary, the unprivileged-manifest rule and the
+absent-field-means-skip rule all held without modification against a format
+shaped nothing like the first one.
+
+**Scope, since one more data point is still two data points.** Both formats are
+batch eval logs from the Python ML ecosystem. A streaming log, a database-backed
+runner, or a harness with a genuinely different unit of work (a conversation
+rather than an item) has not been tried, and this says nothing about those. The
+honest claim is narrow: the contract survived a format that shares none of the
+first one's shape, and the second cost 20% of what the first did.
 
 ---
 
@@ -1357,6 +1404,56 @@ newest surface, looked green, and was off rather than weak.
 
 ---
 
+### D-031
+**An imported trajectory could never reach the six checks that read a trajectory**
+`trajectory` policy, T1-T6, `trace-observed` (T8) · 2026-08-09 · fixed in v0.44.0
+
+The Inspect adapter's best feature is that Inspect records real tool calls, so
+an imported agent run can reach T1-T6. It could not. Two gates, both keyed on the
+PROVIDER STRING rather than on the evidence:
+
+```
+$ dinostomp import demo/eval.yaml browser.json
+CANNOT IMPORT:
+  [trajectory] a trajectory policy is declared but no model uses a python or
+               mediated target; nothing in this spec can produce a trajectory
+```
+
+A pod with `provider: imported` could not declare a trajectory policy at all, so
+`forbidden_tools` and `required_tools` were unwritable for exactly the runs an
+agent-log import exists to bring in. Past that, the linter selected trajectory
+runs by provider too, so the checks would have skipped even with a policy in
+place.
+
+And T8, whose entire job is to say WHOSE trace you are reading, reported:
+
+```
+[n/a] trace-observed   this spec runs no code targets; nothing produces a trajectory
+```
+
+on a run carrying 4 recorded browser calls. The check that exists to name a
+trace's provenance went silent on the one provenance a reader cannot guess.
+
+**Fixed by gating on evidence rather than on a provider name.** An imported run
+joins the trajectory checks if its records actually carry a trace, so a
+loglikelihood import does not acquire six vacuous trajectory findings while an
+agent import does get audited. T8 gained a third source, `foreign_observed`,
+because the two it had could not express this:
+
+```
+[ok] trace-observed  all 1 run(s) carry a trajectory recorded by ANOTHER harness and
+                     imported here. That is stronger than an agent's self-report, because
+                     the exporting harness is a third party to the agent, and it is still
+                     not this engine's own observation: T1-T6 are reading somebody else's log
+```
+
+Third time this week that a gate keyed on a NAME rather than on the thing it
+cares about: [D-028](#d-028) listed tracked files instead of files,
+[D-030](#d-030) listed providers instead of code, and this listed providers
+instead of traces. All three looked green while being off.
+
+---
+
 ## The honest scorecard
 
 **Thirteen benchmarks audited**, all fetched from their authors and none
@@ -1371,10 +1468,10 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **10** |
-| defects in dinostomp itself (**D**) | **30** |
+| negative results, recorded rather than dropped (**N**) | **11** |
+| defects in dinostomp itself (**D**) | **31** |
 
-Thirty to seventeen. That ratio is the useful number to publish, and it is the
+Thirty-one to seventeen. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

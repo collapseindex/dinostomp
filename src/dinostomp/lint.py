@@ -924,14 +924,28 @@ def _trajectory_checks(rep: Reporter, mine: list[dict], spec: dict, items: list[
     # BOTH code rails produce a trajectory. They differ in who WROTE it, which
     # is T8's job to state, not a reason to skip the other seven.
     CODE_RAILS = ("python", "mediated")
-    if not any(mc.get("provider") in CODE_RAILS for mc in spec["models"]):
+
+    def carries_trace(entry: dict) -> bool:
+        """An IMPORTED run joins on EVIDENCE, not on its provider string.
+
+        A foreign harness can record tool calls, and an Inspect import brings
+        them in. Gating on the provider made T1-T6 unreachable for every
+        imported agent run, which is most of what importing an agent log is
+        FOR (D-031). An imported run with no trace still stays out, so a
+        loglikelihood import does not acquire six vacuous trajectory findings.
+        """
+        return any(r.get("trajectory") for r in entry.get("records") or ())
+
+    eligible = [e for e in mine
+                if e["manifest"] and not e["manifest"].get("probe")
+                and (e["manifest"].get("provider") in CODE_RAILS or carries_trace(e))]
+    if not any(mc.get("provider") in CODE_RAILS for mc in spec["models"]) and not eligible:
         for cid in TRAJECTORY_CHECK_IDS:
-            rep.not_applicable(cid, "this spec runs no code targets; nothing produces a trajectory")
+            rep.not_applicable(cid, "this spec runs no code targets and no imported run carries a "
+                                    "trajectory; nothing here produces or carries one")
         return
 
-    agentic = [e for e in mine
-               if e["manifest"] and e["manifest"].get("provider") in CODE_RAILS
-               and not e["manifest"].get("probe")]
+    agentic = eligible
     if not agentic:
         for cid in TRAJECTORY_CHECK_IDS:
             rep.skip(cid, "no code-target runs on disk yet")
@@ -1127,8 +1141,15 @@ def _trajectory_checks(rep: Reporter, mine: list[dict], spec: dict, items: list[
     isolations: set[str] = set()
     for e in mine:
         m = e["manifest"] or {}
-        if m.get("provider") in CODE_RAILS:
-            sources.setdefault(m.get("trajectory_source") or "self_reported", []).append(
+        # An IMPORTED run counts here too, and this is the case T8 exists for:
+        # a foreign trace is the one whose provenance a reader cannot guess.
+        # Gating on the code rails made it go n/a exactly when the answer was
+        # "somebody else observed this" (D-031).
+        imported_trace = bool(m.get("imported")) and any(
+            r.get("trajectory") for r in e.get("records") or ())
+        if m.get("provider") in CODE_RAILS or imported_trace:
+            default = "foreign_observed" if imported_trace else "self_reported"
+            sources.setdefault(m.get("trajectory_source") or default, []).append(
                 str(m.get("model")))
             isolations.add(str(m.get("isolation") or "inprocess")
                            if m.get("provider") == "mediated" else "n/a")
@@ -1137,12 +1158,24 @@ def _trajectory_checks(rep: Reporter, mine: list[dict], spec: dict, items: list[
     else:
         observed = sorted(set(sources.get("harness_observed") or ()))
         testified = sorted(set(sources.get("self_reported") or ()))
-        mixed = bool(observed and testified)
+        foreign = sorted(set(sources.get("foreign_observed") or ()))
+        mixed = len([g for g in (observed, testified, foreign) if g]) > 1
         if mixed:
-            detail = (f"this fleet mixes rails: {len(observed)} agent(s) have harness-observed "
-                      f"trajectories and {len(testified)} wrote their own. T1-T6 therefore mean "
-                      f"different things per model in one table, and a fleet comparison over them "
-                      f"compares a log against a claim")
+            parts = []
+            if observed:
+                parts.append(f"{len(observed)} harness-observed")
+            if foreign:
+                parts.append(f"{len(foreign)} imported from another harness")
+            if testified:
+                parts.append(f"{len(testified)} self-reported")
+            detail = (f"this fleet mixes trajectory sources ({', '.join(parts)}). T1-T6 therefore "
+                      f"mean different things per model in one table, and a fleet comparison over "
+                      f"them compares evidence of different strengths")
+        elif foreign:
+            detail = (f"all {len(foreign)} run(s) carry a trajectory recorded by ANOTHER harness "
+                      f"and imported here. That is stronger than an agent's self-report, because "
+                      f"the exporting harness is a third party to the agent, and it is still not "
+                      f"this engine's own observation: T1-T6 are reading somebody else's log")
         elif testified:
             detail = (f"all {len(testified)} target(s) write their own trajectory, so T1-T6 verify "
                       f"the RECORD and not the EXECUTION: a target that omits a call from its own "
@@ -1164,6 +1197,7 @@ def _trajectory_checks(rep: Reporter, mine: list[dict], spec: dict, items: list[
         rep.check("T8", not mixed, detail,
                   n=sum(len(set(v)) for v in sources.values()),
                   examples=([f"{m}: harness-observed" for m in observed]
+                            + [f"{m}: imported (foreign harness)" for m in foreign]
                             + [f"{m}: self-reported" for m in testified]) if mixed else [],
                   evidence={"trajectory_sources": {k: sorted(set(v)) for k, v in sources.items()},
                             "isolation": sorted(isolations - {"n/a"}) or ["n/a"]})

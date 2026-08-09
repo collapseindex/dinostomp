@@ -533,6 +533,56 @@ def cmd_evidence(args) -> int:
     return 0
 
 
+def _match_adapter(source: Path):
+    """Which adapter recognises this log, if any. Never raises on a foreign file."""
+    from dinostomp.adapters import ADAPTERS
+
+    for name, module in ADAPTERS.items():
+        try:
+            if module.detect(source):
+                return name, module
+        except Exception:  # noqa: BLE001 - a sniff must never crash an import
+            continue
+    return None
+
+
+def _import_via_adapter(adapter, source: Path, args, model: str):
+    """Run a named adapter. Returns (records, issues, model, trajectory_source)."""
+    name, module = adapter
+    header, samples = module.read(source)
+    for note in module.summarise(header, samples):
+        print(f"  {note}")
+
+    scorers = module.scorer_names(header, samples)
+    if not scorers:
+        return [], [Issue(loc="--score-field", check="import",
+                          message=f"this {name} log carries no scores; there is nothing to "
+                                  "import as a verdict")], model, None
+    chosen = args.score_field or (scorers[0] if len(scorers) == 1 else None)
+    if chosen is None:
+        return [], [Issue(
+            loc="--score-field", check="import",
+            message=f"this log carries {len(scorers)} scorers ({', '.join(scorers)}) and they "
+                    "may disagree. This tool will not choose which number you meant: pass "
+                    f"--score-field {scorers[0]}")], model, None
+    if chosen not in scorers:
+        return [], [Issue(loc="--score-field", check="import",
+                          message=f"no scorer named {chosen!r} in this log; it has "
+                                  f"{', '.join(scorers)}")], model, None
+    print(f"  score    <- {chosen}" + ("   (you said so)" if args.score_field else ""))
+
+    # The log names the model that produced it. Preferred over the spec's first
+    # entry, because a record labelled with the wrong model is a lie about whose
+    # answer it is; `--model` still overrides for the case where a pod renames.
+    reported = (header.get("eval") or {}).get("model")
+    if reported and not args.model:
+        model = str(reported)
+    records, issues = module.to_records(header, samples, scorer=chosen, model=model,
+                                        seed=int(args.seed))
+    traj = "foreign_observed" if any(r.get("trajectory") for r in records) else None
+    return records, issues, model, traj
+
+
 def cmd_import(args) -> int:
     """Bring another harness's log into this pod as conforming evidence.
 
@@ -548,24 +598,38 @@ def cmd_import(args) -> int:
         return CANNOT_RUN
     base = Path(args.spec).resolve().parent
     source = Path(args.log)
-    rows, read_issues = read_log(source)
-    if read_issues:
-        print("CANNOT IMPORT:")
-        _print_issues(read_issues)
-        return CANNOT_RUN
-
-    overrides = {"item_id": args.item_id_field, "output": args.output_field,
-                 "score": args.score_field, "model": args.model_field}
-    mapping, notes, map_issues = infer_record_mapping(rows, overrides)
-    for note in notes:
-        print(f"  {note}")
-    if map_issues:
-        print("CANNOT IMPORT:")
-        _print_issues(map_issues)
-        return CANNOT_RUN
-
     model = args.model or (spec["models"][0]["model"] if spec.get("models") else "imported")
-    records, rec_issues = to_records(rows, mapping, model=model, seed=int(args.seed))
+    trajectory_source = None
+
+    # An ADAPTER first. A nested harness log is not a table, and a column mapper
+    # cannot read one at all; sniffing keeps that from being a confusing failure
+    # about missing columns.
+    adapter = _match_adapter(source)
+    if adapter is not None:
+        records, rec_issues, model, trajectory_source = _import_via_adapter(
+            adapter, source, args, model)
+        if rec_issues:
+            print(f"CANNOT IMPORT: {len(rec_issues)} problem(s). Nothing was written.")
+            _print_issues(rec_issues[:5])
+            return CANNOT_RUN
+    else:
+        rows, read_issues = read_log(source)
+        if read_issues:
+            print("CANNOT IMPORT:")
+            _print_issues(read_issues)
+            return CANNOT_RUN
+
+        overrides = {"item_id": args.item_id_field, "output": args.output_field,
+                     "score": args.score_field, "model": args.model_field}
+        mapping, notes, map_issues = infer_record_mapping(rows, overrides)
+        for note in notes:
+            print(f"  {note}")
+        if map_issues:
+            print("CANNOT IMPORT:")
+            _print_issues(map_issues)
+            return CANNOT_RUN
+
+        records, rec_issues = to_records(rows, mapping, model=model, seed=int(args.seed))
     if rec_issues:
         print(f"CANNOT IMPORT: {len(rec_issues)} row(s) could not become records. "
               "A half-imported run is a lie about coverage, so nothing was written.")
@@ -591,6 +655,15 @@ def cmd_import(args) -> int:
     manifest = build_manifest(spec, hashes, model=model, seed=int(args.seed), source=source,
                               n_records=len(records), run_file=f"{stem}.jsonl",
                               witness_report=wr.to_manifest())
+    if trajectory_source:
+        # FOREIGN_OBSERVED, never harness_observed. Another harness watched
+        # those tool calls; this one did not. Better evidence than an agent's
+        # self-report, because the exporting harness is a third party to the
+        # agent, and still someone else's word. T8 prints the difference.
+        manifest["trajectory_source"] = trajectory_source
+    repeats = 1 + max((int(r.get("repeat") or 0) for r in records), default=0)
+    if repeats > 1:
+        manifest["repeats"] = repeats
     rf, mf, sf = write_run(base, records, manifest, stem)
     print()
     print(f"  imported {len(records)} record(s) from {source.name}")

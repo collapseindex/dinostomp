@@ -202,13 +202,13 @@ def _cross_checks(spec: dict[str, Any], base: Path) -> list[Issue]:
                                 message=f"tool(s) {', '.join(both)} are both required and forbidden; "
                                         "no trajectory could satisfy this policy"))
         if (required or forbidden or traj.get("max_steps")) and not any(
-            isinstance(mc, dict) and mc.get("provider") in ("python", "mediated")
+            isinstance(mc, dict) and mc.get("provider") in ("python", "mediated", "imported")
             for mc in spec.get("models") or []
         ):
             issues.append(Issue(loc="$.trajectory", check="trajectory",
-                                message="a trajectory policy is declared but no model uses a python "
-                                        "or mediated target; nothing in this spec can produce a "
-                                        "trajectory"))
+                                message="a trajectory policy is declared but no model uses a "
+                                        "python, mediated or imported target; nothing in this "
+                                        "spec can produce or carry a trajectory"))
 
     # Typed claims must reference models this spec actually runs: a claim
     # about a phantom model is an authoring error, caught before any money.
