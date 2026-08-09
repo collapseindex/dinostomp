@@ -1,7 +1,7 @@
 {
   "tool": "dinostomp",
-  "version": "0.35.0",
-  "target": "C:\\Users\\alexs\\Desktop\\dinostomp\\benchmarks\\gsm8k\\eval.yaml",
+  "version": "0.35.1",
+  "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
       "value": 0.2,
@@ -721,7 +721,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "12 of 12 run(s) were produced by a different engine than the one auditing them (now dce38241d7705678); re-run to get numbers this report can stand behind",
+      "detail": "12 of 12 run(s) were produced by a different engine than the one auditing them (now d25f10ee73f4a734); re-run to get numbers this report can stand behind",
       "witnesses": 12,
       "examples": [
         "engine 0c79d2fabc826532: meta-llama/llama-3.2-3b-instruct seed 23 (tool 0.29.0)",

@@ -1,7 +1,7 @@
 {
   "tool": "dinostomp",
-  "version": "0.35.0",
-  "target": "C:\\Users\\alexs\\Desktop\\dinostomp\\examples\\judge\\eval.yaml",
+  "version": "0.35.1",
+  "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
       "value": 0.2,
@@ -710,11 +710,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now dce38241d7705678); re-run to get numbers this report can stand behind",
+      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now d25f10ee73f4a734); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "evidence": {
         "engines": {
-          "dce38241d7705678": 4
+          "d25f10ee73f4a734": 4
         }
       }
     },
@@ -953,7 +953,7 @@
   },
   "runs": [
     {
-      "run_file": "20260809_074245_judge-capitals_bot-bare_n26_s42.jsonl",
+      "run_file": "20260809_083208_judge-capitals_bot-bare_n26_s42.jsonl",
       "model": "bot-bare",
       "model_reported": "bot-bare",
       "provider": "python",
@@ -965,7 +965,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_074245_judge-capitals_bot-chatty_n26_s42.jsonl",
+      "run_file": "20260809_083208_judge-capitals_bot-chatty_n26_s42.jsonl",
       "model": "bot-chatty",
       "model_reported": "bot-chatty",
       "provider": "python",
@@ -977,7 +977,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_074245_judge-capitals_bot-hedged_n26_s42.jsonl",
+      "run_file": "20260809_083208_judge-capitals_bot-hedged_n26_s42.jsonl",
       "model": "bot-hedged",
       "model_reported": "bot-hedged",
       "provider": "python",
@@ -989,7 +989,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_074245_judge-capitals_bot-wrapped_n26_s42.jsonl",
+      "run_file": "20260809_083208_judge-capitals_bot-wrapped_n26_s42.jsonl",
       "model": "bot-wrapped",
       "model_reported": "bot-wrapped",
       "provider": "python",

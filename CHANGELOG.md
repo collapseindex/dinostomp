@@ -1,5 +1,13 @@
 # Changelog
 
+### v0.35.1 (2026-08-09)
+
+The first CI run on a machine that was not the author's failed all six jobs, and it was right to.
+
+- **Published reports embedded the ABSOLUTE path of the spec**, so every one verified only on the machine that generated it. `verify` re-derives the report and byte-compares it against the published artifact; the re-derived `target` read `C:\Users\...\eval.yaml` here and `/home/runner/...` there, so the comparison failed on all five example pods. That contradicted the central claim, printed by the command itself, that a stranger can check a published verdict offline without trusting the publisher. Reports now carry the spec's name inside the pod (`eval.yaml`); identity was always in `inputs.spec_sha256`, which is what actually pins the artifact.
+- **The local suite could not have caught it**, because it always verified each pod exactly where it was generated. The new test copies every example pod to a fresh directory first, which is what a stranger has, and it fails when the absolute path is put back. Dogfooding on a runner that shares none of the author's paths is what surfaced this: the workflow that did it was added two releases ago and had never run anywhere but here.
+- No behaviour change beyond the report field. All published reports regenerated.
+
 ### v0.35.0 (2026-08-09)
 
 An external review pushed on the two places this tool could mislead someone even while working perfectly. Both boundaries are now architectural rather than rhetorical.

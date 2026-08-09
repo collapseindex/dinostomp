@@ -1,4 +1,4 @@
-# 🦖 stomp report: arc-challenge
+# 🦖 stomp report: eval.yaml
 
 **INCOMPLETE**: no failures, but only 10 of 36 checks ran (10 of 36 ran; 18 n/a of 54 declared). Not a clean bill of health.
 
@@ -96,7 +96,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.35.0
+- tool: dinostomp 0.35.1
 - statistical power: at n=1172 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~6% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `83350db91b16e6b3dc8f037ff2e5c1de3edf8c442466fd218edfd52b24ece390`
 - data_sha256: `7e30ffbdf178bb1c4973755ab8626666e035179964b8c0fb92cc05125255cb28`

@@ -2,7 +2,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.35.0 · Apache-2.0 · engine `dce38241d7705678` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.35.1 · Apache-2.0 · engine `d25f10ee73f4a734` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -235,7 +235,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.35.0
+- uses: collapseindex/dinostomp@v0.35.1
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -249,7 +249,7 @@ It installs dinostomp from PyPI by default, which does not exist yet, so pass
 `version:` pointing at this repo until it does:
 
 ```yaml
-    version: "git+https://github.com/collapseindex/dinostomp@v0.35.0"
+    version: "git+https://github.com/collapseindex/dinostomp@v0.35.1"
 ```
 
 That is stated rather than hidden because a copy-pasteable block that fails for
@@ -313,7 +313,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`dce38241d7705678507425c29c93378fc52bb8b69b0a5597d45783285cc00fc5`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`d25f10ee73f4a7346c740443ded2ee4acb9430ea2bca5f80486230a4d0360a7d`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

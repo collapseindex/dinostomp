@@ -1,7 +1,7 @@
 {
   "tool": "dinostomp",
-  "version": "0.35.0",
-  "target": "C:\\Users\\alexs\\Desktop\\dinostomp\\benchmarks\\mmlu\\eval.yaml",
+  "version": "0.35.1",
+  "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
       "value": 0.2,

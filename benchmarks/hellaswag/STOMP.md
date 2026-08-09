@@ -1,4 +1,4 @@
-# 🦖 stomp report: hellaswag
+# 🦖 stomp report: eval.yaml
 
 **INCOMPLETE**: no failures, but only 10 of 36 checks ran (10 of 36 ran; 18 n/a of 54 declared). Not a clean bill of health.
 
@@ -96,7 +96,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.35.0
+- tool: dinostomp 0.35.1
 - statistical power: at n=10042 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~2% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `ece06553dd0d50dd9fe809606c26c06576acb4bdc7bf0ca075d3a1e02f41d449`
 - data_sha256: `7623f873bcc350896a406c94527b8c45403771a11ccaff51b3c5858f22204ce3`

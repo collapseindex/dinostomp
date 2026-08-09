@@ -2459,7 +2459,12 @@ def lint_eval(spec_path: str | Path, trust_code: bool = False,
             ext_problems.extend(run_problems)
 
     report = rep.report(
-        str(spec_file),
+        # The spec's name INSIDE the pod, never an absolute path. A published
+        # report must re-derive on a stranger's machine, and an absolute path
+        # made every report verify only where it was generated: the pod moved,
+        # the string changed, the byte-comparison failed. Identity lives in
+        # `inputs.spec_sha256`, which is what actually pins the artifact.
+        spec_file.name,
         inputs=report_inputs,
         runs=inventory,
         entitled_claims=spec.get("entitled_claims"),
@@ -2556,7 +2561,7 @@ def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
     rep.not_applicable("S8", "a contamination canary is a convention for data you author; "
                              "a dataset audit does not expect one")
 
-    report = rep.report(str(path), inputs={"data_sha256": spec_sha256(path)}, scope="data")
+    report = rep.report(path.name, inputs={"data_sha256": spec_sha256(path)}, scope="data")
     report["dataset"] = {"rows": len(rows), "items": len(items), "mapping": mapping,
                          "separator": sep}
     context["items"] = items

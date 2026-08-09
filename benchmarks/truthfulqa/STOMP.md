@@ -1,4 +1,4 @@
-# 🦖 stomp report: truthfulqa
+# 🦖 stomp report: eval.yaml
 
 **BROKEN**: 1 gated finding(s) (6 of 32 ran; 22 n/a of 54 declared)
 
@@ -91,7 +91,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.35.0
+- tool: dinostomp 0.35.1
 - statistical power: at n=790 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~7% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `c642f9867ab0a60a5dacc5fc11e21ebceaa6c32823b968a4cb379b6268d0fa15`
 - data_sha256: `907eb40ad584ab61e447db8945e440bf69cef0c38763f7e067c6c4745ed3e608`

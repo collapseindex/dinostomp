@@ -1,4 +1,4 @@
-# 🦖 stomp report: gsm8k
+# 🦖 stomp report: eval.yaml
 
 **BROKEN**: 1 gated finding(s) (31 of 37 ran; 17 n/a of 54 declared)
 
@@ -74,7 +74,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | warn | failed answers do not contain the reference | 4 | 3 of 4 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | ok | billed output tokens match the recorded text | 4 | 0 of 4 model(s) report far more output tokens than their recorded text accounts for (expected for hidden-reasoning models; otherwise check your invoice) |
-| warn | the runs were produced by this engine | 12 | 12 of 12 run(s) were produced by a different engine than the one auditing them (now dce38241d7705678); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 12 | 12 of 12 run(s) were produced by a different engine than the one auditing them (now d25f10ee73f4a734); re-run to get numbers this report can stand behind |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no python targets; nothing produces a trajectory |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no python targets; nothing produces a trajectory |
 | n/a | tool calls are not redundant | 0 | this spec runs no python targets; nothing produces a trajectory |
@@ -205,7 +205,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.35.0
+- tool: dinostomp 0.35.1
 - statistical power: at n=120 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~18% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `0a43b2c953404b6768ed9d552f7decf2e4fe2fac5e084438900e57607ba25207`
 - data_sha256: `a0917cec62a9d75e589e7ce559c88eaec8fe0cae1eb33f5aecdfa89df1935a55`
