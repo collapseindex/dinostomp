@@ -1,0 +1,61 @@
+name: presentation
+version: 0.1.0
+question: "Does a model's score, and the fleet's ranking, survive re-ordering the options and re-phrasing the instruction?"
+
+# An INSTRUMENT, not a knowledge benchmark. The items are deliberately ordinary:
+# what is being measured is not what these models know, it is how much of the
+# number moves when nothing about the question changes.
+#
+# Two probes, one pod:
+#   --probe shuffle    permutes the option block          -> order-stability (P9)
+#   --probe template   re-asks under six instruction framings -> prompt-stability (P11),
+#                                                               ranking-stability (P12)
+#
+# Items are authored here rather than lifted from a benchmark, for two reasons:
+# no licence question, and no contamination question. A presentation effect
+# measured on items a model may have memorised is a weaker measurement.
+#
+# Difficulty is mixed ON PURPOSE. If every model scored 100% there would be no
+# room for a swing to appear, and the probes would report "stable" for a reason
+# that has nothing to do with stability.
+#
+# The options were authored answer-first and are SHUFFLED per item from a seed
+# derived from the item id. Leaving them answer-first would have repeated D-016:
+# with render_choices on, position would have been the loudest signal in the pod.
+
+entitled_claims:
+  - "How far each model's accuracy moves when the option order or the instruction phrasing changes, on these 40 items."
+  - "Whether any pair of these models swaps places under a different phrasing."
+  - "Nothing about how much these models know: 40 authored items measure presentation sensitivity, not capability."
+
+data: {path: items.jsonl, format: jsonl, render_choices: true}
+
+models:
+  - {provider: openrouter, model: meta-llama/llama-3.2-3b-instruct,
+     price_in: 0.05, price_out: 0.33, params: {temperature: 0, max_tokens: 120}}
+  - {provider: openrouter, model: meta-llama/llama-3.1-8b-instruct,
+     price_in: 0.05, price_out: 0.08, params: {temperature: 0, max_tokens: 120}}
+  - {provider: openrouter, model: mistralai/ministral-8b-2512,
+     price_in: 0.15, price_out: 0.15, params: {temperature: 0, max_tokens: 120}}
+  - {provider: openrouter, model: qwen/qwen3-30b-a3b-instruct-2507,
+     price_in: 0.048, price_out: 0.193, params: {temperature: 0, max_tokens: 120}}
+
+# The model is asked for the option TEXT, not the letter, so the target stays
+# invariant when the shuffle probe permutes the block. A letter-keyed target
+# would have to be rewritten per rendering, and the two arms would stop being
+# comparable.
+scorer:
+  kind: includes
+  witnesses:
+    - {output: "Carbon dioxide", target: "Carbon dioxide", expect: pass}
+    - {output: "The answer is Carbon dioxide.", target: "Carbon dioxide", expect: pass}
+    - {output: "Oxygen", target: "Carbon dioxide", expect: fail}
+    - {output: "", target: "Carbon dioxide", expect: fail}
+    - {output: "CARBON DIOXIDE", target: "Carbon dioxide", expect: fail,
+       why: "substring matching is case-sensitive, and this pod says so"}
+    - {output: "Carbon  dioxide", target: "Carbon dioxide", expect: fail,
+       why: "a doubled space is part of the match"}
+    - {output: "Carbon diox", target: "Carbon dioxide", expect: fail,
+       why: "a strict prefix is not the answer"}
+
+run: {n: 40, seed: 7, budget_usd: 0.50}

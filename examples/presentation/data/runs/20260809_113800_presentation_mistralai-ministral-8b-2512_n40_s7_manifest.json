@@ -1,0 +1,38 @@
+{
+  "tool_version": "0.37.0",
+  "tool_sha256": "cf11e5de89c91221cc476165a42f4c59e649f10423f6a2e047e5a5ca682bd555",
+  "spec_name": "presentation",
+  "spec_version": "0.1.0",
+  "spec_sha256": "5bacd458ad54056ede6d5cca8071816c1f9f31dc510571c29b23c7124dc47878",
+  "data_sha256": "d9e5a5096d3d36c846d4d90320ec9f19b0b835df5d4b6baa68dd4b0d870ba32e",
+  "provider": "openrouter",
+  "model": "mistralai/ministral-8b-2512",
+  "seed": 7,
+  "n_items": 40,
+  "repeats": 1,
+  "dry_run": false,
+  "budget_cap_usd": 0.5,
+  "rate_in_per_mtok": 0.15,
+  "rate_out_per_mtok": 0.15,
+  "witness_report": {
+    "n_witnesses": 7,
+    "n_behaved": 7,
+    "verdict": "validated"
+  },
+  "env": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "dinostomp": "0.29.0",
+      "jsonschema": "4.25.1",
+      "PyYAML": "6.0.2"
+    }
+  },
+  "started_at": "2026-08-09T11:38:00.633810+00:00",
+  "status": "complete",
+  "model_reported": "mistralai/ministral-8b-2512",
+  "spend_usd": 0.00032655,
+  "spend_source": "metered",
+  "finished_at": "2026-08-09T11:38:25.333893+00:00",
+  "run_file": "20260809_113800_presentation_mistralai-ministral-8b-2512_n40_s7.jsonl"
+}

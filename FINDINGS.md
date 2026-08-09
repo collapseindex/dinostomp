@@ -43,10 +43,12 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-013](#f-013) | SciQ | the gold option reuses a question word no distractor does | confirmed, narrow |
 | [F-014](#f-014) | a judge (qwen3-30b) | stated confidence and authority flip its verdicts, always toward FAIL | confirmed |
 | [F-015](#f-015) | four small models | 87% to 97% preserve a source's hedge; the eval cannot separate them | confirmed, underpowered |
+| [F-016](#f-016) | llama-3.2-3b | "You are an expert." is worth 10 points, marginally | confirmed, marginal |
 | [N-001](#n-001) | HellaSwag, ARC, MMLU | no position, length, or shortcut bias found | negative |
 | [N-002](#n-002) | dinostomp | the uncheckable path was untested, and said so | negative, later closed |
 | [N-003](#n-003) | ARC, OpenBookQA, HellaSwag, WinoGrande | no repeated options in four datasets | negative |
 | [N-004](#n-004) | six dataset pairs | no cross-benchmark reuse found | negative |
+| [N-005](#n-005) | four models | re-ordering the options moved nobody beyond noise | negative, underpowered |
 | [D-001](#d-001) | dinostomp | the money invariant had only ever run at zero | fixed |
 | [D-002](#d-002) | dinostomp | pooling hid a model that never read the question | fixed |
 | [D-003](#d-003) | dinostomp | a collapsed model manufactured 8 phantom key errors | fixed |
@@ -65,6 +67,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-016](#d-016) | dinostomp | the SciQ fetcher put the answer at index 0 on every item | fixed |
 | [D-017](#d-017) | dinostomp | a truncated judge was diagnosed as a judge with no opinion | fixed |
 | [D-018](#d-018) | dinostomp | the cross-judge probe crashed the CLI on its first real run | fixed |
+| [D-019](#d-019) | dinostomp | the docs claimed a 28-point swing with no run behind it | WITHDRAWN |
 
 ---
 
@@ -341,6 +344,33 @@ that would make the task look impossible.
 30 items do not reliably order these four models. That is a property of the item
 set, and the fix is more items, not a stronger claim.
 
+### F-016
+**llama-3.2-3b · "You are an expert." is worth 10 points, marginally**
+`prompt-stability` (P11) · 2026-08-09 · confirmed, marginal · [examples/presentation](examples/presentation/)
+
+Same 40 items, same options, six instruction framings that change no meaning:
+
+| model | worst framing | best framing | spread | noise band |
+|---|---|---|---|---|
+| llama-3.2-3b | `bare` 85% | `expert` 95% | **10.0** | 10.0 |
+| llama-3.1-8b | `polite` | `instructed` | 5.0 | 6.9 |
+| ministral-8b | — | — | 0.0 | — |
+| qwen3-30b | — | — | 0.0 | — |
+
+Prefixing *"You are an expert. Answer the following question."* moved the 3B
+model from 85% to 95%. Ten points, from a sentence carrying no information about
+any of the questions.
+
+**Report it as marginal, because it is.** The spread is 10.0 and the band is
+10.0: it clears by a hair, on four items that flipped. One more flip either way
+and this is noise. What makes it worth an entry is not the significance, it is
+that the *only* model it moved is the smallest, and it moved in the direction
+that flatters the persona.
+
+The other three models did not move at all, and no pair of models swapped places
+under any framing ([ranking-stability](#n-005) reports 0 of 6 reversals). So on
+this instrument the phrasing changes a score and does not change a conclusion.
+
 ---
 
 ## Negative results
@@ -386,6 +416,30 @@ and that pair is documented as derived.
 
 Stated limit, which the check prints itself: overlap is evidence about the
 corpora compared. Finding none here is **not** evidence about training data.
+
+### N-005
+**Four models · re-ordering the options moved nobody beyond noise**
+`order-stability` (P9) · 2026-08-09 · negative, underpowered
+
+| model | moves | items that flipped | noise band |
+|---|---|---|---|
+| llama-3.2-3b | 0.0 | 6 | 12.0 |
+| llama-3.1-8b | −2.5 | 3 | 8.5 |
+| ministral-8b | −2.5 | 1 | 4.9 |
+| qwen3-30b | 0.0 | 0 | 0.0 |
+
+Permuting the option block moved no model further than the flip churn explains.
+Also 0 of 6 model pairs swapped places under re-phrasing.
+
+**This is a weak negative and the reason is on the record.** Two of the four
+models score 100% on these 40 items, and `dead-weight` reports 82% of items
+separating nobody. An instrument at the ceiling cannot show a swing, so "no
+order sensitivity" here means "none detectable with these models on these
+items", not "option order does not matter". Harder items would make this a real
+test; these do not.
+
+It is recorded anyway because it is the only live shuffle probe this repository
+has ever run, and it is what forced [D-019](#d-019).
 
 ---
 
@@ -701,6 +755,26 @@ The probe had only ever been exercised by trials that call the runner directly.
 Nobody had typed the command. Now every probe shape prints as a probe, and the
 fallback names the probe rather than assuming a field.
 
+### D-019
+**The docs claimed a 28-point swing with no run behind it**
+METHODOLOGY.md · 2026-08-09 · **WITHDRAWN**
+
+METHODOLOGY said, of the shuffle probe: *"On real models that swing reached 28
+points."* Going to run that probe for real turned up the problem: **there were
+zero live shuffle runs on disk.** The number came from an early study that
+predates this repository's receipts, and P9 has since been rebuilt around a
+McNemar noise band, so it is not even clear the same figure would be reported
+today.
+
+An unbacked number in the docs of a tool whose entire argument is receipts is
+the worst place to have one. The claim is withdrawn rather than softened, and
+replaced with the measured figure: **at most 2.5 points, inside the noise band
+on all four models** ([N-005](#n-005)).
+
+The general lesson is the one this project keeps paying for: a claim survives in
+prose long after the evidence for it stops being reachable. The only reason this
+surfaced is that someone finally typed the command.
+
 ---
 
 ## The honest scorecard
@@ -713,14 +787,14 @@ Count it precisely.
 
 | | |
 |---|---|
-| findings in other people's evals (**F**) | **15** |
+| findings in other people's evals (**F**) | **16** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
-| &nbsp;&nbsp;of which findings about a judge or a model | 2 (F-014, F-015) |
+| &nbsp;&nbsp;of which findings about a judge or a model | 3 (F-014, F-015, F-016) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **4** |
-| defects in dinostomp itself (**D**) | **18** |
+| negative results, recorded rather than dropped (**N**) | **5** |
+| defects in dinostomp itself (**D**) | **19** |
 
-Eighteen to fifteen. That ratio is the useful number to publish, and it is the
+Nineteen to sixteen. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to
@@ -730,7 +804,7 @@ ran somewhere its author's assumptions did not hold, and one
 ([D-014](#d-014)) was a bug the project had already found and fixed elsewhere,
 written again three releases later in a different check.
 
-The most common shape across all eighteen is worth stating once: **a check that
+The most common shape across all nineteen is worth stating once: **a check that
 compared the wrong thing and returned a confident answer about it.**
 
 ## Adding an entry

@@ -1,0 +1,25 @@
+{
+  "spec_name": "presentation",
+  "model": "meta-llama/llama-3.2-3b-instruct",
+  "provider": "openrouter",
+  "seed": 7,
+  "status": "complete",
+  "n_records": 40,
+  "estimator": "per_record",
+  "n_checkable": 40,
+  "n_uncheckable": 0,
+  "n_passes": 37,
+  "accuracy_on_checkable": 0.925,
+  "accuracy_ci95": [
+    0.8014,
+    0.9742
+  ],
+  "judgeability": 1.0,
+  "by_verdict": {
+    "pass": 37,
+    "fail": 3,
+    "flag": 0,
+    "uncheckable": 0
+  },
+  "spend_usd": 0.00021931
+}

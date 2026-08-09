@@ -1,5 +1,16 @@
 # Changelog
 
+### v0.38.0 (2026-08-09)
+
+Ran the last two probes that had never seen a real model. One produced a marginal finding, one produced a null, and the null retracted a claim in these docs.
+
+- **[examples/presentation](examples/presentation/): a presentation-sensitivity instrument**, not a knowledge benchmark. Forty authored 4-choice items (no licence question, no contamination question), four OpenRouter models, run three ways: plain, with `--probe shuffle`, and with `--probe template` across six instruction framings. 1360 calls for about $0.02.
+- **D-019, WITHDRAWN: the docs claimed a 28-point shuffle swing with no run behind it.** Going to run that probe for real turned up that there were **zero live shuffle runs on disk**. The figure came from a study predating this repository's receipts, and P9 has since been rebuilt around a McNemar noise band. An unbacked number in the docs of a tool whose whole argument is receipts is the worst possible place for one. Replaced with the measured figure: at most 2.5 points, inside the noise band on all four models.
+- **F-016: "You are an expert." is worth 10 points to llama-3.2-3b**, 85% bare to 95% expert. Reported as MARGINAL because it is: the spread is 10.0 against a band of 10.0, on four items that flipped. What earns it an entry is that the only model it moved is the smallest, and it moved in the direction that flatters the persona. The other three did not move at all.
+- **N-005: re-ordering the options moved nobody beyond noise, and this is a WEAK negative.** Two of the four models score 100% on these items and `dead-weight` reports 82% of items separating nobody. An instrument at the ceiling cannot show a swing, so this means "none detectable with these models on these items", not "option order does not matter". Recorded with that limitation attached rather than as a clean null.
+- **Ranking stability: 0 of 6 model pairs swapped under any framing.** On this instrument, phrasing changes a score and does not change a conclusion.
+- I made the D-016 mistake again while authoring the items, and caught it before publishing: every option list was written answer-first, which with `render_choices` would have made position the loudest signal in the pod. Options are shuffled per item from a seed derived from the item id, and the spec says so.
+
 ### v0.37.0 (2026-08-09)
 
 A real eval, built with the tool, graded by a hosted judge. It cost $0.022 and found two defects in the judge rail nobody had reached.

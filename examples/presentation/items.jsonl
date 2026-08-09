@@ -1,0 +1,41 @@
+{"_canary": "dinostomp canary DO NOT TRAIN presentation-2026"}
+{"id": "pres-00", "input": "Which gas do plants absorb from the air for photosynthesis?", "choices": ["Nitrogen", "Oxygen", "Carbon dioxide", "Hydrogen"], "target": "Carbon dioxide"}
+{"id": "pres-01", "input": "Which planet has the shortest year?", "choices": ["Venus", "Earth", "Mercury", "Mars"], "target": "Mercury"}
+{"id": "pres-02", "input": "What is the hardest naturally occurring mineral?", "choices": ["Topaz", "Quartz", "Diamond", "Corundum"], "target": "Diamond"}
+{"id": "pres-03", "input": "Which blood vessels carry blood away from the heart?", "choices": ["Venules", "Capillaries", "Veins", "Arteries"], "target": "Arteries"}
+{"id": "pres-04", "input": "Which element has the atomic number 6?", "choices": ["Carbon", "Boron", "Nitrogen", "Oxygen"], "target": "Carbon"}
+{"id": "pres-05", "input": "What process do plants use to lose water through leaves?", "choices": ["Sublimation", "Condensation", "Respiration", "Transpiration"], "target": "Transpiration"}
+{"id": "pres-06", "input": "Which layer of Earth is liquid?", "choices": ["Inner core", "Outer core", "Crust", "Mantle"], "target": "Outer core"}
+{"id": "pres-07", "input": "What unit measures electrical resistance?", "choices": ["Ampere", "Ohm", "Watt", "Volt"], "target": "Ohm"}
+{"id": "pres-08", "input": "Which organelle produces most of a cell's ATP?", "choices": ["Lysosome", "Mitochondrion", "Golgi apparatus", "Ribosome"], "target": "Mitochondrion"}
+{"id": "pres-09", "input": "What is the most abundant gas in Earth's atmosphere?", "choices": ["Argon", "Carbon dioxide", "Oxygen", "Nitrogen"], "target": "Nitrogen"}
+{"id": "pres-10", "input": "Which type of rock forms from cooled magma?", "choices": ["Sedimentary", "Igneous", "Metamorphic", "Clastic"], "target": "Igneous"}
+{"id": "pres-11", "input": "What does a barometer measure?", "choices": ["Air pressure", "Wind speed", "Temperature", "Humidity"], "target": "Air pressure"}
+{"id": "pres-12", "input": "Which particle carries a negative charge?", "choices": ["Neutron", "Proton", "Positron", "Electron"], "target": "Electron"}
+{"id": "pres-13", "input": "What is the primary function of red blood cells?", "choices": ["Carrying oxygen", "Producing hormones", "Clotting blood", "Fighting infection"], "target": "Carrying oxygen"}
+{"id": "pres-14", "input": "Which force keeps planets in orbit around the Sun?", "choices": ["Tension", "Magnetism", "Gravity", "Friction"], "target": "Gravity"}
+{"id": "pres-15", "input": "A solution with pH 3 is best described as:", "choices": ["Basic", "Acidic", "Neutral", "Amphoteric"], "target": "Acidic"}
+{"id": "pres-16", "input": "Which process splits a heavy atomic nucleus?", "choices": ["Fusion", "Fission", "Sublimation", "Ionisation"], "target": "Fission"}
+{"id": "pres-17", "input": "What is the SI unit of frequency?", "choices": ["Hertz", "Pascal", "Newton", "Joule"], "target": "Hertz"}
+{"id": "pres-18", "input": "Which vitamin is produced in skin exposed to sunlight?", "choices": ["Vitamin K", "Vitamin D", "Vitamin A", "Vitamin C"], "target": "Vitamin D"}
+{"id": "pres-19", "input": "In genetics, an allele is best described as:", "choices": ["A cell membrane channel", "A variant form of a gene", "A type of protein", "A whole chromosome"], "target": "A variant form of a gene"}
+{"id": "pres-20", "input": "Which phenomenon explains why a straw looks bent in water?", "choices": ["Absorption", "Reflection", "Diffraction", "Refraction"], "target": "Refraction"}
+{"id": "pres-21", "input": "What is the term for an animal that eats both plants and meat?", "choices": ["Herbivore", "Detritivore", "Carnivore", "Omnivore"], "target": "Omnivore"}
+{"id": "pres-22", "input": "Which of these is a vector quantity?", "choices": ["Velocity", "Mass", "Speed", "Temperature"], "target": "Velocity"}
+{"id": "pres-23", "input": "What does DNA polymerase do?", "choices": ["Transports oxygen", "Stores energy", "Synthesises new DNA strands", "Breaks down proteins"], "target": "Synthesises new DNA strands"}
+{"id": "pres-24", "input": "Which economic term describes goods that rise in demand as income falls?", "choices": ["Luxury goods", "Normal goods", "Inferior goods", "Giffen goods"], "target": "Inferior goods"}
+{"id": "pres-25", "input": "What is the derivative of x squared with respect to x?", "choices": ["2x", "x cubed over 3", "2", "x"], "target": "2x"}
+{"id": "pres-26", "input": "Which cloud type is associated with thunderstorms?", "choices": ["Cumulonimbus", "Cirrus", "Stratus", "Altocumulus"], "target": "Cumulonimbus"}
+{"id": "pres-27", "input": "In statistics, what does a p-value quantify?", "choices": ["Probability of data this extreme under the null hypothesis", "Probability the hypothesis is true", "Size of the observed effect", "Reliability of the measuring instrument"], "target": "Probability of data this extreme under the null hypothesis"}
+{"id": "pres-28", "input": "Which structure connects muscle to bone?", "choices": ["Fascia", "Cartilage", "Tendon", "Ligament"], "target": "Tendon"}
+{"id": "pres-29", "input": "What is the chemical formula for table salt?", "choices": ["CaCO3", "NaCl", "NaHCO3", "KCl"], "target": "NaCl"}
+{"id": "pres-30", "input": "Which term describes the tendency of an object to resist changes in motion?", "choices": ["Inertia", "Momentum", "Torque", "Impulse"], "target": "Inertia"}
+{"id": "pres-31", "input": "Which sorting algorithm has the best worst-case time complexity?", "choices": ["Insertion sort", "Bubble sort", "Merge sort", "Quick sort"], "target": "Merge sort"}
+{"id": "pres-32", "input": "In a normal distribution, roughly what fraction falls within one standard deviation?", "choices": ["50 percent", "68 percent", "95 percent", "99 percent"], "target": "68 percent"}
+{"id": "pres-33", "input": "What does the enzyme amylase break down?", "choices": ["Fat", "Starch", "Protein", "Cellulose"], "target": "Starch"}
+{"id": "pres-34", "input": "Which of these describes a catalyst?", "choices": ["Raises the activation energy", "Shifts the equilibrium position", "Is consumed to release energy", "Speeds a reaction without being consumed"], "target": "Speeds a reaction without being consumed"}
+{"id": "pres-35", "input": "What is the main product of the light-independent reactions?", "choices": ["Chlorophyll", "Oxygen", "ATP", "Glucose"], "target": "Glucose"}
+{"id": "pres-36", "input": "Which logical fallacy attacks the person rather than the argument?", "choices": ["Slippery slope", "Ad hominem", "Straw man", "False dilemma"], "target": "Ad hominem"}
+{"id": "pres-37", "input": "What does a semiconductor's band gap determine?", "choices": ["The colour of the packaging", "The energy needed to free an electron", "The physical size of the crystal", "The melting point"], "target": "The energy needed to free an electron"}
+{"id": "pres-38", "input": "Which ocean current warms north-western Europe?", "choices": ["The Benguela Current", "The Canary Current", "The Humboldt Current", "The Gulf Stream"], "target": "The Gulf Stream"}
+{"id": "pres-39", "input": "In probability, two events are independent when:", "choices": ["One occurring does not change the other's probability", "They cannot both occur", "They have equal probability", "They are drawn from the same population"], "target": "One occurring does not change the other's probability"}

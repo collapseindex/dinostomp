@@ -1,0 +1,25 @@
+{
+  "spec_name": "presentation",
+  "model": "qwen/qwen3-30b-a3b-instruct-2507",
+  "provider": "openrouter",
+  "seed": 7,
+  "status": "complete",
+  "n_records": 40,
+  "estimator": "per_record",
+  "n_checkable": 40,
+  "n_uncheckable": 0,
+  "n_passes": 40,
+  "accuracy_on_checkable": 1.0,
+  "accuracy_ci95": [
+    0.9124,
+    1.0
+  ],
+  "judgeability": 1.0,
+  "by_verdict": {
+    "pass": 40,
+    "fail": 0,
+    "flag": 0,
+    "uncheckable": 0
+  },
+  "spend_usd": 0.000161083
+}
