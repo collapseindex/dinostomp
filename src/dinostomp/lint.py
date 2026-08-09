@@ -1008,11 +1008,21 @@ def _trajectory_checks(rep: Reporter, mine: list[dict], spec: dict, items: list[
             if share > THRESHOLDS["ungrounded_max"]:
                 flagged.append(f"{model}: {len(loose)} of {len(pool)} passing answer(s) ({share:.0%}) "
                                "appear in no retrieved evidence")
+        # This measures CO-OCCURRENCE, not causation, and the difference is
+        # large. A live agent that answered from memory and retrieved the right
+        # topic afterwards was 100% causally ungrounded and T4 reported 16%: the
+        # answer appeared in the snippet it never read. The error is one-sided,
+        # so a warning here is a FLOOR and silence is not a clean bill, and the
+        # finding says so rather than leaving a reader to assume otherwise.
         rep.check("T4", not flagged,
-                  f"{len(flagged)} of {len(judged)} target(s) pass items their own evidence "
-                  f"does not support ({len(receipts)} such answer(s) in total)",
+                  f"{len(flagged)} of {len(judged)} target(s) pass items whose answer does not "
+                  f"APPEAR in their own evidence ({len(receipts)} such answer(s) in total). This "
+                  "is co-occurrence, not causation: an answer recalled from memory that also "
+                  "happens to appear in a retrieved snippet counts as grounded here, so this "
+                  "count is a floor",
                   n=len(judged), examples=flagged + receipts,
-                  evidence={"models_judged": len(judged), "ungrounded_records": len(receipts)})
+                  evidence={"models_judged": len(judged), "ungrounded_records": len(receipts),
+                            "measures": "co-occurrence in the recorded trace, not causal use"})
 
     # T5: the only instrument pointed at the trust boundary itself. A target
     # that under-reports its trace looks exactly like an honest one when read

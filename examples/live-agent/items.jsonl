@@ -1,0 +1,25 @@
+{"_canary": "dinostomp canary DO NOT TRAIN live-agent-2026"}
+{"id": "la-00", "input": "What process converts light energy into glucose?", "target": "photosynthesis"}
+{"id": "la-01", "input": "Where in the cell does photosynthesis take place?", "target": "chloroplasts"}
+{"id": "la-02", "input": "What gas does photosynthesis release?", "target": "oxygen"}
+{"id": "la-03", "input": "What does cellular respiration produce from glucose?", "target": "ATP"}
+{"id": "la-04", "input": "Which organelle carries out most cellular respiration?", "target": "mitochondria"}
+{"id": "la-05", "input": "What gas does cellular respiration consume?", "target": "oxygen"}
+{"id": "la-06", "input": "Through which leaf structures does transpiration lose water?", "target": "stomata"}
+{"id": "la-07", "input": "What does transpiration pull water up from?", "target": "roots"}
+{"id": "la-08", "input": "How many nuclei does mitosis produce from one?", "target": "two"}
+{"id": "la-09", "input": "What is mitosis used for in the body?", "target": "growth"}
+{"id": "la-10", "input": "How many cells does meiosis produce from one diploid cell?", "target": "four"}
+{"id": "la-11", "input": "What kind of cells does meiosis make?", "target": "gametes"}
+{"id": "la-12", "input": "What moves across a membrane during osmosis?", "target": "water"}
+{"id": "la-13", "input": "Osmosis moves water toward which solute concentration?", "target": "higher"}
+{"id": "la-14", "input": "Does diffusion require energy input?", "target": "no"}
+{"id": "la-15", "input": "In which direction does diffusion move particles?", "target": "lower"}
+{"id": "la-16", "input": "What kind of molecule is an enzyme?", "target": "protein"}
+{"id": "la-17", "input": "What do enzymes lower to speed a reaction?", "target": "activation energy"}
+{"id": "la-18", "input": "How many bases does DNA use?", "target": "four"}
+{"id": "la-19", "input": "Which base does RNA use in place of thymine?", "target": "uracil"}
+{"id": "la-20", "input": "Is RNA usually single or double stranded?", "target": "single"}
+{"id": "la-21", "input": "What carries instructions from DNA to ribosomes?", "target": "messenger RNA"}
+{"id": "la-22", "input": "What shape is the DNA molecule?", "target": "double helix"}
+{"id": "la-23", "input": "Are enzymes consumed by the reaction they speed up?", "target": "not consumed"}

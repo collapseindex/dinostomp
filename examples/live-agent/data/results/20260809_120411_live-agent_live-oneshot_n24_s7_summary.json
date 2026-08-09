@@ -1,0 +1,25 @@
+{
+  "spec_name": "live-agent",
+  "model": "live-oneshot",
+  "provider": "python",
+  "seed": 7,
+  "status": "complete",
+  "n_records": 24,
+  "estimator": "per_record",
+  "n_checkable": 24,
+  "n_uncheckable": 0,
+  "n_passes": 19,
+  "accuracy_on_checkable": 0.791667,
+  "accuracy_ci95": [
+    0.5953,
+    0.9076
+  ],
+  "judgeability": 1.0,
+  "by_verdict": {
+    "pass": 19,
+    "fail": 5,
+    "flag": 0,
+    "uncheckable": 0
+  },
+  "spend_usd": 0.00015211
+}

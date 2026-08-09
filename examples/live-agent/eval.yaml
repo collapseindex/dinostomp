@@ -1,0 +1,49 @@
+name: live-agent
+version: 0.1.0
+question: "When a retrieval agent driven by a real model answers correctly, is the answer actually in what it retrieved?"
+
+# The FIRST pod in this repo to point the six trajectory checks at an agent whose
+# behaviour nobody scripted. Every other target-rail pod here is deterministic
+# and offline, which made the checks cheap to demo and meant they had never met
+# a model that could surprise them.
+#
+# TRUST BOUNDARY, restated because this pod is where it bites: the trajectory is
+# written by agent.py. These checks verify the RECORD, not the execution. An
+# agent that omitted a call from its own trace could not be caught by reading
+# the trace. What is tested here is whether the checks say anything useful when
+# the record is honest and the behaviour is not.
+#
+# Costs about two cents. The agent pays for its own calls and reports the spend,
+# which the ledger labels `target_reported` rather than implying it metered it.
+
+entitled_claims:
+  - "Whether each configuration's correct answers appear in the evidence it retrieved, on 24 questions answerable from the pod's corpus."
+  - "Nothing about retrieval quality in general: one corpus, one tool, three configurations."
+
+data: {path: items.jsonl, format: jsonl}
+
+models:
+  - {provider: python, model: live-grounded, entrypoint: agent.py:run}
+  - {provider: python, model: live-oneshot,  entrypoint: agent.py:run}
+  - {provider: python, model: live-greedy,   entrypoint: agent.py:run}
+
+trajectory:
+  required_tools: [retrieve]
+  forbidden_tools: [shell.exec, http.get, write_file]
+  max_steps: 6
+
+scorer:
+  kind: includes
+  witnesses:
+    - {output: "It happens in the chloroplasts.", target: "chloroplasts", expect: pass}
+    - {output: "chloroplasts", target: "chloroplasts", expect: pass}
+    - {output: "mitochondria", target: "chloroplasts", expect: fail}
+    - {output: "", target: "chloroplasts", expect: fail}
+    - {output: "CHLOROPLASTS", target: "chloroplasts", expect: fail,
+       why: "substring matching is case-sensitive, and this pod says so"}
+    - {output: "chloro  plasts", target: "chloroplasts", expect: fail,
+       why: "a doubled space is part of the match"}
+    - {output: "chloro", target: "chloroplasts", expect: fail,
+       why: "a strict prefix is not the answer"}
+
+run: {n: 24, seed: 7, budget_usd: 0.40}

@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.38.0",
+  "version": "0.39.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -710,11 +710,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now be4c83d7129cec32); re-run to get numbers this report can stand behind",
+      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now b1fa98e4f374809f); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "evidence": {
         "engines": {
-          "be4c83d7129cec32": 4
+          "b1fa98e4f374809f": 4
         }
       }
     },
@@ -953,7 +953,7 @@
   },
   "runs": [
     {
-      "run_file": "20260809_115758_judge-capitals_bot-bare_n26_s42.jsonl",
+      "run_file": "20260809_120810_judge-capitals_bot-bare_n26_s42.jsonl",
       "model": "bot-bare",
       "model_reported": "bot-bare",
       "provider": "python",
@@ -965,7 +965,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_115758_judge-capitals_bot-chatty_n26_s42.jsonl",
+      "run_file": "20260809_120810_judge-capitals_bot-chatty_n26_s42.jsonl",
       "model": "bot-chatty",
       "model_reported": "bot-chatty",
       "provider": "python",
@@ -977,7 +977,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_115758_judge-capitals_bot-hedged_n26_s42.jsonl",
+      "run_file": "20260809_120810_judge-capitals_bot-hedged_n26_s42.jsonl",
       "model": "bot-hedged",
       "model_reported": "bot-hedged",
       "provider": "python",
@@ -989,7 +989,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260809_115758_judge-capitals_bot-wrapped_n26_s42.jsonl",
+      "run_file": "20260809_120810_judge-capitals_bot-wrapped_n26_s42.jsonl",
       "model": "bot-wrapped",
       "model_reported": "bot-wrapped",
       "provider": "python",

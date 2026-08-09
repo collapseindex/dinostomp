@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.38.0",
+  "version": "0.39.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {

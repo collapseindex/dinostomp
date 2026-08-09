@@ -1,0 +1,25 @@
+{
+  "spec_name": "live-agent",
+  "model": "live-grounded",
+  "provider": "python",
+  "seed": 7,
+  "status": "complete",
+  "n_records": 24,
+  "estimator": "per_record",
+  "n_checkable": 24,
+  "n_uncheckable": 0,
+  "n_passes": 13,
+  "accuracy_on_checkable": 0.541667,
+  "accuracy_ci95": [
+    0.3507,
+    0.7211
+  ],
+  "judgeability": 1.0,
+  "by_verdict": {
+    "pass": 13,
+    "fail": 11,
+    "flag": 0,
+    "uncheckable": 0
+  },
+  "spend_usd": 0.00019833
+}

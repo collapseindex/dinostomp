@@ -44,6 +44,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-014](#f-014) | a judge (qwen3-30b) | stated confidence and authority flip its verdicts, always toward FAIL | confirmed |
 | [F-015](#f-015) | four small models | 87% to 97% preserve a source's hedge; the eval cannot separate them | confirmed, underpowered |
 | [F-016](#f-016) | llama-3.2-3b | "You are an expert." is worth 10 points, marginally | confirmed, marginal |
+| [F-017](#f-017) | a RAG agent | grounding it in its own retrieval made it 25 points WORSE | confirmed |
 | [N-001](#n-001) | HellaSwag, ARC, MMLU | no position, length, or shortcut bias found | negative |
 | [N-002](#n-002) | dinostomp | the uncheckable path was untested, and said so | negative, later closed |
 | [N-003](#n-003) | ARC, OpenBookQA, HellaSwag, WinoGrande | no repeated options in four datasets | negative |
@@ -68,6 +69,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-017](#d-017) | dinostomp | a truncated judge was diagnosed as a judge with no opinion | fixed |
 | [D-018](#d-018) | dinostomp | the cross-judge probe crashed the CLI on its first real run | fixed |
 | [D-019](#d-019) | dinostomp | the docs claimed a 28-point swing with no run behind it | WITHDRAWN |
+| [D-020](#d-020) | dinostomp | the grounding check undercounts by 6x, by construction | scoped, not fixed |
 
 ---
 
@@ -370,6 +372,31 @@ that flatters the persona.
 The other three models did not move at all, and no pair of models swapped places
 under any framing ([ranking-stability](#n-005) reports 0 of 6 reversals). So on
 this instrument the phrasing changes a score and does not change a conclusion.
+
+### F-017
+**A RAG agent · grounding it in its own retrieval made it 25 points worse**
+`live-agent` · 2026-08-09 · confirmed · [examples/live-agent](examples/live-agent/) · costs $0.02
+
+Three configurations of one agent, same corpus, same tool, same 24 questions,
+same backend for two of the three:
+
+| configuration | what it does | accuracy |
+|---|---|---|
+| `live-grounded` | retrieves, then answers **using only the snippet** | **0.542** [0.35, 0.72] |
+| `live-oneshot` | answers from memory, then retrieves anyway | 0.792 [0.60, 0.91] |
+| `live-greedy` | retrieves three topics, then answers from them | 0.833 [0.64, 0.93] |
+
+The configuration that is forced to use its evidence is the **worst** one, by 25
+points against the configuration that ignores it. The mechanism is visible in
+the traces: when the model picks the wrong corpus topic, the grounded prompt
+tells it to say the reference does not contain the answer, and it obediently
+does, on questions it can answer from memory perfectly well.
+
+**Do not read this as "RAG is bad".** It is one corpus, one tool, one retrieval
+strategy, and 24 questions chosen to be answerable from that corpus. What it
+does show is that "ground the model in retrieved evidence" is a change with a
+cost, and an eval that only reports the grounded number would show the strategy
+in its worst light without ever saying why.
 
 ---
 
@@ -775,6 +802,39 @@ The general lesson is the one this project keeps paying for: a claim survives in
 prose long after the evidence for it stops being reachable. The only reason this
 surfaced is that someone finally typed the command.
 
+### D-020
+**The grounding check undercounts by 6x, by construction**
+`answer-grounding` (T4) · 2026-08-09 · scoped, not fixed
+
+`live-oneshot` generates its answer **before** it calls `retrieve` at all. By
+construction, 100% of its correct answers are causally ungrounded. T4 reports
+**16%**.
+
+```
+live-oneshot: 19 passing answers
+  answer text appears in the retrieved snippet: 16   <- T4 calls these grounded
+  answer text absent:                            3   <- T4 flags these
+```
+
+The gap is not a bug in the implementation, it is what the check measures. T4
+asks whether the answer **appears in** the trace's tool results. It cannot ask
+whether the answer **came from** them, because a trace records what was fetched
+and not what was used. When an agent answers from memory and retrieves the right
+topic anyway, the two coincide and the check sees nothing.
+
+**Not fixed, because the honest fix is not available from the trace.** Causal
+grounding needs either a counterfactual (does the answer change when the
+evidence is withheld?) or an execution harness that can tell what the model
+actually read. The first is a probe this tool could add and has not; the second
+is the sandboxed agent harness on the roadmap, and is the whole reason it is
+there.
+
+What changes now is the claim. T4's finding text and METHODOLOGY said grounding
+was checked; they now say what is actually checked, which is co-occurrence, and
+name the direction of the error: **T4 undercounts ungrounded answers and never
+overcounts them.** A T4 warning is therefore a floor, and its silence is not a
+clean bill.
+
 ---
 
 ## The honest scorecard
@@ -787,14 +847,14 @@ Count it precisely.
 
 | | |
 |---|---|
-| findings in other people's evals (**F**) | **16** |
+| findings in other people's evals (**F**) | **17** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
-| &nbsp;&nbsp;of which findings about a judge or a model | 3 (F-014, F-015, F-016) |
+| &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **5** |
-| defects in dinostomp itself (**D**) | **19** |
+| defects in dinostomp itself (**D**) | **20** |
 
-Nineteen to sixteen. That ratio is the useful number to publish, and it is the
+Twenty to seventeen. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to
@@ -804,7 +864,7 @@ ran somewhere its author's assumptions did not hold, and one
 ([D-014](#d-014)) was a bug the project had already found and fixed elsewhere,
 written again three releases later in a different check.
 
-The most common shape across all nineteen is worth stating once: **a check that
+The most common shape across all twenty is worth stating once: **a check that
 compared the wrong thing and returned a confident answer about it.**
 
 ## Adding an entry

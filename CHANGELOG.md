@@ -1,5 +1,15 @@
 # Changelog
 
+### v0.39.0 (2026-08-09)
+
+The agent rail met a real model for the first time. Six checks that had only ever seen a scripted target, and the most important result is about one of the checks.
+
+- **[examples/live-agent](examples/live-agent/): a retrieval agent driven by a live model**, three configurations, real tool calls, real money (about two cents). Every other target-rail pod in this repo is deterministic and offline, which made T1 to T6 cheap to demo and meant they had never been pointed at behaviour nobody scripted.
+- **D-020: the grounding check undercounts by 6x, by construction, and is now scoped rather than fixed.** `live-oneshot` generates its answer BEFORE calling `retrieve` at all, so 100% of its correct answers are causally ungrounded. T4 reported **16%**: on 16 of 19 the answer it recalled from memory also appeared in the snippet it never read. T4 asks whether the answer APPEARS in the trace's tool results and cannot ask whether it CAME from them, because a trace records what was fetched and not what was used. Not fixed, because the honest fix is a counterfactual probe or the sandboxed harness on the roadmap. What changed is the claim: the finding text and METHODOLOGY now say co-occurrence rather than grounding, and name the direction, since the error is one-sided. **A T4 warning is a floor; its silence is not a clean bill.**
+- **F-017: grounding the agent in its own retrieval made it 25 points WORSE.** `live-grounded` 54%, `live-oneshot` 79%, `live-greedy` 83%, same corpus and same backend. When retrieval fetches the wrong topic, the grounded prompt tells the model to say the reference lacks the answer, and it obediently does on questions it could answer from memory. Scoped: one corpus, one tool, 24 questions.
+- **T6 fired on real behaviour.** `live-greedy` asks for "one more topic, different from the last" and the model names the same one anyway: 24 of 24 trajectories repeat an identical call.
+- T1, T2, T3 and T5 passed on 72 real trajectories, which is the first evidence any of them work outside a fixture.
+
 ### v0.38.0 (2026-08-09)
 
 Ran the last two probes that had never seen a real model. One produced a marginal finding, one produced a null, and the null retracted a claim in these docs.
