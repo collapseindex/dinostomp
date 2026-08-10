@@ -29,7 +29,6 @@ The command says so, every time.
 from __future__ import annotations
 
 import re
-from typing import Any
 
 # One proposal per known scoring-bug class, mirroring the mutation gauntlet's
 # vocabulary. These are TRANSFORMS of a real target from the dataset, so the

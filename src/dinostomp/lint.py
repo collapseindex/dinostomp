@@ -54,8 +54,8 @@ from dinostomp.psychometrics import (
 from dinostomp.runner import (CHARS_PER_TOKEN_EST, judge_entrypoint, mount_hashes,
                               select_items, summarize, target_entrypoint)
 from dinostomp.scorers import make_scorer, run_witnesses
-from dinostomp.evidence import NEEDS, missing_for, skip_reason, survey
-from dinostomp.extensions import ExtensionError, discover, run_extensions
+from dinostomp.evidence import missing_for, skip_reason, survey
+from dinostomp.extensions import discover, run_extensions
 from dinostomp.dataset import (DATA_SUFFIXES, build_items, infer_mapping,
                                looks_like_dataset, read_rows, repair_items,
                                sniff_separator, unrepairable_findings)

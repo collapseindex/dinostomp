@@ -509,3 +509,19 @@ def test_every_finding_the_readme_cites_exists_and_says_what_it_claims():
     assert cited, "the README cites no findings"
     dead = {c for c in cited if c.upper() not in ids}
     assert not dead, f"the README cites findings that do not exist: {sorted(dead)}"
+
+
+def test_the_repository_agrees_with_itself():
+    """scripts/check_consistency.py, run as a test.
+
+    Every individual number here is pinned by some other test. This is the one
+    that asks whether the same fact, stated in different files by different
+    passes, still says the same thing. Its first run found the README claiming
+    23 audited benchmarks with 25 pods on disk.
+    """
+    import subprocess
+    import sys
+
+    proc = subprocess.run([sys.executable, str(REPO / "scripts" / "check_consistency.py"),
+                           "--strict"], capture_output=True, text=True, cwd=str(REPO))
+    assert proc.returncode == 0, (proc.stdout + proc.stderr)

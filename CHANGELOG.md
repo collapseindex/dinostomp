@@ -1,5 +1,35 @@
 # Changelog
 
+### v0.57.1 (2026-08-10)
+
+**A consistency pass over the whole repository, and a checker so the next one is
+not done by eye.**
+
+- **`scripts/check_consistency.py`** asks the question no individual test asks:
+  does the same fact, stated in different files by different passes, still say
+  the same thing. Ten areas: version across five places, the engine fingerprint,
+  the check registry against every doc that counts it, the findings ledger
+  against its feed and both summaries, trials, benchmark pods, the corpus
+  taxonomy against its manifests and scorecards and leaderboard, numbers quoted
+  in prose against the scorecard they came from, dead file links, and whether
+  any secret is tracked by git. Runs in CI and as a test; negative-tested with a
+  stale count, a stale version and a wrong fingerprint.
+- **Its first run found the README claiming 23 audited benchmarks with 25 pods
+  on disk.** Corrected in both places, along with a doubled comma and a sentence
+  in FINDINGS.md that had grown two conflicting clauses.
+- **Three headerless markdown tables** rendered as empty header rows on GitHub,
+  including the findings summary in the README. All three now have headers.
+- **Four genuinely unused imports removed** (`NEEDS` and `ExtensionError` in
+  lint, `WITHHELD` in sandbox, `Any` in suggest).
+- **`templates.py` had no test naming it.** It is reached only through the
+  runner's framing probe, so a change to a framing would have been caught by
+  nothing until a probe run disagreed with a published number. Four tests now
+  pin the rules its own docstring states: the item text survives verbatim, names
+  are unique and resolvable, no framing constrains the output format, and a chat
+  input is refused rather than reframed.
+
+545 tests.
+
 ### v0.57.0 (2026-08-10)
 
 **The scorekeeper's workflow, end to end.** The corpus had a generator, a

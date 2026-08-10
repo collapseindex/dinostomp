@@ -16,7 +16,7 @@ without a judge.
 ## The number that matters
 
 ```
-DINOCORPUS dev: dinostomp 0.57.0
+DINOCORPUS dev: dinostomp 0.57.1
 
   recall, classes it has a check for   100.0% of 72
   recall, classes it does NOT            4.9% of 81

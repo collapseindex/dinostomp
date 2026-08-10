@@ -6,13 +6,13 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.57.0 · Apache-2.0 · engine `9e3b8f138082fd93` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.57.1 · Apache-2.0 · engine `050e2f343915e1b9` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
 ## What it found
 
-Across **23 benchmarks**, five of them assessments written for people, three of
+Across **25 benchmark pods**, five of them assessments written for people, three of
 those professional licensing examinations:
 
 - MMLU keys "Subtract. 2,396 − 1,709" over `['687', '687', '1,493', '1,695']`. The answer is on the option list twice, so a model that computes it correctly picks the wrong letter half the time ([F-002](FINDINGS.md#f-002))
@@ -27,7 +27,7 @@ seconds, offline, for free, using the command in the next section.
 
 **[FINDINGS.md](FINDINGS.md): 89 entries, all permanent, none deleted.**
 
-| | | |
+| series | count | what it records |
 |---|--:|---|
 | **F** | 25 | findings in other people's evals |
 | **D** | 47 | defects in dinostomp itself |
@@ -228,7 +228,7 @@ judge.
 purpose.** dinostomp finds none of them:
 
 ```
-DINOCORPUS dev: dinostomp 0.57.0
+DINOCORPUS dev: dinostomp 0.57.1
 
   recall, classes it has a check for   100.0% of 72
   recall, classes it does NOT            4.9% of 81
@@ -312,7 +312,7 @@ that **an asset-backed item is identified by its asset's bytes**, so
 `dup-questions` and `conflicting-keys` work on pictures for free, and four
 checks exist that a text pod has no use for:
 
-| | |
+| check | what it catches |
 |---|---|
 | `asset-drift` | the file is there, inside the pod, and still hashes to what the dataset says |
 | `label-in-path` | one directory per class is how image datasets ship, and it puts the answer in the filename |
@@ -496,7 +496,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.57.0
+- uses: collapseindex/dinostomp@v0.57.1
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -576,7 +576,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`9e3b8f138082fd935889f70acb362aba0ed61c59f68c74a54cfb530e0d29093e`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`050e2f343915e1b926679a9782faf1d3fb0c697b4d5bcfc74c82d879a82bb94e`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

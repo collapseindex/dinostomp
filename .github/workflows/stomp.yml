@@ -35,6 +35,10 @@ jobs:
       - run: python -m pytest -q
       - name: findings index is current
         run: python scripts/index_findings.py --check
+      - name: the repo agrees with itself
+        run: python scripts/check_consistency.py --strict
+      - name: leaderboard is current
+        run: python corpus/leaderboard.py --check
       - name: DinoTrials, both tails
         run: python trials/run_trials.py
       - name: the engine fingerprint the README publishes

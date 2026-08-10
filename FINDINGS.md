@@ -2844,13 +2844,19 @@ that fails when it does.
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
 
-**Twenty-three benchmarks audited**, five of them assessments written for PEOPLE rather than for models, three of those professional licensing examinations,, all fetched from their authors and none
+**Twenty-five benchmark pods**, all fetched from their authors and none
 vendored: MMLU, MMLU-Pro, HellaSwag, ARC-Easy, ARC-Challenge, GSM8K,
-TruthfulQA, CommonsenseQA, OpenBookQA, BoolQ, WinoGrande, SciQ, MedMCQA, RACE, MuSR, LogiQA, MATH-500, DROP.
+TruthfulQA, CommonsenseQA, OpenBookQA, BoolQ, WinoGrande, SciQ, MedMCQA, RACE,
+MuSR, LogiQA, MATH-500, DROP, AQuA-RAT, CIFAR-10, and an imported lm-eval log.
+
+**Five of them are assessments written for PEOPLE** rather than for models
+(MedQA-USMLE, NCLEX, the 2023 Chinese pharmacist licensure exam, an Iranian
+driving licence test, AQuA-RAT), and three of those five decide whether somebody
+may practise a profession.
 
 Count it precisely.
 
-| | |
+| series | count |
 |---|---|
 | findings in other people's evals (**F**) | **25** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |

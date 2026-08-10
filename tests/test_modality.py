@@ -168,3 +168,61 @@ def test_the_check_skips_rather_than_passes_without_the_extra():
     reason = perceptual.missing_reason()
     assert "pip install" in reason and "dinostomp[vision]" in reason
     assert "S1 and S7" in reason, "the skip should say what IS still covered"
+
+
+# --- instruction framings ----------------------------------------------------
+#
+# templates.py had no test naming it. It is reached only through the runner's
+# framing probe, so a change to a framing would have been caught by nothing
+# until a probe run disagreed with a published number.
+
+
+def test_every_framing_leaves_the_item_text_untouched():
+    """A framing varies what the model is told about the TASK. If it altered the
+    item, a swing between framings would measure the edit rather than the
+    phrasing, and P11/P12 would attribute it to the wrong thing."""
+    from dinostomp.templates import DEFAULT_FRAMINGS, framed_input
+
+    item = {"input": "What is 17 + 25?"}
+    for name in DEFAULT_FRAMINGS:
+        rendered = framed_input(item, name)
+        assert item["input"] in rendered, f"framing {name!r} does not contain the item verbatim"
+
+
+def test_framings_are_uniquely_named_and_every_name_resolves():
+    from dinostomp.templates import DEFAULT_FRAMINGS, FRAMINGS, FRAMINGS_BY_NAME
+
+    names = [f.name for f in FRAMINGS]
+    assert len(set(names)) == len(names), "two framings share a name"
+    assert set(DEFAULT_FRAMINGS) == set(names)
+    for name in DEFAULT_FRAMINGS:
+        assert FRAMINGS_BY_NAME[name].name == name
+    assert "bare" in DEFAULT_FRAMINGS, (
+        "the unframed control has to be in the default set or every swing is "
+        "measured against another framing rather than against no framing")
+
+
+def test_no_framing_names_a_specific_output_format():
+    """Changing the requested FORMAT moves the scorer too, so a swing would stop
+    being about the phrasing. The module docstring states this as a rule; this
+    asserts it."""
+    from dinostomp.templates import FRAMINGS
+
+    banned = ("json", "yaml", "one word", "single letter", "```", "only the number")
+    for framing in FRAMINGS:
+        body = framing.template.lower()
+        for word in banned:
+            assert word not in body, (
+                f"framing {framing.name!r} constrains the output format ({word!r}), "
+                f"so a swing under it would measure the scorer")
+
+
+def test_a_chat_input_is_refused_rather_than_reframed():
+    """Framing a chat-message input would mean rewriting somebody's system
+    prompt, which is not what this probe varies."""
+    import pytest as _pytest
+
+    from dinostomp.templates import framed_input
+
+    with _pytest.raises(ValueError):
+        framed_input({"input": [{"role": "user", "content": "hi"}]}, "instructed")

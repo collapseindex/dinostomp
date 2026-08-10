@@ -68,7 +68,7 @@ from pathlib import Path
 from typing import Any
 
 from dinostomp.providers import Completion, ProviderError
-from dinostomp.harness import WITHHELD, Tools, load_tools
+from dinostomp.harness import Tools, load_tools
 
 # Environment variables the child never sees. Substring match, case-insensitive,
 # per the project's own security rules: strip anything that looks like a
