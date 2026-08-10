@@ -44,10 +44,37 @@ FIRED = ("fail", "warn")
 
 
 def load_labels(split: str) -> list[dict]:
-    path = HERE / "instances" / split / "labels.jsonl"
+    """Labels for a split, public or withheld, verified against the commitment.
+
+    A withheld split ships no labels: the scorekeeper holds
+    `labels.WITHHELD.jsonl` and the repository holds only a SHA-256 of it,
+    published before any submission was scored. Re-checking that hash here is
+    what makes the scorekeeper auditable by their own tooling. If the labels
+    were edited after the commitment, scoring REFUSES rather than quietly
+    producing a number, because a benchmark whose author can change the answer
+    key after seeing the answers is not a benchmark.
+    """
+    folder = HERE / "instances" / split
+    public, withheld = folder / "labels.jsonl", folder / "labels.WITHHELD.jsonl"
+    path = public if public.is_file() else withheld
     if not path.is_file():
-        raise SystemExit(f"no labels at {path}; run `python corpus/generate.py --split {split}`")
-    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        raise SystemExit(f"no labels at {folder}; run `python corpus/generate.py --split {split}`")
+    text = path.read_text(encoding="utf-8")
+
+    manifest_path = folder / "MANIFEST.json"
+    if manifest_path.is_file():
+        committed = json.loads(manifest_path.read_text(encoding="utf-8")).get("labels_sha256")
+        if committed:
+            import hashlib
+
+            actual = hashlib.sha256(text.encode()).hexdigest()
+            if actual != committed:
+                raise SystemExit(
+                    f"{path.name} does not match the commitment in MANIFEST.json.\n"
+                    f"  committed {committed}\n  actual    {actual}\n"
+                    "The labels changed after they were committed to. Refusing to score: a "
+                    "number computed against an edited answer key is worse than no number.")
+    return [json.loads(line) for line in text.splitlines() if line.strip()]
 
 
 def run_dinostomp(split: str, labels: list[dict]) -> dict[str, dict]:

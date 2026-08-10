@@ -26,6 +26,7 @@
     "unanswerable-missing-context",
     "wrong-key"
   ],
+  "n_held_back_classes_present": 0,
   "classes_declared_not_yet_planted": [
     "train-test-overlap",
     "near-duplicate-asset",
@@ -34,5 +35,8 @@
   ],
   "scope": "data (items at rest); run-scope and judge-scope defects are not in this split",
   "ground_truth": "planted, not annotated",
-  "realism_caveat": "items are synthetic and cleaner than real benchmark items, so any recall measured here is an UPPER BOUND on recall in the wild"
+  "realism_caveat": "items are synthetic and cleaner than real benchmark items, so any recall measured here is an UPPER BOUND on recall in the wild",
+  "labels_sha256": "021a18f2265b78018b24a428ee05c783659e6f60dc6a941b1b9ac4b925037e91",
+  "withheld": false,
+  "labels_note": "labels.jsonl ships with this split; it is a public split."
 }

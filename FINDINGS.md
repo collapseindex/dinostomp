@@ -125,6 +125,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-044](#d-044) | dinostomp | the asset-path guard asked the local OS what absolute means, and got two answers | fixed in v0.53.1 |
 | [D-045](#d-045) | dinocorpus | the corpus's first scored run found three defects in the corpus | fixed in v0.55.0 |
 | [D-046](#d-046) | dinostomp | S3 warns on 1 clean dataset in 6 at the size its own rule admits | measured, scoped, not retuned |
+| [D-047](#d-047) | dinocorpus | the withheld split was public arithmetic, and fixing it silently rewrote the public split | fixed in v0.56.0 |
 
 <!-- INDEX:END -->
 
@@ -175,7 +176,7 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [N-015](#n-015), [N-002](#n-002), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [N-015](#n-015), [N-002](#n-002), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047) |
 
 ### By subject
 
@@ -183,6 +184,7 @@ at fault.
 |---|---|
 | dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
+| dinocorpus | [D-045](#d-045), [D-047](#d-047) |
 | four models | [N-005](#n-005), [N-006](#n-006) |
 | MMLU | [F-002](#f-002), [F-003](#f-003) |
 | SciQ | [F-010](#f-010), [F-013](#f-013) |
@@ -192,7 +194,6 @@ at fault.
 | ARC, OpenBookQA, HellaSwag, WinoGrande | [N-003](#n-003) |
 | CIFAR-10 / ciFAIR | [N-017](#n-017) |
 | CommonsenseQA | [F-008](#f-008) |
-| dinocorpus | [D-045](#d-045) |
 | DROP | [F-020](#f-020) |
 | four small models | [F-015](#f-015) |
 | HellaSwag, ARC, MMLU | [N-001](#n-001) |
@@ -2786,6 +2787,59 @@ reading.
 
 ---
 
+### D-047
+**The corpus shipped a "withheld" split whose labels anyone could print, and the fix silently rewrote the public one**
+`corpus/generate.py` · 2026-08-10 · fixed in v0.56.0
+
+Two defects, twenty minutes apart, in the machinery meant to make a benchmark
+resistant to being gamed.
+
+**1. There was no held-out split.** v0.55.0's README and `SPLITS.md` both
+described a split with withheld labels. Seeds were derived from public
+arithmetic and nothing else:
+
+```python
+digest = hashlib.sha256(f"dinocorpus/{split}/{index}".encode()).hexdigest()
+```
+
+so `python corpus/generate.py --split test` reconstructed the labels exactly.
+The class each instance carried was worse: `plantable[index % len(plantable)]`,
+computable with no code at all. What shipped was not a withheld split, it was a
+differently named public one, and the documentation claimed otherwise.
+
+The fix is a nonce read from `DINOCORPUS_NONCE`, mixed into every seed AND into
+the class schedule, plus a refusal to generate a non-public split without one.
+A withheld split now publishes its instances and a **SHA-256 commitment to its
+labels**, so when it is revealed anyone can check the answer key was not edited
+after the submissions arrived. `score.py` refuses to score labels that do not
+match their commitment, which was negative-tested by editing one.
+
+**2. The fix rewrote the public split.** Threading the secret through as
+
+```python
+f"dinocorpus/{split}/{index}/{secret}"
+```
+
+appended a trailing slash even when the secret was empty, so every hash in the
+PUBLIC split changed and `dev` became a different 204 datasets under the same
+name. Nothing failed. The only symptom was the published scorecard moving from a
+15.7% false-alarm rate to 5.9% with no edit to any check, which is exactly the
+kind of number that gets accepted as noise.
+
+**This one is worth more than the first.** `corpus/SPLITS.md`, written that same
+hour, opens with "splits are archived, never replaced", and the reason given is
+that quietly overwriting a split makes every published number unverifiable. The
+document was accurate and the code broke its rule within thirty minutes,
+silently, in the direction of a better-looking score.
+
+The seed material now appends the secret only when there is one, so `dev` is
+byte-identical to the split v0.55.0 published, and
+`test_the_dev_split_has_not_changed_identity` pins its labels hash. A split's
+identity is its contents; a promise that a split will not change needs something
+that fails when it does.
+
+---
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -2803,9 +2857,9 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **17** |
-| defects in dinostomp itself (**D**) | **46** |
+| defects in dinostomp itself (**D**) | **47** |
 
-Forty-six to twenty-five. That ratio is the useful number to publish, and it is the
+Forty-seven to twenty-five. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

@@ -78,6 +78,6 @@
       "recall": 0.1111
     }
   },
-  "detector": "dinostomp 0.55.0",
+  "detector": "dinostomp 0.56.0",
   "split": "dev"
 }

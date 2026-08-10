@@ -6,7 +6,7 @@ must protect is the property that makes the number worth anything.
 """
 
 import json
-import subprocess
+import os
 import sys
 from pathlib import Path
 
@@ -153,3 +153,135 @@ def test_the_published_scorecard_is_current():
         f"scorecard is from {card['detector']}; re-run `python corpus/score.py "
         f"--json corpus/scorecard-dinostomp.json`")
     assert card["recall_blind_spot_strict"] is not None
+
+
+# --- withheld splits: the nonce, and the commitment --------------------------
+
+
+DEV_V1_LABELS_SHA256 = "021a18f2265b78018b24a428ee05c783659e6f60dc6a941b1b9ac4b925037e91"
+
+
+def test_the_dev_split_has_not_changed_identity():
+    """A split's identity is its CONTENTS, and this pin is the guard.
+
+    Adding the nonce silently rewrote dev once: the seed material gained a
+    trailing slash when the secret was empty, every hash changed, and the
+    published false-alarm rate moved from 15.7% to 5.9% without an edit to any
+    check. Nothing noticed except a number that should not have moved. Now
+    something notices.
+    """
+    import hashlib
+
+    text = (CORPUS / "instances" / "dev" / "labels.jsonl").read_text(encoding="utf-8")
+    assert hashlib.sha256(text.encode()).hexdigest() == DEV_V1_LABELS_SHA256, (
+        "the dev split's contents changed. If that was deliberate it needs a NEW split id and "
+        "a row in corpus/SPLITS.md; if it was not, something is rewriting a published split.")
+
+
+def test_a_withheld_split_is_refused_without_a_nonce(monkeypatch):
+    """Without a secret every seed is public arithmetic, so `--split test` would
+    print the labels of the split whose labels are supposedly withheld."""
+    import subprocess
+
+    env = dict(os.environ)
+    env.pop("DINOCORPUS_NONCE", None)
+    proc = subprocess.run([sys.executable, str(CORPUS / "generate.py"),
+                           "--split", "heldout-x", "-n", "8"],
+                          capture_output=True, text=True, env=env, cwd=str(REPO))
+    assert proc.returncode != 0
+    assert "DINOCORPUS_NONCE" in proc.stdout + proc.stderr
+
+
+def test_the_public_split_is_refused_with_a_nonce():
+    """A nonce on dev would make dev irreproducible for everybody else."""
+    import subprocess
+
+    env = dict(os.environ, DINOCORPUS_NONCE="secret")
+    proc = subprocess.run([sys.executable, str(CORPUS / "generate.py"), "--split", "dev", "-n", "8"],
+                          capture_output=True, text=True, env=env, cwd=str(REPO))
+    assert proc.returncode != 0
+    assert "irreproducible" in proc.stdout + proc.stderr
+
+
+def test_the_nonce_changes_both_the_labels_and_the_class_schedule():
+    """Two properties, and the second is the one that is easy to forget.
+
+    A nonce that only changed the ITEMS would still let somebody compute which
+    class each index carries, from `index % len(plantable)`, and knowing that
+    instance 7 is a wrong-key is most of knowing its label.
+    """
+    import generate
+
+    def labels(secret):
+        plantable = [c for c in generate.PLANTERS]
+        schedule = list(plantable)
+        if secret:
+            generate._rng("hx", -1, secret).shuffle(schedule)
+        out = []
+        for i in range(12):
+            cid = None if i % 4 == 3 else schedule[i % len(schedule)]
+            label, _ = generate.build_instance("hx", i, cid, secret)
+            out.append((label["class"], tuple(label["location"])))
+        return out
+
+    a, b = labels("nonce-a"), labels("nonce-b")
+    assert a == labels("nonce-a"), "the same nonce must reproduce the split"
+    assert a != b, "a different nonce must produce a different split"
+    assert sum(1 for x, y in zip(a, b) if x[0] != y[0]) >= 4, (
+        "the class schedule barely moved; the nonce is not reaching it")
+
+
+def test_scoring_refuses_labels_that_do_not_match_their_commitment(tmp_path):
+    """A scorekeeper holding unpublished labels can edit one after seeing a
+    submission. The commitment is what makes that detectable, and refusing is
+    what makes it matter."""
+    import hashlib
+    import shutil
+
+    import score
+
+    folder = tmp_path / "instances" / "dev"
+    folder.mkdir(parents=True)
+    src = CORPUS / "instances" / "dev"
+    shutil.copy(src / "MANIFEST.json", folder / "MANIFEST.json")
+    tampered = src.joinpath("labels.jsonl").read_text(encoding="utf-8").replace(
+        '"wrong-key"', '"duplicate-option"', 1)
+    (folder / "labels.jsonl").write_text(tampered, encoding="utf-8", newline="\n")
+
+    original_here = score.HERE
+    score.HERE = tmp_path
+    try:
+        with pytest.raises(SystemExit) as exc:
+            score.load_labels("dev")
+        assert "commitment" in str(exc.value)
+    finally:
+        score.HERE = original_here
+
+
+def test_a_split_manifest_commits_to_its_labels():
+    m = json.loads((CORPUS / "instances" / "dev" / "MANIFEST.json").read_text(encoding="utf-8"))
+    assert len(m["labels_sha256"]) == 64
+    assert m["withheld"] is False
+    assert "n_held_back_classes_present" in m, (
+        "the manifest must say how many held-back classes are present, or a submitter "
+        "cannot know that any are")
+
+
+def test_held_back_classes_are_absent_from_the_public_taxonomy():
+    """Zero in the public repo, and the loader must not leak them into anything
+    that prints the taxonomy if a private holdback.py exists."""
+    assert taxonomy.HELD_BACK == [] or all(
+        c not in taxonomy.CLASSES for c in taxonomy.HELD_BACK), (
+        "a held-back class reached the published CLASSES list")
+    assert taxonomy.summary()["n_held_back"] == len(taxonomy.HELD_BACK)
+
+
+def test_the_split_registry_lists_every_split_on_disk():
+    """A split that is scored but not registered is a number nobody can check
+    later."""
+    registry = (CORPUS / "SPLITS.md").read_text(encoding="utf-8")
+    for folder in sorted((CORPUS / "instances").iterdir()):
+        if not folder.is_dir():
+            continue
+        assert folder.name.split("-")[0] in registry, (
+            f"split {folder.name!r} is on disk but not in SPLITS.md")

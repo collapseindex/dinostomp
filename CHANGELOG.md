@@ -1,5 +1,46 @@
 # Changelog
 
+### v0.56.0 (2026-08-10)
+
+**Withheld splits that are actually withheld, and held-back defect classes.**
+
+- **A nonce**, read from `DINOCORPUS_NONCE`, mixed into every instance seed AND
+  into the class schedule. Generating a non-public split without one is refused,
+  and setting one while generating `dev` is refused too, because that would make
+  the public split irreproducible for everyone else.
+- **A label commitment.** A withheld split publishes its instances and a
+  SHA-256 of its labels, before any submission is scored. `score.py` REFUSES to
+  score labels that do not match it. A benchmark whose author can edit the
+  answer key after seeing the answers is not a benchmark, and that includes this
+  one. Negative-tested by editing a label and watching scoring refuse.
+- **Held-back classes**: `corpus/holdback.py` is gitignored and absent here;
+  when present its classes are planted and never published. Manifests publish
+  the COUNT, so a submitter knows they exist and how many, and never which.
+  Rotation defends against memorising instances, which barely threatens a
+  rule-based detector; held-back classes are the defence against reading
+  `taxonomy.py` and writing one checker per class.
+- **[corpus/SPLITS.md](corpus/SPLITS.md)**: every split ever released, its
+  commitment and its status. Splits are archived, never replaced, and a score
+  without a split id means nothing.
+
+**D-047, both halves.** v0.55.0 documented a split with withheld labels and
+shipped none: seeds were `sha256("dinocorpus/{split}/{index}")`, public
+arithmetic, so `--split test` printed the labels it was supposed to withhold,
+and the class schedule was `index % len(plantable)`, computable with no code at
+all.
+
+The fix then rewrote the public split. Threading the secret through as
+`f".../{index}/{secret}"` appended a trailing slash even when empty, every hash
+changed, and `dev` became a different 204 datasets under the same name. Nothing
+failed; the only symptom was the published false-alarm rate moving 15.7% to 5.9%
+with no edit to any check. SPLITS.md, written the same hour, opens with "splits
+are archived, never replaced". The code broke that within thirty minutes,
+silently, toward a better-looking score. The seed now appends the secret only
+when there is one, `dev` is byte-identical to what v0.55.0 published, and a test
+pins its labels hash.
+
+8 new tests. Ledger: 89 entries, 25 F, 47 D, 17 N.
+
 ### v0.55.0 (2026-08-10)
 
 **dinocorpus: a benchmark for detectors of broken evals, built so this tool

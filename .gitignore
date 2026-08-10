@@ -56,6 +56,13 @@ benchmarks/cifair/images/
 # fetched, not vendored.
 benchmarks/*/data/raw/
 
+# Withheld corpus labels and the module that defines held-back defect classes.
+# A withheld split publishes its INSTANCES and a SHA-256 commitment to its
+# labels; the labels themselves and the class definitions stay out of the repo,
+# or the split is public and the held-back arm is not held back.
+corpus/instances/*/labels.WITHHELD.jsonl
+corpus/holdback.py
+
 # Judge verdict caches: reproducible by re-running validate.py with a key,
 # and not evidence anybody should trust without re-deriving.
 extensions/*/validation-cache*.json

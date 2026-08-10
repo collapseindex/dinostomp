@@ -16,7 +16,7 @@ without a judge.
 ## The number that matters
 
 ```
-DINOCORPUS dev: dinostomp 0.54.0
+DINOCORPUS dev: dinostomp 0.56.0
 
   recall, classes it has a check for   100.0% of 72
   recall, classes it does NOT            4.9% of 81
@@ -98,6 +98,49 @@ dataset in six warns. The margin is absolute (+20% of n) and applied to each of
 four positions with no multiplicity correction, so at small n it is roughly two
 standard deviations from the mean and four chances to cross it.
 
+## Withheld splits, rotation, and held-back classes
+
+**Rotation is nearly free here and impossible for hand-annotated benchmarks.**
+Refreshing MMLU-Redux or ciFAIR costs an annotation budget every time, which is
+why they do not. A new split here is one command. But rotation defends against
+exactly one thing, and it is not the main threat:
+
+- **Instance memorisation** matters for the MODEL task, where a solver can
+  memorise what it has seen. Rotation is the right answer.
+- **Taxonomy overfitting** is the threat to the TOOL task, and rotation does
+  nothing about it. A rule-based detector cannot memorise an instance; it is
+  written against the class. Someone who reads `taxonomy.py` and writes
+  twenty-one checkers scores well on every rotation forever.
+
+**Held-back classes** are the defence against the second. `corpus/holdback.py`
+is gitignored and absent from this repository; when present, its classes are
+planted into splits and never appear in the published taxonomy. What is
+published either way is the COUNT
+(`n_held_back_classes_present` in each manifest), so a submitter knows they
+exist and how many, and only ever that.
+
+**A withheld split needs a nonce**, or it is not withheld:
+
+```bash
+export DINOCORPUS_NONCE="$(python -c 'import secrets;print(secrets.token_hex(32))')"
+python corpus/generate.py --split heldout-2026-09 -n 400
+```
+
+The nonce is mixed into every instance seed AND into the class schedule, and
+generating a non-public split without one is refused. It has to be: the first
+version derived seeds from public arithmetic, so `--split test` printed the
+labels of the split whose labels were supposed to be withheld (D-047).
+
+**The commitment is what makes the scorekeeper auditable.** A withheld split
+publishes its instances and a SHA-256 of its labels, before any submission is
+scored. When the split is revealed anyone can hash the labels and check they are
+the ones committed to, and `score.py` refuses to score labels that do not match.
+A benchmark whose author can edit the answer key after seeing the answers is not
+a benchmark, and that includes this one.
+
+Every split ever released, with its commitment: **[SPLITS.md](SPLITS.md)**.
+Scores are only meaningful with a split id attached.
+
 ## Layout
 
 ```
@@ -107,6 +150,8 @@ corpus/
   generate.py     one pod per instance, one defect, deterministic from a seed
   score.py        recall, blind-spot recall, false alarms; scores any tool
   instances/dev/  the public split: pods, labels.jsonl, MANIFEST.json
+  SPLITS.md       every split ever released, and its label commitment
+  holdback.py     gitignored; defect classes that are never published
 ```
 
 ## Scope, stated

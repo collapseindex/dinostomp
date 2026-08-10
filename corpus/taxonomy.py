@@ -194,9 +194,41 @@ CLASSES: list[DefectClass] = [
         None, "the stem asks more than one question"),
 ]
 
-BY_ID = {c.id: c for c in CLASSES}
-BLIND_SPOTS = [c for c in CLASSES if c.detectable_by is None]
-COVERED = [c for c in CLASSES if c.detectable_by is not None]
+def _load_holdback() -> list[DefectClass]:
+    """Defect classes that exist in a scored split and are NOT published here.
+
+    Seed rotation defends against memorising instances, which barely threatens a
+    rule-based detector: it cannot memorise anything. The real gaming vector is
+    reading this file and writing one checker per class, which scores 100% and
+    has learned nothing. Classes nobody can read about are what makes that
+    impossible.
+
+    `corpus/holdback.py` is GITIGNORED and absent from the public repository.
+    When it is absent this returns nothing and everything below behaves exactly
+    as published, so the public corpus is fully usable and fully honest. What is
+    published either way is the COUNT, in each split's manifest, so a submitter
+    knows held-back classes exist and how many, and only never which.
+    """
+    try:
+        import holdback  # type: ignore
+    except ImportError:
+        return []
+    extra = list(getattr(holdback, "CLASSES", []))
+    for c in extra:
+        if not isinstance(c, DefectClass):
+            raise SystemExit("corpus/holdback.py must contain DefectClass instances")
+    return extra
+
+
+HELD_BACK: list[DefectClass] = _load_holdback()
+
+# The public taxonomy plus anything held back. Held-back classes never appear in
+# `CLASSES`, so nothing that prints or documents the taxonomy can leak them.
+ALL_CLASSES: list[DefectClass] = CLASSES + HELD_BACK
+
+BY_ID = {c.id: c for c in ALL_CLASSES}
+BLIND_SPOTS = [c for c in ALL_CLASSES if c.detectable_by is None]
+COVERED = [c for c in ALL_CLASSES if c.detectable_by is not None]
 
 
 def summary() -> dict:
@@ -206,6 +238,9 @@ def summary() -> dict:
         by_source[c.source] = by_source.get(c.source, 0) + 1
     return {
         "n_classes": len(CLASSES),
+        # Published so a submitter knows held-back classes exist, and how many,
+        # and never which. Zero in the public repository.
+        "n_held_back": len(HELD_BACK),
         "n_blind_spots": len(BLIND_SPOTS),
         "blind_spot_share": round(len(BLIND_SPOTS) / len(CLASSES), 3),
         "by_source": dict(sorted(by_source.items())),
