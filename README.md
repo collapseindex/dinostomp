@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.53.2 · Apache-2.0 · engine `b01352d90c8ad0dc` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.54.0 · Apache-2.0 · engine `f55e58da3a42578d` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -217,6 +217,40 @@ refuses rather than picking: TruthfulQA ships both a `Best Answer` and a
 `Correct Answers` column, and choosing one silently would put every finding on a
 coin flip.
 
+## The report is an evaluation report, not just an audit
+
+`dinostomp report` writes `STOMP.md`, `STOMP.json` and a badge into the pod. The
+report opens with what the models actually DID, because that is what the eval
+was run to find out:
+
+```
+| model       | provider | records | checkable | judgeable | accuracy | 95% CI         |
+| dry-alpha   | dry      |      24 |        24 |      100% |   100.0% | [0.862, 1.000] |
+| dry-charlie | dry      |      24 |        24 |      100% |    37.5% | [0.212, 0.573] |
+
+6 model(s) x 24 item(s), mean 69.4%, spanning 37.5% to 100.0%, KR-20 0.94.
+9 item(s) every model passed: 38% of the set separated nobody in this fleet.
+At 24 items an UNPAIRED comparison resolves gaps down to about 40%.
+```
+
+Then item difficulty and discrimination, hardest first, with who missed each one
+and the most common wrong answer. Then accuracy sliced by every metadata field
+the items carry, which on MMLU is accuracy by subject. Then cost and tokens,
+summed from the records. Then the claims, then all sixty-one checks, then the
+receipts and the provenance.
+
+Three rules hold that section together:
+
+- **Accuracy is on CHECKABLE output**, and `judgeable` sits in the same row. 80%
+  accurate on 60%-judgeable output is not 80% accurate.
+- **Every number is recomputed from the records**, never read from a summary. A
+  summary on disk is a derived artifact this tool treats as untrusted
+  everywhere else, and a results table that trusted one would be the single
+  place a hand-edited number survives. A test asserts the accuracy here equals
+  the accuracy the checks report, on the same runs.
+- **Nothing in Results can gate.** A hard item is not a defect and an expensive
+  model is not a defect. Findings come from the checks; this describes.
+
 ## When the input is a file: images and audio
 
 A text eval carries its input in the dataset. A vision or audio eval carries a
@@ -420,7 +454,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.53.2
+- uses: collapseindex/dinostomp@v0.54.0
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -500,7 +534,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`b01352d90c8ad0dceb13946fbc5618739932c958623c46d5acacb7b66bf54da0`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`f55e58da3a42578dc17a0b6d553e575e5985423348ed22d807bf40590c5ee8a4`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

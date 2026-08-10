@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.53.2",
+  "version": "0.54.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -760,11 +760,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 3 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind",
+      "detail": "0 of 3 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind",
       "witnesses": 3,
       "evidence": {
         "engines": {
-          "b01352d90c8ad0dc": 3
+          "f55e58da3a42578d": 3
         }
       }
     },
@@ -1048,7 +1048,7 @@
   },
   "runs": [
     {
-      "run_file": "20260810_065807_mediated-grounding_greedy_n24_s7.jsonl",
+      "run_file": "20260810_082456_mediated-grounding_greedy_n24_s7.jsonl",
       "model": "greedy",
       "model_reported": "greedy",
       "provider": "mediated",
@@ -1060,7 +1060,7 @@
       "trajectory_steps": 72
     },
     {
-      "run_file": "20260810_065807_mediated-grounding_grounded_n24_s7.jsonl",
+      "run_file": "20260810_082456_mediated-grounding_grounded_n24_s7.jsonl",
       "model": "grounded",
       "model_reported": "grounded",
       "provider": "mediated",
@@ -1072,7 +1072,7 @@
       "trajectory_steps": 24
     },
     {
-      "run_file": "20260810_065807_mediated-grounding_oneshot_n24_s7.jsonl",
+      "run_file": "20260810_082456_mediated-grounding_oneshot_n24_s7.jsonl",
       "model": "oneshot",
       "model_reported": "oneshot",
       "provider": "mediated",
@@ -1092,5 +1092,391 @@
   "power": {
     "n_items": 24,
     "mde_unpaired_80pct": 0.4044
+  },
+  "results": {
+    "models": [
+      {
+        "model": "greedy",
+        "provider": "mediated",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 24,
+        "n_checkable": 24,
+        "n_uncheckable": 0,
+        "n_passes": 24,
+        "n_failures": 0,
+        "accuracy": 1.0,
+        "ci95": [
+          0.862,
+          1.0
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 24
+        },
+        "modal_output": {
+          "text": "chloroplasts",
+          "count": 3,
+          "share": 0.125
+        }
+      },
+      {
+        "model": "grounded",
+        "provider": "mediated",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 24,
+        "n_checkable": 24,
+        "n_uncheckable": 0,
+        "n_passes": 24,
+        "n_failures": 0,
+        "accuracy": 1.0,
+        "ci95": [
+          0.862,
+          1.0
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 24
+        },
+        "modal_output": {
+          "text": "chloroplasts",
+          "count": 3,
+          "share": 0.125
+        }
+      },
+      {
+        "model": "oneshot",
+        "provider": "mediated",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 24,
+        "n_checkable": 24,
+        "n_uncheckable": 0,
+        "n_passes": 18,
+        "n_failures": 6,
+        "accuracy": 0.75,
+        "ci95": [
+          0.551,
+          0.88
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 24
+        },
+        "modal_output": {
+          "text": "chloroplasts",
+          "count": 3,
+          "share": 0.125
+        }
+      }
+    ],
+    "fleet": {
+      "n_models": 3,
+      "n_items": 24,
+      "mean_accuracy": 0.9167,
+      "min_accuracy": 0.75,
+      "max_accuracy": 1.0,
+      "spread": 0.25,
+      "kr20": 0.8696,
+      "n_all_right": 18,
+      "n_all_wrong": 0,
+      "dead_share": 0.75,
+      "mde_unpaired": 0.4044
+    },
+    "items": [
+      {
+        "id": "m001",
+        "target": "chloroplasts",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m002",
+        "target": "chloroplasts",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m003",
+        "target": "chloroplasts",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m004",
+        "target": "mitochondria",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m005",
+        "target": "mitochondria",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m006",
+        "target": "mitochondria",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m007",
+        "target": "stomata",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m008",
+        "target": "stomata",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m009",
+        "target": "stomata",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m010",
+        "target": "two",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m011",
+        "target": "two",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m012",
+        "target": "two",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m013",
+        "target": "four",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m014",
+        "target": "four",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m015",
+        "target": "four",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m016",
+        "target": "higher",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m017",
+        "target": "higher",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m018",
+        "target": "higher",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "m019",
+        "target": "lower",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": 1.0,
+        "missed_by": [
+          "oneshot"
+        ],
+        "top_wrong_answer": "concentration",
+        "separates": true
+      },
+      {
+        "id": "m020",
+        "target": "lower",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": 1.0,
+        "missed_by": [
+          "oneshot"
+        ],
+        "top_wrong_answer": "concentration",
+        "separates": true
+      },
+      {
+        "id": "m021",
+        "target": "lower",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": 1.0,
+        "missed_by": [
+          "oneshot"
+        ],
+        "top_wrong_answer": "concentration",
+        "separates": true
+      },
+      {
+        "id": "m022",
+        "target": "activation",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": 1.0,
+        "missed_by": [
+          "oneshot"
+        ],
+        "top_wrong_answer": "energy",
+        "separates": true
+      },
+      {
+        "id": "m023",
+        "target": "activation",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": 1.0,
+        "missed_by": [
+          "oneshot"
+        ],
+        "top_wrong_answer": "energy",
+        "separates": true
+      },
+      {
+        "id": "m024",
+        "target": "activation",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": 1.0,
+        "missed_by": [
+          "oneshot"
+        ],
+        "top_wrong_answer": "energy",
+        "separates": true
+      }
+    ],
+    "slices": {},
+    "cost": {
+      "total_usd": 0.0,
+      "total_tokens_in": 0,
+      "total_tokens_out": 0,
+      "all_dry": false
+    }
   }
 }

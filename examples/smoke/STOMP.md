@@ -4,6 +4,37 @@
 
 > All runs used the offline dry provider; results exercise the benchmark, not any real model.
 
+## Results
+
+> These numbers come from an eval with **incomplete coverage**. They describe what the runs contain; whether they can be published is decided under Checks.
+
+| model | provider | records | checkable | judgeable | accuracy | 95% CI | passes | fails | out tok | spend |
+|---|---|---:|---:|---:|---:|---|---:|---:|---:|---:|
+| dry-strong | dry | 6 | 6 | 100% | 100.0% | [0.610, 1.000] | 6 | 0 | 6 | $0.0000 |
+
+Accuracy is ON CHECKABLE output: `judgeable` is the share the scorer reached a verdict on at all, and 80% accurate on 60%-judgeable output is not 80% accurate.
+
+**1 model(s) x 6 item(s)**, mean 100.0%.
+
+6 item(s) every model passed and 0 every model failed: 100% of the set separated nobody in this fleet.
+
+At 6 items an UNPAIRED comparison resolves gaps down to about 81%; smaller differences between the models above are not distinguishable from sampling noise by that test.
+
+<details><summary>Item difficulty: all 6 item(s), hardest first</summary>
+
+| item | target | p | discrimination | missed by | most common wrong answer |
+|---|---|---:|---:|---|---|
+| a1 | 57 | 100% | - | - | - |
+| a2 | 62 | 100% | - | - | - |
+| a3 | 90 | 100% | - | - | - |
+| a4 | 91 | 100% | - | - | - |
+| a5 | 72 | 100% | - | - | - |
+| a6 | 80 | 100% | - | - | - |
+
+`p` is the share of the fleet that answered correctly and `discrimination` is the point-biserial with fleet skill. Both DESCRIBE; a hard item is not a defect. A negative discrimination is what P2 examines.
+
+</details>
+
 ## Entitled claims
 
 **None.** The verdict is `incomplete`; this eval is not currently entitled to publish claims.
@@ -62,7 +93,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 1 | 0 of 1 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 1 | 0 of 1 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -99,7 +130,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"b01352d90c8ad0dc": 1}}`
+- evidence: `{"engines": {"f55e58da3a42578d": 1}}`
 
 </details>
 
@@ -107,11 +138,11 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260810_065757_smoke-arith_dry-strong_n6_s42.jsonl | dry-strong | (same) | dry | yes | 42 | 6 | 0 |
+| 20260810_082447_smoke-arith_dry-strong_n6_s42.jsonl | dry-strong | (same) | dry | yes | 42 | 6 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.53.2
+- tool: dinostomp 0.54.0
 - statistical power: at n=6 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~81% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `fca7dbcadb153b3133b04982dca162ac942495b32d1738505fb5f91e560219a9`
 - data_sha256: `0b56432c320054896104625b1a31ce453976ad63564baa96c5571ce414c9b623`

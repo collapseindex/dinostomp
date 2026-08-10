@@ -1,5 +1,47 @@
 # Changelog
 
+### v0.54.0 (2026-08-10)
+
+**The report is an evaluation report now, not just an audit.** It carried the
+verdict, the claims and all sixty-one checks, and almost nothing about what the
+models did: per-model accuracy existed only inside one check's evidence blob,
+item difficulty was computed and thrown away, and cost was checked but never
+totalled. Running experiments, recording them and interpreting them is the point
+of an eval, and the report was doing one of the three.
+
+A new `## Results` section, ahead of the claims:
+
+- **Per model**: records, checkable, judgeable, accuracy with a Wilson interval,
+  passes, failures, output tokens, spend.
+- **Fleet**: mean, range, spread, KR-20, how many items separated nobody, and
+  the minimum gap the item count can resolve.
+- **Item difficulty**, hardest first: `p`, point-biserial discrimination, which
+  models missed it, and the most common wrong answer. The rendered table caps at
+  25 rows and SAYS SO; the full table is always in `STOMP.json`.
+- **Slices**: accuracy by every metadata field the items carry, with intervals
+  and an explicit note that no multiplicity correction is applied. MMLU now
+  carries its `subject`, so this is accuracy by subject.
+- **Cost**: spend and tokens, summed from the records.
+
+Three rules hold it together, all of them this project's existing doctrine
+pointed at a new surface:
+
+- **Accuracy is ON CHECKABLE output** and `judgeable` sits in the same row.
+- **Every number is recomputed from the RECORDS**, never read from a summary. A
+  summary is a derived artifact the battery treats as untrusted everywhere else,
+  and a results table that trusted one would be the single place a hand-edited
+  number survives. Tests assert the accuracy here equals R7's, equals the
+  summary written at run time, and that KR-20 and spread equal P1's and P8's.
+- **Nothing in Results can gate.** A hard item is not a defect. A test walks
+  `results.py` for any Reporter call to keep it that way.
+
+Blind and ablate PROBE runs are excluded: a deliberately handicapped control
+pooled into a model's accuracy would publish the handicap as the score.
+
+12 new tests, and the parity tests were negative-tested by breaking the accuracy
+by 0.01, by counting uncheckable into the denominator, and by returning a wrong
+KR-20. All three fire.
+
 ### v0.53.2 (2026-08-10)
 
 - **CI installs the `vision` extra.** Without it S15 can only skip, and a check

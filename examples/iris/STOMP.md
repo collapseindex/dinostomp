@@ -4,6 +4,59 @@
 
 > All runs used the offline dry provider; results exercise the benchmark, not any real model.
 
+## Results
+
+| model | provider | records | checkable | judgeable | accuracy | 95% CI | passes | fails | out tok | spend |
+|---|---|---:|---:|---:|---:|---|---:|---:|---:|---:|
+| dry-alpha | dry | 149 | 149 | 100% | 87.9% | [0.817, 0.922] | 131 | 18 | 283 | $0.0000 |
+| dry-bravo | dry | 149 | 149 | 100% | 71.1% | [0.634, 0.778] | 106 | 43 | 316 | $0.0000 |
+| dry-charlie | dry | 149 | 149 | 100% | 44.3% | [0.366, 0.523] | 66 | 83 | 379 | $0.0000 |
+| dry-delta | dry | 149 | 149 | 100% | 100.0% | [0.975, 1.000] | 149 | 0 | 248 | $0.0000 |
+| dry-echo | dry | 149 | 149 | 100% | 55.7% | [0.477, 0.634] | 83 | 66 | 347 | $0.0000 |
+| dry-foxtrot | dry | 149 | 149 | 100% | 55.7% | [0.477, 0.634] | 83 | 66 | 354 | $0.0000 |
+
+Accuracy is ON CHECKABLE output: `judgeable` is the share the scorer reached a verdict on at all, and 80% accurate on 60%-judgeable output is not 80% accurate.
+
+**6 model(s) x 149 item(s)**, mean 69.1%, spanning 44.3% to 100.0% (56% spread), KR-20 0.99.
+
+66 item(s) every model passed and 0 every model failed: 44% of the set separated nobody in this fleet.
+
+At 149 items an UNPAIRED comparison resolves gaps down to about 16%; smaller differences between the models above are not distinguishable from sampling noise by that test.
+
+<details><summary>Item difficulty: the 25 hardest of 149, hardest first</summary>
+
+| item | target | p | discrimination | missed by | most common wrong answer |
+|---|---|---:|---:|---|---|
+| iris-011 | setosa | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | not setosa |
+| iris-018 | setosa | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | hardly setosa |
+| iris-029 | setosa | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | unlikely setosa |
+| iris-036 | setosa | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | not setosa |
+| iris-039 | setosa | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | not setosa |
+| iris-041 | setosa | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | not setosa |
+| iris-052 | versicolor | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | unlikely versicolor |
+| iris-075 | versicolor | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | not versicolor |
+| iris-076 | versicolor | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | unlikely versicolor |
+| iris-083 | versicolor | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | unlikely versicolor |
+| iris-086 | versicolor | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | not versicolor |
+| iris-090 | versicolor | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | unlikely versicolor |
+| iris-101 | virginica | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | unlikely virginica |
+| iris-110 | virginica | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | not virginica |
+| iris-114 | virginica | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | unlikely virginica |
+| iris-126 | virginica | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | not virginica |
+| iris-127 | virginica | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | not virginica |
+| iris-145 | virginica | 17% | +0.70 | dry-alpha, dry-bravo, dry-charlie, dry-echo... | not virginica |
+| iris-007 | setosa | 33% | +0.90 | dry-bravo, dry-charlie, dry-echo, dry-foxtrot | not setosa |
+| iris-016 | setosa | 33% | +0.90 | dry-bravo, dry-charlie, dry-echo, dry-foxtrot | unlikely setosa |
+| iris-022 | setosa | 33% | +0.90 | dry-bravo, dry-charlie, dry-echo, dry-foxtrot | hardly setosa |
+| iris-026 | setosa | 33% | +0.90 | dry-bravo, dry-charlie, dry-echo, dry-foxtrot | not setosa |
+| iris-047 | setosa | 33% | +0.90 | dry-bravo, dry-charlie, dry-echo, dry-foxtrot | unlikely setosa |
+| iris-055 | versicolor | 33% | +0.90 | dry-bravo, dry-charlie, dry-echo, dry-foxtrot | hardly versicolor |
+| iris-057 | versicolor | 33% | +0.90 | dry-bravo, dry-charlie, dry-echo, dry-foxtrot | hardly versicolor |
+
+`p` is the share of the fleet that answered correctly and `discrimination` is the point-biserial with fleet skill. Both DESCRIBE; a hard item is not a defect. A negative discrimination is what P2 examines. All 149 rows are in [STOMP.json](STOMP.json).
+
+</details>
+
 ## Entitled claims
 
 This result is entitled to claim:
@@ -66,7 +119,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | ok | failed answers do not contain the reference | 5 | 0 of 5 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 6 | 0 of 6 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 6 | 0 of 6 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -113,7 +166,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"b01352d90c8ad0dc": 6}}`
+- evidence: `{"engines": {"f55e58da3a42578d": 6}}`
 
 </details>
 <details><summary>[ok] fleet score totals are reliable (KR-20)</summary>
@@ -146,16 +199,16 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260810_065800_iris-species_dry-alpha_n149_s42.jsonl | dry-alpha | (same) | dry | yes | 42 | 149 | 0 |
-| 20260810_065800_iris-species_dry-bravo_n149_s42.jsonl | dry-bravo | (same) | dry | yes | 42 | 149 | 0 |
-| 20260810_065800_iris-species_dry-charlie_n149_s42.jsonl | dry-charlie | (same) | dry | yes | 42 | 149 | 0 |
-| 20260810_065801_iris-species_dry-delta_n149_s42.jsonl | dry-delta | (same) | dry | yes | 42 | 149 | 0 |
-| 20260810_065801_iris-species_dry-echo_n149_s42.jsonl | dry-echo | (same) | dry | yes | 42 | 149 | 0 |
-| 20260810_065801_iris-species_dry-foxtrot_n149_s42.jsonl | dry-foxtrot | (same) | dry | yes | 42 | 149 | 0 |
+| 20260810_082449_iris-species_dry-alpha_n149_s42.jsonl | dry-alpha | (same) | dry | yes | 42 | 149 | 0 |
+| 20260810_082450_iris-species_dry-bravo_n149_s42.jsonl | dry-bravo | (same) | dry | yes | 42 | 149 | 0 |
+| 20260810_082450_iris-species_dry-charlie_n149_s42.jsonl | dry-charlie | (same) | dry | yes | 42 | 149 | 0 |
+| 20260810_082450_iris-species_dry-delta_n149_s42.jsonl | dry-delta | (same) | dry | yes | 42 | 149 | 0 |
+| 20260810_082450_iris-species_dry-echo_n149_s42.jsonl | dry-echo | (same) | dry | yes | 42 | 149 | 0 |
+| 20260810_082450_iris-species_dry-foxtrot_n149_s42.jsonl | dry-foxtrot | (same) | dry | yes | 42 | 149 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.53.2
+- tool: dinostomp 0.54.0
 - statistical power: at n=149 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~16% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `b6443a36d9d3b0e15c9885a555de15cfffc25e25a646884f4f4d460787b6bc60`
 - data_sha256: `153c4dcefb332e38221e8a27b3f46b179d6dbf46ef834bbd87e188b0acda5942`

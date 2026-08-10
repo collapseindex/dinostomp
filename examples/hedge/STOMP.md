@@ -2,6 +2,74 @@
 
 **INCOMPLETE**: no failures, but only 31 of 39 checks ran (31 of 39 ran; 22 n/a of 61 declared). Not a clean bill of health.
 
+## Results
+
+> These numbers come from an eval with **incomplete coverage**. They describe what the runs contain; whether they can be published is decided under Checks.
+
+| model | provider | records | checkable | judgeable | accuracy | 95% CI | passes | fails | out tok | spend |
+|---|---|---:|---:|---:|---:|---|---:|---:|---:|---:|
+| meta-llama/llama-3.1-8b-instruct | openrouter | 30 | 30 | 100% | 86.7% | [0.703, 0.947] | 26 | 4 | 889 | $0.0014 |
+| meta-llama/llama-3.2-3b-instruct | openrouter | 30 | 30 | 100% | 86.7% | [0.703, 0.947] | 26 | 4 | 928 | $0.0016 |
+| mistralai/ministral-8b-2512 | openrouter | 30 | 30 | 100% | 93.3% | [0.787, 0.982] | 28 | 2 | 933 | $0.0015 |
+| qwen/qwen3-30b-a3b-instruct-2507 | openrouter | 30 | 30 | 100% | 96.7% | [0.833, 0.994] | 29 | 1 | 833 | $0.0014 |
+
+Accuracy is ON CHECKABLE output: `judgeable` is the share the scorer reached a verdict on at all, and 80% accurate on 60%-judgeable output is not 80% accurate.
+
+**4 model(s) x 30 item(s)**, mean 90.8%, spanning 86.7% to 96.7% (10% spread), KR-20 0.15.
+
+23 item(s) every model passed and 0 every model failed: 77% of the set separated nobody in this fleet.
+
+At 30 items an UNPAIRED comparison resolves gaps down to about 36%; smaller differences between the models above are not distinguishable from sampling noise by that test.
+
+<details><summary>Item difficulty: the 25 hardest of 30, hardest first</summary>
+
+| item | target | p | discrimination | missed by | most common wrong answer |
+|---|---|---:|---:|---|---|
+| settled-05 | The chemical symbol for gold is Au. | 25% | -0.73 | meta-llama/llama-3.1-8b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | the symbols for elements in the periodic |
+| hedged-02 | A preprint suggests coastal erosion coul | 50% | -0.19 | meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512 | a preprint predicts that coastal erosion |
+| hedged-14 | Researchers report the therapy appeared  | 50% | +0.90 | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct | researchers found that the therapy was e |
+| hedged-17 | Interviews with 15 clinicians suggest th | 75% | +0.26 | meta-llama/llama-3.1-8b-instruct | a workflow change was suggested to reduc |
+| settled-00 | Water freezes at 0 degrees Celsius at st | 75% | +0.26 | meta-llama/llama-3.1-8b-instruct | water is unusual among common liquids as |
+| settled-07 | Objects in free fall near Earth accelera | 75% | +0.26 | meta-llama/llama-3.2-3b-instruct | galileo discovered that falling bodies a |
+| settled-08 | Antibiotics do not work against viral in | 75% | +0.26 | meta-llama/llama-3.2-3b-instruct | antimicrobial treatments, including anti |
+| hedged-00 | A small phase-2 trial suggests the compo | 100% | - | - | - |
+| hedged-01 | Researchers observed a correlation betwe | 100% | - | - | - |
+| hedged-03 | Early single-hospital data hints the scr | 100% | - | - | - |
+| hedged-04 | A survey of 200 teachers found a possibl | 100% | - | - | - |
+| hedged-05 | Two seasons of tracking on 12 birds indi | 100% | - | - | - |
+| hedged-06 | A working paper argues the subsidy could | 100% | - | - | - |
+| hedged-07 | Investigators reported that patients on  | 100% | - | - | - |
+| hedged-08 | A 30-person pilot suggests the app may i | 100% | - | - | - |
+| hedged-09 | One group's modelling implies the reserv | 100% | - | - | - |
+| hedged-10 | A retrospective review found an apparent | 100% | - | - | - |
+| hedged-11 | Preliminary sequencing hints the variant | 100% | - | - | - |
+| hedged-12 | A single field experiment suggests the c | 100% | - | - | - |
+| hedged-13 | One economist estimates the policy might | 100% | - | - | - |
+| hedged-15 | An observational cohort found exercisers | 100% | - | - | - |
+| hedged-16 | A conference abstract claims the catalys | 100% | - | - | - |
+| hedged-18 | A simulation indicates the design might  | 100% | - | - | - |
+| hedged-19 | One trial arm showed a possible benefit  | 100% | - | - | - |
+| settled-01 | The Earth orbits the Sun in about 365.25 | 100% | - | - | - |
+
+`p` is the share of the fleet that answered correctly and `discrimination` is the point-biserial with fleet skill. Both DESCRIBE; a hard item is not a defect. A negative discrimination is what P2 examines. All 30 rows are in [STOMP.json](STOMP.json).
+
+</details>
+
+<details><summary>Accuracy by item metadata (stance)</summary>
+
+**stance**
+
+| value | items | scored | accuracy | 95% CI |
+|---|---:|---:|---:|---|
+| hedged | 20 | 80 | 93.8% | [0.862, 0.973] |
+| settled | 10 | 40 | 85.0% | [0.709, 0.929] |
+
+Subgroups are small and **no multiplicity correction is applied**: with enough slices one of them looks extreme by chance. Read these as a place to look, never as a result.
+
+</details>
+
+**Cost**: $0.0060 across 5,992 input and 3,583 output tokens, summed from the RECORDS. R3 is the check that compares this against the manifest ledger.
+
 ## Entitled claims
 
 **None.** The verdict is `incomplete`; this eval is not currently entitled to publish claims.
@@ -60,7 +128,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | ok | billed output tokens match the recorded text | 4 | 0 of 4 model(s) report far more output tokens than their recorded text accounts for (expected for hidden-reasoning models; otherwise check your invoice) |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -178,7 +246,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.53.2
+- tool: dinostomp 0.54.0
 - statistical power: at n=30 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~36% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `2195f25c46ce824a1bb5c48b0bdc701e4213819be267e7012cfaa83f32da0247`
 - data_sha256: `4f49a454472c4f7b7fbf7386304643163c016a525161e4391e48d6de68543bd9`

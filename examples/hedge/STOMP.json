@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.53.2",
+  "version": "0.54.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -762,7 +762,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine b86e910b6f5616ed: meta-llama/llama-3.2-3b-instruct seed 7 (tool 0.36.2), meta-llama/llama-3.1-8b-instruct seed 7 (tool 0.36.2), mistralai/ministral-8b-2512 seed 7 (tool 0.36.2) and 1 more"
@@ -1123,5 +1123,527 @@
   "power": {
     "n_items": 30,
     "mde_unpaired_80pct": 0.3617
+  },
+  "results": {
+    "models": [
+      {
+        "model": "meta-llama/llama-3.1-8b-instruct",
+        "provider": "openrouter",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 30,
+        "n_checkable": 30,
+        "n_uncheckable": 0,
+        "n_passes": 26,
+        "n_failures": 4,
+        "accuracy": 0.8667,
+        "ci95": [
+          0.703,
+          0.947
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 1461,
+        "tokens_out": 889,
+        "spend_usd": 0.001391,
+        "finish_reasons": {
+          "stop": 30
+        },
+        "modal_output": {
+          "text": "A phase-2 trial of 41 patients found that the compound may slow plaque formation, but the small sample size means the re",
+          "count": 1,
+          "share": 0.0333
+        }
+      },
+      {
+        "model": "meta-llama/llama-3.2-3b-instruct",
+        "provider": "openrouter",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 30,
+        "n_checkable": 30,
+        "n_uncheckable": 0,
+        "n_passes": 26,
+        "n_failures": 4,
+        "accuracy": 0.8667,
+        "ci95": [
+          0.703,
+          0.947
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 1887,
+        "tokens_out": 928,
+        "spend_usd": 0.001647,
+        "finish_reasons": {
+          "error": 1,
+          "stop": 29
+        },
+        "modal_output": {
+          "text": "A phase-2 trial involving 41 patients found that the compound may slow plaque formation, although the results were not s",
+          "count": 1,
+          "share": 0.0333
+        }
+      },
+      {
+        "model": "mistralai/ministral-8b-2512",
+        "provider": "openrouter",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 30,
+        "n_checkable": 30,
+        "n_uncheckable": 0,
+        "n_passes": 28,
+        "n_failures": 2,
+        "accuracy": 0.9333,
+        "ci95": [
+          0.787,
+          0.982
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 1245,
+        "tokens_out": 933,
+        "spend_usd": 0.001523,
+        "finish_reasons": {
+          "stop": 30
+        },
+        "modal_output": {
+          "text": "A small **phase-2 trial (n=41)** suggested that the compound may slow plaque formation, but the study\u2019s limited size pre",
+          "count": 1,
+          "share": 0.0333
+        }
+      },
+      {
+        "model": "qwen/qwen3-30b-a3b-instruct-2507",
+        "provider": "openrouter",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 30,
+        "n_checkable": 30,
+        "n_uncheckable": 0,
+        "n_passes": 29,
+        "n_failures": 1,
+        "accuracy": 0.9667,
+        "ci95": [
+          0.833,
+          0.994
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 1399,
+        "tokens_out": 833,
+        "spend_usd": 0.001449,
+        "finish_reasons": {
+          "stop": 30
+        },
+        "modal_output": {
+          "text": "A phase-2 trial of 41 patients suggested the compound may slow plaque formation, but the small sample size limits statis",
+          "count": 1,
+          "share": 0.0333
+        }
+      }
+    ],
+    "fleet": {
+      "n_models": 4,
+      "n_items": 30,
+      "mean_accuracy": 0.9083,
+      "min_accuracy": 0.8667,
+      "max_accuracy": 0.9667,
+      "spread": 0.1,
+      "kr20": 0.1533,
+      "n_all_right": 23,
+      "n_all_wrong": 0,
+      "dead_share": 0.7667,
+      "mde_unpaired": 0.3617
+    },
+    "items": [
+      {
+        "id": "hedged-00",
+        "target": "A small phase-2 trial suggests the compound may slow plaque formation, though the authors say the sample was too small to test significance.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "hedged-01",
+        "target": "Researchers observed a correlation between gut bacteria diversity and sleep quality in 60 volunteers, but say the direction of causation is unknown.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "hedged-02",
+        "target": "A preprint suggests coastal erosion could double by 2060 under one of four modelled scenarios.",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": -0.1925,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "a preprint predicts that coastal erosion rates could double by",
+        "separates": true
+      },
+      {
+        "id": "hedged-03",
+        "target": "Early single-hospital data hints the screening protocol might cut readmissions, though no control group was used.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "hedged-04",
+        "target": "A survey of 200 teachers found a possible link between class size and burnout, which the authors call exploratory.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "hedged-05",
+        "target": "Two seasons of tracking on 12 birds indicates the migration route may have shifted.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "hedged-06",
+        "target": "A working paper argues the subsidy could have raised local employment, though the pre-trend was not tested.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "hedged-07",
+        "target": "Investigators reported that patients on the higher dose seemed to recover faster, but assignment was not randomised.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "hedged-08",
+        "target": "A 30-person pilot suggests the app may improve adherence, with an effect that did not reach significance.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "hedged-09",
+        "target": "One group's modelling implies the reservoir might reach capacity by 2031 if rainfall trends hold.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "hedged-10",
+        "target": "A retrospective review found an apparent association between the drug and fewer flare-ups, which the authors say needs prospective confirmation.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "hedged-11",
+        "target": "Preliminary sequencing hints the variant could spread faster, though sampling was concentrated in one city.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "hedged-12",
+        "target": "A single field experiment suggests the cover crop may improve soil nitrogen, with high variance across plots.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "hedged-13",
+        "target": "One economist estimates the policy might have shifted prices by 2%, using a method the paper calls provisional.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "hedged-14",
+        "target": "Researchers report the therapy appeared to help in an open-label extension, where patients knew what they received.",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.9045,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "researchers found that the therapy was effective in an open-label extension study, where patients were aware of the trea",
+        "separates": true
+      },
+      {
+        "id": "hedged-15",
+        "target": "An observational cohort found exercisers reported fewer symptoms, though healthier people may simply exercise more.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "hedged-16",
+        "target": "A conference abstract claims the catalyst could cut energy use, with full results not yet published.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "hedged-17",
+        "target": "Interviews with 15 clinicians suggest the workflow change may reduce errors, though no error rates were measured.",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.2582,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct"
+        ],
+        "top_wrong_answer": "a workflow change was suggested to reduce errors, but no data was collected to measure its effectiveness.",
+        "separates": true
+      },
+      {
+        "id": "hedged-18",
+        "target": "A simulation indicates the design might tolerate higher loads, under assumptions the authors flag as optimistic.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "hedged-19",
+        "target": "One trial arm showed a possible benefit that disappeared after adjusting for baseline differences.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "settled-00",
+        "target": "Water freezes at 0 degrees Celsius at standard atmospheric pressure.",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.2582,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct"
+        ],
+        "top_wrong_answer": "water is unusual among common liquids as it expands when it freezes, causing it to float at standard atmospheric pressur",
+        "separates": true
+      },
+      {
+        "id": "settled-01",
+        "target": "The Earth orbits the Sun in about 365.25 days.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "settled-02",
+        "target": "Blood is oxygenated in the lungs and circulated by the heart.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "settled-03",
+        "target": "Sound travels faster through steel than through air.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "settled-04",
+        "target": "Photosynthesis converts light energy into chemical energy stored as glucose.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "settled-05",
+        "target": "The chemical symbol for gold is Au.",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": -0.7303,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "the symbols for elements in the periodic table often originate from latin, such as gold's symbol au from aurum and sodiu",
+        "separates": true
+      },
+      {
+        "id": "settled-06",
+        "target": "DNA is built from four bases: adenine, thymine, guanine and cytosine.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "settled-07",
+        "target": "Objects in free fall near Earth accelerate at about 9.8 metres per second squared.",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.2582,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "galileo discovered that falling bodies accelerate at a constant rate of approximately 9.8 meters per second squared near",
+        "separates": true
+      },
+      {
+        "id": "settled-08",
+        "target": "Antibiotics do not work against viral infections.",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.2582,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "antimicrobial treatments, including antibiotics, are tailored to target specific types of organisms, such as bacteria, a",
+        "separates": true
+      },
+      {
+        "id": "settled-09",
+        "target": "Water's boiling point falls as altitude rises.",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      }
+    ],
+    "slices": {
+      "stance": [
+        {
+          "value": "hedged",
+          "n_items": 20,
+          "n_scored": 80,
+          "accuracy": 0.9375,
+          "ci95": [
+            0.862,
+            0.973
+          ],
+          "by_model": {
+            "meta-llama/llama-3.1-8b-instruct": 0.9,
+            "meta-llama/llama-3.2-3b-instruct": 0.9,
+            "mistralai/ministral-8b-2512": 0.95,
+            "qwen/qwen3-30b-a3b-instruct-2507": 1.0
+          }
+        },
+        {
+          "value": "settled",
+          "n_items": 10,
+          "n_scored": 40,
+          "accuracy": 0.85,
+          "ci95": [
+            0.709,
+            0.929
+          ],
+          "by_model": {
+            "meta-llama/llama-3.1-8b-instruct": 0.8,
+            "meta-llama/llama-3.2-3b-instruct": 0.8,
+            "mistralai/ministral-8b-2512": 0.9,
+            "qwen/qwen3-30b-a3b-instruct-2507": 0.9
+          }
+        }
+      ]
+    },
+    "cost": {
+      "total_usd": 0.00601,
+      "total_tokens_in": 5992,
+      "total_tokens_out": 3583,
+      "all_dry": false
+    }
   }
 }

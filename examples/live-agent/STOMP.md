@@ -2,6 +2,59 @@
 
 **INCOMPLETE**: no failures, but only 32 of 41 checks ran (32 of 41 ran; 20 n/a of 61 declared). Not a clean bill of health.
 
+## Results
+
+> These numbers come from an eval with **incomplete coverage**. They describe what the runs contain; whether they can be published is decided under Checks.
+
+| model | provider | records | checkable | judgeable | accuracy | 95% CI | passes | fails | out tok | spend |
+|---|---|---:|---:|---:|---:|---|---:|---:|---:|---:|
+| live-greedy | python | 24 | 24 | 100% | 83.3% | [0.641, 0.933] | 20 | 4 | 0 | $0.0010 |
+| live-grounded | python | 24 | 24 | 100% | 54.2% | [0.351, 0.721] | 13 | 11 | 0 | $0.0002 |
+| live-oneshot | python | 24 | 24 | 100% | 79.2% | [0.595, 0.908] | 19 | 5 | 0 | $0.0002 |
+
+Accuracy is ON CHECKABLE output: `judgeable` is the share the scorer reached a verdict on at all, and 80% accurate on 60%-judgeable output is not 80% accurate.
+
+**3 model(s) x 24 item(s)**, mean 72.2%, spanning 54.2% to 83.3% (29% spread), KR-20 0.80.
+
+11 item(s) every model passed and 3 every model failed: 58% of the set separated nobody in this fleet.
+
+At 24 items an UNPAIRED comparison resolves gaps down to about 40%; smaller differences between the models above are not distinguishable from sampling noise by that test.
+
+<details><summary>Item difficulty: all 24 item(s), hardest first</summary>
+
+| item | target | p | discrimination | missed by | most common wrong answer |
+|---|---|---:|---:|---|---|
+| la-00 | photosynthesis | 0% | - | live-greedy, live-grounded, live-oneshot | photosynthesis converts light energy int |
+| la-12 | water | 0% | - | live-greedy, live-grounded, live-oneshot | water moves across a membrane during osm |
+| la-21 | messenger RNA | 0% | - | live-greedy, live-grounded, live-oneshot | messenger rna carries instructions from  |
+| la-04 | mitochondria | 33% | +0.24 | live-greedy, live-grounded | the **mitochondrion** carries out most c |
+| la-01 | chloroplasts | 67% | +0.99 | live-grounded | i'm unable to answer that question as th |
+| la-02 | oxygen | 67% | +0.99 | live-grounded | oxygen. |
+| la-07 | roots | 67% | +0.99 | live-grounded | the reference does not contain the answe |
+| la-08 | two | 67% | +0.99 | live-grounded | two. |
+| la-11 | gametes | 67% | +0.99 | live-grounded | meiosis produces four genetically distin |
+| la-13 | higher | 67% | -0.50 | live-oneshot | osmosis moves water toward a lower solut |
+| la-14 | no | 67% | +0.99 | live-grounded | no. |
+| la-15 | lower | 67% | -0.50 | live-oneshot | diffusion moves particles from areas of  |
+| la-23 | not consumed | 67% | +0.99 | live-grounded | no. |
+| la-03 | ATP | 100% | - | - | - |
+| la-05 | oxygen | 100% | - | - | - |
+| la-06 | stomata | 100% | - | - | - |
+| la-09 | growth | 100% | - | - | - |
+| la-10 | four | 100% | - | - | - |
+| la-16 | protein | 100% | - | - | - |
+| la-17 | activation energy | 100% | - | - | - |
+| la-18 | four | 100% | - | - | - |
+| la-19 | uracil | 100% | - | - | - |
+| la-20 | single | 100% | - | - | - |
+| la-22 | double helix | 100% | - | - | - |
+
+`p` is the share of the fleet that answered correctly and `discrimination` is the point-biserial with fleet skill. Both DESCRIBE; a hard item is not a defect. A negative discrimination is what P2 examines.
+
+</details>
+
+**Cost**: $0.0013 across 0 input and 0 output tokens, summed from the RECORDS. R3 is the check that compares this against the manifest ledger.
+
 ## Entitled claims
 
 **None.** The verdict is `incomplete`; this eval is not currently entitled to publish claims.
@@ -60,7 +113,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | warn | failed answers do not contain the reference | 2 | 2 of 2 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 3 | 3 of 3 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 3 | 3 of 3 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | warn | passing answers are grounded in tool evidence | 3 | 2 of 3 target(s) pass items whose answer does not APPEAR in their own evidence (6 such answer(s) in total). This is co-occurrence, not causation: an answer recalled from memory that also happens to appear in a retrieved snippet counts as grounded here, so this count is a floor |
 | ok | no model under-reports its trajectory | 3 | 0 of 3 target(s) report far fewer steps than the fleet (median 1.0); a thin trace can be efficiency OR omission |
@@ -170,7 +223,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.53.2
+- tool: dinostomp 0.54.0
 - statistical power: at n=24 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~40% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `40ec29a2e7b222d3ab5988e6140f4f51f1250a60ed5584b3683e6a03065c216f`
 - data_sha256: `308236893b61320ddd8b4e45a4c36f00173d2f43ffc98736fa8b65d22cef3120`

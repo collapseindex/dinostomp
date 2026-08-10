@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.53.2",
+  "version": "0.54.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -617,9 +617,9 @@
       "evidence": {
         "per_model_accuracy": {
           "agent-grounded": 0.9231,
-          "agent-lazy": 1.0,
           "agent-narrow": 0.3462,
-          "agent-partial": 0.6154
+          "agent-partial": 0.6154,
+          "agent-lazy": 1.0
         },
         "chance_floor": 0.0385,
         "uniform": 0.0,
@@ -674,9 +674,9 @@
       "evidence": {
         "rates": {
           "agent-grounded": 0.0,
-          "agent-lazy": 0.0,
           "agent-narrow": 0.0,
-          "agent-partial": 0.0
+          "agent-partial": 0.0,
+          "agent-lazy": 0.0
         }
       }
     },
@@ -716,9 +716,9 @@
       "evidence": {
         "lift": {
           "agent-grounded": 0.9231,
-          "agent-lazy": 1.0,
           "agent-narrow": 0.3462,
-          "agent-partial": 0.6154
+          "agent-partial": 0.6154,
+          "agent-lazy": 1.0
         }
       }
     },
@@ -755,11 +755,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind",
+      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "evidence": {
         "engines": {
-          "b01352d90c8ad0dc": 4
+          "f55e58da3a42578d": 4
         }
       }
     },
@@ -1050,7 +1050,7 @@
   },
   "runs": [
     {
-      "run_file": "20260810_065804_agent-capitals_agent-grounded_n26_s42.jsonl",
+      "run_file": "20260810_082453_agent-capitals_agent-grounded_n26_s42.jsonl",
       "model": "agent-grounded",
       "model_reported": "agent-grounded",
       "provider": "python",
@@ -1062,19 +1062,7 @@
       "trajectory_steps": 28
     },
     {
-      "run_file": "20260810_065804_agent-capitals_agent-lazy_n26_s42.jsonl",
-      "model": "agent-lazy",
-      "model_reported": "agent-lazy",
-      "provider": "python",
-      "dry_run": false,
-      "seed": 42,
-      "records": 26,
-      "uncheckable": 0,
-      "spend_source": "metered",
-      "trajectory_steps": 26
-    },
-    {
-      "run_file": "20260810_065804_agent-capitals_agent-narrow_n26_s42.jsonl",
+      "run_file": "20260810_082453_agent-capitals_agent-narrow_n26_s42.jsonl",
       "model": "agent-narrow",
       "model_reported": "agent-narrow",
       "provider": "python",
@@ -1086,7 +1074,7 @@
       "trajectory_steps": 43
     },
     {
-      "run_file": "20260810_065804_agent-capitals_agent-partial_n26_s42.jsonl",
+      "run_file": "20260810_082453_agent-capitals_agent-partial_n26_s42.jsonl",
       "model": "agent-partial",
       "model_reported": "agent-partial",
       "provider": "python",
@@ -1096,6 +1084,18 @@
       "uncheckable": 0,
       "spend_source": "metered",
       "trajectory_steps": 36
+    },
+    {
+      "run_file": "20260810_082454_agent-capitals_agent-lazy_n26_s42.jsonl",
+      "model": "agent-lazy",
+      "model_reported": "agent-lazy",
+      "provider": "python",
+      "dry_run": false,
+      "seed": 42,
+      "records": 26,
+      "uncheckable": 0,
+      "spend_source": "metered",
+      "trajectory_steps": 26
     }
   ],
   "entitled_claims": [
@@ -1105,6 +1105,476 @@
   "power": {
     "n_items": 26,
     "mde_unpaired_80pct": 0.3885
+  },
+  "results": {
+    "models": [
+      {
+        "model": "agent-grounded",
+        "provider": "python",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 26,
+        "n_checkable": 26,
+        "n_uncheckable": 0,
+        "n_passes": 24,
+        "n_failures": 2,
+        "accuracy": 0.9231,
+        "ci95": [
+          0.759,
+          0.979
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 26
+        },
+        "modal_output": {
+          "text": "unknown",
+          "count": 2,
+          "share": 0.0769
+        }
+      },
+      {
+        "model": "agent-lazy",
+        "provider": "python",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 26,
+        "n_checkable": 26,
+        "n_uncheckable": 0,
+        "n_passes": 26,
+        "n_failures": 0,
+        "accuracy": 1.0,
+        "ci95": [
+          0.871,
+          1.0
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 26
+        },
+        "modal_output": {
+          "text": "France",
+          "count": 1,
+          "share": 0.0385
+        }
+      },
+      {
+        "model": "agent-narrow",
+        "provider": "python",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 26,
+        "n_checkable": 26,
+        "n_uncheckable": 0,
+        "n_passes": 9,
+        "n_failures": 17,
+        "accuracy": 0.3462,
+        "ci95": [
+          0.194,
+          0.538
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 26
+        },
+        "modal_output": {
+          "text": "unknown",
+          "count": 17,
+          "share": 0.6538
+        }
+      },
+      {
+        "model": "agent-partial",
+        "provider": "python",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 26,
+        "n_checkable": 26,
+        "n_uncheckable": 0,
+        "n_passes": 16,
+        "n_failures": 10,
+        "accuracy": 0.6154,
+        "ci95": [
+          0.425,
+          0.776
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 26
+        },
+        "modal_output": {
+          "text": "unknown",
+          "count": 10,
+          "share": 0.3846
+        }
+      }
+    ],
+    "fleet": {
+      "n_models": 4,
+      "n_items": 26,
+      "mean_accuracy": 0.7212,
+      "min_accuracy": 0.3462,
+      "max_accuracy": 1.0,
+      "spread": 0.6538,
+      "kr20": 0.9561,
+      "n_all_right": 9,
+      "n_all_wrong": 0,
+      "dead_share": 0.3462,
+      "mde_unpaired": 0.3885
+    },
+    "items": [
+      {
+        "id": "cap-amman",
+        "target": "Jordan",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.8115,
+        "missed_by": [
+          "agent-narrow"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      },
+      {
+        "id": "cap-athens",
+        "target": "Greece",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.9127,
+        "missed_by": [
+          "agent-narrow",
+          "agent-partial"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      },
+      {
+        "id": "cap-budapest",
+        "target": "Hungary",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.9127,
+        "missed_by": [
+          "agent-narrow",
+          "agent-partial"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      },
+      {
+        "id": "cap-cairo",
+        "target": "Egypt",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.9127,
+        "missed_by": [
+          "agent-narrow",
+          "agent-partial"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      },
+      {
+        "id": "cap-canberra",
+        "target": "Australia",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "cap-copenhagen",
+        "target": "Denmark",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.8115,
+        "missed_by": [
+          "agent-narrow"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      },
+      {
+        "id": "cap-dublin",
+        "target": "Ireland",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.8115,
+        "missed_by": [
+          "agent-narrow"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      },
+      {
+        "id": "cap-hanoi",
+        "target": "Vietnam",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "cap-havana",
+        "target": "Cuba",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.9127,
+        "missed_by": [
+          "agent-narrow",
+          "agent-partial"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      },
+      {
+        "id": "cap-helsinki",
+        "target": "Finland",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.8115,
+        "missed_by": [
+          "agent-narrow"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      },
+      {
+        "id": "cap-kathmandu",
+        "target": "Nepal",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.9127,
+        "missed_by": [
+          "agent-narrow",
+          "agent-partial"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      },
+      {
+        "id": "cap-lima",
+        "target": "Peru",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.9127,
+        "missed_by": [
+          "agent-narrow",
+          "agent-partial"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      },
+      {
+        "id": "cap-lisbon",
+        "target": "Portugal",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "cap-nairobi",
+        "target": "Kenya",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "cap-oslo",
+        "target": "Norway",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "cap-ottawa",
+        "target": "Canada",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "cap-paris",
+        "target": "France",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "cap-quito",
+        "target": "Ecuador",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "cap-rabat",
+        "target": "Morocco",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.9127,
+        "missed_by": [
+          "agent-narrow",
+          "agent-partial"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      },
+      {
+        "id": "cap-reykjavik",
+        "target": "Iceland",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.9127,
+        "missed_by": [
+          "agent-narrow",
+          "agent-partial"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      },
+      {
+        "id": "cap-santiago",
+        "target": "Chile",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.5774,
+        "missed_by": [
+          "agent-grounded",
+          "agent-narrow",
+          "agent-partial"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      },
+      {
+        "id": "cap-stockholm",
+        "target": "Sweden",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.8115,
+        "missed_by": [
+          "agent-narrow"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      },
+      {
+        "id": "cap-tokyo",
+        "target": "Japan",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "cap-tunis",
+        "target": "Tunisia",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.5774,
+        "missed_by": [
+          "agent-grounded",
+          "agent-narrow",
+          "agent-partial"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      },
+      {
+        "id": "cap-vienna",
+        "target": "Austria",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.8115,
+        "missed_by": [
+          "agent-narrow"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      },
+      {
+        "id": "cap-warsaw",
+        "target": "Poland",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.8115,
+        "missed_by": [
+          "agent-narrow"
+        ],
+        "top_wrong_answer": "unknown",
+        "separates": true
+      }
+    ],
+    "slices": {},
+    "cost": {
+      "total_usd": 0.0,
+      "total_tokens_in": 0,
+      "total_tokens_out": 0,
+      "all_dry": false
+    }
   },
   "claims": [
     {

@@ -2,6 +2,61 @@
 
 **INCOMPLETE**: no failures, but only 36 of 38 checks ran (36 of 38 ran; 23 n/a of 61 declared). Not a clean bill of health.
 
+## Results
+
+> These numbers come from an eval with **incomplete coverage**. They describe what the runs contain; whether they can be published is decided under Checks.
+
+| model | provider | records | checkable | judgeable | accuracy | 95% CI | passes | fails | out tok | spend |
+|---|---|---:|---:|---:|---:|---|---:|---:|---:|---:|
+| meta-llama/llama-3.1-8b-instruct | openrouter | 40 | 40 | 100% | 95.0% | [0.835, 0.986] | 38 | 2 | 342 | $0.0001 |
+| meta-llama/llama-3.2-3b-instruct | openrouter | 40 | 40 | 100% | 87.5% | [0.739, 0.945] | 35 | 5 | 229 | $0.0002 |
+| mistralai/ministral-8b-2512 | openrouter | 40 | 40 | 100% | 100.0% | [0.912, 1.000] | 40 | 0 | 244 | $0.0003 |
+| qwen/qwen3-30b-a3b-instruct-2507 | openrouter | 40 | 40 | 100% | 100.0% | [0.912, 1.000] | 40 | 0 | 225 | $0.0001 |
+
+Accuracy is ON CHECKABLE output: `judgeable` is the share the scorer reached a verdict on at all, and 80% accurate on 60%-judgeable output is not 80% accurate.
+
+**4 model(s) x 40 item(s)**, mean 95.6%, spanning 87.5% to 100.0% (12% spread), KR-20 0.70.
+
+33 item(s) every model passed and 0 every model failed: 82% of the set separated nobody in this fleet.
+
+At 40 items an UNPAIRED comparison resolves gaps down to about 31%; smaller differences between the models above are not distinguishable from sampling noise by that test.
+
+<details><summary>Item difficulty: the 25 hardest of 40, hardest first</summary>
+
+| item | target | p | discrimination | missed by | most common wrong answer |
+|---|---|---:|---:|---|---|
+| pres-02 | Diamond | 75% | -0.14 | meta-llama/llama-3.1-8b-instruct | corundum |
+| pres-10 | Igneous | 75% | +0.87 | meta-llama/llama-3.2-3b-instruct | b. |
+| pres-12 | Electron | 75% | +0.87 | meta-llama/llama-3.2-3b-instruct | d. |
+| pres-14 | Gravity | 75% | -0.14 | meta-llama/llama-3.1-8b-instruct | c. |
+| pres-16 | Fission | 75% | +0.87 | meta-llama/llama-3.2-3b-instruct | b. |
+| pres-31 | Merge sort | 75% | +0.87 | meta-llama/llama-3.2-3b-instruct | c. |
+| pres-35 | Glucose | 75% | +0.87 | meta-llama/llama-3.2-3b-instruct | b |
+| pres-00 | Carbon dioxide | 100% | - | - | - |
+| pres-01 | Mercury | 100% | - | - | - |
+| pres-03 | Arteries | 100% | - | - | - |
+| pres-04 | Carbon | 100% | - | - | - |
+| pres-05 | Transpiration | 100% | - | - | - |
+| pres-06 | Outer core | 100% | - | - | - |
+| pres-07 | Ohm | 100% | - | - | - |
+| pres-08 | Mitochondrion | 100% | - | - | - |
+| pres-09 | Nitrogen | 100% | - | - | - |
+| pres-11 | Air pressure | 100% | - | - | - |
+| pres-13 | Carrying oxygen | 100% | - | - | - |
+| pres-15 | Acidic | 100% | - | - | - |
+| pres-17 | Hertz | 100% | - | - | - |
+| pres-18 | Vitamin D | 100% | - | - | - |
+| pres-19 | A variant form of a gene | 100% | - | - | - |
+| pres-20 | Refraction | 100% | - | - | - |
+| pres-21 | Omnivore | 100% | - | - | - |
+| pres-22 | Velocity | 100% | - | - | - |
+
+`p` is the share of the fleet that answered correctly and `discrimination` is the point-biserial with fleet skill. Both DESCRIBE; a hard item is not a defect. A negative discrimination is what P2 examines. All 40 rows are in [STOMP.json](STOMP.json).
+
+</details>
+
+**Cost**: $0.0008 across 9,166 input and 1,040 output tokens, summed from the RECORDS. R3 is the check that compares this against the manifest ledger.
+
 ## Entitled claims
 
 **None.** The verdict is `incomplete`; this eval is not currently entitled to publish claims.
@@ -60,7 +115,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 1 | 0 of 1 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -174,7 +229,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.53.2
+- tool: dinostomp 0.54.0
 - statistical power: at n=40 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~31% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `5bacd458ad54056ede6d5cca8071816c1f9f31dc510571c29b23c7124dc47878`
 - data_sha256: `d9e5a5096d3d36c846d4d90320ec9f19b0b835df5d4b6baa68dd4b0d870ba32e`

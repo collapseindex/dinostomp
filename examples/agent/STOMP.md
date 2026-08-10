@@ -2,6 +2,61 @@
 
 **INCOMPLETE**: no failures, but only 38 of 42 checks ran (38 of 42 ran; 19 n/a of 61 declared). Not a clean bill of health.
 
+## Results
+
+> These numbers come from an eval with **incomplete coverage**. They describe what the runs contain; whether they can be published is decided under Checks.
+
+| model | provider | records | checkable | judgeable | accuracy | 95% CI | passes | fails | out tok | spend |
+|---|---|---:|---:|---:|---:|---|---:|---:|---:|---:|
+| agent-grounded | python | 26 | 26 | 100% | 92.3% | [0.759, 0.979] | 24 | 2 | 0 | $0.0000 |
+| agent-lazy | python | 26 | 26 | 100% | 100.0% | [0.871, 1.000] | 26 | 0 | 0 | $0.0000 |
+| agent-narrow | python | 26 | 26 | 100% | 34.6% | [0.194, 0.538] | 9 | 17 | 0 | $0.0000 |
+| agent-partial | python | 26 | 26 | 100% | 61.5% | [0.425, 0.776] | 16 | 10 | 0 | $0.0000 |
+
+Accuracy is ON CHECKABLE output: `judgeable` is the share the scorer reached a verdict on at all, and 80% accurate on 60%-judgeable output is not 80% accurate.
+
+**4 model(s) x 26 item(s)**, mean 72.1%, spanning 34.6% to 100.0% (65% spread), KR-20 0.96.
+
+9 item(s) every model passed and 0 every model failed: 35% of the set separated nobody in this fleet.
+
+At 26 items an UNPAIRED comparison resolves gaps down to about 39%; smaller differences between the models above are not distinguishable from sampling noise by that test.
+
+<details><summary>Item difficulty: the 25 hardest of 26, hardest first</summary>
+
+| item | target | p | discrimination | missed by | most common wrong answer |
+|---|---|---:|---:|---|---|
+| cap-santiago | Chile | 25% | +0.58 | agent-grounded, agent-narrow, agent-partial | unknown |
+| cap-tunis | Tunisia | 25% | +0.58 | agent-grounded, agent-narrow, agent-partial | unknown |
+| cap-athens | Greece | 50% | +0.91 | agent-narrow, agent-partial | unknown |
+| cap-budapest | Hungary | 50% | +0.91 | agent-narrow, agent-partial | unknown |
+| cap-cairo | Egypt | 50% | +0.91 | agent-narrow, agent-partial | unknown |
+| cap-havana | Cuba | 50% | +0.91 | agent-narrow, agent-partial | unknown |
+| cap-kathmandu | Nepal | 50% | +0.91 | agent-narrow, agent-partial | unknown |
+| cap-lima | Peru | 50% | +0.91 | agent-narrow, agent-partial | unknown |
+| cap-rabat | Morocco | 50% | +0.91 | agent-narrow, agent-partial | unknown |
+| cap-reykjavik | Iceland | 50% | +0.91 | agent-narrow, agent-partial | unknown |
+| cap-amman | Jordan | 75% | +0.81 | agent-narrow | unknown |
+| cap-copenhagen | Denmark | 75% | +0.81 | agent-narrow | unknown |
+| cap-dublin | Ireland | 75% | +0.81 | agent-narrow | unknown |
+| cap-helsinki | Finland | 75% | +0.81 | agent-narrow | unknown |
+| cap-stockholm | Sweden | 75% | +0.81 | agent-narrow | unknown |
+| cap-vienna | Austria | 75% | +0.81 | agent-narrow | unknown |
+| cap-warsaw | Poland | 75% | +0.81 | agent-narrow | unknown |
+| cap-canberra | Australia | 100% | - | - | - |
+| cap-hanoi | Vietnam | 100% | - | - | - |
+| cap-lisbon | Portugal | 100% | - | - | - |
+| cap-nairobi | Kenya | 100% | - | - | - |
+| cap-oslo | Norway | 100% | - | - | - |
+| cap-ottawa | Canada | 100% | - | - | - |
+| cap-paris | France | 100% | - | - | - |
+| cap-quito | Ecuador | 100% | - | - | - |
+
+`p` is the share of the fleet that answered correctly and `discrimination` is the point-biserial with fleet skill. Both DESCRIBE; a hard item is not a defect. A negative discrimination is what P2 examines. All 26 rows are in [STOMP.json](STOMP.json).
+
+</details>
+
+**Cost**: $0.0000 across 0 input and 0 output tokens, summed from the RECORDS. R3 is the check that compares this against the manifest ledger.
+
 ## Entitled claims
 
 **None.** The verdict is `incomplete`; this eval is not currently entitled to publish claims.
@@ -70,7 +125,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | ok | each model beats its own blind baseline | 4 | 0 of 4 model(s) score no better informed than blind; their numbers are not evidence about this task (unpaired: separate runs) |
 | ok | failed answers do not contain the reference | 2 | 0 of 2 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 4 | 0 of 4 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 4 | 0 of 4 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | passing answers are grounded in tool evidence | 4 | 0 of 4 target(s) pass items whose answer does not APPEAR in their own evidence (2 such answer(s) in total). This is co-occurrence, not causation: an answer recalled from memory that also happens to appear in a retrieved snippet counts as grounded here, so this count is a floor |
 | ok | no model under-reports its trajectory | 4 | 0 of 4 target(s) report far fewer steps than the fleet (median 1.2); a thin trace can be efficiency OR omission |
@@ -133,7 +188,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"b01352d90c8ad0dc": 4}}`
+- evidence: `{"engines": {"f55e58da3a42578d": 4}}`
 
 </details>
 <details><summary>[ok] passing answers are grounded in tool evidence</summary>
@@ -183,14 +238,14 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260810_065804_agent-capitals_agent-grounded_n26_s42.jsonl | agent-grounded | (same) | python | no | 42 | 26 | 0 |
-| 20260810_065804_agent-capitals_agent-lazy_n26_s42.jsonl | agent-lazy | (same) | python | no | 42 | 26 | 0 |
-| 20260810_065804_agent-capitals_agent-narrow_n26_s42.jsonl | agent-narrow | (same) | python | no | 42 | 26 | 0 |
-| 20260810_065804_agent-capitals_agent-partial_n26_s42.jsonl | agent-partial | (same) | python | no | 42 | 26 | 0 |
+| 20260810_082453_agent-capitals_agent-grounded_n26_s42.jsonl | agent-grounded | (same) | python | no | 42 | 26 | 0 |
+| 20260810_082453_agent-capitals_agent-narrow_n26_s42.jsonl | agent-narrow | (same) | python | no | 42 | 26 | 0 |
+| 20260810_082453_agent-capitals_agent-partial_n26_s42.jsonl | agent-partial | (same) | python | no | 42 | 26 | 0 |
+| 20260810_082454_agent-capitals_agent-lazy_n26_s42.jsonl | agent-lazy | (same) | python | no | 42 | 26 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.53.2
+- tool: dinostomp 0.54.0
 - statistical power: at n=26 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~39% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `66a70cdee88cac64a2400c41b4a919c92d4e2e8345f4b4257b9433215195aeb1`
 - data_sha256: `5dfd19b1348d90405cd81c07540d53a4583e766dfbb690420cf78bdeb5cb530c`

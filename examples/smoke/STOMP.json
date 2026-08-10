@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.53.2",
+  "version": "0.54.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -800,11 +800,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 1 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind",
+      "detail": "0 of 1 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind",
       "witnesses": 1,
       "evidence": {
         "engines": {
-          "b01352d90c8ad0dc": 1
+          "f55e58da3a42578d": 1
         }
       }
     },
@@ -1040,7 +1040,7 @@
   },
   "runs": [
     {
-      "run_file": "20260810_065757_smoke-arith_dry-strong_n6_s42.jsonl",
+      "run_file": "20260810_082447_smoke-arith_dry-strong_n6_s42.jsonl",
       "model": "dry-strong",
       "model_reported": "dry-strong",
       "provider": "dry",
@@ -1059,5 +1059,125 @@
   "power": {
     "n_items": 6,
     "mde_unpaired_80pct": 0.8088
+  },
+  "results": {
+    "models": [
+      {
+        "model": "dry-strong",
+        "provider": "dry",
+        "dry_run": true,
+        "runs": 1,
+        "n_records": 6,
+        "n_checkable": 6,
+        "n_uncheckable": 0,
+        "n_passes": 6,
+        "n_failures": 0,
+        "accuracy": 1.0,
+        "ci95": [
+          0.61,
+          1.0
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 66,
+        "tokens_out": 6,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 6
+        },
+        "modal_output": {
+          "text": "57",
+          "count": 1,
+          "share": 0.1667
+        }
+      }
+    ],
+    "fleet": {
+      "n_models": 1,
+      "n_items": 6,
+      "mean_accuracy": 1.0,
+      "min_accuracy": 1.0,
+      "max_accuracy": 1.0,
+      "spread": null,
+      "kr20": null,
+      "n_all_right": 6,
+      "n_all_wrong": 0,
+      "dead_share": 1.0,
+      "mde_unpaired": 0.8088
+    },
+    "items": [
+      {
+        "id": "a1",
+        "target": "57",
+        "n_answered": 1,
+        "n_correct": 1,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "a2",
+        "target": "62",
+        "n_answered": 1,
+        "n_correct": 1,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "a3",
+        "target": "90",
+        "n_answered": 1,
+        "n_correct": 1,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "a4",
+        "target": "91",
+        "n_answered": 1,
+        "n_correct": 1,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "a5",
+        "target": "72",
+        "n_answered": 1,
+        "n_correct": 1,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "a6",
+        "target": "80",
+        "n_answered": 1,
+        "n_correct": 1,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      }
+    ],
+    "slices": {},
+    "cost": {
+      "total_usd": 0.0,
+      "total_tokens_in": 66,
+      "total_tokens_out": 6,
+      "all_dry": true
+    }
   }
 }

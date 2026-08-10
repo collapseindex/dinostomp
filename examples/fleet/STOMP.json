@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.53.2",
+  "version": "0.54.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -779,11 +779,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 6 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind",
+      "detail": "0 of 6 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind",
       "witnesses": 6,
       "evidence": {
         "engines": {
-          "b01352d90c8ad0dc": 6
+          "f55e58da3a42578d": 6
         }
       }
     },
@@ -1043,7 +1043,7 @@
   },
   "runs": [
     {
-      "run_file": "20260810_065758_fleet-arith_dry-alpha_n24_s42.jsonl",
+      "run_file": "20260810_082448_fleet-arith_dry-alpha_n24_s42.jsonl",
       "model": "dry-alpha",
       "model_reported": "dry-alpha",
       "provider": "dry",
@@ -1055,7 +1055,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_065758_fleet-arith_dry-bravo_n24_s42.jsonl",
+      "run_file": "20260810_082448_fleet-arith_dry-bravo_n24_s42.jsonl",
       "model": "dry-bravo",
       "model_reported": "dry-bravo",
       "provider": "dry",
@@ -1067,7 +1067,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_065758_fleet-arith_dry-charlie_n24_s42.jsonl",
+      "run_file": "20260810_082448_fleet-arith_dry-charlie_n24_s42.jsonl",
       "model": "dry-charlie",
       "model_reported": "dry-charlie",
       "provider": "dry",
@@ -1079,7 +1079,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_065759_fleet-arith_dry-delta_n24_s42.jsonl",
+      "run_file": "20260810_082448_fleet-arith_dry-delta_n24_s42.jsonl",
       "model": "dry-delta",
       "model_reported": "dry-delta",
       "provider": "dry",
@@ -1091,7 +1091,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_065759_fleet-arith_dry-echo_n24_s42.jsonl",
+      "run_file": "20260810_082448_fleet-arith_dry-echo_n24_s42.jsonl",
       "model": "dry-echo",
       "model_reported": "dry-echo",
       "provider": "dry",
@@ -1103,7 +1103,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_065759_fleet-arith_dry-foxtrot_n24_s42.jsonl",
+      "run_file": "20260810_082448_fleet-arith_dry-foxtrot_n24_s42.jsonl",
       "model": "dry-foxtrot",
       "model_reported": "dry-foxtrot",
       "provider": "dry",
@@ -1121,6 +1121,523 @@
   "power": {
     "n_items": 24,
     "mde_unpaired_80pct": 0.4044
+  },
+  "results": {
+    "models": [
+      {
+        "model": "dry-alpha",
+        "provider": "dry",
+        "dry_run": true,
+        "runs": 1,
+        "n_records": 24,
+        "n_checkable": 24,
+        "n_uncheckable": 0,
+        "n_passes": 24,
+        "n_failures": 0,
+        "accuracy": 1.0,
+        "ci95": [
+          0.862,
+          1.0
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 264,
+        "tokens_out": 24,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 24
+        },
+        "modal_output": {
+          "text": "21",
+          "count": 1,
+          "share": 0.0417
+        }
+      },
+      {
+        "model": "dry-bravo",
+        "provider": "dry",
+        "dry_run": true,
+        "runs": 1,
+        "n_records": 24,
+        "n_checkable": 24,
+        "n_uncheckable": 0,
+        "n_passes": 18,
+        "n_failures": 6,
+        "accuracy": 0.75,
+        "ci95": [
+          0.551,
+          0.88
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 264,
+        "tokens_out": 24,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 24
+        },
+        "modal_output": {
+          "text": "47",
+          "count": 2,
+          "share": 0.0833
+        }
+      },
+      {
+        "model": "dry-charlie",
+        "provider": "dry",
+        "dry_run": true,
+        "runs": 1,
+        "n_records": 24,
+        "n_checkable": 24,
+        "n_uncheckable": 0,
+        "n_passes": 9,
+        "n_failures": 15,
+        "accuracy": 0.375,
+        "ci95": [
+          0.212,
+          0.573
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 264,
+        "tokens_out": 24,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 24
+        },
+        "modal_output": {
+          "text": "33",
+          "count": 2,
+          "share": 0.0833
+        }
+      },
+      {
+        "model": "dry-delta",
+        "provider": "dry",
+        "dry_run": true,
+        "runs": 1,
+        "n_records": 24,
+        "n_checkable": 24,
+        "n_uncheckable": 0,
+        "n_passes": 24,
+        "n_failures": 0,
+        "accuracy": 1.0,
+        "ci95": [
+          0.862,
+          1.0
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 264,
+        "tokens_out": 24,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 24
+        },
+        "modal_output": {
+          "text": "21",
+          "count": 1,
+          "share": 0.0417
+        }
+      },
+      {
+        "model": "dry-echo",
+        "provider": "dry",
+        "dry_run": true,
+        "runs": 1,
+        "n_records": 24,
+        "n_checkable": 24,
+        "n_uncheckable": 0,
+        "n_passes": 12,
+        "n_failures": 12,
+        "accuracy": 0.5,
+        "ci95": [
+          0.314,
+          0.686
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 264,
+        "tokens_out": 24,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 24
+        },
+        "modal_output": {
+          "text": "43",
+          "count": 2,
+          "share": 0.0833
+        }
+      },
+      {
+        "model": "dry-foxtrot",
+        "provider": "dry",
+        "dry_run": true,
+        "runs": 1,
+        "n_records": 24,
+        "n_checkable": 24,
+        "n_uncheckable": 0,
+        "n_passes": 13,
+        "n_failures": 11,
+        "accuracy": 0.5417,
+        "ci95": [
+          0.351,
+          0.721
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 264,
+        "tokens_out": 24,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 24
+        },
+        "modal_output": {
+          "text": "35",
+          "count": 2,
+          "share": 0.0833
+        }
+      }
+    ],
+    "fleet": {
+      "n_models": 6,
+      "n_items": 24,
+      "mean_accuracy": 0.6944,
+      "min_accuracy": 0.375,
+      "max_accuracy": 1.0,
+      "spread": 0.625,
+      "kr20": 0.9443,
+      "n_all_right": 9,
+      "n_all_wrong": 0,
+      "dead_share": 0.375,
+      "mde_unpaired": 0.4044
+    },
+    "items": [
+      {
+        "id": "a10",
+        "target": "21",
+        "n_answered": 6,
+        "n_correct": 5,
+        "p": 0.8333,
+        "discrimination": 0.5447,
+        "missed_by": [
+          "dry-charlie"
+        ],
+        "top_wrong_answer": "28",
+        "separates": true
+      },
+      {
+        "id": "a11",
+        "target": "23",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "a12",
+        "target": "25",
+        "n_answered": 6,
+        "n_correct": 5,
+        "p": 0.8333,
+        "discrimination": 0.5447,
+        "missed_by": [
+          "dry-charlie"
+        ],
+        "top_wrong_answer": "29",
+        "separates": true
+      },
+      {
+        "id": "a13",
+        "target": "27",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.872,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "28",
+        "separates": true
+      },
+      {
+        "id": "a14",
+        "target": "29",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.9006,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "36",
+        "separates": true
+      },
+      {
+        "id": "a15",
+        "target": "31",
+        "n_answered": 6,
+        "n_correct": 5,
+        "p": 0.8333,
+        "discrimination": 0.5447,
+        "missed_by": [
+          "dry-charlie"
+        ],
+        "top_wrong_answer": "33",
+        "separates": true
+      },
+      {
+        "id": "a16",
+        "target": "33",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "a17",
+        "target": "35",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "a18",
+        "target": "37",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.9006,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "42",
+        "separates": true
+      },
+      {
+        "id": "a19",
+        "target": "39",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.9006,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "44",
+        "separates": true
+      },
+      {
+        "id": "a20",
+        "target": "41",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.9006,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "43",
+        "separates": true
+      },
+      {
+        "id": "a21",
+        "target": "43",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "a22",
+        "target": "45",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.872,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "47",
+        "separates": true
+      },
+      {
+        "id": "a23",
+        "target": "47",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "a24",
+        "target": "49",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "a25",
+        "target": "51",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.872,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "54",
+        "separates": true
+      },
+      {
+        "id": "a26",
+        "target": "53",
+        "n_answered": 6,
+        "n_correct": 4,
+        "p": 0.6667,
+        "discrimination": 0.71,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo"
+        ],
+        "top_wrong_answer": "58",
+        "separates": true
+      },
+      {
+        "id": "a27",
+        "target": "55",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "a28",
+        "target": "57",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "a29",
+        "target": "59",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.9006,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "61",
+        "separates": true
+      },
+      {
+        "id": "a30",
+        "target": "61",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.872,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "66",
+        "separates": true
+      },
+      {
+        "id": "a31",
+        "target": "63",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.872,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "66",
+        "separates": true
+      },
+      {
+        "id": "a32",
+        "target": "65",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "a33",
+        "target": "67",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.872,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "71",
+        "separates": true
+      }
+    ],
+    "slices": {},
+    "cost": {
+      "total_usd": 0.0,
+      "total_tokens_in": 1584,
+      "total_tokens_out": 144,
+      "all_dry": true
+    }
   },
   "claims": [
     {

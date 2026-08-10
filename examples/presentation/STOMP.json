@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.53.2",
+  "version": "0.54.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -755,7 +755,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine cf11e5de89c91221: meta-llama/llama-3.2-3b-instruct seed 7 (tool 0.37.0), meta-llama/llama-3.1-8b-instruct seed 7 (tool 0.37.0), mistralai/ministral-8b-2512 seed 7 (tool 0.37.0) and 1 more"
@@ -1148,5 +1148,597 @@
   "power": {
     "n_items": 40,
     "mde_unpaired_80pct": 0.3132
+  },
+  "results": {
+    "models": [
+      {
+        "model": "meta-llama/llama-3.1-8b-instruct",
+        "provider": "openrouter",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 40,
+        "n_checkable": 40,
+        "n_uncheckable": 0,
+        "n_passes": 38,
+        "n_failures": 2,
+        "accuracy": 0.95,
+        "ci95": [
+          0.835,
+          0.986
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 2279,
+        "tokens_out": 342,
+        "spend_usd": 0.000141,
+        "finish_reasons": {
+          "stop": 40
+        },
+        "modal_output": {
+          "text": "C. Carbon dioxide",
+          "count": 1,
+          "share": 0.025
+        }
+      },
+      {
+        "model": "meta-llama/llama-3.2-3b-instruct",
+        "provider": "openrouter",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 40,
+        "n_checkable": 40,
+        "n_uncheckable": 0,
+        "n_passes": 35,
+        "n_failures": 5,
+        "accuracy": 0.875,
+        "ci95": [
+          0.739,
+          0.945
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 2823,
+        "tokens_out": 229,
+        "spend_usd": 0.000217,
+        "finish_reasons": {
+          "stop": 40
+        },
+        "modal_output": {
+          "text": "B.",
+          "count": 2,
+          "share": 0.05
+        }
+      },
+      {
+        "model": "mistralai/ministral-8b-2512",
+        "provider": "openrouter",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 40,
+        "n_checkable": 40,
+        "n_uncheckable": 0,
+        "n_passes": 40,
+        "n_failures": 0,
+        "accuracy": 1.0,
+        "ci95": [
+          0.912,
+          1.0
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 1933,
+        "tokens_out": 244,
+        "spend_usd": 0.000327,
+        "finish_reasons": {
+          "stop": 40
+        },
+        "modal_output": {
+          "text": "C. Carbon dioxide",
+          "count": 1,
+          "share": 0.025
+        }
+      },
+      {
+        "model": "qwen/qwen3-30b-a3b-instruct-2507",
+        "provider": "openrouter",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 40,
+        "n_checkable": 40,
+        "n_uncheckable": 0,
+        "n_passes": 40,
+        "n_failures": 0,
+        "accuracy": 1.0,
+        "ci95": [
+          0.912,
+          1.0
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 2131,
+        "tokens_out": 225,
+        "spend_usd": 0.000146,
+        "finish_reasons": {
+          "stop": 40
+        },
+        "modal_output": {
+          "text": "C. Carbon dioxide",
+          "count": 1,
+          "share": 0.025
+        }
+      }
+    ],
+    "fleet": {
+      "n_models": 4,
+      "n_items": 40,
+      "mean_accuracy": 0.9563,
+      "min_accuracy": 0.875,
+      "max_accuracy": 1.0,
+      "spread": 0.125,
+      "kr20": 0.7042,
+      "n_all_right": 33,
+      "n_all_wrong": 0,
+      "dead_share": 0.825,
+      "mde_unpaired": 0.3132
+    },
+    "items": [
+      {
+        "id": "pres-00",
+        "target": "Carbon dioxide",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-01",
+        "target": "Mercury",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-02",
+        "target": "Diamond",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.14,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct"
+        ],
+        "top_wrong_answer": "corundum",
+        "separates": true
+      },
+      {
+        "id": "pres-03",
+        "target": "Arteries",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-04",
+        "target": "Carbon",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-05",
+        "target": "Transpiration",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-06",
+        "target": "Outer core",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-07",
+        "target": "Ohm",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-08",
+        "target": "Mitochondrion",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-09",
+        "target": "Nitrogen",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-10",
+        "target": "Igneous",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.8704,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "b.",
+        "separates": true
+      },
+      {
+        "id": "pres-11",
+        "target": "Air pressure",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-12",
+        "target": "Electron",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.8704,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "d.",
+        "separates": true
+      },
+      {
+        "id": "pres-13",
+        "target": "Carrying oxygen",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-14",
+        "target": "Gravity",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.14,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct"
+        ],
+        "top_wrong_answer": "c.",
+        "separates": true
+      },
+      {
+        "id": "pres-15",
+        "target": "Acidic",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-16",
+        "target": "Fission",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.8704,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "b.",
+        "separates": true
+      },
+      {
+        "id": "pres-17",
+        "target": "Hertz",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-18",
+        "target": "Vitamin D",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-19",
+        "target": "A variant form of a gene",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-20",
+        "target": "Refraction",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-21",
+        "target": "Omnivore",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-22",
+        "target": "Velocity",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-23",
+        "target": "Synthesises new DNA strands",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-24",
+        "target": "Inferior goods",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-25",
+        "target": "2x",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-26",
+        "target": "Cumulonimbus",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-27",
+        "target": "Probability of data this extreme under the null hypothesis",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-28",
+        "target": "Tendon",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-29",
+        "target": "NaCl",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-30",
+        "target": "Inertia",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-31",
+        "target": "Merge sort",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.8704,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "c.",
+        "separates": true
+      },
+      {
+        "id": "pres-32",
+        "target": "68 percent",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-33",
+        "target": "Starch",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-34",
+        "target": "Speeds a reaction without being consumed",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-35",
+        "target": "Glucose",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.8704,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "b",
+        "separates": true
+      },
+      {
+        "id": "pres-36",
+        "target": "Ad hominem",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-37",
+        "target": "The energy needed to free an electron",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-38",
+        "target": "The Gulf Stream",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "pres-39",
+        "target": "One occurring does not change the other's probability",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      }
+    ],
+    "slices": {},
+    "cost": {
+      "total_usd": 0.000831,
+      "total_tokens_in": 9166,
+      "total_tokens_out": 1040,
+      "all_dry": false
+    }
   }
 }

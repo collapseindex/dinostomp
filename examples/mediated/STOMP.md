@@ -2,6 +2,59 @@
 
 **INCOMPLETE**: no failures, but only 33 of 42 checks ran (33 of 42 ran; 19 n/a of 61 declared). Not a clean bill of health.
 
+## Results
+
+> These numbers come from an eval with **incomplete coverage**. They describe what the runs contain; whether they can be published is decided under Checks.
+
+| model | provider | records | checkable | judgeable | accuracy | 95% CI | passes | fails | out tok | spend |
+|---|---|---:|---:|---:|---:|---|---:|---:|---:|---:|
+| greedy | mediated | 24 | 24 | 100% | 100.0% | [0.862, 1.000] | 24 | 0 | 0 | $0.0000 |
+| grounded | mediated | 24 | 24 | 100% | 100.0% | [0.862, 1.000] | 24 | 0 | 0 | $0.0000 |
+| oneshot | mediated | 24 | 24 | 100% | 75.0% | [0.551, 0.880] | 18 | 6 | 0 | $0.0000 |
+
+Accuracy is ON CHECKABLE output: `judgeable` is the share the scorer reached a verdict on at all, and 80% accurate on 60%-judgeable output is not 80% accurate.
+
+**3 model(s) x 24 item(s)**, mean 91.7%, spanning 75.0% to 100.0% (25% spread), KR-20 0.87.
+
+18 item(s) every model passed and 0 every model failed: 75% of the set separated nobody in this fleet.
+
+At 24 items an UNPAIRED comparison resolves gaps down to about 40%; smaller differences between the models above are not distinguishable from sampling noise by that test.
+
+<details><summary>Item difficulty: all 24 item(s), hardest first</summary>
+
+| item | target | p | discrimination | missed by | most common wrong answer |
+|---|---|---:|---:|---|---|
+| m019 | lower | 67% | +1.00 | oneshot | concentration |
+| m020 | lower | 67% | +1.00 | oneshot | concentration |
+| m021 | lower | 67% | +1.00 | oneshot | concentration |
+| m022 | activation | 67% | +1.00 | oneshot | energy |
+| m023 | activation | 67% | +1.00 | oneshot | energy |
+| m024 | activation | 67% | +1.00 | oneshot | energy |
+| m001 | chloroplasts | 100% | - | - | - |
+| m002 | chloroplasts | 100% | - | - | - |
+| m003 | chloroplasts | 100% | - | - | - |
+| m004 | mitochondria | 100% | - | - | - |
+| m005 | mitochondria | 100% | - | - | - |
+| m006 | mitochondria | 100% | - | - | - |
+| m007 | stomata | 100% | - | - | - |
+| m008 | stomata | 100% | - | - | - |
+| m009 | stomata | 100% | - | - | - |
+| m010 | two | 100% | - | - | - |
+| m011 | two | 100% | - | - | - |
+| m012 | two | 100% | - | - | - |
+| m013 | four | 100% | - | - | - |
+| m014 | four | 100% | - | - | - |
+| m015 | four | 100% | - | - | - |
+| m016 | higher | 100% | - | - | - |
+| m017 | higher | 100% | - | - | - |
+| m018 | higher | 100% | - | - | - |
+
+`p` is the share of the fleet that answered correctly and `discrimination` is the point-biserial with fleet skill. Both DESCRIBE; a hard item is not a defect. A negative discrimination is what P2 examines.
+
+</details>
+
+**Cost**: $0.0000 across 0 input and 0 output tokens, summed from the RECORDS. R3 is the check that compares this against the manifest ledger.
+
 ## Entitled claims
 
 **None.** The verdict is `incomplete`; this eval is not currently entitled to publish claims.
@@ -60,7 +113,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 1 | 0 of 1 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 3 | 0 of 3 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 3 | 0 of 3 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | passing answers are grounded in tool evidence | 3 | 0 of 3 target(s) pass items whose answer does not APPEAR in their own evidence (0 such answer(s) in total). This is co-occurrence, not causation: an answer recalled from memory that also happens to appear in a retrieved snippet counts as grounded here, so this count is a floor |
 | ok | no model under-reports its trajectory | 3 | 0 of 3 target(s) report far fewer steps than the fleet (median 1.0); a thin trace can be efficiency OR omission |
@@ -108,7 +161,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"b01352d90c8ad0dc": 3}}`
+- evidence: `{"engines": {"f55e58da3a42578d": 3}}`
 
 </details>
 <details><summary>[ok] passing answers are grounded in tool evidence</summary>
@@ -158,13 +211,13 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260810_065807_mediated-grounding_greedy_n24_s7.jsonl | greedy | (same) | mediated | no | 7 | 24 | 0 |
-| 20260810_065807_mediated-grounding_grounded_n24_s7.jsonl | grounded | (same) | mediated | no | 7 | 24 | 0 |
-| 20260810_065807_mediated-grounding_oneshot_n24_s7.jsonl | oneshot | (same) | mediated | no | 7 | 24 | 0 |
+| 20260810_082456_mediated-grounding_greedy_n24_s7.jsonl | greedy | (same) | mediated | no | 7 | 24 | 0 |
+| 20260810_082456_mediated-grounding_grounded_n24_s7.jsonl | grounded | (same) | mediated | no | 7 | 24 | 0 |
+| 20260810_082456_mediated-grounding_oneshot_n24_s7.jsonl | oneshot | (same) | mediated | no | 7 | 24 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.53.2
+- tool: dinostomp 0.54.0
 - statistical power: at n=24 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~40% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `ae79cfd0e8319d80f9c565515d96632b8b952160f7f84a8c94f34075d9a6c15a`
 - data_sha256: `36fe2258536e2eb42b78699d92ab85fff93108c55cea33795f90f40f7be53c27`

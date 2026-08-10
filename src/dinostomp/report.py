@@ -63,6 +63,132 @@ def _verdict_line(report: dict) -> str:
     return f"**BROKEN**: {summary['fail']} gated finding(s) {suffix}"
 
 
+# How many item rows the RENDERED report shows. The full table always goes to
+# STOMP.json, and the caption states the cap and the total, because a table that
+# silently stops at 25 rows reads as "these are all of them".
+ITEM_ROWS = 25
+
+
+def _pct(x, places=1):
+    return "-" if x is None else f"{x:.{places}%}"
+
+
+def _results_section(report: dict) -> list[str]:
+    """The RESULTS half: what the models did, before anything about whether to
+    believe it. Descriptive throughout; every judgement lives under Checks."""
+    res = report.get("results") or {}
+    models = res.get("models") or []
+    if not models:
+        return []
+
+    lines = ["## Results", ""]
+    verdict = report["summary"]["verdict"]
+    if verdict in ("broken", "incomplete"):
+        # The numbers are still shown. Hiding them would make the report useless
+        # exactly when someone most needs to see what happened, and a reader who
+        # scrolled here deserves the caveat in the same breath rather than three
+        # sections later.
+        why = ("gated findings" if verdict == "broken" else "incomplete coverage")
+        lines.append(f"> These numbers come from an eval with **{why}**. They describe what the "
+                     f"runs contain; whether they can be published is decided under Checks.")
+        lines.append("")
+
+    lines.append("| model | provider | records | checkable | judgeable | accuracy | 95% CI "
+                 "| passes | fails | out tok | spend |")
+    lines.append("|---|---|---:|---:|---:|---:|---|---:|---:|---:|---:|")
+    for m in models:
+        ci = f"[{m['ci95'][0]:.3f}, {m['ci95'][1]:.3f}]" if m.get("ci95") else "-"
+        lines.append(
+            f"| {_md_escape(m['model'])} | {_md_escape(m['provider'])} | {m['n_records']} "
+            f"| {m['n_checkable']} | {_pct(m['judgeability'], 0)} | {_pct(m['accuracy'])} | {ci} "
+            f"| {m['n_passes']} | {m['n_failures']} | {m['tokens_out']} "
+            f"| ${m['spend_usd']:.4f} |")
+    lines.append("")
+    lines.append("Accuracy is ON CHECKABLE output: `judgeable` is the share the scorer reached a "
+                 "verdict on at all, and 80% accurate on 60%-judgeable output is not 80% accurate.")
+    lines.append("")
+
+    f = res.get("fleet") or {}
+    if f.get("n_models"):
+        bits = [f"**{f['n_models']} model(s) x {f['n_items']} item(s)**"]
+        if f.get("mean_accuracy") is not None:
+            bits.append(f"mean {_pct(f['mean_accuracy'])}")
+        if f.get("spread") is not None:
+            bits.append(f"spanning {_pct(f['min_accuracy'])} to {_pct(f['max_accuracy'])} "
+                        f"({f['spread']:.0%} spread)")
+        if f.get("kr20") is not None:
+            bits.append(f"KR-20 {f['kr20']:.2f}")
+        lines.append(", ".join(bits) + ".")
+        if f.get("dead_share") is not None:
+            lines.append("")
+            lines.append(f"{f['n_all_right']} item(s) every model passed and {f['n_all_wrong']} "
+                         f"every model failed: {_pct(f['dead_share'], 0)} of the set separated "
+                         f"nobody in this fleet.")
+        if f.get("mde_unpaired"):
+            lines.append("")
+            lines.append(f"At {f['n_items']} items an UNPAIRED comparison resolves gaps down to "
+                         f"about {_pct(f['mde_unpaired'], 0)}; smaller differences between the "
+                         f"models above are not distinguishable from sampling noise by that test.")
+        lines.append("")
+
+    items = res.get("items") or []
+    if items:
+        hardest = sorted(items, key=lambda i: (i["p"] if i["p"] is not None else 1.0, i["id"]))
+        shown = hardest[:ITEM_ROWS]
+        caption = (f"all {len(items)} item(s)" if len(shown) == len(items)
+                   else f"the {len(shown)} hardest of {len(items)}")
+        lines.append(f"<details><summary>Item difficulty: {caption}, hardest first</summary>")
+        lines.append("")
+        lines.append("| item | target | p | discrimination | missed by | most common wrong answer |")
+        lines.append("|---|---|---:|---:|---|---|")
+        for i in shown:
+            disc = "-" if i["discrimination"] is None else f"{i['discrimination']:+.2f}"
+            missed = ", ".join(i["missed_by"][:4]) + ("..." if len(i["missed_by"]) > 4 else "")
+            lines.append(f"| {_md_escape(i['id'])} | {_md_escape(i['target'][:40])} "
+                         f"| {_pct(i['p'], 0)} | {disc} | {_md_escape(missed) or '-'} "
+                         f"| {_md_escape((i['top_wrong_answer'] or '')[:40]) or '-'} |")
+        lines.append("")
+        lines.append(f"`p` is the share of the fleet that answered correctly and `discrimination` "
+                     f"is the point-biserial with fleet skill. Both DESCRIBE; a hard item is not a "
+                     f"defect. A negative discrimination is what P2 examines."
+                     + (f" All {len(items)} rows are in [{JSON_NAME}]({JSON_NAME})."
+                        if len(shown) < len(items) else ""))
+        lines.append("")
+        lines.append("</details>")
+        lines.append("")
+
+    sl = res.get("slices") or {}
+    if sl:
+        lines.append("<details><summary>Accuracy by item metadata "
+                     f"({', '.join(sorted(sl))})</summary>")
+        lines.append("")
+        for key in sorted(sl):
+            lines.append(f"**{_md_escape(key)}**")
+            lines.append("")
+            lines.append("| value | items | scored | accuracy | 95% CI |")
+            lines.append("|---|---:|---:|---:|---|")
+            for row in sl[key]:
+                ci = f"[{row['ci95'][0]:.3f}, {row['ci95'][1]:.3f}]" if row.get("ci95") else "-"
+                lines.append(f"| {_md_escape(row['value'])} | {row['n_items']} | {row['n_scored']} "
+                             f"| {_pct(row['accuracy'])} | {ci} |")
+            lines.append("")
+        lines.append("Subgroups are small and **no multiplicity correction is applied**: with "
+                     "enough slices one of them looks extreme by chance. Read these as a place to "
+                     "look, never as a result.")
+        lines.append("")
+        lines.append("</details>")
+        lines.append("")
+
+    cost = res.get("cost") or {}
+    if not cost.get("all_dry"):
+        lines.append(f"**Cost**: ${cost.get('total_usd', 0):.4f} across "
+                     f"{cost.get('total_tokens_in', 0):,} input and "
+                     f"{cost.get('total_tokens_out', 0):,} output tokens, summed from the RECORDS. "
+                     f"R3 is the check that compares this against the manifest ledger.")
+        lines.append("")
+    return lines
+
+
 def render_markdown(report: dict) -> str:
     lines: list[str] = []
     target = Path(report["target"])
@@ -78,6 +204,8 @@ def render_markdown(report: dict) -> str:
         lines.append("")
 
     verdict = report["summary"]["verdict"]
+    lines.extend(_results_section(report))
+
     claims = report.get("entitled_claims") or []
     typed = report.get("claims") or []
     lines.append("## Entitled claims")

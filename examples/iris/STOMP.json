@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.53.2",
+  "version": "0.54.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -779,11 +779,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 6 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind",
+      "detail": "0 of 6 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind",
       "witnesses": 6,
       "evidence": {
         "engines": {
-          "b01352d90c8ad0dc": 6
+          "f55e58da3a42578d": 6
         }
       }
     },
@@ -1043,7 +1043,7 @@
   },
   "runs": [
     {
-      "run_file": "20260810_065800_iris-species_dry-alpha_n149_s42.jsonl",
+      "run_file": "20260810_082449_iris-species_dry-alpha_n149_s42.jsonl",
       "model": "dry-alpha",
       "model_reported": "dry-alpha",
       "provider": "dry",
@@ -1055,7 +1055,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_065800_iris-species_dry-bravo_n149_s42.jsonl",
+      "run_file": "20260810_082450_iris-species_dry-bravo_n149_s42.jsonl",
       "model": "dry-bravo",
       "model_reported": "dry-bravo",
       "provider": "dry",
@@ -1067,7 +1067,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_065800_iris-species_dry-charlie_n149_s42.jsonl",
+      "run_file": "20260810_082450_iris-species_dry-charlie_n149_s42.jsonl",
       "model": "dry-charlie",
       "model_reported": "dry-charlie",
       "provider": "dry",
@@ -1079,7 +1079,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_065801_iris-species_dry-delta_n149_s42.jsonl",
+      "run_file": "20260810_082450_iris-species_dry-delta_n149_s42.jsonl",
       "model": "dry-delta",
       "model_reported": "dry-delta",
       "provider": "dry",
@@ -1091,7 +1091,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_065801_iris-species_dry-echo_n149_s42.jsonl",
+      "run_file": "20260810_082450_iris-species_dry-echo_n149_s42.jsonl",
       "model": "dry-echo",
       "model_reported": "dry-echo",
       "provider": "dry",
@@ -1103,7 +1103,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_065801_iris-species_dry-foxtrot_n149_s42.jsonl",
+      "run_file": "20260810_082450_iris-species_dry-foxtrot_n149_s42.jsonl",
       "model": "dry-foxtrot",
       "model_reported": "dry-foxtrot",
       "provider": "dry",
@@ -1122,5 +1122,2197 @@
   "power": {
     "n_items": 149,
     "mde_unpaired_80pct": 0.1623
+  },
+  "results": {
+    "models": [
+      {
+        "model": "dry-alpha",
+        "provider": "dry",
+        "dry_run": true,
+        "runs": 1,
+        "n_records": 149,
+        "n_checkable": 149,
+        "n_uncheckable": 0,
+        "n_passes": 131,
+        "n_failures": 18,
+        "accuracy": 0.8792,
+        "ci95": [
+          0.817,
+          0.922
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 6556,
+        "tokens_out": 283,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 149
+        },
+        "modal_output": {
+          "text": "setosa",
+          "count": 44,
+          "share": 0.2953
+        }
+      },
+      {
+        "model": "dry-bravo",
+        "provider": "dry",
+        "dry_run": true,
+        "runs": 1,
+        "n_records": 149,
+        "n_checkable": 149,
+        "n_uncheckable": 0,
+        "n_passes": 106,
+        "n_failures": 43,
+        "accuracy": 0.7114,
+        "ci95": [
+          0.634,
+          0.778
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 6556,
+        "tokens_out": 316,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 149
+        },
+        "modal_output": {
+          "text": "setosa",
+          "count": 39,
+          "share": 0.2617
+        }
+      },
+      {
+        "model": "dry-charlie",
+        "provider": "dry",
+        "dry_run": true,
+        "runs": 1,
+        "n_records": 149,
+        "n_checkable": 149,
+        "n_uncheckable": 0,
+        "n_passes": 66,
+        "n_failures": 83,
+        "accuracy": 0.443,
+        "ci95": [
+          0.366,
+          0.523
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 6556,
+        "tokens_out": 379,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 149
+        },
+        "modal_output": {
+          "text": "versicolor",
+          "count": 23,
+          "share": 0.1544
+        }
+      },
+      {
+        "model": "dry-delta",
+        "provider": "dry",
+        "dry_run": true,
+        "runs": 1,
+        "n_records": 149,
+        "n_checkable": 149,
+        "n_uncheckable": 0,
+        "n_passes": 149,
+        "n_failures": 0,
+        "accuracy": 1.0,
+        "ci95": [
+          0.975,
+          1.0
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 6556,
+        "tokens_out": 248,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 149
+        },
+        "modal_output": {
+          "text": "setosa",
+          "count": 50,
+          "share": 0.3356
+        }
+      },
+      {
+        "model": "dry-echo",
+        "provider": "dry",
+        "dry_run": true,
+        "runs": 1,
+        "n_records": 149,
+        "n_checkable": 149,
+        "n_uncheckable": 0,
+        "n_passes": 83,
+        "n_failures": 66,
+        "accuracy": 0.557,
+        "ci95": [
+          0.477,
+          0.634
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 6556,
+        "tokens_out": 347,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 149
+        },
+        "modal_output": {
+          "text": "setosa",
+          "count": 28,
+          "share": 0.1879
+        }
+      },
+      {
+        "model": "dry-foxtrot",
+        "provider": "dry",
+        "dry_run": true,
+        "runs": 1,
+        "n_records": 149,
+        "n_checkable": 149,
+        "n_uncheckable": 0,
+        "n_passes": 83,
+        "n_failures": 66,
+        "accuracy": 0.557,
+        "ci95": [
+          0.477,
+          0.634
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 6556,
+        "tokens_out": 354,
+        "spend_usd": 0.0,
+        "finish_reasons": {
+          "stop": 149
+        },
+        "modal_output": {
+          "text": "versicolor",
+          "count": 28,
+          "share": 0.1879
+        }
+      }
+    ],
+    "fleet": {
+      "n_models": 6,
+      "n_items": 149,
+      "mean_accuracy": 0.6913,
+      "min_accuracy": 0.443,
+      "max_accuracy": 1.0,
+      "spread": 0.557,
+      "kr20": 0.9872,
+      "n_all_right": 66,
+      "n_all_wrong": 0,
+      "dead_share": 0.443,
+      "mde_unpaired": 0.1623
+    },
+    "items": [
+      {
+        "id": "iris-000",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-001",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-002",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-003",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-004",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-005",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 5,
+        "p": 0.8333,
+        "discrimination": 0.56,
+        "missed_by": [
+          "dry-charlie"
+        ],
+        "top_wrong_answer": "unlikely setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-006",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-007",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-008",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 4,
+        "p": 0.6667,
+        "discrimination": 0.6842,
+        "missed_by": [
+          "dry-charlie",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "hardly setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-009",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-010",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 4,
+        "p": 0.6667,
+        "discrimination": 0.6842,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo"
+        ],
+        "top_wrong_answer": "hardly setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-011",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-012",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-013",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-014",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "hardly setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-015",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-016",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-017",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 5,
+        "p": 0.8333,
+        "discrimination": 0.56,
+        "missed_by": [
+          "dry-charlie"
+        ],
+        "top_wrong_answer": "unlikely setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-018",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "hardly setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-019",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 5,
+        "p": 0.8333,
+        "discrimination": 0.56,
+        "missed_by": [
+          "dry-charlie"
+        ],
+        "top_wrong_answer": "hardly setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-020",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 5,
+        "p": 0.8333,
+        "discrimination": 0.56,
+        "missed_by": [
+          "dry-charlie"
+        ],
+        "top_wrong_answer": "unlikely setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-021",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-022",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "hardly setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-023",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-024",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 4,
+        "p": 0.6667,
+        "discrimination": 0.6842,
+        "missed_by": [
+          "dry-charlie",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-025",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-026",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-027",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-028",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "hardly setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-029",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-030",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 5,
+        "p": 0.8333,
+        "discrimination": 0.56,
+        "missed_by": [
+          "dry-charlie"
+        ],
+        "top_wrong_answer": "not setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-031",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-032",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-033",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-034",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-035",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-036",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-037",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-038",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-039",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-040",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "hardly setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-041",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-042",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-043",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-044",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-045",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-046",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-047",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-048",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 5,
+        "p": 0.8333,
+        "discrimination": 0.56,
+        "missed_by": [
+          "dry-charlie"
+        ],
+        "top_wrong_answer": "hardly setosa",
+        "separates": true
+      },
+      {
+        "id": "iris-049",
+        "target": "setosa",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-050",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 5,
+        "p": 0.8333,
+        "discrimination": 0.56,
+        "missed_by": [
+          "dry-charlie"
+        ],
+        "top_wrong_answer": "hardly versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-051",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-052",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-053",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-054",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-055",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "hardly versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-056",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 4,
+        "p": 0.6667,
+        "discrimination": 0.6842,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo"
+        ],
+        "top_wrong_answer": "hardly versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-057",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "hardly versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-058",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "hardly versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-059",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-060",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 5,
+        "p": 0.8333,
+        "discrimination": 0.56,
+        "missed_by": [
+          "dry-charlie"
+        ],
+        "top_wrong_answer": "not versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-061",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-062",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-063",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-064",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-065",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "hardly versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-066",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-067",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "hardly versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-068",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 4,
+        "p": 0.6667,
+        "discrimination": 0.6842,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo"
+        ],
+        "top_wrong_answer": "hardly versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-069",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-070",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-071",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-072",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-073",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-074",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-075",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-076",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-077",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-078",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-079",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-080",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-081",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-082",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-083",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-084",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-085",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 4,
+        "p": 0.6667,
+        "discrimination": 0.6842,
+        "missed_by": [
+          "dry-charlie",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-086",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-087",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-088",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 4,
+        "p": 0.6667,
+        "discrimination": 0.6842,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo"
+        ],
+        "top_wrong_answer": "unlikely versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-089",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-090",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-091",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-092",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-093",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 4,
+        "p": 0.6667,
+        "discrimination": 0.6842,
+        "missed_by": [
+          "dry-charlie",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-094",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-095",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-096",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "hardly versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-097",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-098",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-099",
+        "target": "versicolor",
+        "n_answered": 6,
+        "n_correct": 4,
+        "p": 0.6667,
+        "discrimination": 0.6842,
+        "missed_by": [
+          "dry-charlie",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not versicolor",
+        "separates": true
+      },
+      {
+        "id": "iris-100",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 5,
+        "p": 0.8333,
+        "discrimination": 0.56,
+        "missed_by": [
+          "dry-charlie"
+        ],
+        "top_wrong_answer": "unlikely virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-101",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-102",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-103",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-104",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-105",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-106",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 4,
+        "p": 0.6667,
+        "discrimination": 0.6842,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo"
+        ],
+        "top_wrong_answer": "hardly virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-107",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-108",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-109",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-110",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-111",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-112",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-113",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-114",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-115",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-116",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-117",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 5,
+        "p": 0.8333,
+        "discrimination": 0.56,
+        "missed_by": [
+          "dry-charlie"
+        ],
+        "top_wrong_answer": "unlikely virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-118",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "hardly virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-119",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-120",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-121",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-122",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-123",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-124",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-125",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-126",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-127",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-128",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-129",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-130",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-131",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-132",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-133",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-134",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-135",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 5,
+        "p": 0.8333,
+        "discrimination": 0.56,
+        "missed_by": [
+          "dry-charlie"
+        ],
+        "top_wrong_answer": "not virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-136",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-137",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-138",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-139",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 5,
+        "p": 0.8333,
+        "discrimination": 0.56,
+        "missed_by": [
+          "dry-charlie"
+        ],
+        "top_wrong_answer": "unlikely virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-140",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-141",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "hardly virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-143",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-144",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "unlikely virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-145",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 1,
+        "p": 0.1667,
+        "discrimination": 0.7006,
+        "missed_by": [
+          "dry-alpha",
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-146",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "iris-147",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 3,
+        "p": 0.5,
+        "discrimination": 0.8784,
+        "missed_by": [
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "not virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-148",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 2,
+        "p": 0.3333,
+        "discrimination": 0.8962,
+        "missed_by": [
+          "dry-bravo",
+          "dry-charlie",
+          "dry-echo",
+          "dry-foxtrot"
+        ],
+        "top_wrong_answer": "hardly virginica",
+        "separates": true
+      },
+      {
+        "id": "iris-149",
+        "target": "virginica",
+        "n_answered": 6,
+        "n_correct": 6,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      }
+    ],
+    "slices": {},
+    "cost": {
+      "total_usd": 0.0,
+      "total_tokens_in": 39336,
+      "total_tokens_out": 1927,
+      "all_dry": true
+    }
   }
 }

@@ -2,6 +2,61 @@
 
 **INCOMPLETE**: no failures, but only 31 of 37 checks ran (31 of 37 ran; 24 n/a of 61 declared). Not a clean bill of health.
 
+## Results
+
+> These numbers come from an eval with **incomplete coverage**. They describe what the runs contain; whether they can be published is decided under Checks.
+
+| model | provider | records | checkable | judgeable | accuracy | 95% CI | passes | fails | out tok | spend |
+|---|---|---:|---:|---:|---:|---|---:|---:|---:|---:|
+| bot-bare | python | 26 | 26 | 100% | 84.6% | [0.665, 0.939] | 22 | 4 | 0 | $0.0000 |
+| bot-chatty | python | 26 | 26 | 100% | 26.9% | [0.137, 0.461] | 7 | 19 | 0 | $0.0000 |
+| bot-hedged | python | 26 | 26 | 100% | 38.5% | [0.224, 0.575] | 10 | 16 | 0 | $0.0000 |
+| bot-wrapped | python | 26 | 26 | 100% | 61.5% | [0.425, 0.776] | 16 | 10 | 0 | $0.0000 |
+
+Accuracy is ON CHECKABLE output: `judgeable` is the share the scorer reached a verdict on at all, and 80% accurate on 60%-judgeable output is not 80% accurate.
+
+**4 model(s) x 26 item(s)**, mean 52.9%, spanning 26.9% to 84.6% (58% spread), KR-20 0.94.
+
+7 item(s) every model passed and 4 every model failed: 42% of the set separated nobody in this fleet.
+
+At 26 items an UNPAIRED comparison resolves gaps down to about 39%; smaller differences between the models above are not distinguishable from sampling noise by that test.
+
+<details><summary>Item difficulty: the 25 hardest of 26, hardest first</summary>
+
+| item | target | p | discrimination | missed by | most common wrong answer |
+|---|---|---:|---:|---|---|
+| cap-athens | Greece | 0% | - | bot-bare, bot-chatty, bot-hedged, bot-wrapped | tunisia |
+| cap-copenhagen | Denmark | 0% | - | bot-bare, bot-chatty, bot-hedged, bot-wrapped | norway |
+| cap-rabat | Morocco | 0% | - | bot-bare, bot-chatty, bot-hedged, bot-wrapped | japan |
+| cap-santiago | Chile | 0% | - | bot-bare, bot-chatty, bot-hedged, bot-wrapped | ireland |
+| cap-amman | Jordan | 25% | +0.80 | bot-chatty, bot-hedged, bot-wrapped | great question! after thinking it throug |
+| cap-dublin | Ireland | 25% | +0.80 | bot-chatty, bot-hedged, bot-wrapped | great question! after thinking it throug |
+| cap-havana | Cuba | 25% | +0.80 | bot-chatty, bot-hedged, bot-wrapped | great question! after thinking it throug |
+| cap-kathmandu | Nepal | 25% | +0.80 | bot-chatty, bot-hedged, bot-wrapped | great question! after thinking it throug |
+| cap-reykjavik | Iceland | 25% | +0.80 | bot-chatty, bot-hedged, bot-wrapped | great question! after thinking it throug |
+| cap-stockholm | Sweden | 25% | +0.80 | bot-chatty, bot-hedged, bot-wrapped | great question! after thinking it throug |
+| cap-hanoi | Vietnam | 50% | +0.89 | bot-chatty, bot-hedged | great question! after thinking it throug |
+| cap-helsinki | Finland | 50% | +0.89 | bot-chatty, bot-hedged | great question! after thinking it throug |
+| cap-lima | Peru | 50% | +0.89 | bot-chatty, bot-hedged | great question! after thinking it throug |
+| cap-quito | Ecuador | 50% | +0.89 | bot-chatty, bot-hedged | great question! after thinking it throug |
+| cap-tokyo | Japan | 50% | +0.89 | bot-chatty, bot-hedged | great question! after thinking it throug |
+| cap-tunis | Tunisia | 50% | +0.89 | bot-chatty, bot-hedged | great question! after thinking it throug |
+| cap-canberra | Australia | 75% | +0.63 | bot-chatty | great question! after thinking it throug |
+| cap-lisbon | Portugal | 75% | +0.63 | bot-chatty | great question! after thinking it throug |
+| cap-warsaw | Poland | 75% | +0.63 | bot-chatty | great question! after thinking it throug |
+| cap-budapest | Hungary | 100% | - | - | - |
+| cap-cairo | Egypt | 100% | - | - | - |
+| cap-nairobi | Kenya | 100% | - | - | - |
+| cap-oslo | Norway | 100% | - | - | - |
+| cap-ottawa | Canada | 100% | - | - | - |
+| cap-paris | France | 100% | - | - | - |
+
+`p` is the share of the fleet that answered correctly and `discrimination` is the point-biserial with fleet skill. Both DESCRIBE; a hard item is not a defect. A negative discrimination is what P2 examines. All 26 rows are in [STOMP.json](STOMP.json).
+
+</details>
+
+**Cost**: $0.0000 across 0 input and 0 output tokens, summed from the RECORDS. R3 is the check that compares this against the manifest ledger.
+
 ## Entitled claims
 
 **None.** The verdict is `incomplete`; this eval is not currently entitled to publish claims.
@@ -60,7 +115,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 3 | 0 of 3 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 4 | 0 of 4 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 4 | 0 of 4 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |
 | n/a | no model under-reports its trajectory | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |
@@ -107,7 +162,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"b01352d90c8ad0dc": 4}}`
+- evidence: `{"engines": {"f55e58da3a42578d": 4}}`
 
 </details>
 <details><summary>[ok] the judge agrees with cases whose answer is known</summary>
@@ -155,14 +210,14 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260810_065802_judge-capitals_bot-bare_n26_s42.jsonl | bot-bare | (same) | python | no | 42 | 26 | 0 |
-| 20260810_065802_judge-capitals_bot-chatty_n26_s42.jsonl | bot-chatty | (same) | python | no | 42 | 26 | 0 |
-| 20260810_065802_judge-capitals_bot-hedged_n26_s42.jsonl | bot-hedged | (same) | python | no | 42 | 26 | 0 |
-| 20260810_065802_judge-capitals_bot-wrapped_n26_s42.jsonl | bot-wrapped | (same) | python | no | 42 | 26 | 0 |
+| 20260810_082451_judge-capitals_bot-bare_n26_s42.jsonl | bot-bare | (same) | python | no | 42 | 26 | 0 |
+| 20260810_082451_judge-capitals_bot-chatty_n26_s42.jsonl | bot-chatty | (same) | python | no | 42 | 26 | 0 |
+| 20260810_082451_judge-capitals_bot-hedged_n26_s42.jsonl | bot-hedged | (same) | python | no | 42 | 26 | 0 |
+| 20260810_082451_judge-capitals_bot-wrapped_n26_s42.jsonl | bot-wrapped | (same) | python | no | 42 | 26 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.53.2
+- tool: dinostomp 0.54.0
 - statistical power: at n=26 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~39% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `414280db41465402b15aef657631b3c41dea335c4b29ee7de348d500cdc5c58d`
 - data_sha256: `ceb8609c45e8daed58a6ca30757e45bbce202303e6cb1c8324b741d2e11b24d4`

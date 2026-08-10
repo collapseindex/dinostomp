@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.53.2",
+  "version": "0.54.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -768,7 +768,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind",
+      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind",
       "witnesses": 3,
       "examples": [
         "engine be4c83d7129cec32: live-grounded seed 7 (tool 0.38.0), live-oneshot seed 7 (tool 0.38.0), live-greedy seed 7 (tool 0.38.0)"
@@ -1102,5 +1102,412 @@
   "power": {
     "n_items": 24,
     "mde_unpaired_80pct": 0.4044
+  },
+  "results": {
+    "models": [
+      {
+        "model": "live-greedy",
+        "provider": "python",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 24,
+        "n_checkable": 24,
+        "n_uncheckable": 0,
+        "n_passes": 20,
+        "n_failures": 4,
+        "accuracy": 0.8333,
+        "ci95": [
+          0.641,
+          0.933
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "spend_usd": 0.000966,
+        "finish_reasons": {
+          "stop": 24
+        },
+        "modal_output": {
+          "text": "Photosynthesis converts light energy into glucose.",
+          "count": 1,
+          "share": 0.0417
+        }
+      },
+      {
+        "model": "live-grounded",
+        "provider": "python",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 24,
+        "n_checkable": 24,
+        "n_uncheckable": 0,
+        "n_passes": 13,
+        "n_failures": 11,
+        "accuracy": 0.5417,
+        "ci95": [
+          0.351,
+          0.721
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "spend_usd": 0.000198,
+        "finish_reasons": {
+          "stop": 24
+        },
+        "modal_output": {
+          "text": "No.",
+          "count": 2,
+          "share": 0.0833
+        }
+      },
+      {
+        "model": "live-oneshot",
+        "provider": "python",
+        "dry_run": false,
+        "runs": 1,
+        "n_records": 24,
+        "n_checkable": 24,
+        "n_uncheckable": 0,
+        "n_passes": 19,
+        "n_failures": 5,
+        "accuracy": 0.7917,
+        "ci95": [
+          0.595,
+          0.908
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "spend_usd": 0.000152,
+        "finish_reasons": {
+          "stop": 24
+        },
+        "modal_output": {
+          "text": "Photosynthesis is the process that converts light energy into glucose.",
+          "count": 1,
+          "share": 0.0417
+        }
+      }
+    ],
+    "fleet": {
+      "n_models": 3,
+      "n_items": 24,
+      "mean_accuracy": 0.7222,
+      "min_accuracy": 0.5417,
+      "max_accuracy": 0.8333,
+      "spread": 0.2916,
+      "kr20": 0.8008,
+      "n_all_right": 11,
+      "n_all_wrong": 3,
+      "dead_share": 0.5833,
+      "mde_unpaired": 0.4044
+    },
+    "items": [
+      {
+        "id": "la-00",
+        "target": "photosynthesis",
+        "n_answered": 3,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "live-greedy",
+          "live-grounded",
+          "live-oneshot"
+        ],
+        "top_wrong_answer": "photosynthesis converts light energy into glucose.",
+        "separates": false
+      },
+      {
+        "id": "la-01",
+        "target": "chloroplasts",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": 0.9878,
+        "missed_by": [
+          "live-grounded"
+        ],
+        "top_wrong_answer": "i'm unable to answer that question as the reference provided is empty.",
+        "separates": true
+      },
+      {
+        "id": "la-02",
+        "target": "oxygen",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": 0.9878,
+        "missed_by": [
+          "live-grounded"
+        ],
+        "top_wrong_answer": "oxygen.",
+        "separates": true
+      },
+      {
+        "id": "la-03",
+        "target": "ATP",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "la-04",
+        "target": "mitochondria",
+        "n_answered": 3,
+        "n_correct": 1,
+        "p": 0.3333,
+        "discrimination": 0.2402,
+        "missed_by": [
+          "live-greedy",
+          "live-grounded"
+        ],
+        "top_wrong_answer": "the **mitochondrion** carries out most cellular respiration.",
+        "separates": true
+      },
+      {
+        "id": "la-05",
+        "target": "oxygen",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "la-06",
+        "target": "stomata",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "la-07",
+        "target": "roots",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": 0.9878,
+        "missed_by": [
+          "live-grounded"
+        ],
+        "top_wrong_answer": "the reference does not contain the answer to the question.",
+        "separates": true
+      },
+      {
+        "id": "la-08",
+        "target": "two",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": 0.9878,
+        "missed_by": [
+          "live-grounded"
+        ],
+        "top_wrong_answer": "two.",
+        "separates": true
+      },
+      {
+        "id": "la-09",
+        "target": "growth",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "la-10",
+        "target": "four",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "la-11",
+        "target": "gametes",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": 0.9878,
+        "missed_by": [
+          "live-grounded"
+        ],
+        "top_wrong_answer": "meiosis produces four genetically distinct haploid cells.",
+        "separates": true
+      },
+      {
+        "id": "la-12",
+        "target": "water",
+        "n_answered": 3,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "live-greedy",
+          "live-grounded",
+          "live-oneshot"
+        ],
+        "top_wrong_answer": "water moves across a membrane during osmosis.",
+        "separates": false
+      },
+      {
+        "id": "la-13",
+        "target": "higher",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": -0.5,
+        "missed_by": [
+          "live-oneshot"
+        ],
+        "top_wrong_answer": "osmosis moves water toward a lower solute concentration.",
+        "separates": true
+      },
+      {
+        "id": "la-14",
+        "target": "no",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": 0.9878,
+        "missed_by": [
+          "live-grounded"
+        ],
+        "top_wrong_answer": "no.",
+        "separates": true
+      },
+      {
+        "id": "la-15",
+        "target": "lower",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": -0.5,
+        "missed_by": [
+          "live-oneshot"
+        ],
+        "top_wrong_answer": "diffusion moves particles from areas of high concentration to areas of low concentration.",
+        "separates": true
+      },
+      {
+        "id": "la-16",
+        "target": "protein",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "la-17",
+        "target": "activation energy",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "la-18",
+        "target": "four",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "la-19",
+        "target": "uracil",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "la-20",
+        "target": "single",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "la-21",
+        "target": "messenger RNA",
+        "n_answered": 3,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "live-greedy",
+          "live-grounded",
+          "live-oneshot"
+        ],
+        "top_wrong_answer": "messenger rna carries instructions from dna to ribosomes.",
+        "separates": false
+      },
+      {
+        "id": "la-22",
+        "target": "double helix",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "la-23",
+        "target": "not consumed",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": 0.9878,
+        "missed_by": [
+          "live-grounded"
+        ],
+        "top_wrong_answer": "no.",
+        "separates": true
+      }
+    ],
+    "slices": {},
+    "cost": {
+      "total_usd": 0.001316,
+      "total_tokens_in": 0,
+      "total_tokens_out": 0,
+      "all_dry": false
+    }
   }
 }

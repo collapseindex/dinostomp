@@ -59,7 +59,7 @@ from dinostomp.extensions import ExtensionError, discover, run_extensions
 from dinostomp.dataset import (DATA_SUFFIXES, build_items, infer_mapping,
                                looks_like_dataset, read_rows, repair_items,
                                sniff_separator, unrepairable_findings)
-from dinostomp import modality, perceptual
+from dinostomp import modality, perceptual, results as results_mod
 from dinostomp.fingerprint import engine_fingerprint
 from dinostomp.spec import Issue, jsonl_lines, load_spec, spec_sha256, validate_obj
 
@@ -2955,6 +2955,14 @@ def lint_eval(spec_path: str | Path, trust_code: bool = False,
         extensions=ext_findings,
         loaded_extensions=loaded,
     )
+    # The RESULTS half. Computed from the same records the checks read, and
+    # attached after the verdict because it must never influence one: a hard
+    # item is not a defect and an expensive model is not a defect.
+    # `mine` excludes probe runs on purpose: a blind or ablate probe is a
+    # control, not a result, and pooling one into the accuracy table would
+    # report a deliberately handicapped run as the model's score.
+    results_matrix, results_outputs = _fleet_matrices(mine)
+    report["results"] = results_mod.compute(mine, items, results_matrix, results_outputs)
     if ext_problems:
         report["extension_problems"] = ext_problems
     if claim_results is not None:

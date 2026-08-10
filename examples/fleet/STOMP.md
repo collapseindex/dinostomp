@@ -4,6 +4,58 @@
 
 > All runs used the offline dry provider; results exercise the benchmark, not any real model.
 
+## Results
+
+| model | provider | records | checkable | judgeable | accuracy | 95% CI | passes | fails | out tok | spend |
+|---|---|---:|---:|---:|---:|---|---:|---:|---:|---:|
+| dry-alpha | dry | 24 | 24 | 100% | 100.0% | [0.862, 1.000] | 24 | 0 | 24 | $0.0000 |
+| dry-bravo | dry | 24 | 24 | 100% | 75.0% | [0.551, 0.880] | 18 | 6 | 24 | $0.0000 |
+| dry-charlie | dry | 24 | 24 | 100% | 37.5% | [0.212, 0.573] | 9 | 15 | 24 | $0.0000 |
+| dry-delta | dry | 24 | 24 | 100% | 100.0% | [0.862, 1.000] | 24 | 0 | 24 | $0.0000 |
+| dry-echo | dry | 24 | 24 | 100% | 50.0% | [0.314, 0.686] | 12 | 12 | 24 | $0.0000 |
+| dry-foxtrot | dry | 24 | 24 | 100% | 54.2% | [0.351, 0.721] | 13 | 11 | 24 | $0.0000 |
+
+Accuracy is ON CHECKABLE output: `judgeable` is the share the scorer reached a verdict on at all, and 80% accurate on 60%-judgeable output is not 80% accurate.
+
+**6 model(s) x 24 item(s)**, mean 69.4%, spanning 37.5% to 100.0% (62% spread), KR-20 0.94.
+
+9 item(s) every model passed and 0 every model failed: 38% of the set separated nobody in this fleet.
+
+At 24 items an UNPAIRED comparison resolves gaps down to about 40%; smaller differences between the models above are not distinguishable from sampling noise by that test.
+
+<details><summary>Item difficulty: all 24 item(s), hardest first</summary>
+
+| item | target | p | discrimination | missed by | most common wrong answer |
+|---|---|---:|---:|---|---|
+| a13 | 27 | 33% | +0.87 | dry-bravo, dry-charlie, dry-echo, dry-foxtrot | 28 |
+| a22 | 45 | 33% | +0.87 | dry-bravo, dry-charlie, dry-echo, dry-foxtrot | 47 |
+| a25 | 51 | 33% | +0.87 | dry-bravo, dry-charlie, dry-echo, dry-foxtrot | 54 |
+| a30 | 61 | 33% | +0.87 | dry-bravo, dry-charlie, dry-echo, dry-foxtrot | 66 |
+| a31 | 63 | 33% | +0.87 | dry-bravo, dry-charlie, dry-echo, dry-foxtrot | 66 |
+| a33 | 67 | 33% | +0.87 | dry-bravo, dry-charlie, dry-echo, dry-foxtrot | 71 |
+| a14 | 29 | 50% | +0.90 | dry-charlie, dry-echo, dry-foxtrot | 36 |
+| a18 | 37 | 50% | +0.90 | dry-charlie, dry-echo, dry-foxtrot | 42 |
+| a19 | 39 | 50% | +0.90 | dry-charlie, dry-echo, dry-foxtrot | 44 |
+| a20 | 41 | 50% | +0.90 | dry-charlie, dry-echo, dry-foxtrot | 43 |
+| a29 | 59 | 50% | +0.90 | dry-charlie, dry-echo, dry-foxtrot | 61 |
+| a26 | 53 | 67% | +0.71 | dry-charlie, dry-echo | 58 |
+| a10 | 21 | 83% | +0.54 | dry-charlie | 28 |
+| a12 | 25 | 83% | +0.54 | dry-charlie | 29 |
+| a15 | 31 | 83% | +0.54 | dry-charlie | 33 |
+| a11 | 23 | 100% | - | - | - |
+| a16 | 33 | 100% | - | - | - |
+| a17 | 35 | 100% | - | - | - |
+| a21 | 43 | 100% | - | - | - |
+| a23 | 47 | 100% | - | - | - |
+| a24 | 49 | 100% | - | - | - |
+| a27 | 55 | 100% | - | - | - |
+| a28 | 57 | 100% | - | - | - |
+| a32 | 65 | 100% | - | - | - |
+
+`p` is the share of the fleet that answered correctly and `discrimination` is the point-biserial with fleet skill. Both DESCRIBE; a hard item is not a defect. A negative discrimination is what P2 examines.
+
+</details>
+
 ## Entitled claims
 
 This result is entitled to claim:
@@ -75,7 +127,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | ok | failed answers do not contain the reference | 4 | 0 of 4 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 6 | 0 of 6 run(s) were produced by a different engine than the one auditing them (now b01352d90c8ad0dc); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 6 | 0 of 6 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -122,7 +174,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"b01352d90c8ad0dc": 6}}`
+- evidence: `{"engines": {"f55e58da3a42578d": 6}}`
 
 </details>
 <details><summary>[ok] fleet score totals are reliable (KR-20)</summary>
@@ -155,16 +207,16 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260810_065758_fleet-arith_dry-alpha_n24_s42.jsonl | dry-alpha | (same) | dry | yes | 42 | 24 | 0 |
-| 20260810_065758_fleet-arith_dry-bravo_n24_s42.jsonl | dry-bravo | (same) | dry | yes | 42 | 24 | 0 |
-| 20260810_065758_fleet-arith_dry-charlie_n24_s42.jsonl | dry-charlie | (same) | dry | yes | 42 | 24 | 0 |
-| 20260810_065759_fleet-arith_dry-delta_n24_s42.jsonl | dry-delta | (same) | dry | yes | 42 | 24 | 0 |
-| 20260810_065759_fleet-arith_dry-echo_n24_s42.jsonl | dry-echo | (same) | dry | yes | 42 | 24 | 0 |
-| 20260810_065759_fleet-arith_dry-foxtrot_n24_s42.jsonl | dry-foxtrot | (same) | dry | yes | 42 | 24 | 0 |
+| 20260810_082448_fleet-arith_dry-alpha_n24_s42.jsonl | dry-alpha | (same) | dry | yes | 42 | 24 | 0 |
+| 20260810_082448_fleet-arith_dry-bravo_n24_s42.jsonl | dry-bravo | (same) | dry | yes | 42 | 24 | 0 |
+| 20260810_082448_fleet-arith_dry-charlie_n24_s42.jsonl | dry-charlie | (same) | dry | yes | 42 | 24 | 0 |
+| 20260810_082448_fleet-arith_dry-delta_n24_s42.jsonl | dry-delta | (same) | dry | yes | 42 | 24 | 0 |
+| 20260810_082448_fleet-arith_dry-echo_n24_s42.jsonl | dry-echo | (same) | dry | yes | 42 | 24 | 0 |
+| 20260810_082448_fleet-arith_dry-foxtrot_n24_s42.jsonl | dry-foxtrot | (same) | dry | yes | 42 | 24 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.53.2
+- tool: dinostomp 0.54.0
 - statistical power: at n=24 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~40% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `cc280622dc0f91aa3809e0072bf4125add1a99825319f4f97a681fb4e23657cc`
 - data_sha256: `742d30fda48436edace090596fe7659588d02761e788be1acdd3fbf2573437dd`
