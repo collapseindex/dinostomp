@@ -63,6 +63,11 @@ benchmarks/*/data/raw/
 corpus/instances/*/labels.WITHHELD.jsonl
 corpus/holdback.py
 
+# The preprint. Drafts, LaTeX build litter and the PDF all live outside the
+# repo's history: the paper is written against a pushed commit and cites it,
+# rather than being versioned alongside the thing it describes.
+writeup/
+
 # Local working notes. Never committed: they are for one person's memory, not
 # for the repo, and a notes file that gets committed becomes documentation
 # nobody agreed to maintain.
