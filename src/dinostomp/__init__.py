@@ -9,7 +9,7 @@ from dinostomp.spec import (
     validate_obj,
 )
 
-__version__ = "0.48.0"
+__version__ = "0.49.0"
 
 __all__ = [
     "SCHEMA_NAMES",

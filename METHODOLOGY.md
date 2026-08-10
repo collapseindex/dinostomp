@@ -38,6 +38,14 @@ dinostomp verify examples/smoke/eval.yaml   # re-derive the published report off
 dinostomp plan   examples/smoke/eval.yaml   # power, cost, and witness preview BEFORE any money
 ```
 
+`stomp` on this pod **exits 4, not 0**, and that is the intended answer: the
+smoke pod is one model on six items, so most checks cannot run and the verdict
+is `INCOMPLETE`. Thin coverage is nonzero by default, so an unattended pipeline
+cannot accept it by forgetting a flag; `--allow-incomplete` is the explicit
+escape hatch and the full exit-code table is at the end of this document. Said
+here because the first example in the docs exiting nonzero, with the explanation
+eight hundred lines away, reads as a broken example rather than a designed one.
+
 ```
 smoke-arith | dry-strong | complete | acc 1.000 [0.61, 1.00] on 6 checkable (0 uncheckable excluded) | $0.0000
 ...

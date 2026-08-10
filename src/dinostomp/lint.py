@@ -536,6 +536,21 @@ def _whole_mention(text: str, needle: str) -> int | None:
     return m.start() if m else None
 
 
+
+# Phrases that introduce a value AS THE ANSWER. A number is exempt from the leak
+# check unless one of these precedes it: see the note in S2 for why the blanket
+# numeric exemption was too wide.
+_DISCLOSING = re.compile(
+    r"(?:answer|result|total|equals|it is|that is|which is|gives|yields|=)\s*"
+    r"(?:is\s*)?[:=]?\s*\$?NUMBER(?![0-9])", re.I)
+
+
+def _numeric_disclosed(question: str, value: str) -> bool:
+    """Is this number introduced as the answer rather than stated as a premise?"""
+    pattern = _DISCLOSING.pattern.replace("NUMBER", re.escape(value))
+    return re.search(pattern, question, re.I) is not None
+
+
 def _is_offered_alternative(question: str, targets: set[str]) -> bool:
     """Is the target one side of an "A or B?" the question itself offers?
 
@@ -689,7 +704,17 @@ def _item_checks(rep: Reporter, items: list[dict]) -> None:
             # Found by pointing this check at GSM8K, where it called 27 items
             # leaks: every one was the target number appearing as a premise
             # ("15 litres of pineapple drink", answer 15).
-            own = {o for o in own if not NUMERIC_RE.fullmatch(o)}
+            # ...UNLESS an answer-disclosing phrase introduces it. The blanket
+            # exemption made S2 structurally blind to leakage in every
+            # numeric-answer dataset (GSM8K, MATH, DROP, any arithmetic set): an
+            # adversarial pod whose every question ended "(It is 21.)" scored 0
+            # of 24 leaks (D-037). The exemption's benefit was measured when it
+            # was added; its cost was not, and its cost was total.
+            #
+            # "15 litres of pineapple drink" is still a premise, because nothing
+            # introduces the 15 as an answer. "The answer is 15" is disclosure.
+            own = {o for o in own
+                   if not NUMERIC_RE.fullmatch(o) or _numeric_disclosed(q, o)}
             if not own or not any(t in q for t in own):
                 continue
             others_present = sum(1 for t in answer_space - own if t in q)

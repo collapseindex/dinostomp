@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**BROKEN**: 2 gated finding(s) (31 of 37 ran; 17 n/a of 54 declared)
+**BROKEN**: 2 gated finding(s) (31 of 37 ran; 20 n/a of 57 declared)
 
 ## Entitled claims
 
@@ -9,20 +9,20 @@ Typed claims, compiled to evidence requirements and checked off:
 
 - **SUPPORTED**: accuracy of meta-llama/llama-3.2-3b-instruct is at least 20% (95% confidence)
   - [x] complete run on disk: meta-llama/llama-3.2-3b-instruct: complete
-  - [x] enough checkable evidence: 303 checkable unit(s); need 20
-  - [x] interval lower bound clears the declared minimum: lower bound 37.8% vs declared minimum 20%
+  - [x] enough checkable evidence: 296 checkable unit(s); need 20
+  - [x] interval lower bound clears the declared minimum: lower bound 38.7% vs declared minimum 20%
 - **SUPPORTED**: accuracy of meta-llama/llama-3.1-8b-instruct is at least 20% (95% confidence)
   - [x] complete run on disk: meta-llama/llama-3.1-8b-instruct: complete
   - [x] enough checkable evidence: 332 checkable unit(s); need 20
   - [x] interval lower bound clears the declared minimum: lower bound 79.4% vs declared minimum 20%
 - **SUPPORTED**: accuracy of mistralai/ministral-8b-2512 is at least 20% (95% confidence)
   - [x] complete run on disk: mistralai/ministral-8b-2512: complete
-  - [x] enough checkable evidence: 332 checkable unit(s); need 20
-  - [x] interval lower bound clears the declared minimum: lower bound 81.0% vs declared minimum 20%
+  - [x] enough checkable evidence: 330 checkable unit(s); need 20
+  - [x] interval lower bound clears the declared minimum: lower bound 81.6% vs declared minimum 20%
 - **SUPPORTED**: accuracy of qwen/qwen3-30b-a3b-instruct-2507 is at least 20% (95% confidence)
   - [x] complete run on disk: qwen/qwen3-30b-a3b-instruct-2507: complete
-  - [x] enough checkable evidence: 332 checkable unit(s); need 20
-  - [x] interval lower bound clears the declared minimum: lower bound 73.3% vs declared minimum 20%
+  - [x] enough checkable evidence: 331 checkable unit(s); need 20
+  - [x] interval lower bound clears the declared minimum: lower bound 73.5% vs declared minimum 20%
 
 ## Checks
 
@@ -47,9 +47,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | ok | summaries match their run records | 12 | 0 summary discrepanc(ies) across 12 run(s) |
 | ok | records cover exactly the seeded selection | 12 | 0 of 12 run(s) do not cover their seeded selection |
 | ok | every model produced something scoreable | 4 | 0 of 4 model(s) produced nothing scoreable |
-| n/a | no forbidden tool is called | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | every required tool is actually called | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | trajectories are well-formed | 0 | this spec runs no python targets; nothing produces a trajectory |
+| n/a | no forbidden tool is called | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | every required tool is actually called | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | trajectories are well-formed | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | ok | every model was asked the same items | 4 | 0 of 4 model(s) were asked a different item set |
 
 ### Diagnostics (statistical, advisory)
@@ -74,21 +74,24 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | warn | failed answers do not contain the reference | 4 | 3 of 4 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | ok | billed output tokens match the recorded text | 4 | 0 of 4 model(s) report far more output tokens than their recorded text accounts for (expected for hidden-reasoning models; otherwise check your invoice) |
-| warn | the runs were produced by this engine | 12 | 12 of 12 run(s) were produced by a different engine than the one auditing them (now b1fa98e4f374809f); re-run to get numbers this report can stand behind |
-| n/a | passing answers are grounded in tool evidence | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | no model under-reports its trajectory | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | tool calls are not redundant | 0 | this spec runs no python targets; nothing produces a trajectory |
+| warn | the runs were produced by this engine | 12 | 12 of 12 run(s) were produced by a different engine than the one auditing them (now ff8e0f4b4a381cd0); re-run to get numbers this report can stand behind |
+| n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
+| n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | tool calls are not redundant | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | passing answers CHANGE when their evidence is withheld | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | the trajectory was observed, not self-reported | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | the judge agrees with cases whose answer is known | 0 | this eval does not score with a judge |
 | n/a | the judge is invariant to content-free perturbations | 0 | this eval does not score with a judge |
 | n/a | the judge agrees with itself on identical input | 0 | this eval does not score with a judge |
 | n/a | the judge does not favour its own family | 0 | this eval does not score with a judge |
-| ok | fleet score totals are reliable (KR-20) | 1212 | KR-20 0.99 across 4 models x 303 items; small fleet (4 examinees), treat as a noisy estimate |
-| ok | no item anti-correlates with fleet skill | 303 | 31 item(s) that strong models miss and weak models hit, against 31 expected by chance at this fleet size; candidate key errors; at 4 examinees this check has little power, so a quiet result is NOT evidence of a clean answer key |
-| ok | dead-weight items stay a minority | 303 | 37% of 303 item(s) separate nobody (100 all-right, 12 all-wrong); 25% would be dead at 4 examinees even with no difficulty structure, so part of this is fleet size |
-| ok | no unanimous identical wrong answers | 303 | 0 item(s) where the whole fleet gave one identical wrong answer; candidate key errors |
+| ok | fleet score totals are reliable (KR-20) | 1176 | KR-20 0.99 across 4 models x 294 items; small fleet (4 examinees), treat as a noisy estimate |
+| ok | no item anti-correlates with fleet skill | 294 | 17 item(s) that strong models miss and weak models hit, against 22 expected by chance at this fleet size; candidate key errors; at 4 examinees this check has little power, so a quiet result is NOT evidence of a clean answer key |
+| ok | dead-weight items stay a minority | 294 | 38% of 294 item(s) separate nobody (100 all-right, 12 all-wrong); 25% would be dead at 4 examinees even with no difficulty structure, so part of this is fleet size |
+| ok | no unanimous identical wrong answers | 294 | 0 item(s) where the whole fleet gave one identical wrong answer; candidate key errors |
 | n/a | entitled ordering claims are separated beyond sampling noise | 0 | no entitled claim asserts a model ordering |
-| ok | the fleet is not pinned at a ceiling or floor | 4 | fleet accuracy spans 43% to 86% on 303 item(s) |
-| ok | the eval separates the fleet (dynamic range) | 4 | fleet spread 43% across 4 model(s) on 303 item(s) |
+| ok | the fleet is not pinned at a ceiling or floor | 4 | fleet accuracy spans 45% to 86% on 294 item(s) |
+| ok | the eval separates the fleet (dynamic range) | 4 | fleet spread 42% across 4 model(s) on 294 item(s) |
 | skip | answers survive re-ordering the options | 0 | no shuffle probe on disk; set data.render_choices and run `dinostomp run <spec> --probe shuffle` to unlock |
 | warn | the number survives changing the seed | 4 | 2 of 4 model(s) move between seeds by more than the item sample explains; that much of the headline number belongs to the seed |
 | skip | the number survives re-phrasing the instruction | 0 | no template probe on disk; run `dinostomp run <spec> --probe template` to unlock |
@@ -167,27 +170,27 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] fleet score totals are reliable (KR-20)</summary>
 
-- evidence: `{"excluded_collapsed": [], "kr20": 0.989, "n_examinees": 4}`
+- evidence: `{"excluded_collapsed": [], "kr20": 0.988, "n_examinees": 4}`
 
 </details>
 <details><summary>[ok] no item anti-correlates with fleet skill</summary>
 
-- evidence: `{"chance_95th": 31, "excluded_collapsed": [], "n_examinees": 4, "negative_rpb": 31, "underpowered": true}`
+- evidence: `{"chance_95th": 22, "excluded_collapsed": [], "n_examinees": 4, "negative_rpb": 17, "underpowered": true}`
 
 </details>
 <details><summary>[ok] dead-weight items stay a minority</summary>
 
-- evidence: `{"independence_floor": 0.2453, "n_examinees": 4, "share": 0.3696}`
+- evidence: `{"independence_floor": 0.2527, "n_examinees": 4, "share": 0.381}`
 
 </details>
 <details><summary>[ok] the fleet is not pinned at a ceiling or floor</summary>
 
-- evidence: `{"max": 0.8581, "min": 0.4323}`
+- evidence: `{"max": 0.8639, "min": 0.4456}`
 
 </details>
 <details><summary>[ok] the eval separates the fleet (dynamic range)</summary>
 
-- evidence: `{"spread": 0.4257}`
+- evidence: `{"spread": 0.4184}`
 
 </details>
 <details><summary>[warn] the number survives changing the seed</summary>
@@ -217,7 +220,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.39.0
+- tool: dinostomp 0.49.0
 - statistical power: at n=120 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~18% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `e4434ae46b201444323f04e3a651d6aeb0e163130067bc83e14cd5fef649a39a`
 - data_sha256: `168ff4314b8164161ce2f6137ca4b2a3805c5509ad5a89152a6b3d3c090371cc`

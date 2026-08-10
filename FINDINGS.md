@@ -63,6 +63,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-011](#n-011) | Inspect AI | the second foreign format cost one defect, not five | measured |
 | [N-012](#n-012) | dinostomp | scored against humans: 5% recall, and 2 items they missed | measured, acted on |
 | [N-013](#n-013) | LLM-as-judge | capability buys precision and costs recall; first version retracted | measured, corrected |
+| [N-014](#n-014) | dinostomp | nine adversarial pods, nine caught, one check found blind | measured |
 | [D-001](#d-001) | dinostomp | the money invariant had only ever run at zero | fixed |
 | [D-002](#d-002) | dinostomp | pooling hid a model that never read the question | fixed |
 | [D-003](#d-003) | dinostomp | a collapsed model manufactured 8 phantom key errors | fixed |
@@ -99,6 +100,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-034](#d-034) | dinostomp | a loader that discarded 96% of a split, and the findings computed on the rest | fixed |
 | [D-035](#d-035) | dinostomp | refused a valid file for a byte-order mark, naming the fix it did not apply | fixed |
 | [D-036](#d-036) | dinostomp | told a semicolon-CSV user their columns were badly named | fixed |
+| [D-037](#d-037) | dinostomp | the leak check was blind to every numeric-answer dataset | fixed |
 
 ---
 
@@ -1073,6 +1075,44 @@ Total spend across every version of this experiment: about $1.50.
 
 ---
 
+### N-014
+**Nine adversarial pods, nine caught, and one check found blind**
+`trials`, by hand · 2026-08-10 · measured
+
+`CONTRIBUTING.md` asks outsiders to build a pathological pod and report what it
+breaks. Nobody has, so this is the author doing it from the SPEC side: pods
+written by someone who wants a green badge and is willing to be creative.
+
+| attack | outcome |
+|---|---|
+| a scorer that returns `pass` unconditionally | refused, witness gate |
+| witnesses that only ever assert `pass` | refused, gate cannot close |
+| a 99% accuracy claim on 24 dry items | `BROKEN`, claim-evidence |
+| one item repeated 24 times | `BROKEN`, duplicate questions |
+| a claim naming a model that never ran | refused at load |
+| a superiority claim of a model over itself | refused at load |
+| every target identical (`yes` on all 24) | caught: "no better than guessing, chance ~100%" |
+| no canary in the data | caught, warned |
+| **the answer written into every question** | **MISSED** ([D-037](#d-037)) |
+
+**None obtained a clean verdict**, which is the result that matters: nine pods
+built to cheat, nine refused or gated or warned. Four were refused before
+anything ran, which is the cheapest place to catch a bad pod.
+
+The ninth is the finding. It came back `INCOMPLETE` with **no failures at all**
+while every one of its 24 items disclosed its own answer, because S2 exempts
+numeric targets wholesale. The pod was not cleared, it was simply not caught for
+the reason it was built.
+
+**Two things worth separating.** A tool that refuses a cheating pod is doing its
+job. A tool that refuses a cheating pod *for the wrong reason* is getting lucky,
+and the difference only shows up when someone writes the pod on purpose. This is
+the first time anyone has.
+
+Reproduce: `extensions`-free, offline, nine pods, about ninety seconds.
+
+---
+
 ### D-001
 **The money invariant had only ever run at zero**
 `spend-ledger` (R3) · first live fleet · fixed
@@ -1958,6 +1998,62 @@ NOT get the hint, or the guard would fire on every narrow file.
 
 ---
 
+### D-037
+**The leak check was blind to every numeric-answer dataset, by an exemption whose cost was never measured**
+`answer-leak` (S2) · 2026-08-10 · fixed in v0.49.0
+
+Found by writing pods that try to CHEAT rather than pods that are broken, which
+is the contribution `CONTRIBUTING.md` asks outsiders for. One of them put the
+answer in the question, in plain text, on every item:
+
+```
+"What is 10 + 11? (It is 21.)"     target: 21
+```
+
+S2 reported **0 of 24**. The cause is one line, and it is documented:
+
+```python
+# A bare NUMBER appearing in a question is not evidence of leakage.
+own = {o for o in own if not NUMERIC_RE.fullmatch(o)}
+```
+
+The exemption is well-motivated. Without it, S2 called 27 GSM8K items leaks
+because a word problem's quantities collide with its answer: "15 litres of
+pineapple drink", answer 15. **Its benefit was measured when it was added. Its
+cost was not, and its cost was total**: S2 could not detect answer leakage in
+GSM8K, MATH, DROP, or any arithmetic dataset, which is a large share of what
+anyone actually audits.
+
+That is the [N-012](#n-012) lesson turned inward. A check's false-positive rate
+gets measured because false positives are loud; its recall does not, because
+misses are silent by construction.
+
+**The fix is a discriminator, not a reversal.** A number stated as a premise
+stays exempt; a number introduced by an answer-disclosing phrase does not:
+
+| question | target | flagged |
+|---|---|---|
+| `What is 10 + 11? (It is 21.)` | 21 | **yes** |
+| `What is 10 + 11? The answer is 21.` | 21 | **yes** |
+| `Sally bought 15 litres of pineapple drink...` | 15 | no |
+| `A shop sold 21 apples on Monday...` | 21 | no |
+
+Measured on both sides before shipping, which is what the original exemption
+skipped:
+
+```
+adversarial pod   0 of 24  ->  24 of 24     the blatant case, now caught
+GSM8K             0 of 1319 -> 0 of 1319    the 27 false positives stay gone
+MATH-500          2 of 500  -> 2 of 500
+DROP              0 of 2000 -> 0 of 2000
+TruthfulQA        1 of 790  -> 1 of 790
+```
+
+Zero new false positives across 4,609 real items, and the digit boundary is
+tested so a disclosed `210` does not satisfy a search for `21`.
+
+---
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -1974,10 +2070,10 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **13** |
-| defects in dinostomp itself (**D**) | **36** |
+| negative results, recorded rather than dropped (**N**) | **14** |
+| defects in dinostomp itself (**D**) | **37** |
 
-Thirty-six to twenty-two. That ratio is the useful number to publish, and it is the
+Thirty-seven to twenty-two. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

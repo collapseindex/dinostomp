@@ -1,5 +1,28 @@
 # Changelog
 
+### v0.49.0 (2026-08-10)
+
+Attacked the SPEC the way CONTRIBUTING asks an outsider to, and ran every
+command the docs tell a reader to run.
+
+- **N-014: nine adversarial pods, nine caught, none cleared.** A scorer that
+  always passes, witnesses that never fail, a 99% claim on 24 dry items, one
+  item repeated 24 times, a phantom model, a model beating itself, an all-`yes`
+  answer key, a missing canary. Four were refused before anything ran.
+- **D-037: the ninth exposed a blind check.** A pod whose every question ended
+  "(It is 21.)" scored **0 of 24** answer leaks. S2 exempts numeric targets
+  wholesale, so it could not detect leakage in GSM8K, MATH, DROP or any
+  arithmetic dataset. The exemption's benefit was measured when it was added (it
+  killed 27 GSM8K false positives); its cost was never measured, and its cost
+  was total. Fixed with a discriminator rather than a reversal: a number stated
+  as a premise stays exempt, a number introduced by an answer-disclosing phrase
+  does not. **24 of 24 now caught, and 0 new false positives across 4,609 real
+  items** (GSM8K stays at 0).
+- **Every runnable command in the docs was executed from a fresh install.** All
+  work. One documentation fix: METHODOLOGY's first example exits 4, not 0,
+  because the smoke pod is deliberately `INCOMPLETE`, and the exit-code table
+  explaining that was eight hundred lines away. Now said at the example.
+
 ### v0.48.0 (2026-08-10)
 
 Installed the tool from scratch, as a stranger would, and pointed it at the kind

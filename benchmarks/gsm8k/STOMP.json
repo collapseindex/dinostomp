@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.39.0",
+  "version": "0.49.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -263,7 +263,7 @@
     }
   },
   "coverage": {
-    "declared_total": 54,
+    "declared_total": 57,
     "declared": 37,
     "ran": 31,
     "skipped": [
@@ -318,28 +318,40 @@
         "reason": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot."
       },
       {
+        "id": "R20",
+        "reason": "no run on disk repeats an item; a single pass per item cannot tie"
+      },
+      {
         "id": "T1",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T2",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T3",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T4",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T5",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T6",
-        "reason": "this spec runs no python targets; nothing produces a trajectory"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
+      },
+      {
+        "id": "T7",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
+      },
+      {
+        "id": "T8",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "J1",
@@ -731,7 +743,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "12 of 12 run(s) were produced by a different engine than the one auditing them (now b1fa98e4f374809f); re-run to get numbers this report can stand behind",
+      "detail": "12 of 12 run(s) were produced by a different engine than the one auditing them (now ff8e0f4b4a381cd0); re-run to get numbers this report can stand behind",
       "witnesses": 12,
       "examples": [
         "engine 0c79d2fabc826532: meta-llama/llama-3.2-3b-instruct seed 23 (tool 0.29.0)",
@@ -757,12 +769,21 @@
       }
     },
     {
+      "id": "R20",
+      "slug": "repeat-ties",
+      "check": "repeated items reached a verdict",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no run on disk repeats an item; a single pass per item cannot tie",
+      "witnesses": 0
+    },
+    {
       "id": "T1",
       "slug": "forbidden-tool",
       "check": "no forbidden tool is called",
       "level": "n/a",
       "gating": true,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -771,7 +792,7 @@
       "check": "every required tool is actually called",
       "level": "n/a",
       "gating": true,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -780,7 +801,7 @@
       "check": "trajectories are well-formed",
       "level": "n/a",
       "gating": true,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -789,7 +810,7 @@
       "check": "passing answers are grounded in tool evidence",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -798,7 +819,7 @@
       "check": "no model under-reports its trajectory",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -807,7 +828,25 @@
       "check": "tool calls are not redundant",
       "level": "n/a",
       "gating": false,
-      "detail": "this spec runs no python targets; nothing produces a trajectory",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
+    },
+    {
+      "id": "T7",
+      "slug": "answer-grounding-causal",
+      "check": "passing answers CHANGE when their evidence is withheld",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
+    },
+    {
+      "id": "T8",
+      "slug": "trace-observed",
+      "check": "the trajectory was observed, not self-reported",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
@@ -852,10 +891,10 @@
       "check": "fleet score totals are reliable (KR-20)",
       "level": "pass",
       "gating": false,
-      "detail": "KR-20 0.99 across 4 models x 303 items; small fleet (4 examinees), treat as a noisy estimate",
-      "witnesses": 1212,
+      "detail": "KR-20 0.99 across 4 models x 294 items; small fleet (4 examinees), treat as a noisy estimate",
+      "witnesses": 1176,
       "evidence": {
-        "kr20": 0.989,
+        "kr20": 0.988,
         "n_examinees": 4,
         "excluded_collapsed": []
       }
@@ -866,12 +905,12 @@
       "check": "no item anti-correlates with fleet skill",
       "level": "pass",
       "gating": false,
-      "detail": "31 item(s) that strong models miss and weak models hit, against 31 expected by chance at this fleet size; candidate key errors; at 4 examinees this check has little power, so a quiet result is NOT evidence of a clean answer key",
-      "witnesses": 303,
+      "detail": "17 item(s) that strong models miss and weak models hit, against 22 expected by chance at this fleet size; candidate key errors; at 4 examinees this check has little power, so a quiet result is NOT evidence of a clean answer key",
+      "witnesses": 294,
       "evidence": {
         "excluded_collapsed": [],
-        "negative_rpb": 31,
-        "chance_95th": 31,
+        "negative_rpb": 17,
+        "chance_95th": 22,
         "n_examinees": 4,
         "underpowered": true
       }
@@ -882,11 +921,11 @@
       "check": "dead-weight items stay a minority",
       "level": "pass",
       "gating": false,
-      "detail": "37% of 303 item(s) separate nobody (100 all-right, 12 all-wrong); 25% would be dead at 4 examinees even with no difficulty structure, so part of this is fleet size",
-      "witnesses": 303,
+      "detail": "38% of 294 item(s) separate nobody (100 all-right, 12 all-wrong); 25% would be dead at 4 examinees even with no difficulty structure, so part of this is fleet size",
+      "witnesses": 294,
       "evidence": {
-        "share": 0.3696,
-        "independence_floor": 0.2453,
+        "share": 0.381,
+        "independence_floor": 0.2527,
         "n_examinees": 4
       }
     },
@@ -906,7 +945,7 @@
       "level": "pass",
       "gating": false,
       "detail": "0 item(s) where the whole fleet gave one identical wrong answer; candidate key errors",
-      "witnesses": 303
+      "witnesses": 294
     },
     {
       "id": "P6",
@@ -923,11 +962,11 @@
       "check": "the fleet is not pinned at a ceiling or floor",
       "level": "pass",
       "gating": false,
-      "detail": "fleet accuracy spans 43% to 86% on 303 item(s)",
+      "detail": "fleet accuracy spans 45% to 86% on 294 item(s)",
       "witnesses": 4,
       "evidence": {
-        "min": 0.4323,
-        "max": 0.8581
+        "min": 0.4456,
+        "max": 0.8639
       }
     },
     {
@@ -936,10 +975,10 @@
       "check": "the eval separates the fleet (dynamic range)",
       "level": "pass",
       "gating": false,
-      "detail": "fleet spread 43% across 4 model(s) on 303 item(s)",
+      "detail": "fleet spread 42% across 4 model(s) on 294 item(s)",
       "witnesses": 4,
       "evidence": {
-        "spread": 0.4257
+        "spread": 0.4184
       }
     },
     {
@@ -1174,12 +1213,12 @@
         {
           "name": "enough checkable evidence",
           "ok": true,
-          "detail": "303 checkable unit(s); need 20"
+          "detail": "296 checkable unit(s); need 20"
         },
         {
           "name": "interval lower bound clears the declared minimum",
           "ok": true,
-          "detail": "lower bound 37.8% vs declared minimum 20%"
+          "detail": "lower bound 38.7% vs declared minimum 20%"
         }
       ]
     },
@@ -1216,12 +1255,12 @@
         {
           "name": "enough checkable evidence",
           "ok": true,
-          "detail": "332 checkable unit(s); need 20"
+          "detail": "330 checkable unit(s); need 20"
         },
         {
           "name": "interval lower bound clears the declared minimum",
           "ok": true,
-          "detail": "lower bound 81.0% vs declared minimum 20%"
+          "detail": "lower bound 81.6% vs declared minimum 20%"
         }
       ]
     },
@@ -1237,12 +1276,12 @@
         {
           "name": "enough checkable evidence",
           "ok": true,
-          "detail": "332 checkable unit(s); need 20"
+          "detail": "331 checkable unit(s); need 20"
         },
         {
           "name": "interval lower bound clears the declared minimum",
           "ok": true,
-          "detail": "lower bound 73.3% vs declared minimum 20%"
+          "detail": "lower bound 73.5% vs declared minimum 20%"
         }
       ]
     }

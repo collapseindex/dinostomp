@@ -914,3 +914,39 @@ def test_p2_says_out_loud_when_it_has_no_power(tmp_path):
         assert "NOT evidence of a clean answer key" in p2["detail"]
         assert p2["evidence"]["underpowered"] is True
         assert p2["evidence"]["n_examinees"] < 12
+
+
+# --- S2's numeric exemption: narrow, not total --------------------------------
+
+
+def test_s2_catches_a_disclosed_numeric_answer(tmp_path):
+    """The blanket numeric exemption made S2 blind to every numeric-answer
+    dataset. An adversarial pod ending every question "(It is 21.)" scored 0 of
+    24 leaks (D-037)."""
+    items = [{"id": f"d{i}", "input": f"What is {i} + {i + 1}? (It is {2 * i + 1}.)",
+              "target": str(2 * i + 1)} for i in range(10, 34)]
+    report = stomp(write_eval(tmp_path, items))
+    assert finding(report, "S2")["level"] == "fail"
+
+
+def test_s2_still_ignores_a_number_stated_as_a_premise(tmp_path):
+    """The negative test, and the reason the exemption exists at all.
+
+    GSM8K is full of quantities that collide with answers: "15 litres of
+    pineapple drink", answer 15. Twenty-seven of those were called leaks before
+    the exemption was added, and narrowing it must not bring them back.
+    """
+    items = [{"id": f"p{i}", "input": f"Sally bought {i} litres of juice and drank some. "
+                                      f"How many litres did she buy?", "target": str(i)}
+             for i in range(10, 34)]
+    report = stomp(write_eval(tmp_path, items))
+    assert finding(report, "S2")["level"] == "pass", finding(report, "S2")["detail"]
+
+
+def test_s2_numeric_disclosure_respects_digit_boundaries():
+    """`210` must not satisfy a search for a disclosed `21`."""
+    from dinostomp.lint import _norm, _numeric_disclosed
+
+    assert _numeric_disclosed(_norm("the answer is 21"), "21")
+    assert not _numeric_disclosed(_norm("the answer is 210"), "21")
+    assert not _numeric_disclosed(_norm("she bought 21 apples; how many?"), "21")
