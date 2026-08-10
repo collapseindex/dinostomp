@@ -2595,11 +2595,31 @@ one of the 286 annotated pairs is byte-identical. `dup-questions` (S1),
 so on this dataset they find **nothing at all**. The comparison at the shipped
 threshold is not 28% against some better check. It is 28% against zero.
 
-**PRECISION, on the 3,563-image pod.** 77 candidate pairs, 73 of them
-test-to-train, and **70 of the 73 are the exact edge ciFAIR annotated**.
+**PRECISION, and the pod flatters it.** Two measurements, and the difference
+between them is the point.
 
-The other three looked like a finding and were not, which is the part worth
-recording. All three are the same white car:
+On the constructed 3,563-image pod: 77 candidate pairs, 73 test-to-train, and
+**70 of the 73 are the exact edge ciFAIR annotated**. That looks like 96%
+precision and it is an artifact of the sample. The pod is built AROUND the
+annotated duplicates, so almost everything it can find is already labelled.
+
+On the full 60,000 images, at the same threshold:
+
+```
+158 test/train pairs flagged
+  70  an edge ciFAIR annotated
+   3  two images ciFAIR annotated as duplicates, joined by an edge it did not list
+  85  at least one image ciFAIR never annotated
+```
+
+**The 85 are unverified and are not a finding.** They are either false positives
+or duplicates the annotation missed, and nothing here can tell those apart
+without someone looking at 170 pictures. Quoting the pod's 96% as the precision
+of this check would have been reading a number off the sample designed to
+produce it.
+
+The 3 in the middle are worth recording for how they nearly went wrong. All are
+the same white car:
 
 ```
 cifar-test-03520 ~ cifar-train-46237  (4 bits)
@@ -2609,10 +2629,10 @@ cifar-test-02929 ~ cifar-train-49426  (5 bits)
 
 The first reading was "three duplicates ciFAIR missed". Checking whether those
 ids appear in the annotation under a DIFFERENT partner killed it: every one of
-the six is annotated, just linked to another member of its own cluster.
-ciFAIR lists pairs, not cliques, and these are additional edges inside clusters
-it already found. **Zero of the 73 fall outside its known duplicate set**, which
-is a better result than the overclaim would have been and a worse headline.
+the six is annotated, just linked to another member of its own cluster. ciFAIR
+publishes pairs, not cliques. `compare.py` now computes that three-way split
+itself, so the distinction between a result and an overclaim is a line of output
+rather than something the next person has to think of.
 
 **What this is NOT.** It is not a finding against CIFAR-10. That CIFAR-10 has
 train/test duplicates is Barz & Denzler's result, published in 2020, and filing

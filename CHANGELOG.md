@@ -1,5 +1,21 @@
 # Changelog
 
+### v0.53.2 (2026-08-10)
+
+- **CI installs the `vision` extra.** Without it S15 can only skip, and a check
+  that is never exercised on the second platform is a check the OS-difference
+  class (D-002, D-014, D-044) cannot find anything in.
+- **A trial may declare a PRECONDITION**, and one that cannot run is counted out
+  of the denominator and NAMED. The S15 trial read as `** MISSED **` in CI when
+  Pillow was absent, which is wrong: the check skipped, correctly. Calling it
+  caught would have been worse. The scorecard now prints "91 of the 92 declared"
+  with the reason rather than quietly shrinking.
+- **N-017's precision figure corrected before anyone else read it.** The pod's
+  70-of-73 reads as 96% and is an artifact of a sample built around the
+  annotated duplicates. On the full 60,000: 158 flagged, 70 annotated edges, 3
+  cluster-internal, and 85 involving an image ciFAIR never annotated. The 85 are
+  unverified and are not a finding.
+
 ### v0.53.1 (2026-08-10)
 
 **D-044: the asset-path guard asked the local operating system what "absolute"
@@ -65,12 +81,18 @@ zero bits: **not one of the 286 annotated pairs is byte-identical**, so S1, S7
 and S14 find none of them, and 28% is measured against zero rather than against
 a better check.
 
-On the pod, 70 of the 73 flagged test/train pairs are the exact edge ciFAIR
-annotated. The other three looked like duplicates ciFAIR had missed and were
-not: all six images are annotated, each linked to a different member of its own
-cluster, because ciFAIR publishes pairs rather than cliques. `compare.py` now
-reports that three-way split itself, so the distinction between a result and an
-overclaim is computed rather than remembered.
+Precision has two numbers and the flattering one is an artifact. On the
+constructed pod, 70 of 73 flagged pairs are exactly what ciFAIR annotated, which
+reads as 96% and is a fact about a sample built around the annotated duplicates.
+On the full 60,000 at the same threshold: 158 flagged, 70 annotated edges, 3
+joining two annotated images by an edge ciFAIR did not list, and **85 involving
+an image it never annotated**. Those 85 are unverified and are not a finding.
+
+The 3 in the middle nearly became one. They read as duplicates ciFAIR had
+missed; all six images turned out to be annotated, each linked to a different
+member of its own cluster, because ciFAIR publishes pairs rather than cliques.
+`compare.py` computes that three-way split so the next person does not have to
+think of it.
 
 `near_dup_bits` moves from `convention` to `calibrated`. The default STAYS at 5
 even though 8 nearly doubles recall, for the reason recorded when the MMLU-Redux

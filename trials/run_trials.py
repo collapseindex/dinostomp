@@ -458,6 +458,12 @@ def t_same_image_in_train_and_test(root):
     return build_pod(root, items)
 
 
+def _vision_available() -> bool:
+    from dinostomp import perceptual
+
+    return perceptual.available()
+
+
 def t_near_duplicate_images(root):
     # NOT byte-identical: the same picture, brightened. The bytes differ
     # completely, so S1 is blind to it by construction and only a perceptual
@@ -1725,7 +1731,8 @@ TRIALS = [
     ("an asset path climbs out of the pod", t_asset_path_escapes_the_pod, ("S12", "fail")),
     ("one directory per class, so the path names the answer", t_label_in_the_asset_path, ("S13", "fail")),
     ("the same photograph in train and in test", t_same_image_in_train_and_test, ("S14", "fail")),
-    ("the same photograph, brightened, so the bytes differ", t_near_duplicate_images, ("S15", "warn")),
+    ("the same photograph, brightened, so the bytes differ", t_near_duplicate_images, ("S15", "warn"),
+     _vision_available),
     ("no contamination canary", t_no_canary, ("S8", "warn")),
     ("witnesses too weak (blind spots)", t_weak_witnesses, ("W1", "warn")),
     ("scorer laxer than its witnesses claim", t_lying_scorer_gated, ("RUNNER", GATED)),
@@ -2009,8 +2016,24 @@ def main() -> int:
     print(f"  {'defect':<48} {'expected':<16} {'actual':<28} verdict")
     rows = []
     missed = 0
-    for name, builder, expectation in TRIALS:
+    unrunnable = 0
+    for trial in TRIALS:
+        name, builder, expectation = trial[0], trial[1], trial[2]
+        # A trial may declare a PRECONDITION: an optional dependency without
+        # which the check it exercises can only skip. Calling that a MISS is
+        # wrong, because the check behaved correctly; calling it CAUGHT is
+        # worse. It is counted out of the denominator and the shortfall is
+        # printed, because a denominator that quietly shrinks is the flattering
+        # direction and "92 of 92" when 91 ran is exactly the defect this suite
+        # exists to catch in other people's evals.
+        precondition = trial[3] if len(trial) > 3 else None
         exp = f"{expectation[0]} {expectation[1]}" if expectation[0] != "RUNNER" else f"exit {expectation[1]}"
+        if precondition is not None and not precondition():
+            unrunnable += 1
+            print(f"  {name:<48} {exp:<16} {'not runnable here':<28} NOT RUN")
+            rows.append({"defect": name, "expected": exp, "actual": "not runnable here",
+                         "caught": None})
+            continue
         try:
             caught, actual = run_trial(name, builder, expectation)
         except Exception as exc:  # noqa: BLE001 - a crashing trial is a MISSED trial, loudly
@@ -2021,7 +2044,12 @@ def main() -> int:
         print(f"  {name:<48} {exp:<16} {actual:<28} {tag}")
         rows.append({"defect": name, "expected": exp, "actual": actual, "caught": caught})
 
-    print(f"\n  sensitivity: {len(TRIALS) - missed} of {len(TRIALS)} defects caught, {missed} missed")
+    ran = len(TRIALS) - unrunnable
+    print(f"\n  sensitivity: {ran - missed} of {ran} defects caught, {missed} missed")
+    if unrunnable:
+        print(f"  {unrunnable} trial(s) NOT RUN here because an optional dependency is absent, "
+              f"so this is {ran} of the {len(TRIALS)} declared. "
+              f"Install everything with `pip install -e '.[dev,vision]'`.")
 
     print(f"\n  {'clean pod (specificity arm)':<48} {'expected':<16} {'actual':<40} verdict")
     false_alarms = 0

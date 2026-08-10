@@ -15,7 +15,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.11"}
-      - run: pip install -e '.[dev]'
+      # `vision` too: without it S15 skips, and a check that is only ever
+      # skipped in CI is a check nobody tests on a second platform.
+      - run: pip install -e '.[dev,vision]'
       - name: verify the published report re-derives
         run: dinostomp verify examples/${{ matrix.pod }}/eval.yaml
       - name: stomp
@@ -27,7 +29,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.11"}
-      - run: pip install -e '.[dev]'
+      # `vision` too: without it S15 skips, and a check that is only ever
+      # skipped in CI is a check nobody tests on a second platform.
+      - run: pip install -e '.[dev,vision]'
       - run: python -m pytest -q
       - name: findings index is current
         run: python scripts/index_findings.py --check
