@@ -327,7 +327,13 @@ def test_every_split_on_disk_has_a_commitment_and_a_registry_row():
 
 def test_a_withheld_split_does_not_ship_its_answer_key():
     """The gitignore rule is the only thing between labels.WITHHELD.jsonl and a
-    push. This asserts the rule actually covers it."""
+    push, so this asserts the rule covers it.
+
+    It does NOT assert the key exists. The first version did, and CI failed
+    within a minute: a fresh checkout has no answer key, because not having one
+    is the entire point. Only the scorekeeper's machine holds it, and a test
+    that passes only there is a test that checks the wrong thing.
+    """
     import subprocess
 
     for folder in sorted((CORPUS / "instances").iterdir()):
@@ -336,14 +342,18 @@ def test_a_withheld_split_does_not_ship_its_answer_key():
         manifest = json.loads((folder / "MANIFEST.json").read_text(encoding="utf-8"))
         if not manifest.get("withheld"):
             continue
-        key = folder / "labels.WITHHELD.jsonl"
-        assert key.is_file(), f"{folder.name} is withheld but has no answer key on disk"
-        proc = subprocess.run(["git", "check-ignore", str(key)],
-                              capture_output=True, text=True, cwd=str(REPO))
-        assert proc.returncode == 0, (
-            f"{key} is NOT gitignored. One `git add -A` publishes the answer key.")
         assert not (folder / "labels.jsonl").is_file(), (
             f"{folder.name} is withheld but also ships public labels")
+        key = folder / "labels.WITHHELD.jsonl"
+        tracked = subprocess.run(["git", "ls-files", "--error-unmatch", str(key)],
+                                 capture_output=True, text=True, cwd=str(REPO))
+        assert tracked.returncode != 0, (
+            f"{key.name} for {folder.name} is TRACKED BY GIT: the answer key is published")
+        if key.is_file():
+            ignored = subprocess.run(["git", "check-ignore", str(key)],
+                                     capture_output=True, text=True, cwd=str(REPO))
+            assert ignored.returncode == 0, (
+                f"{key} exists and is NOT gitignored. One `git add -A` publishes it.")
 
 
 def test_the_leaderboard_is_generated_and_current():
