@@ -76,6 +76,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-012](#n-012) | dinostomp | scored against humans: 5% recall, and 2 items they missed | measured |
 | [N-013](#n-013) | LLM-as-judge | capability buys precision and costs recall; first version retracted | measured **supersedes this entry's first version, which was wrong** |
 | [N-014](#n-014) | dinostomp | nine adversarial pods, nine caught, one check found blind | measured |
+| [F-025](#f-025) | Pharmacist Licensure Exam | 16 items offer the same option twice | confirmed |
+| [N-016](#n-016) | NCLEX nursing | clean, on 28 items; the battery cannot read the other 58 | negative, underpowered |
 | [D-001](#d-001) | dinostomp | the money invariant had only ever run at zero | fixed |
 | [D-002](#d-002) | dinostomp | pooling hid a model that never read the question | fixed |
 | [D-003](#d-003) | dinostomp | a collapsed model manufactured 8 phantom key errors | fixed |
@@ -154,7 +156,7 @@ at fault.
 | `S2` | [F-004](#f-004), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
-| `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-012](#n-012) |
+| `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-012](#n-012), [F-025](#f-025) |
 | `S7` | [F-020](#f-020), [D-005](#d-005) |
 | `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015) |
 | `S10` | [N-006](#n-006) |
@@ -163,7 +165,7 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [N-015](#n-015), [N-002](#n-002), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [N-015](#n-015), [N-002](#n-002), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039) |
 
 ### By subject
 
@@ -196,6 +198,8 @@ at fault.
 | MMLU-Pro | [F-011](#f-011) |
 | MMLU-Pro vs MMLU | [F-012](#f-012) |
 | MMLU-Redux 2.0 | [F-018](#f-018) |
+| NCLEX nursing | [N-016](#n-016) |
+| Pharmacist Licensure Exam | [F-025](#f-025) |
 | RACE | [F-022](#f-022) |
 | six dataset pairs | [N-004](#n-004) |
 | TruthfulQA | [F-004](#f-004) |
@@ -1294,6 +1298,80 @@ Reproduce: `extensions`-free, offline, nine pods, about ninety seconds.
 
 ---
 
+### F-025
+**2023 Chinese Pharmacist Licensure Examination · 16 items offer the same option twice**
+`dup-options` (S5) · 2026-08-10 · confirmed
+
+431 single-key items from the pharmacy track of a national professional
+licensing examination. Eighteen offer a duplicated option, and the two causes
+separate cleanly:
+
+**16 are duplicated option TEXT**, in items with no images involved:
+
+```
+pharm-00223  ['卡维地洛片', '卡维地洛片', '赖诺普利片', ...]        carvedilol tablets, twice
+pharm-00330  ['美托洛尔片', '格列吡嗪片', '赖诺普利片', '格列吡嗪片', ...]   glipizide tablets, twice
+pharm-00107  ['口崩片', '咀嚼片', '多层片', '肠溶片', '多层片']       multi-layer tablet, twice
+```
+
+**2 are a transcription artifact**: the source replaced each formula image with
+the literal string `img`, so two distinct mathematical options both became
+`'img'`. Those two items are unusable in this copy and say nothing about the
+examination.
+
+**None of the eighteen has the KEY duplicated**, which is the honest limit of
+this finding: no candidate is marked wrong for choosing a correct answer. The
+effect is smaller and still real. A five-option item that offers four raises the
+guessing floor for that item from 20% to 25%, and a candidate who spots the
+repeat can eliminate a slot for free.
+
+**Scope, and it is doing real work here.** This audits one redistributed copy,
+and the `img` cases prove the copy is lossy. A duplicate could in principle be
+the same lossiness in a form I cannot detect. What can be said is that sixteen
+of them are ordinary drug names and patient descriptions with no image content
+anywhere in the item, so a transcription explanation would have to be a
+different and stranger one.
+
+---
+
+### N-016
+**NCLEX-style nursing items · clean, on a sample too small to lean on**
+the data-scope battery · 2026-08-10 · negative, underpowered
+
+```
+MECHANICALLY SOUND AT DATA SCOPE: no integrity findings across 7 of 10 data checks
+```
+
+The second human licensing exam to come back clean, after
+[N-015](#n-015). Recorded with its limit in the title because the limit is
+severe: **28 items**. That is a sample where the absence of a defect at any of
+the rates found elsewhere in this file would be unsurprising by chance alone.
+
+The 28 are what survives of 86 rows, and the arithmetic is not a filter bug:
+
+```
+33  the key is a LIST, not one option   ("Select All That Apply")
+25  fewer than two options              (fill-in-the-blank, hot spot, matrix, ...)
+28  single-key multiple choice          -> kept
+```
+
+The bank carries ten item types and only one is the shape this pod scores. A
+`Select All That Apply` key COULD be stored as a list target, since the items
+schema allows one, and it must not be: a list target means "any of these is
+acceptable" and SATA means "all of these are required". Conflating them would
+invent a grading rule the examination does not use, which is the same error as
+[D-039](#d-039) in a different costume.
+
+**What the ten item types say about the battery, which is more interesting than
+the clean bill.** Most of a modern nursing licensure exam is not four options and
+one key. It is highlighting, ordering, grids, bow-ties and exhibits. Every
+check here reads a question, options and a target, so **the battery has nothing
+to say about 58 of these 86 items** and did not pretend otherwise. That is the
+honest ceiling on auditing assessments this way, and it is a bigger caveat than
+any number in this entry.
+
+---
+
 ### D-001
 **The money invariant had only ever run at zero**
 `spend-ledger` (R3) · first live fleet · fixed
@@ -2319,7 +2397,7 @@ property of that data.**
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
 
-**Twenty-one benchmarks audited**, three of them assessments written for PEOPLE rather than for models,, all fetched from their authors and none
+**Twenty-three benchmarks audited**, five of them assessments written for PEOPLE rather than for models, three of those professional licensing examinations,, all fetched from their authors and none
 vendored: MMLU, MMLU-Pro, HellaSwag, ARC-Easy, ARC-Challenge, GSM8K,
 TruthfulQA, CommonsenseQA, OpenBookQA, BoolQ, WinoGrande, SciQ, MedMCQA, RACE, MuSR, LogiQA, MATH-500, DROP.
 
@@ -2327,14 +2405,14 @@ Count it precisely.
 
 | | |
 |---|---|
-| findings in other people's evals (**F**) | **24** |
+| findings in other people's evals (**F**) | **25** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **15** |
+| negative results, recorded rather than dropped (**N**) | **16** |
 | defects in dinostomp itself (**D**) | **39** |
 
-Thirty-nine to twenty-four. That ratio is the useful number to publish, and it is the
+Thirty-nine to twenty-five. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

@@ -1,5 +1,30 @@
 # Changelog
 
+### v0.51.0 (2026-08-10)
+
+Two more assessments whose outcome is somebody's licence to practise.
+
+- **F-025: the 2023 Chinese Pharmacist Licensure Examination offers the same
+  option twice on 16 items.** Ordinary drug names and patient descriptions
+  repeated inside one five-option list (`['卡维地洛片', '卡维地洛片', ...]`). Two
+  further duplicates are a transcription artifact, where the source replaced
+  formula images with the literal string `img` and two distinct options
+  collapsed onto it; those two are separated out and claim nothing about the
+  exam. **None of the eighteen is double-keyed**, which is the honest limit: the
+  effect is a five-option item offering four, raising that item's guessing floor
+  from 20% to 25%, not a candidate marked wrong for being right.
+- **N-016: NCLEX-style items came back clean on 28 items**, and the entry title
+  carries the word `underpowered` because 28 is a sample where absence proves
+  very little. The more interesting part is the ceiling it exposes: the bank has
+  ten item types (highlight, ordered response, matrix, bow-tie, exhibit) and the
+  battery reads only single-key multiple choice, so **it has nothing to say about
+  58 of the 86 rows** and did not pretend otherwise.
+- The 28-of-86 arithmetic is documented in the loader rather than discovered
+  later, after two loader defects in two days (D-034, D-039) that both began as
+  an unstated filter. A `Select All That Apply` key could be stored as a list
+  target and deliberately is not: a list target means "any of these is
+  acceptable" and SATA means "all are required".
+
 ### v0.50.0 (2026-08-10)
 
 Pointed the battery at assessments written for PEOPLE, by the bodies that

@@ -1,9 +1,9 @@
 {
   "generated_from": "FINDINGS.md",
   "counts": {
-    "F": 24,
+    "F": 25,
     "D": 39,
-    "N": 15
+    "N": 16
   },
   "series": {
     "F": "other people's evals",
@@ -544,6 +544,32 @@
       "anchor": "#n-014",
       "subject": "dinostomp",
       "summary": "nine adversarial pods, nine caught, one check found blind"
+    },
+    {
+      "id": "F-025",
+      "series": "F",
+      "title": "2023 Chinese Pharmacist Licensure Examination · 16 items offer the same option twice",
+      "check_label": "`dup-options` (S5)",
+      "checks": [
+        "S5"
+      ],
+      "date": "2026-08-10",
+      "status": "confirmed",
+      "anchor": "#f-025",
+      "subject": "Pharmacist Licensure Exam",
+      "summary": "16 items offer the same option twice"
+    },
+    {
+      "id": "N-016",
+      "series": "N",
+      "title": "NCLEX-style nursing items · clean, on a sample too small to lean on",
+      "check_label": "the data-scope battery",
+      "checks": [],
+      "date": "2026-08-10",
+      "status": "negative, underpowered",
+      "anchor": "#n-016",
+      "subject": "NCLEX nursing",
+      "summary": "clean, on 28 items; the battery cannot read the other 58"
     },
     {
       "id": "D-001",

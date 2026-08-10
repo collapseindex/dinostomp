@@ -82,6 +82,12 @@ SOURCES = {
                   "?dataset=ckodser%2FIran_Driving_licence_test&config=default&split=train",
     "aqua-rat": "https://datasets-server.huggingface.co/rows"
                 "?dataset=deepmind%2Faqua_rat&config=raw&split=test",
+    # Licensing exams: failing these has legal consequences for a person.
+    "nclex": "https://datasets-server.huggingface.co/rows"
+             "?dataset=InterCECTDev%2Fnclex-nursing-questions&config=default&split=train",
+    "pharm-cn": "https://datasets-server.huggingface.co/rows"
+                "?dataset=FreedomIntelligence%2F2023_Pharmacist_Licensure_Examination-Pharmacy_track"
+                "&config=default&split=train",
 }
 
 # Datasets fetched a page at a time, and how many rows to take. MMLU's test
@@ -91,7 +97,8 @@ PAGED = {"arc-challenge": 1200, "mmlu": 3000, "arc-easy": 2400, "winogrande": 13
          "commonsenseqa": 1200, "openbookqa": 500, "boolq": 3000, "mmlu-pro": 3000,
          "sciq": 1000, "medmcqa": 3000,
          "race": 1500, "musr": 250, "logiqa": 650, "math500": 500, "drop": 2000,
-         "medqa-usmle": 1273, "driving-ir": 1000, "aqua-rat": 254}
+         "medqa-usmle": 1273, "driving-ir": 1000, "aqua-rat": 254,
+         "nclex": 86, "pharm-cn": 480}
 PAGE_ROWS = 100
 
 CANARY = "dinostomp canary DO NOT TRAIN benchmarks"
@@ -516,6 +523,79 @@ def aqua_items(rows: list[dict]) -> list[dict]:
     return out
 
 
+def nclex_items(rows: list[dict]) -> list[dict]:
+    """US nursing licensure items. `options` is a JSON-encoded list of strings
+    already carrying "A) " prefixes, and `correct_answer` repeats one of them
+    VERBATIM including its prefix.
+
+    The prefix is stripped from both sides, so the target is the answer rather
+    than its letter and survives an option shuffle. Stripping only one side would
+    silently key every item to nothing.
+
+    ONLY 28 OF 86 ROWS SURVIVE, and that is correct rather than a filter bug, so
+    the arithmetic is written down here instead of being discovered later:
+
+        33  the key is a LIST, not one option   ("Select All That Apply")
+        25  fewer than two options              (fill-in-the-blank, hot spot, ...)
+        28  single-key multiple choice          -> kept
+
+    The bank carries ten item types and only one of them is the shape this pod
+    scores. A `Select All That Apply` key COULD be stored as a list target, since
+    the items schema allows one, but it must not be: a list target here means
+    "any of these is acceptable" and SATA means "all of these are required".
+    Those are different scoring contracts and conflating them would invent a
+    grading rule the examination does not use.
+    """
+    import ast
+    import re as _re
+
+    out = []
+    for i, r in enumerate(rows):
+        row = r["row"]
+        raw = row.get("options")
+        if isinstance(raw, str):
+            try:
+                raw = ast.literal_eval(raw)
+            except (ValueError, SyntaxError):
+                try:
+                    raw = json.loads(row["options"])
+                except (ValueError, TypeError):
+                    continue
+        def strip(text):
+            return _re.sub(r"^\s*[A-H][).]\s*", "", str(text)).strip()
+        opts = [strip(o) for o in (raw or []) if str(o).strip()]
+        key = strip(row.get("correct_answer") or "")
+        if len(opts) < 2 or not key or key not in opts:
+            continue
+        stem = str(row.get("stem") or "").strip()
+        scenario = str(row.get("scenario") or "").strip()
+        question = f"{scenario}\n\n{stem}" if scenario and scenario not in stem else stem
+        out.append({"id": f"nclex-{i:05d}", "input": question,
+                    "choices": opts, "target": key})
+    return out
+
+
+def pharm_items(rows: list[dict]) -> list[dict]:
+    """Chinese pharmacist licensure items. Options are SEPARATE COLUMNS A..E and
+    the answer is a letter, so the target is the looked-up column's text.
+
+    Blank option columns are dropped rather than kept as empty strings: an item
+    with four real options and one blank is a four-option item, and keeping the
+    blank would hand `dup-options` a duplicate that the exam does not have.
+    """
+    out = []
+    for i, r in enumerate(rows):
+        row = r["row"]
+        letters = [c for c in "ABCDE" if str(row.get(c) or "").strip()]
+        opts = [str(row[c]).strip() for c in letters]
+        key = str(row.get("answer") or "").strip().upper()
+        if len(opts) < 2 or key not in letters:
+            continue
+        out.append({"id": f"pharm-{i:05d}", "input": str(row.get("question") or "").strip(),
+                    "choices": opts, "target": str(row[key]).strip()})
+    return out
+
+
 BUILDERS = {
     "gsm8k": gsm8k_items,
     "truthfulqa": truthfulqa_items,
@@ -538,6 +618,8 @@ BUILDERS = {
     "medqa-usmle": medqa_items,
     "driving-ir": driving_items,
     "aqua-rat": aqua_items,
+    "nclex": nclex_items,
+    "pharm-cn": pharm_items,
 }
 
 
