@@ -1,5 +1,33 @@
 # Changelog
 
+### v0.49.2 (2026-08-10)
+
+The findings ledger is now generated where it can be, and queryable.
+
+At 74 entries the hand-maintained index had already drifted twice (once on
+ordering, once when an entry reached one copy and not the other), both caught
+after the fact by assertions. Generating removes the class instead of policing
+it.
+
+- **`findings.json`**: every entry with its id, checks, date, status, subject
+  and summary. For anyone who would rather query the ledger than read two
+  thousand lines of markdown.
+- **A BY CHECK cross-reference**: every finding a given check has produced. This
+  is the view to read before changing a check, because it is that check's own
+  track record including the times it was the thing at fault. `S2` has four:
+  two against other people's datasets, two against itself.
+- **A BY SUBJECT cross-reference**: every finding against a given dataset, tool
+  or harness.
+- `python scripts/index_findings.py` regenerates all of it between explicit
+  markers; `--check` fails if it is stale, and CI runs it. The prose entries
+  stay the source of truth and stay hand-written.
+- **Three N entries carried no status at all**, and the test named
+  `test_every_finding_states_a_check_and_a_status` did not notice, because it
+  asserted only that a separator existed. The index generator found them. The
+  test now asserts what its name claims.
+- An unanchored regex in the same test was reading the new cross-reference rows
+  as index rows; it now parses the index table specifically.
+
 ### v0.49.1 (2026-08-10)
 
 - **D-038: a `choices` mapping was announced and then silently ignored.** A

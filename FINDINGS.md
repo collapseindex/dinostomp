@@ -16,6 +16,13 @@ Ids are permanent. A withdrawn entry keeps its id and gains a `WITHDRAWN` status
 with the evidence that killed it, because deleting a claim you have already made
 is how a findings page becomes a marketing page.
 
+**Machine-readable**: [`findings.json`](findings.json) carries every entry with
+its id, checks, date, status and subject, generated from this file. The index
+and cross-reference tables below are generated too, by
+`python scripts/index_findings.py`; the prose entries are the source of truth
+and are written by hand. Two hand-kept copies drifted twice, so the derivable
+half is now derived and CI fails if it goes stale.
+
 **Reproducing anything here** needs no API key and no spend unless the entry says
 otherwise:
 
@@ -26,13 +33,15 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 
 ## Index
 
+<!-- INDEX:BEGIN -->
+
 | id | subject | finding | status |
 |---|---|---|---|
 | [F-001](#f-001) | iris | two byte-identical measurement vectors | confirmed |
 | [F-002](#f-002) | MMLU | a subtraction item keyed to two correct options | confirmed |
 | [F-003](#f-003) | MMLU | 90 duplicate rows in the first 3000 | confirmed |
 | [F-004](#f-004) | TruthfulQA | an item passable by restating the question | confirmed, scoped |
-| [F-005](#f-005) | GSM8K | two of four models move beyond sampling noise on seed alone | confirmed |
+| [F-005](#f-005) | GSM8K | two of four models move beyond sampling noise on seed alone | confirmed costs $0.06 to reproduce |
 | [F-006](#f-006) | GSM8K | unfinished responses credited as correct | confirmed |
 | [F-007](#f-007) | GSM8K | a formatting gap that reads as a capability gap | confirmed |
 | [F-008](#f-008) | CommonsenseQA | 24 items with a repeated option; 6 repeat the keyed answer | confirmed |
@@ -41,17 +50,17 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-011](#f-011) | MMLU-Pro | 64 duplicate rows in the first 3000 | confirmed |
 | [F-012](#f-012) | MMLU-Pro vs MMLU | 158 of 3000 items reuse an MMLU question; 22 are unchanged | confirmed, expected |
 | [F-013](#f-013) | SciQ | the gold option reuses a question word no distractor does | confirmed, narrow |
-| [F-014](#f-014) | a judge (qwen3-30b) | stated confidence and authority flip its verdicts, always toward FAIL | confirmed |
-| [F-015](#f-015) | four small models | 87% to 97% preserve a source's hedge; the eval cannot separate them | confirmed, underpowered |
-| [F-016](#f-016) | llama-3.2-3b | "You are an expert." is worth 10 points, marginally | confirmed, marginal |
-| [F-017](#f-017) | a RAG agent | grounding it in its own retrieval made it 25 points WORSE | confirmed |
+| [F-014](#f-014) | a judge (qwen3-30b) | stated confidence and authority flip its verdicts, always toward FAIL | confirmed [examples/hedge](examples/hedge/) |
+| [F-015](#f-015) | four small models | 87% to 97% preserve a source's hedge; the eval cannot separate them | confirmed, underpowered costs $0.02 to reproduce |
+| [F-016](#f-016) | llama-3.2-3b | "You are an expert." is worth 10 points, marginally | confirmed, marginal [examples/presentation](examples/presentation/) |
+| [F-017](#f-017) | a RAG agent | grounding it in its own retrieval made it 25 points WORSE | confirmed [examples/live-agent](examples/live-agent/) costs $0.02 |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
 | [F-021](#f-021) | MATH-500 | 2 problems whose answer is written in the question | confirmed, scoped |
 | [F-022](#f-022) | RACE | an item offering the same option twice | confirmed |
 | [N-001](#n-001) | HellaSwag, ARC, MMLU | no position, length, or shortcut bias found | negative |
-| [N-002](#n-002) | dinostomp | the uncheckable path was untested, and said so | negative, later closed |
+| [N-002](#n-002) | dinostomp | the uncheckable path was untested, and said so | later closed by [F-007](#f-007) |
 | [N-003](#n-003) | ARC, OpenBookQA, HellaSwag, WinoGrande | no repeated options in four datasets | negative |
 | [N-004](#n-004) | six dataset pairs | no cross-benchmark reuse found | negative |
 | [N-005](#n-005) | four models | re-ordering the options moved nobody beyond noise | negative, underpowered |
@@ -61,8 +70,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-009](#n-009) | dinostomp | T4 sees 0%, T7 sees 100%, on the same agent | measured |
 | [N-010](#n-010) | dinostomp | what a process boundary buys, one claim at a time | measured |
 | [N-011](#n-011) | Inspect AI | the second foreign format cost one defect, not five | measured |
-| [N-012](#n-012) | dinostomp | scored against humans: 5% recall, and 2 items they missed | measured, acted on |
-| [N-013](#n-013) | LLM-as-judge | capability buys precision and costs recall; first version retracted | measured, corrected |
+| [N-012](#n-012) | dinostomp | scored against humans: 5% recall, and 2 items they missed | measured |
+| [N-013](#n-013) | LLM-as-judge | capability buys precision and costs recall; first version retracted | measured **supersedes this entry's first version, which was wrong** |
 | [N-014](#n-014) | dinostomp | nine adversarial pods, nine caught, one check found blind | measured |
 | [D-001](#d-001) | dinostomp | the money invariant had only ever run at zero | fixed |
 | [D-002](#d-002) | dinostomp | pooling hid a model that never read the question | fixed |
@@ -74,34 +83,116 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-008](#d-008) | dinostomp | 31 manufactured key errors, and a flattering first fix | fixed, scoped |
 | [D-009](#d-009) | dinostomp | `plan` understated a bill by 3x | fixed |
 | [D-010](#d-010) | dinostomp | the engine hashed itself and nothing read it | fixed |
-| [D-011](#d-011) | dinostomp | published reports only verified on the author's machine | fixed |
-| [D-012](#d-012) | dinostomp | line-ending translation is drift | fixed |
+| [D-011](#d-011) | dinostomp | published reports only verified on the author's machine | fixed found by CI |
+| [D-012](#d-012) | dinostomp | line-ending translation is drift | fixed found by CI |
 | [D-013](#d-013) | dinostomp | smaller ones: a wrong hint, two wrong witnesses, a near-miss | fixed |
 | [D-014](#d-014) | dinostomp | the overlap check compared questions and ignored options | fixed |
 | [D-015](#d-015) | dinostomp | position and length bias reported class balance on a fixed label set | fixed |
 | [D-016](#d-016) | dinostomp | the SciQ fetcher put the answer at index 0 on every item | fixed |
 | [D-017](#d-017) | dinostomp | a truncated judge was diagnosed as a judge with no opinion | fixed |
 | [D-018](#d-018) | dinostomp | EVERY non-judge probe crashed the CLI, not just cross-judge | fixed |
-| [D-019](#d-019) | dinostomp | the docs claimed a 28-point swing with no run behind it | WITHDRAWN |
-| [D-020](#d-020) | dinostomp | the grounding check undercounts by 6x, by construction | superseded by T7 |
-| [D-021](#d-021) | dinostomp | the most common eval-log shape in the field was unimportable | fixed |
-| [D-022](#d-022) | dinostomp | a check overwrote the contract's skip reason with a false one | fixed |
-| [D-023](#d-023) | dinostomp | a rival score column was chosen silently, and it was the wrong one | fixed |
-| [D-024](#d-024) | dinostomp | `run --dry` would fabricate records for a model it cannot call | fixed |
-| [D-025](#d-025) | dinostomp | an error message named a flag nobody can type | fixed |
-| [D-026](#d-026) | dinostomp | the item-majority estimator was never run live until now | fixed |
-| [D-027](#d-027) | dinostomp | two defects in the pod written to demonstrate the new rail | fixed |
-| [D-028](#d-028) | dinostomp | the line-ending guard could not see a file until after it shipped | fixed |
-| [D-029](#d-029) | dinostomp | "policy is enforced at call time" held only for agents that asked | corrected |
-| [D-030](#d-030) | dinostomp | `inspect` called a pod codeless while it shipped an agent and tools | fixed |
-| [D-031](#d-031) | dinostomp | an imported trajectory could never reach the checks that read one | fixed |
-| [D-032](#d-032) | dinostomp | a valid JSONL file it refused to read, blaming the data | fixed |
+| [D-019](#d-019) | dinostomp | the docs claimed a 28-point swing with no run behind it | **WITHDRAWN** |
+| [D-020](#d-020) | dinostomp | the grounding check undercounts by 6x, by construction | scoped, not fixed |
+| [D-021](#d-021) | dinostomp | the most common eval-log shape in the field was unimportable | fixed in v0.40.0 |
+| [D-022](#d-022) | dinostomp | a check overwrote the contract's skip reason with a false one | fixed in v0.40.0 |
+| [D-023](#d-023) | dinostomp | a rival score column was chosen silently, and it was the wrong one | fixed in v0.40.0 |
+| [D-024](#d-024) | dinostomp | `run --dry` would fabricate records for a model it cannot call | fixed in v0.40.0 |
+| [D-025](#d-025) | dinostomp | an error message named a flag nobody can type | fixed in v0.40.0 |
+| [D-026](#d-026) | dinostomp | the item-majority estimator was never run live until now | fixed in v0.41.0 |
+| [D-027](#d-027) | dinostomp | two defects in the pod written to demonstrate the new rail | fixed in v0.42.0 |
+| [D-028](#d-028) | dinostomp | the line-ending guard could not see a file until after it shipped | fixed in v0.42.1 |
+| [D-029](#d-029) | dinostomp | "policy is enforced at call time" held only for agents that asked | corrected in v0.43.0 |
+| [D-030](#d-030) | dinostomp | `inspect` called a pod codeless while it shipped an agent and tools | fixed in v0.43.1 |
+| [D-031](#d-031) | dinostomp | an imported trajectory could never reach the checks that read one | fixed in v0.44.0 |
+| [D-032](#d-032) | dinostomp | a valid JSONL file it refused to read, blaming the data | fixed in v0.45.0 |
 | [D-033](#d-033) | dinostomp | D-017 again, in the harness written by the person who wrote D-017 | fixed |
 | [D-034](#d-034) | dinostomp | a loader that discarded 96% of a split, and the findings computed on the rest | fixed |
-| [D-035](#d-035) | dinostomp | refused a valid file for a byte-order mark, naming the fix it did not apply | fixed |
-| [D-036](#d-036) | dinostomp | told a semicolon-CSV user their columns were badly named | fixed |
-| [D-037](#d-037) | dinostomp | the leak check was blind to every numeric-answer dataset | fixed |
-| [D-038](#d-038) | dinostomp | announced a `choices` mapping it then silently ignored | fixed |
+| [D-035](#d-035) | dinostomp | refused a valid file for a byte-order mark, naming the fix it did not apply | fixed in v0.48.0 |
+| [D-036](#d-036) | dinostomp | told a semicolon-CSV user their columns were badly named | fixed in v0.48.0 |
+| [D-037](#d-037) | dinostomp | the leak check was blind to every numeric-answer dataset | fixed in v0.49.0 |
+| [D-038](#d-038) | dinostomp | announced a `choices` mapping it then silently ignored | fixed in v0.49.1 |
+
+<!-- INDEX:END -->
+
+<!-- Generated by `python scripts/index_findings.py`. FINDINGS.md is the source of
+     truth: the prose entries are written by hand and everything derivable from them
+     is generated, because two hand-kept copies drifted twice. -->
+
+## Cross-reference
+
+<!-- XREF:BEGIN -->
+
+### By check
+
+Every finding a given check has produced. This is the view to read BEFORE changing
+a check: it is that check's own track record, including the times it was the thing
+at fault.
+
+| check | findings |
+|---|---|
+| `J1` | [D-017](#d-017) |
+| `J2` | [F-014](#f-014) |
+| `P2` | [D-003](#d-003), [D-008](#d-008) |
+| `P9` | [N-005](#n-005), [D-007](#d-007) |
+| `P10` | [F-005](#f-005), [D-007](#d-007) |
+| `P11` | [F-016](#f-016) |
+| `R1` | [D-012](#d-012) |
+| `R3` | [D-001](#d-001) |
+| `R5` | [F-006](#f-006) |
+| `R6` | [F-007](#f-007) |
+| `R7` | [D-002](#d-002) |
+| `R8` | [N-007](#n-007) |
+| `R13` | [D-006](#d-006) |
+| `R15` | [D-006](#d-006) |
+| `R16` | [D-022](#d-022) |
+| `R20` | [N-008](#n-008) |
+| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-020](#f-020), [D-005](#d-005), [D-027](#d-027) |
+| `S2` | [F-004](#f-004), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037) |
+| `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016) |
+| `S4` | [N-001](#n-001), [D-015](#d-015) |
+| `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [N-003](#n-003), [N-012](#n-012) |
+| `S7` | [F-020](#f-020), [D-005](#d-005) |
+| `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015) |
+| `S10` | [N-006](#n-006) |
+| `S11` | [F-012](#f-012), [N-004](#n-004), [D-014](#d-014) |
+| `T1` | [D-027](#d-027) |
+| `T4` | [N-009](#n-009), [D-020](#d-020) |
+| `T7` | [N-009](#n-009) |
+| `T8` | [D-031](#d-031) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [N-002](#n-002), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038) |
+
+### By subject
+
+| subject | findings |
+|---|---|
+| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038) |
+| GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
+| four models | [N-005](#n-005), [N-006](#n-006) |
+| MMLU | [F-002](#f-002), [F-003](#f-003) |
+| SciQ | [F-010](#f-010), [F-013](#f-013) |
+| a judge (qwen3-30b) | [F-014](#f-014) |
+| a RAG agent | [F-017](#f-017) |
+| ARC, OpenBookQA, HellaSwag, WinoGrande | [N-003](#n-003) |
+| CommonsenseQA | [F-008](#f-008) |
+| DROP | [F-020](#f-020) |
+| four small models | [F-015](#f-015) |
+| HellaSwag, ARC, MMLU | [N-001](#n-001) |
+| Inspect AI | [N-011](#n-011) |
+| iris | [F-001](#f-001) |
+| llama-3.2-3b | [F-016](#f-016) |
+| LLM-as-judge | [N-013](#n-013) |
+| lm-eval-harness log | [N-007](#n-007) |
+| LogiQA | [F-019](#f-019) |
+| MATH-500 | [F-021](#f-021) |
+| MedMCQA | [F-009](#f-009) |
+| MMLU-Pro | [F-011](#f-011) |
+| MMLU-Pro vs MMLU | [F-012](#f-012) |
+| MMLU-Redux 2.0 | [F-018](#f-018) |
+| RACE | [F-022](#f-022) |
+| six dataset pairs | [N-004](#n-004) |
+| TruthfulQA | [F-004](#f-004) |
+
+<!-- XREF:END -->
 
 ---
 
@@ -587,7 +678,7 @@ others are: it costs nothing to find and nobody was looking.
 
 ### N-001
 **HellaSwag, ARC, MMLU · no position, length, or shortcut bias found**
-`position-bias` (S3), `length-bias` (S4), `surface-shortcut` (S9) · 2026-08-09
+`position-bias` (S3), `length-bias` (S4), `surface-shortcut` (S9) · 2026-08-09 · negative
 
 All three checks came out clean on all three multiple-choice sets. HellaSwag's
 correct ending is strictly longest **1% below** its per-item expectation, the
@@ -608,7 +699,7 @@ task rather than smaller models. It was right; the GSM8K run exercised it.
 
 ### N-003
 **ARC-Easy, ARC-Challenge, OpenBookQA, HellaSwag, WinoGrande · no repeated options**
-`dup-options` (S5) · 2026-08-09
+`dup-options` (S5) · 2026-08-09 · negative
 
 Zero items with a repeated option across 2376 + 1172 + 500 + 10042 + 1267 items.
 Recorded because [F-008](#f-008) to [F-010](#f-010) make repeated options look
@@ -617,7 +708,7 @@ clean on this axis.
 
 ### N-004
 **Six dataset pairs · no cross-benchmark reuse found**
-`corpus-overlap` (S11) · 2026-08-09
+`corpus-overlap` (S11) · 2026-08-09 · negative
 
 OpenBookQA against ARC-Easy and ARC-Challenge, SciQ against both, CommonsenseQA
 against OpenBookQA, WinoGrande against HellaSwag, MedMCQA against MMLU: no

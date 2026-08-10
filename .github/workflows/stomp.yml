@@ -29,6 +29,8 @@ jobs:
         with: {python-version: "3.11"}
       - run: pip install -e '.[dev]'
       - run: python -m pytest -q
+      - name: findings index is current
+        run: python scripts/index_findings.py --check
       - name: DinoTrials, both tails
         run: python trials/run_trials.py
       - name: the engine fingerprint the README publishes

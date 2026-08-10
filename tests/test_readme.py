@@ -187,7 +187,11 @@ def _findings_ids():
     import re as _re
 
     doc = (REPO / "FINDINGS.md").read_text(encoding="utf-8")
-    index = _re.findall(r"\| \[([FDN]-\d{3})\]\(#[fdn]-\d{3}\) \|", doc)
+    # Anchored to the START of a line, so this reads the INDEX TABLE and not the
+    # generated cross-references, whose rows begin with a check id or a subject
+    # and list several findings each. Unanchored, every xref row contributed its
+    # last link and the order comparison below became nonsense.
+    index = _re.findall(r"^\| \[([FDN]-\d{3})\]\(#[fdn]-\d{3}\) \|", doc, _re.M)
     entries = _re.findall(r"^### ([FDN]-\d{3})$", doc, _re.M)
     return doc, index, entries
 
@@ -224,6 +228,16 @@ def test_every_finding_states_a_check_and_a_status():
         block = doc.split(f"### {eid}\n", 1)[1].split("\n### ", 1)[0]
         header = "\n".join(block.strip().splitlines()[:3])
         assert "·" in header, f"{eid} has no metadata line (check · date · status)"
+        # This test's NAME promised a check and a status. For a long time it
+        # asserted only that a separator existed, and three N entries carried no
+        # status at all. The index generator found them; this did not.
+        # The metadata line is the SECOND line of the block, always. Picking
+        # "the first line containing ·" grabbed the title instead on entries
+        # whose title has one ("**iris · two byte-identical vectors**").
+        lines = block.strip().splitlines()
+        meta = lines[1] if len(lines) > 1 else ""
+        assert len([part for part in meta.split("·") if part.strip()]) >= 3, (
+            f"{eid} metadata is not `check · date · status`: {meta!r}")
 
 
 def test_the_scorecard_counts_match_the_entries():
@@ -303,3 +317,39 @@ def test_readme_data_scope_prose_matches_the_registry():
         f"the data-scope sentence disagrees with the registry ({data_n} of {len(CHECKS)})")
     assert f"for the other {words[rest_n]}" in flat, (
         f"the 'other N' sentence disagrees with the registry ({rest_n})")
+
+
+def test_the_findings_index_is_generated_and_current():
+    """FINDINGS.md is the source of truth; its index is derived from it.
+
+    The index table and the entries were kept by hand and drifted twice: once on
+    ordering, once when a new entry reached one and not the other. Both were
+    caught by assertions after the fact. Generating removes the class instead of
+    policing it, and this test is the guard that the generated regions were
+    regenerated.
+
+        python scripts/index_findings.py
+    """
+    import subprocess
+    import sys
+
+    proc = subprocess.run([sys.executable, str(REPO / "scripts" / "index_findings.py"), "--check"],
+                          capture_output=True, text=True, cwd=str(REPO))
+    assert proc.returncode == 0, (
+        (proc.stdout or "") + (proc.stderr or "")
+        + "\nrun `python scripts/index_findings.py` and commit the result")
+
+
+def test_the_findings_feed_matches_the_ledger():
+    """findings.json is what anyone querying this would read, so it has to hold
+    every entry and agree with the scorecard's own counts."""
+    import json as _json
+
+    feed = _json.loads((REPO / "findings.json").read_text(encoding="utf-8"))
+    doc, index, entries = _findings_ids()
+    assert [f["id"] for f in feed["findings"]] == entries, "the feed and the entries disagree"
+    for series in "FDN":
+        n = sum(1 for e in entries if e.startswith(series))
+        assert feed["counts"][series] == n, f"feed count for {series} is wrong"
+        assert f"| **{n}** |" in doc, (
+            f"the scorecard does not state {n} for series {series}")
