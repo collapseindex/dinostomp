@@ -1,0 +1,36 @@
+name: bench-aqua-rat
+version: 0.1.0
+question: "Does the model pick the option AQuA-RAT keys as correct?"
+
+# AQuA-RAT (Ling et al., 2017), test split, fetched by
+# `python benchmarks/fetch.py aqua-rat`. Quantitative items in the style
+# of graduate admissions tests (GMAT/GRE). The option LABELS ('A)') are
+# stripped so the target is the answer rather than its letter.
+#
+# SCOPE, and it matters for every pod in this family: a defect found here may
+# belong to the ML REPACKAGING rather than to the original exam. LogiQA (F-019)
+# is the standing proof that the distinction is real, where the options column
+# of one HuggingFace copy was damaged while the source exam was fine. Any
+# finding against this pod states which of the two it can and cannot separate.
+
+entitled_claims:
+  - "Which option each model picks on these AQuA-RAT items, per model."
+  - "Nothing about the original examination's quality: this audits one redistributed copy of it."
+
+data: {path: items.jsonl, format: jsonl, render_choices: true}
+
+models:
+  - {provider: dry, model: dry-strong}
+
+scorer:
+  kind: includes
+  witnesses:
+    - {output: "alpha beta", target: "alpha beta", expect: pass}
+    - {output: "The answer is alpha beta", target: "alpha beta", expect: pass}
+    - {output: "gamma delta", target: "alpha beta", expect: fail}
+    - {output: "", target: "alpha beta", expect: fail}
+    - {output: "ALPHA BETA", target: "alpha beta", expect: fail, why: "substring matching is case-sensitive, and this pod says so"}
+    - {output: "alpha  beta", target: "alpha beta", expect: fail, why: "a doubled space is part of the match"}
+    - {output: "alpha bet", target: "alpha beta", expect: fail, why: "a strict prefix is not the answer"}
+
+run: {n: 254, seed: 7, budget_usd: 0}

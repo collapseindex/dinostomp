@@ -1,9 +1,9 @@
 {
   "generated_from": "FINDINGS.md",
   "counts": {
-    "F": 22,
-    "D": 38,
-    "N": 14
+    "F": 24,
+    "D": 39,
+    "N": 15
   },
   "series": {
     "F": "other people's evals",
@@ -315,6 +315,46 @@
       "anchor": "#f-022",
       "subject": "RACE",
       "summary": "an item offering the same option twice"
+    },
+    {
+      "id": "F-023",
+      "series": "F",
+      "title": "AQuA-RAT · 7 items offer a duplicated option, and most of them are double-keyed",
+      "check_label": "`dup-options` (S5)",
+      "checks": [
+        "S5"
+      ],
+      "date": "2026-08-10",
+      "status": "confirmed",
+      "anchor": "#f-023",
+      "subject": "AQuA-RAT",
+      "summary": "7 items with a duplicated option, most of them double-keyed"
+    },
+    {
+      "id": "F-024",
+      "series": "F",
+      "title": "Iranian driving licence test · the correct answer is the longest option 45% of the time",
+      "check_label": "`length-bias` (S4)",
+      "checks": [
+        "S4"
+      ],
+      "date": "2026-08-10",
+      "status": "confirmed",
+      "anchor": "#f-024",
+      "subject": "Iranian driving test",
+      "summary": "the answer is the longest option 45% of the time"
+    },
+    {
+      "id": "N-015",
+      "series": "N",
+      "title": "MedQA-USMLE · a professionally written licensing exam passed every applicable check",
+      "check_label": "the data-scope battery",
+      "checks": [],
+      "date": "2026-08-10",
+      "status": "negative",
+      "anchor": "#n-015",
+      "subject": "MedQA-USMLE",
+      "summary": "a licensing exam passed every applicable check"
     },
     {
       "id": "N-001",
@@ -1002,6 +1042,18 @@
       "anchor": "#d-038",
       "subject": "dinostomp",
       "summary": "announced a `choices` mapping it then silently ignored"
+    },
+    {
+      "id": "D-039",
+      "series": "D",
+      "title": "A loader that mis-keyed a whole exam by one, then reported the artifact as a finding",
+      "check_label": "`benchmarks/fetch.py`",
+      "checks": [],
+      "date": "2026-08-10",
+      "status": "fixed in v0.50.0",
+      "anchor": "#d-039",
+      "subject": "",
+      "summary": "A loader that mis-keyed a whole exam by one, then reported the artifact as a finding"
     }
   ]
 }

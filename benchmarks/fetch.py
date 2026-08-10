@@ -69,6 +69,19 @@ SOURCES = {
                "?dataset=HuggingFaceH4%2FMATH-500&config=default&split=test",
     "drop": "https://datasets-server.huggingface.co/rows"
             "?dataset=ucinlp%2Fdrop&config=default&split=validation",
+    # NOT MACHINE-LEARNING BENCHMARKS. These are assessments written for people,
+    # by the bodies that certify them, and repackaged for ML afterwards. They are
+    # here for a comparison the eighteen above cannot make: does an exam built by
+    # professional item-writers, under a standards regime, pass checks that ML
+    # benchmarks fail? Scope note in each pod: a defect found here may belong to
+    # the REPACKAGING rather than to the original exam, and LogiQA (F-019) is the
+    # standing proof that this distinction is real.
+    "medqa-usmle": "https://datasets-server.huggingface.co/rows"
+                   "?dataset=GBaker%2FMedQA-USMLE-4-options&config=default&split=test",
+    "driving-ir": "https://datasets-server.huggingface.co/rows"
+                  "?dataset=ckodser%2FIran_Driving_licence_test&config=default&split=train",
+    "aqua-rat": "https://datasets-server.huggingface.co/rows"
+                "?dataset=deepmind%2Faqua_rat&config=raw&split=test",
 }
 
 # Datasets fetched a page at a time, and how many rows to take. MMLU's test
@@ -77,7 +90,8 @@ SOURCES = {
 PAGED = {"arc-challenge": 1200, "mmlu": 3000, "arc-easy": 2400, "winogrande": 1300,
          "commonsenseqa": 1200, "openbookqa": 500, "boolq": 3000, "mmlu-pro": 3000,
          "sciq": 1000, "medmcqa": 3000,
-         "race": 1500, "musr": 250, "logiqa": 650, "math500": 500, "drop": 2000}
+         "race": 1500, "musr": 250, "logiqa": 650, "math500": 500, "drop": 2000,
+         "medqa-usmle": 1273, "driving-ir": 1000, "aqua-rat": 254}
 PAGE_ROWS = 100
 
 CANARY = "dinostomp canary DO NOT TRAIN benchmarks"
@@ -404,6 +418,104 @@ def drop_items(rows: list[dict]) -> list[dict]:
     return out
 
 
+def medqa_items(rows: list[dict]) -> list[dict]:
+    """USMLE-style items: a clinical vignette, four options, a keyed letter.
+
+    `options` is a dict {"A": text, ...} and `answer_idx` is the letter, so the
+    target is the looked-up TEXT: a letter target would not survive an option
+    shuffle and would make P9 meaningless.
+    """
+    out = []
+    for i, r in enumerate(rows):
+        row = r["row"]
+        opts_map = row.get("options") or {}
+        if not isinstance(opts_map, dict):
+            continue
+        letters = sorted(opts_map)
+        opts = [str(opts_map[k]).strip() for k in letters]
+        key = str(row.get("answer_idx") or "").strip()
+        if key not in opts_map or not all(opts):
+            continue
+        out.append({"id": f"usmle-{i:05d}", "input": str(row.get("question") or "").strip(),
+                    "choices": opts, "target": str(opts_map[key]).strip()})
+    return out
+
+
+def driving_items(rows: list[dict]) -> list[dict]:
+    """A statutory road-safety test, keyed by a NUMERIC answer.
+
+    The base is decided from the whole split rather than assumed per row, and
+    this is not a nicety. The first version assumed 0-indexing. These answers are
+    1-indexed strings ("4" is the fourth of four options), so it dropped every
+    item keyed to the last option AND silently mis-keyed all the rest by one,
+    leaving 75 of 1000 items with wrong answers. It then reported a position-bias
+    warning that was a pure artifact of its own off-by-one (D-039).
+
+    A wrong key is worse than a dropped row: a dropped row shrinks the sample and
+    a wrong key inverts the finding.
+    """
+    parsed = []
+    for i, r in enumerate(rows):
+        row = r["row"]
+        opts = [str(o).strip() for o in (row.get("options") or []) if str(o).strip()]
+        raw = row.get("answer")
+        if len(opts) < 2 or raw is None:
+            continue
+        parsed.append((i, str(row.get("question") or "").strip(), opts, str(raw).strip()))
+
+    numeric = [int(a) for _, _, _, a in parsed if a.lstrip("-").isdigit()]
+    widths = {len(o) for _, _, o, _ in parsed}
+    base = None
+    if numeric and widths:
+        lo, hi, width = min(numeric), max(numeric), max(widths)
+        if lo >= 1 and hi == width:
+            base = 1          # 1..n over n options can only be 1-indexed
+        elif lo == 0 and hi <= width - 1:
+            base = 0
+    out = []
+    for i, question, opts, raw in parsed:
+        target = None
+        if raw in opts:
+            target = raw
+        elif len(raw) == 1 and raw.upper() in "ABCDEFGH":
+            idx = "ABCDEFGH".index(raw.upper())
+            target = opts[idx] if idx < len(opts) else None
+        elif raw.lstrip("-").isdigit() and base is not None:
+            idx = int(raw) - base
+            target = opts[idx] if 0 <= idx < len(opts) else None
+        # base is None => the indexing could not be determined from the split, so
+        # nothing numeric is resolved. Refusing beats guessing a key.
+        if not target:
+            continue
+        out.append({"id": f"drv-{i:05d}", "input": question,
+                    "choices": opts, "target": target})
+    return out
+
+
+def aqua_items(rows: list[dict]) -> list[dict]:
+    """GMAT/GRE-style quantitative items. Options are strings like "A)1/2"."""
+    out = []
+    for i, r in enumerate(rows):
+        row = r["row"]
+        raw = [str(o).strip() for o in (row.get("options") or [])]
+        key = str(row.get("correct") or "").strip().upper()
+        # Strip the leading "A)" label so the target is the ANSWER, not the label.
+        opts, by_letter = [], {}
+        for o in raw:
+            letter, _, text = o.partition(")")
+            letter, text = letter.strip().upper(), text.strip()
+            if len(letter) == 1 and letter.isalpha() and text:
+                opts.append(text)
+                by_letter[letter] = text
+            else:
+                opts.append(o)
+        if key not in by_letter or len(opts) < 2:
+            continue
+        out.append({"id": f"aqua-{i:05d}", "input": str(row.get("question") or "").strip(),
+                    "choices": opts, "target": by_letter[key]})
+    return out
+
+
 BUILDERS = {
     "gsm8k": gsm8k_items,
     "truthfulqa": truthfulqa_items,
@@ -423,6 +535,9 @@ BUILDERS = {
     "logiqa": logiqa_items,
     "math500": math500_items,
     "drop": drop_items,
+    "medqa-usmle": medqa_items,
+    "driving-ir": driving_items,
+    "aqua-rat": aqua_items,
 }
 
 

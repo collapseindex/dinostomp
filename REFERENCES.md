@@ -69,6 +69,9 @@ exactly what it downloaded. Nothing is vendored.
 | LogiQA | Liu, J. et al. (2020). *LogiQA: A Challenge Dataset for Machine Reading Comprehension with Logical Reasoning.* [arXiv:2007.08124](https://arxiv.org/abs/2007.08124) (the `lucasmccabe/logiqa` copy) | CC-BY-NC-SA-4.0 |
 | MATH-500 | Lightman, H. et al. (2023). *Let's Verify Step by Step.* [arXiv:2305.20050](https://arxiv.org/abs/2305.20050), a 500-problem subset of Hendrycks, D. et al. (2021), [arXiv:2103.03874](https://arxiv.org/abs/2103.03874) | MIT |
 | DROP | Dua, D. et al. (2019). *DROP: A Reading Comprehension Benchmark Requiring Discrete Reasoning Over Paragraphs.* [arXiv:1903.00161](https://arxiv.org/abs/1903.00161) | CC-BY-SA-4.0 |
+| MedQA (USMLE) | Jin, D. et al. (2021). *What Disease does this Patient Have? A Large-scale Open Domain Question Answering Dataset from Medical Exams.* [arXiv:2009.13081](https://arxiv.org/abs/2009.13081), via `GBaker/MedQA-USMLE-4-options` | MIT |
+| AQuA-RAT | Ling, W. et al. (2017). *Program Induction by Rationale Generation.* [arXiv:1705.04146](https://arxiv.org/abs/1705.04146) | Apache-2.0 |
+| Iranian driving licence test | `ckodser/Iran_Driving_licence_test`. A statutory road-safety question bank, redistributed; no accompanying paper. | see the dataset card |
 | iris | Fisher, R. A. (1936). *The use of multiple measurements in taxonomic problems.* Annals of Eugenics 7(2), 179–188. The UCI/scikit-learn lineage this repo pins differs from Fisher's table in two rows: Bezdek, J. C. et al. (1999). *Will the real iris data please stand up?* IEEE Trans. Fuzzy Systems 7(3), 368–369. | public domain |
 
 Findings against these datasets are in [FINDINGS.md](FINDINGS.md), series **F**.

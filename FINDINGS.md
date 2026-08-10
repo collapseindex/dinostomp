@@ -59,6 +59,9 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
 | [F-021](#f-021) | MATH-500 | 2 problems whose answer is written in the question | confirmed, scoped |
 | [F-022](#f-022) | RACE | an item offering the same option twice | confirmed |
+| [F-023](#f-023) | AQuA-RAT | 7 items with a duplicated option, most of them double-keyed | confirmed |
+| [F-024](#f-024) | Iranian driving test | the answer is the longest option 45% of the time | confirmed |
+| [N-015](#n-015) | MedQA-USMLE | a licensing exam passed every applicable check | negative |
 | [N-001](#n-001) | HellaSwag, ARC, MMLU | no position, length, or shortcut bias found | negative |
 | [N-002](#n-002) | dinostomp | the uncheckable path was untested, and said so | later closed by [F-007](#f-007) |
 | [N-003](#n-003) | ARC, OpenBookQA, HellaSwag, WinoGrande | no repeated options in four datasets | negative |
@@ -111,6 +114,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-036](#d-036) | dinostomp | told a semicolon-CSV user their columns were badly named | fixed in v0.48.0 |
 | [D-037](#d-037) | dinostomp | the leak check was blind to every numeric-answer dataset | fixed in v0.49.0 |
 | [D-038](#d-038) | dinostomp | announced a `choices` mapping it then silently ignored | fixed in v0.49.1 |
+| [D-039](#d-039) |  | A loader that mis-keyed a whole exam by one, then reported the artifact as a finding | fixed in v0.50.0 |
 
 <!-- INDEX:END -->
 
@@ -149,8 +153,8 @@ at fault.
 | `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-020](#f-020), [D-005](#d-005), [D-027](#d-027) |
 | `S2` | [F-004](#f-004), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016) |
-| `S4` | [N-001](#n-001), [D-015](#d-015) |
-| `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [N-003](#n-003), [N-012](#n-012) |
+| `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
+| `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-012](#n-012) |
 | `S7` | [F-020](#f-020), [D-005](#d-005) |
 | `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015) |
 | `S10` | [N-006](#n-006) |
@@ -159,7 +163,7 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [N-002](#n-002), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [N-015](#n-015), [N-002](#n-002), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039) |
 
 ### By subject
 
@@ -170,14 +174,17 @@ at fault.
 | four models | [N-005](#n-005), [N-006](#n-006) |
 | MMLU | [F-002](#f-002), [F-003](#f-003) |
 | SciQ | [F-010](#f-010), [F-013](#f-013) |
+| (unattributed) | [D-039](#d-039) |
 | a judge (qwen3-30b) | [F-014](#f-014) |
 | a RAG agent | [F-017](#f-017) |
+| AQuA-RAT | [F-023](#f-023) |
 | ARC, OpenBookQA, HellaSwag, WinoGrande | [N-003](#n-003) |
 | CommonsenseQA | [F-008](#f-008) |
 | DROP | [F-020](#f-020) |
 | four small models | [F-015](#f-015) |
 | HellaSwag, ARC, MMLU | [N-001](#n-001) |
 | Inspect AI | [N-011](#n-011) |
+| Iranian driving test | [F-024](#f-024) |
 | iris | [F-001](#f-001) |
 | llama-3.2-3b | [F-016](#f-016) |
 | LLM-as-judge | [N-013](#n-013) |
@@ -185,6 +192,7 @@ at fault.
 | LogiQA | [F-019](#f-019) |
 | MATH-500 | [F-021](#f-021) |
 | MedMCQA | [F-009](#f-009) |
+| MedQA-USMLE | [N-015](#n-015) |
 | MMLU-Pro | [F-011](#f-011) |
 | MMLU-Pro vs MMLU | [F-012](#f-012) |
 | MMLU-Redux 2.0 | [F-018](#f-018) |
@@ -673,6 +681,87 @@ for that item from 25% to 33% and is invisible in any accuracy number.
 
 One item in 1500 is a low rate, and it is reported for the same reason the
 others are: it costs nothing to find and nobody was looking.
+
+---
+
+### F-023
+**AQuA-RAT · 7 items offer a duplicated option, and most of them are double-keyed**
+`dup-options` (S5) · 2026-08-10 · confirmed
+
+AQuA-RAT is a quantitative reasoning set in the style of graduate admissions
+tests. Seven of 254 test items offer the same option twice, and the duplicate is
+usually the KEY, verified against the source rows rather than the repackaging:
+
+```
+aqua-00117  ['A)8.75', 'B)8.79', 'C)8.75', 'D)8.71', 'E)8.72']      key C  -> A and C identical
+aqua-00124  ['A)15 kmph', 'B)6 kmph', ..., 'E)6 kmph']              key E  -> B and E identical
+aqua-00126  ['A)69:91', 'B)59:91', 'C)59:90', 'D)59:91', ...]       key B  -> B and D identical
+aqua-00120  ['A)277', 'B)288', 'C)200', 'D)277', 'E)168']           key E  -> A and D identical
+```
+
+On the first three, a model that computes the right number and picks the OTHER
+option holding it is marked wrong for choosing a correct answer. On the fourth
+the key is unaffected, so it is a five-option item offering four.
+
+**Checked against the source, because the loader was a suspect.** This pod strips
+the `"A)"` label so the target is the answer and not its letter, and a stripping
+bug could manufacture duplicates. The rows above are quoted from
+`deepmind/aqua_rat` before any processing.
+
+---
+
+### F-024
+**Iranian driving licence test · the correct answer is the longest option 45% of the time**
+`length-bias` (S4) · 2026-08-10 · confirmed
+
+126 items, four options each, so the gold answer should be the longest roughly
+25% of the time. It is the longest in **57 of 126, 45%**, which is +11% over the
+per-item expectation after accounting for ties.
+
+This is the oldest tell in multiple-choice writing: the correct option carries
+the qualifications and the exceptions, so it grows. It means a candidate who
+knows no road law can beat chance by picking the longest answer.
+
+**The first non-English item set audited here**, and a reminder of what the
+battery does and does not need: length is measured in characters and required no
+comprehension of Persian.
+
+**Scope.** This audits one redistributed copy of the question bank, not the
+examination as administered, and 126 items is a small sample: the finding is
+about this artifact. It is included because a statutory road-safety test is the
+kind of assessment nobody thinks to lint.
+
+---
+
+### N-015
+**MedQA-USMLE · a professionally written licensing exam passed every applicable check**
+the data-scope battery · 2026-08-10 · negative
+
+1,273 USMLE-style items, four options each, from the exam family that decides
+who practises medicine in the United States.
+
+```
+MECHANICALLY SOUND AT DATA SCOPE: no integrity findings across 7 of 10 data checks
+```
+
+No duplicate questions, no duplicated options, no target missing from its own
+option list, no conflicting keys, no answer leakage, no position bias, no length
+bias. Of the eighteen ML benchmarks audited here, several fail at least one of
+those.
+
+**What this is NOT evidence for.** It is one dataset, and a clean result on 7 of
+10 checks is not a clean result on 10. It cannot support "professional item
+writing is better than ML benchmark construction" as a general claim: the
+comparison is uncontrolled, the sets differ in size, subject and age, and the
+three checks that did not run are not free passes. Two of the human exams
+audited in the same batch did produce findings ([F-023](#f-023),
+[F-024](#f-024)), which is the strongest argument against reading this as a
+verdict on human-written exams.
+
+What it does establish is narrower and still worth having: **the battery's
+findings are not an artifact of pointing it at anything.** A dataset can pass.
+That matters because a linter which flags something in every corpus it meets is
+measuring its own thresholds, and until now nothing large had come back clean.
 
 ---
 
@@ -2187,11 +2276,50 @@ Negative-tested: a working choice pod produces no such note.
 
 ---
 
+### D-039
+**A loader that mis-keyed a whole exam by one, then reported the artifact as a finding**
+`benchmarks/fetch.py` · 2026-08-10 · fixed in v0.50.0
+
+The Iranian driving-test answers are 1-indexed strings: `"4"` means the fourth of
+four options. The loader assumed 0-indexing:
+
+```python
+elif text.isdigit() and 0 <= int(text) < len(opts):
+    target = opts[int(text)]        # "3" -> opts[3] -> the FOURTH option
+```
+
+Two consequences, and the second is much worse than the first. Every item keyed
+to the last option was DROPPED, because `4 < 4` is false, which is why 126 rows
+became 75. And every surviving item was silently MIS-KEYED by one.
+
+The audit then reported:
+
+```
+[warn] position-bias   gold overshoots position 3 by +20% over expectation (34 of 75)
+```
+
+which is exactly what an off-by-one produces, and it is a finding about the
+loader wearing the costume of a finding about a driving test. Re-fetched with
+the base derived from the split rather than assumed, the position warning
+disappears and a genuine length-bias warning takes its place ([F-024](#f-024)).
+
+**A wrong key is worse than a dropped row.** [D-034](#d-034) dropped 96% of DROP
+and the numbers were wrong; this INVERTED numbers while looking plausible, and a
+plausible wrong finding is the one that gets published. The index base is now
+derived from the whole split, and if it cannot be determined the loader resolves
+nothing numeric rather than guessing.
+
+Fifth loader defect in this file. They keep sharing a shape: **an assumption
+about somebody else's data, made silently, that the report then presents as a
+property of that data.**
+
+---
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
 
-**Eighteen benchmarks audited**, all fetched from their authors and none
+**Twenty-one benchmarks audited**, three of them assessments written for PEOPLE rather than for models,, all fetched from their authors and none
 vendored: MMLU, MMLU-Pro, HellaSwag, ARC-Easy, ARC-Challenge, GSM8K,
 TruthfulQA, CommonsenseQA, OpenBookQA, BoolQ, WinoGrande, SciQ, MedMCQA, RACE, MuSR, LogiQA, MATH-500, DROP.
 
@@ -2199,14 +2327,14 @@ Count it precisely.
 
 | | |
 |---|---|
-| findings in other people's evals (**F**) | **22** |
+| findings in other people's evals (**F**) | **24** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **14** |
-| defects in dinostomp itself (**D**) | **38** |
+| negative results, recorded rather than dropped (**N**) | **15** |
+| defects in dinostomp itself (**D**) | **39** |
 
-Thirty-eight to twenty-two. That ratio is the useful number to publish, and it is the
+Thirty-nine to twenty-four. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

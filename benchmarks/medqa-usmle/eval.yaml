@@ -1,0 +1,37 @@
+name: bench-medqa-usmle
+version: 0.1.0
+question: "Does the model pick the option the USMLE item keys as correct?"
+
+# MedQA (Jin et al., 2021), USMLE 4-option test split, fetched by
+# `python benchmarks/fetch.py medqa-usmle`. NOT an ML benchmark in
+# origin: these are United States Medical Licensing Examination
+# style items, written by professional item-writers for an exam that
+# decides who practises medicine.
+#
+# SCOPE, and it matters for every pod in this family: a defect found here may
+# belong to the ML REPACKAGING rather than to the original exam. LogiQA (F-019)
+# is the standing proof that the distinction is real, where the options column
+# of one HuggingFace copy was damaged while the source exam was fine. Any
+# finding against this pod states which of the two it can and cannot separate.
+
+entitled_claims:
+  - "Which option each model picks on these USMLE-style items, per model."
+  - "Nothing about the original examination's quality: this audits one redistributed copy of it."
+
+data: {path: items.jsonl, format: jsonl, render_choices: true}
+
+models:
+  - {provider: dry, model: dry-strong}
+
+scorer:
+  kind: includes
+  witnesses:
+    - {output: "alpha beta", target: "alpha beta", expect: pass}
+    - {output: "The answer is alpha beta", target: "alpha beta", expect: pass}
+    - {output: "gamma delta", target: "alpha beta", expect: fail}
+    - {output: "", target: "alpha beta", expect: fail}
+    - {output: "ALPHA BETA", target: "alpha beta", expect: fail, why: "substring matching is case-sensitive, and this pod says so"}
+    - {output: "alpha  beta", target: "alpha beta", expect: fail, why: "a doubled space is part of the match"}
+    - {output: "alpha bet", target: "alpha beta", expect: fail, why: "a strict prefix is not the answer"}
+
+run: {n: 1273, seed: 7, budget_usd: 0}

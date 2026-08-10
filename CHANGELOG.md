@@ -1,5 +1,37 @@
 # Changelog
 
+### v0.50.0 (2026-08-10)
+
+Pointed the battery at assessments written for PEOPLE, by the bodies that
+certify them, rather than at ML benchmarks.
+
+- **N-015: MedQA-USMLE passed every applicable check.** 1,273 items from the
+  exam family that decides who practises medicine in the US: no duplicate
+  questions or options, no missing targets, no conflicting keys, no leakage, no
+  position or length bias. Several of the eighteen ML benchmarks here fail at
+  least one of those. **The entry states at length what this is not evidence
+  for**: the comparison is uncontrolled, and two of the three human exams in the
+  same batch DID produce findings. What it does establish is narrower and worth
+  having: a dataset can come back clean, so the battery's findings are not an
+  artifact of pointing it at anything.
+- **F-023 AQuA-RAT**: 7 of 254 items offer a duplicated option, and on most the
+  duplicate IS the key, so a model that computes the right number and picks the
+  other option holding it is marked wrong for being right. Verified against the
+  source rows, because this pod strips option labels and the loader was a
+  suspect.
+- **F-024 Iranian driving licence test**: the correct answer is the longest
+  option in 57 of 126 items, 45% against a 25% baseline. A candidate who knows
+  no road law can beat chance by picking the longest answer. First non-English
+  item set audited here; length is measured in characters and needed no Persian.
+- **D-039: the loader mis-keyed that entire exam by one.** Its answers are
+  1-indexed strings; the loader assumed 0-indexing, dropped every item keyed to
+  the last option (126 rows became 75) and silently shifted the rest. It then
+  reported a position-bias warning that was purely its own off-by-one. A wrong
+  key is worse than a dropped row: D-034 made numbers wrong, this made them
+  plausible AND wrong, which is the kind that gets published. The index base is
+  now derived from the split, and an undeterminable base resolves nothing rather
+  than guessing.
+
 ### v0.49.2 (2026-08-10)
 
 The findings ledger is now generated where it can be, and queryable.
