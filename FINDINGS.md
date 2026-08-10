@@ -97,6 +97,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-032](#d-032) | dinostomp | a valid JSONL file it refused to read, blaming the data | fixed |
 | [D-033](#d-033) | dinostomp | D-017 again, in the harness written by the person who wrote D-017 | fixed |
 | [D-034](#d-034) | dinostomp | a loader that discarded 96% of a split, and the findings computed on the rest | fixed |
+| [D-035](#d-035) | dinostomp | refused a valid file for a byte-order mark, naming the fix it did not apply | fixed |
+| [D-036](#d-036) | dinostomp | told a semicolon-CSV user their columns were badly named | fixed |
 
 ---
 
@@ -1890,6 +1892,72 @@ looked like avoiding an ambiguous scoring contract. It was silently choosing a
 
 ---
 
+### D-035
+**Refused a valid file over three bytes, in an error that named its own fix**
+`items.py`, `dataset.py`, `contamination.py` · 2026-08-10 · fixed in v0.48.0
+
+Found by installing the tool from scratch into an empty virtualenv, outside the
+repo, and pointing it at the kind of file a stranger actually has. Every run in
+this project's history had been from a clone with `pip install -e`.
+
+```
+$ dinostomp stomp mydata.jsonl
+CANNOT STOMP:
+  [data] mydata.jsonl:1: invalid JSON: Unexpected UTF-8 BOM (decode using utf-8-sig)
+```
+
+The file was valid JSONL. The only difference was a three-byte prefix that
+**Excel, Notepad and PowerShell's `Out-File` all write by default**, which makes
+this close to the most likely first-file failure a Windows user can hit.
+
+The error even names the remedy, `utf-8-sig`, and the reader did not apply it.
+Reading with `utf-8-sig` strips a BOM when present and is a no-op otherwise, so
+it is strictly more permissive and changes nothing about a file that lacks one.
+
+Fixed for user-supplied data only, via `spec.read_data_text`. Writing stays on
+plain `utf-8`, because writing with `utf-8-sig` would ADD a BOM to every
+artifact this tool produces and change the exact bytes the drift boundary
+hashes.
+
+Same family as [D-032](#d-032), which was the same reader blaming the same kind
+of user for a `\x85` it could have handled. Two of these now, both found by
+pointing the tool at somebody else's file rather than one it wrote itself.
+
+---
+
+### D-036
+**Told a semicolon-CSV user their columns were badly named**
+`dataset.py` · 2026-08-10 · fixed in v0.48.0
+
+From the same fresh-install pass:
+
+```
+$ dinostomp stomp export.csv
+  [fields] --input-field: no column looks like the input.
+           did you mean one of: id;input;target?
+           Columns are: id;input;target. Pass --input-field.
+```
+
+It is offering the entire header line as a candidate column name. The file is
+not badly named; it is semicolon-delimited, which is **the default Excel export
+in every locale that uses a comma as the decimal separator**, so this is an
+ordinary file rather than an exotic one.
+
+The message diagnosed the wrong thing and the suggested fix, `--input-field
+'id;input;target'`, would not have worked. A one-column header containing a
+common delimiter is now named as a parsing problem:
+
+```
+  [fields] --separator: this file has ONE column, whose name contains
+           semicolons: 'id;input;target'. It is most likely semicolon-delimited
+           rather than comma-delimited, so no field was split out at all.
+```
+
+Negative-tested: a genuine single-column file with no delimiter in its name does
+NOT get the hint, or the guard would fire on every narrow file.
+
+---
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -1907,9 +1975,9 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **13** |
-| defects in dinostomp itself (**D**) | **34** |
+| defects in dinostomp itself (**D**) | **36** |
 
-Thirty-four to twenty-two. That ratio is the useful number to publish, and it is the
+Thirty-six to twenty-two. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

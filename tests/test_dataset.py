@@ -268,3 +268,73 @@ def test_repair_is_a_no_op_when_nothing_fired(tmp_path):
     kept, log = repair_items(ctx["items"], report)
     assert kept == ctx["items"]
     assert log == []
+
+
+# --- what a stranger's first file actually looks like -------------------------
+
+
+def test_a_utf8_bom_does_not_refuse_a_valid_file(tmp_path):
+    """Excel, Notepad and PowerShell's Out-File all write one by default.
+
+    The file is valid JSONL; only a three-byte prefix differs. It was refused
+    with `invalid JSON: Unexpected UTF-8 BOM (decode using utf-8-sig)`, an error
+    that named its own fix without applying it (D-035).
+    """
+    from dinostomp.lint import lint_dataset
+
+    rows = [{"id": f"b{i}", "input": f"What is {i}+{i}?", "target": str(2 * i)}
+            for i in range(12)]
+    body = "\n".join(json.dumps(r) for r in rows) + "\n"
+    p = tmp_path / "bom.jsonl"
+    p.write_bytes(b"\xef\xbb\xbf" + body.encode("utf-8"))
+
+    report, issues, ctx = lint_dataset(p)
+    assert report is not None, [i.message for i in issues]
+    assert report["summary"]["verdict"] in ("sound", "ok", "incomplete", "broken")
+
+
+def test_a_file_without_a_bom_is_unchanged(tmp_path):
+    """The negative direction: utf-8-sig must be a no-op on ordinary files, and
+    must not start silently stripping bytes that are not a BOM."""
+    from dinostomp.lint import lint_dataset
+
+    rows = [{"id": f"n{i}", "input": f"What is {i}+{i}?", "target": str(2 * i)}
+            for i in range(12)]
+    p = tmp_path / "plain.jsonl"
+    p.write_text("\n".join(json.dumps(r) for r in rows) + "\n", encoding="utf-8")
+    with_bom = tmp_path / "same_with_bom.jsonl"
+    with_bom.write_bytes(b"\xef\xbb\xbf" + p.read_bytes())
+
+    a, _, _ = lint_dataset(p)
+    b, _, _ = lint_dataset(with_bom)
+    assert a is not None and b is not None
+    assert a["summary"] == b["summary"], "a BOM changed the verdict"
+
+
+def test_a_semicolon_csv_is_diagnosed_as_a_delimiter_problem(tmp_path):
+    """Excel exports semicolon CSV in every comma-decimal locale.
+
+    The old message said "no column looks like the input. did you mean one of:
+    id;input;target?" — offering the entire header line as a column name, which
+    diagnoses the wrong thing (D-036).
+    """
+    from dinostomp.lint import lint_dataset
+
+    p = tmp_path / "euro.csv"
+    p.write_text("id;input;target\n1;what?;yes\n2;how?;no\n", encoding="utf-8")
+    report, issues, _ = lint_dataset(p)
+    assert report is None
+    msgs = [i.message for i in issues]
+    assert any("semicolon" in m and "delimited" in m for m in msgs), msgs
+
+
+def test_a_genuine_one_column_file_is_not_blamed_on_a_delimiter(tmp_path):
+    """The negative test: a single column with no delimiter in its name must
+    NOT get the delimiter hint, or the guard fires on every narrow file."""
+    from dinostomp.lint import lint_dataset
+
+    p = tmp_path / "one.csv"
+    p.write_text("notes\nhello\nworld\n", encoding="utf-8")
+    report, issues, _ = lint_dataset(p)
+    assert report is None
+    assert not any("delimited" in i.message for i in issues), [i.message for i in issues]

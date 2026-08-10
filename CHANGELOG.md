@@ -1,5 +1,33 @@
 # Changelog
 
+### v0.48.0 (2026-08-10)
+
+Installed the tool from scratch, as a stranger would, and pointed it at the kind
+of file a stranger has. Two defects, both in the first thirty seconds of use.
+
+Every run in this project's history had been from a clone with `pip install -e`,
+from inside the repo. Nobody had ever done `pip install` into an empty
+virtualenv and run the documented quickstart from somewhere else. That path
+works (scaffold, plan, run, stomp all clean), and the data path did not.
+
+- **D-035: a UTF-8 BOM refused a valid file**, in an error that named its own
+  fix (`decode using utf-8-sig`) without applying it. Excel, Notepad and
+  PowerShell's `Out-File` all write one by default, which makes it close to the
+  most likely first-file failure a Windows user can hit. Reading is now
+  BOM-tolerant via `spec.read_data_text`; writing stays plain `utf-8`, because
+  writing a BOM would change the bytes the drift boundary hashes.
+- **D-036: a semicolon CSV was diagnosed as badly-named columns.** The tool
+  offered the whole header line, `id;input;target`, as a candidate column name,
+  and the fix it suggested would not have worked. Semicolon CSV is the default
+  Excel export in every comma-decimal locale. A one-column header containing a
+  common delimiter is now named as a parsing problem, and the guard is
+  negative-tested so a genuinely narrow file does not get the hint.
+- A twenty-case fuzz pass (empty file, blank lines, JSON array, CRLF, numeric
+  target, nulls, duplicate ids, emoji and RTL text, a 900KB item, nested input,
+  truncated JSON, prose in a .txt) produced **no crashes**: every case either
+  audited or refused with a reason. Both defects above were bad MESSAGES and a
+  needless refusal, not instability.
+
 ### v0.47.0 (2026-08-09)
 
 Five benchmarks with shapes the battery had never met, and four findings.

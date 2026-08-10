@@ -259,3 +259,27 @@ def jsonl_lines(text: str) -> list[str]:
     of line-ending tolerance a JSONL reader owes its caller.
     """
     return [line[:-1] if line.endswith("\r") else line for line in text.split("\n")]
+
+
+def read_data_text(path) -> str:
+    """Read a USER-SUPPLIED data file, tolerating a byte-order mark.
+
+    `utf-8-sig` strips a leading BOM if present and is a no-op otherwise, so
+    this is strictly more permissive than `utf-8` and never changes a file that
+    does not have one.
+
+    Excel, Notepad and PowerShell's `Out-File` all write a UTF-8 BOM by default,
+    so a perfectly valid JSONL file from a Windows user was refused with:
+
+        invalid JSON: Unexpected UTF-8 BOM (decode using utf-8-sig)
+
+    The error named its own fix and the tool did not apply it (D-035). Same
+    family as D-032: the reader blaming the data for something it could handle.
+
+    Deliberately for READING only. Writing with `utf-8-sig` would ADD a BOM to
+    every artifact this tool produces and change the bytes the drift boundary
+    hashes.
+    """
+    from pathlib import Path
+
+    return Path(path).read_text(encoding="utf-8-sig")

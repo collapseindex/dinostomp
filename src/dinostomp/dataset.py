@@ -27,7 +27,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from dinostomp.spec import Issue, jsonl_lines
+from dinostomp.spec import Issue, jsonl_lines, read_data_text
 
 DATA_SUFFIXES = {".csv": "csv", ".jsonl": "jsonl", ".ndjson": "jsonl", ".json": "json"}
 
@@ -81,7 +81,7 @@ def read_rows(path: Path) -> tuple[list[dict], list[Issue]]:
         if fmt == "csv":
             with path.open(encoding="utf-8", newline="") as fh:
                 return [dict(r) for r in csv.DictReader(fh)], []
-        text = path.read_text(encoding="utf-8")
+        text = read_data_text(path)
     except OSError as exc:
         return [], [Issue(loc=str(path), message=f"cannot read file: {exc}", check="data")]
     except UnicodeDecodeError as exc:
@@ -172,6 +172,23 @@ def infer_mapping(rows: list[dict], overrides: dict | None = None
                                                        "solution", "correct"))]                 if required == "target" else                 [c for c in columns if any(tok in _norm(c) for tok in ("question", "prompt",
                                                                        "input", "text", "query"))]
             hint = (f"did you mean one of: {', '.join(near)}? " if near else "")
+            # A ONE-COLUMN header containing a common delimiter is not a naming
+            # problem, it is a parsing problem, and "no column looks like the
+            # input. did you mean one of: id;input;target?" diagnoses the wrong
+            # thing entirely. Semicolon CSV is the default Excel export in every
+            # locale that uses a comma decimal separator, so this is somebody's
+            # ordinary file rather than an exotic one (D-036).
+            if len(columns) == 1 and not any(i.loc == "--separator" for i in issues):
+                for delim, label in ((";", "semicolon"), ("\t", "tab"), ("|", "pipe")):
+                    if delim in columns[0]:
+                        issues.append(Issue(
+                            loc="--separator", check="fields",
+                            message=f"this file has ONE column, whose name contains "
+                                    f"{label}s: {columns[0]!r}. It is most likely "
+                                    f"{label}-delimited rather than comma-delimited, so no "
+                                    f"field was split out at all. Re-export it comma-separated, "
+                                    f"or declare `data.separator` in a spec"))
+                        break
             issues.append(Issue(
                 loc=f"--{required}-field", check="fields",
                 message=f"no column looks like the {required}. {hint}"

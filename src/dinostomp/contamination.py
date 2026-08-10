@@ -30,7 +30,7 @@ import json
 import re
 from pathlib import Path
 
-from dinostomp.spec import jsonl_lines
+from dinostomp.spec import jsonl_lines, read_data_text
 
 # Passages that are in every general-purpose model's training data many times
 # over. The tail is what the model must supply; short and unambiguous, so a
@@ -59,7 +59,7 @@ MIN_CANARY_CHARS = 16
 def read_canary(data_path: Path) -> str | None:
     """The `_canary` string travelling with a jsonl dataset, if any."""
     try:
-        for line in jsonl_lines(data_path.read_text(encoding="utf-8")):
+        for line in jsonl_lines(read_data_text(data_path)):
             if not line.strip():
                 continue
             try:
