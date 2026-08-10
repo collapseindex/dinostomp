@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.46.1",
+  "version": "0.47.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -580,8 +580,8 @@
       "witnesses": 3,
       "evidence": {
         "per_model_accuracy": {
-          "greedy": 1.0,
           "grounded": 1.0,
+          "greedy": 1.0,
           "oneshot": 0.75
         },
         "chance_floor": 0.125,
@@ -636,8 +636,8 @@
       "witnesses": 3,
       "evidence": {
         "rates": {
-          "greedy": 0.0,
           "grounded": 0.0,
+          "greedy": 0.0,
           "oneshot": 0.0
         }
       }
@@ -702,11 +702,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 3 run(s) were produced by a different engine than the one auditing them (now 99033f87021a9e44); re-run to get numbers this report can stand behind",
+      "detail": "0 of 3 run(s) were produced by a different engine than the one auditing them (now 2761032f11bcb3d4); re-run to get numbers this report can stand behind",
       "witnesses": 3,
       "evidence": {
         "engines": {
-          "99033f87021a9e44": 3
+          "2761032f11bcb3d4": 3
         }
       }
     },
@@ -990,19 +990,7 @@
   },
   "runs": [
     {
-      "run_file": "20260809_230734_mediated-grounding_greedy_n24_s7.jsonl",
-      "model": "greedy",
-      "model_reported": "greedy",
-      "provider": "mediated",
-      "dry_run": false,
-      "seed": 7,
-      "records": 24,
-      "uncheckable": 0,
-      "spend_source": "metered",
-      "trajectory_steps": 72
-    },
-    {
-      "run_file": "20260809_230734_mediated-grounding_grounded_n24_s7.jsonl",
+      "run_file": "20260810_005922_mediated-grounding_grounded_n24_s7.jsonl",
       "model": "grounded",
       "model_reported": "grounded",
       "provider": "mediated",
@@ -1014,7 +1002,19 @@
       "trajectory_steps": 24
     },
     {
-      "run_file": "20260809_230734_mediated-grounding_oneshot_n24_s7.jsonl",
+      "run_file": "20260810_005923_mediated-grounding_greedy_n24_s7.jsonl",
+      "model": "greedy",
+      "model_reported": "greedy",
+      "provider": "mediated",
+      "dry_run": false,
+      "seed": 7,
+      "records": 24,
+      "uncheckable": 0,
+      "spend_source": "metered",
+      "trajectory_steps": 72
+    },
+    {
+      "run_file": "20260810_005923_mediated-grounding_oneshot_n24_s7.jsonl",
       "model": "oneshot",
       "model_reported": "oneshot",
       "provider": "mediated",

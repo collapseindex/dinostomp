@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.46.1",
+  "version": "0.47.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -710,7 +710,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now 99033f87021a9e44); re-run to get numbers this report can stand behind",
+      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now 2761032f11bcb3d4); re-run to get numbers this report can stand behind",
       "witnesses": 3,
       "examples": [
         "engine be4c83d7129cec32: live-grounded seed 7 (tool 0.38.0), live-oneshot seed 7 (tool 0.38.0), live-greedy seed 7 (tool 0.38.0)"

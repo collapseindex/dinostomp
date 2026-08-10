@@ -64,6 +64,11 @@ exactly what it downloaded. Nothing is vendored.
 | SciQ | Welbl, J., Liu, N. F. & Gardner, M. (2017). *Crowdsourcing Multiple Choice Science Questions.* [arXiv:1707.06209](https://arxiv.org/abs/1707.06209) | CC-BY-NC-3.0 |
 | MedMCQA | Pal, A., Umapathi, L. K. & Sankarasubbu, M. (2022). *MedMCQA: A Large-scale Multi-Subject Multi-Choice Dataset for Medical domain Question Answering.* [arXiv:2203.14371](https://arxiv.org/abs/2203.14371) | MIT |
 | ARC-Challenge, as a third-party eval LOG | `open-llm-leaderboard-old/details_Corianas__111m`, file `details_harness\|arc:challenge\|25_2023-07-19T13:48:53.093937.parquet`. A real lm-evaluation-harness details file, fetched by `benchmarks/lm-eval-import/fetch.py`. Harness: Gao, L. et al. (2021). *A framework for few-shot language model evaluation.* Zenodo. Items: Clark et al. 2018, above. | CC-BY-SA-4.0 (items) |
+| RACE | Lai, G. et al. (2017). *RACE: Large-scale ReAding Comprehension Dataset From Examinations.* [arXiv:1704.04683](https://arxiv.org/abs/1704.04683) | research use, per the authors |
+| MuSR | Sprague, Z. et al. (2024). *MuSR: Testing the Limits of Chain-of-thought with Multistep Soft Reasoning.* [arXiv:2310.16049](https://arxiv.org/abs/2310.16049) | MIT |
+| LogiQA | Liu, J. et al. (2020). *LogiQA: A Challenge Dataset for Machine Reading Comprehension with Logical Reasoning.* [arXiv:2007.08124](https://arxiv.org/abs/2007.08124) (the `lucasmccabe/logiqa` copy) | CC-BY-NC-SA-4.0 |
+| MATH-500 | Lightman, H. et al. (2023). *Let's Verify Step by Step.* [arXiv:2305.20050](https://arxiv.org/abs/2305.20050), a 500-problem subset of Hendrycks, D. et al. (2021), [arXiv:2103.03874](https://arxiv.org/abs/2103.03874) | MIT |
+| DROP | Dua, D. et al. (2019). *DROP: A Reading Comprehension Benchmark Requiring Discrete Reasoning Over Paragraphs.* [arXiv:1903.00161](https://arxiv.org/abs/1903.00161) | CC-BY-SA-4.0 |
 | iris | Fisher, R. A. (1936). *The use of multiple measurements in taxonomic problems.* Annals of Eugenics 7(2), 179–188. The UCI/scikit-learn lineage this repo pins differs from Fisher's table in two rows: Bezdek, J. C. et al. (1999). *Will the real iris data please stand up?* IEEE Trans. Fuzzy Systems 7(3), 368–369. | public domain |
 
 Findings against these datasets are in [FINDINGS.md](FINDINGS.md), series **F**.

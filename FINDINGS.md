@@ -46,6 +46,10 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-016](#f-016) | llama-3.2-3b | "You are an expert." is worth 10 points, marginally | confirmed, marginal |
 | [F-017](#f-017) | a RAG agent | grounding it in its own retrieval made it 25 points WORSE | confirmed |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
+| [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
+| [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
+| [F-021](#f-021) | MATH-500 | 2 problems whose answer is written in the question | confirmed, scoped |
+| [F-022](#f-022) | RACE | an item offering the same option twice | confirmed |
 | [N-001](#n-001) | HellaSwag, ARC, MMLU | no position, length, or shortcut bias found | negative |
 | [N-002](#n-002) | dinostomp | the uncheckable path was untested, and said so | negative, later closed |
 | [N-003](#n-003) | ARC, OpenBookQA, HellaSwag, WinoGrande | no repeated options in four datasets | negative |
@@ -92,6 +96,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-031](#d-031) | dinostomp | an imported trajectory could never reach the checks that read one | fixed |
 | [D-032](#d-032) | dinostomp | a valid JSONL file it refused to read, blaming the data | fixed |
 | [D-033](#d-033) | dinostomp | D-017 again, in the harness written by the person who wrote D-017 | fixed |
+| [D-034](#d-034) | dinostomp | a loader that discarded 96% of a split, and the findings computed on the rest | fixed |
 
 ---
 
@@ -459,6 +464,119 @@ missed. It is offered as a receipt that mechanical and human auditing catch
 different things, which is also the finding in N-012 pointing the other way: the
 same comparison shows the humans catching 38 items the battery cannot see.
 Reproduce with `python benchmarks/mmlu-redux/compare.py`.
+
+---
+
+### F-019
+**LogiQA · 8 items with a duplicated option, and 3 offer the same option four times**
+`dup-options` (S5) · 2026-08-09 · confirmed
+
+`lucasmccabe/logiqa`, test split, 650 items fetched. Eight carry a duplicated
+option. Three of them are worse than a duplicate:
+
+```
+lq-00246   options: ['.', '.', '.', '.']     target: '.'
+lq-00285   options: ['.', '.', '.', '.']     target: '.'
+lq-00598   options: ['.', '.', '.', '.']     target: '.'
+```
+
+All four options are a single full stop. There is no answerable question there,
+and any model scores 25% by construction while the item contributes nothing.
+
+Five more have the KEYED ANSWER duplicated, which is multiple-correct-answers by
+construction:
+
+```
+lq-00090   ['No guest invited.', 'guest.', 'guests.', 'guests.']       key 'guests.'
+lq-00489   ['unconfirmed.', 'people.', 'people.', 'people.']           key 'people.'
+lq-00643   ['kinds.', 'types.', 'types.', 'types.']                    key 'types.'
+```
+
+The pattern is option text truncated to its last word or its final punctuation.
+The CONTEXT of those items is intact (`lq-00246` carries 526 characters of
+premises), so this is not a transport truncation on the way in; the options
+column of this copy is damaged.
+
+**A correction I had to make mid-analysis.** A first pass counted "items with an
+option shorter than 3 characters" and reported 3.5%. That was wrong: `['E.',
+'G.', 'I.', 'K.']` is a perfectly good option set when the puzzle names patients
+E through K, and this dataset is full of those. The finding is the DUPLICATION,
+which is 8 items, not the shortness.
+
+---
+
+### F-020
+**DROP · 86 duplicated questions, 37 of them keyed to different accepted answers**
+`dup-questions` (S1), `conflicting-keys` (S7) · 2026-08-09 · confirmed
+
+`ucinlp/drop`, validation split, first 2000 items. 86 passage+question pairs
+appear more than once, and 37 of those pairs carry DIFFERENT accepted-answer
+sets, so the same question is graded against different keys depending on which
+copy a sampler happens to draw:
+
+```
+drop-00267  "How many yards was the longest field goal?"   accepted: ['26', '26-yard']
+drop-00268  (same passage, same question)                  accepted: '26'
+```
+
+Not a contradiction about the world, an inconsistency in annotation: one copy
+accepts two phrasings and the other accepts one. A model answering `26-yard`
+is correct on one copy and wrong on the other.
+
+**S7 is stricter than the naive check, in the right direction.** An ad-hoc pass
+written to verify this reported 38, because it compared target lists as ordered
+sequences and counted `['2','3']` against `['3','2']` as a conflict. S7 sorts
+targets before comparing, so it does not. The tool was more careful than the
+check written to audit it, which is the second time in one session.
+
+---
+
+### F-021
+**MATH-500 · two problems whose answer is written in the question**
+`answer-leak` (S2) · 2026-08-09 · confirmed, scoped
+
+The first FREE-FORM dataset audited here, and the first to reach the answer-leak
+path at all: thirteen multiple-choice benchmarks never did.
+
+```
+m500-00277  "What is $\sqrt{53}$ in simplest radical form?"        answer: \sqrt{53}
+m500-00373  "...he accidentally missed the minus sign, finding
+             $\frac{3+4i}{1+2i}=...$  What answer should he have..."   answer: 1+2i
+```
+
+**Scoped, because the first is arguably fine.** `\sqrt{53}` in simplest radical
+form IS `\sqrt{53}`; the question is a genuine test of recognising that, and the
+answer appearing in it is unavoidable. The second is the real one: `1+2i` is the
+denominator the problem hands you, so a model that echoes a fragment of the
+prompt scores correct without doing the division.
+
+**The check was more careful than my verification, again.** A naive substring
+pass over the same 500 items flagged 75, because `'9'` occurs inside `'196'`.
+S2 requires a whole-token mention, exempts negated mentions, and weighs how many
+other answer-space values are present, which is why it reports 2 and one of the
+two is still worth arguing about.
+
+---
+
+### F-022
+**RACE · an item offering the same option twice**
+`dup-options` (S5) · 2026-08-09 · confirmed
+
+`ehovy/race`, high-school test split, 1500 items fetched, one flagged:
+
+```
+race-01213  ["He didn't say he was sorry.",
+             "He pushed her away when she tried to take his arm.",
+             "He didn't say he was sorry.",          <- the same option again
+             "He wouldn't let her touch him."]       <- the key
+```
+
+The key is not the duplicated option, so this is not a double-correct item. It
+is a four-option question that offers three, which changes the guessing floor
+for that item from 25% to 33% and is invisible in any accuracy number.
+
+One item in 1500 is a low rate, and it is reported for the same reason the
+others are: it costs nothing to find and nobody was looking.
 
 ---
 
@@ -1738,26 +1856,60 @@ raw replies before trusting the numbers.
 
 ---
 
+### D-034
+**A loader that discarded 96% of a split, and the findings computed on what was left**
+`benchmarks/fetch.py` · 2026-08-09 · fixed
+
+The DROP builder kept only items whose answer was a SINGLE span. DROP's spans are
+alternative acceptable phrasings from different annotators, not parts of one
+answer, so that filter threw away nineteen rows in twenty: **83 items from 2000
+rows**.
+
+The audit ran on those 83 and produced findings:
+
+```
+83-item sample     1 duplicated question,  17 answer-leaks,  1 conflicting key
+full 2000 items   86 duplicated questions,  0 answer-leaks, 37 conflicting keys
+```
+
+Every number was wrong, and the answer-leak finding was wrong in the most
+embarrassing direction: 17 of 83 looked like a real defect and was an artifact of
+sampling the tail of a filter. Those numbers were computed and read before the
+loader was checked.
+
+What caught it was the item count on the console: 83 from a 2000-row request.
+The fix is a list target, which the items schema has always supported and
+describes as "a list means any listed answer is acceptable" — exactly DROP's
+semantics.
+
+This is the third loader defect in this file (see the SciQ position-bias note in
+`fetch.py` and [D-016](#d-016)), and they share a shape: **a fetcher decision that
+looks like tidiness is a claim about the data.** Dropping multi-span answers
+looked like avoiding an ambiguous scoring contract. It was silently choosing a
+4% subsample and then reporting its properties as the dataset's.
+
+---
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
 
-**Thirteen benchmarks audited**, all fetched from their authors and none
+**Eighteen benchmarks audited**, all fetched from their authors and none
 vendored: MMLU, MMLU-Pro, HellaSwag, ARC-Easy, ARC-Challenge, GSM8K,
-TruthfulQA, CommonsenseQA, OpenBookQA, BoolQ, WinoGrande, SciQ, MedMCQA.
+TruthfulQA, CommonsenseQA, OpenBookQA, BoolQ, WinoGrande, SciQ, MedMCQA, RACE, MuSR, LogiQA, MATH-500, DROP.
 
 Count it precisely.
 
 | | |
 |---|---|
-| findings in other people's evals (**F**) | **18** |
+| findings in other people's evals (**F**) | **22** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **13** |
-| defects in dinostomp itself (**D**) | **33** |
+| defects in dinostomp itself (**D**) | **34** |
 
-Thirty-three to eighteen. That ratio is the useful number to publish, and it is the
+Thirty-four to twenty-two. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

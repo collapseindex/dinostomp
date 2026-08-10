@@ -1,0 +1,31 @@
+name: bench-math500
+version: 0.1.0
+question: "Does the model produce the reference final answer to each MATH-500 problem?"
+
+# MATH-500 (Lightman et al., 2023 subset of Hendrycks et al., 2021), fetched by
+# `python benchmarks/fetch.py math500`. FREE-FORM: no options at all, so every
+# choice check goes n/a and the free-form path (answer leakage, duplicate
+# questions) is what actually runs. That is why it is here: thirteen
+# multiple-choice datasets never reached it.
+
+entitled_claims:
+  - "Final-answer exact match on these MATH-500 problems, per model."
+  - "Nothing about the dataset's quality beyond what the checks below actually read."
+
+data: {path: items.jsonl, format: jsonl}
+
+models:
+  - {provider: dry, model: dry-strong}
+
+scorer:
+  kind: includes
+  witnesses:
+    - {output: "alpha beta", target: "alpha beta", expect: pass}
+    - {output: "The answer is alpha beta", target: "alpha beta", expect: pass}
+    - {output: "gamma delta", target: "alpha beta", expect: fail}
+    - {output: "", target: "alpha beta", expect: fail}
+    - {output: "ALPHA BETA", target: "alpha beta", expect: fail, why: "substring matching is case-sensitive, and this pod says so"}
+    - {output: "alpha  beta", target: "alpha beta", expect: fail, why: "a doubled space is part of the match"}
+    - {output: "alpha bet", target: "alpha beta", expect: fail, why: "a strict prefix is not the answer"}
+
+run: {n: 500, seed: 7, budget_usd: 0}

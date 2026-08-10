@@ -55,6 +55,20 @@ SOURCES = {
             "?dataset=allenai%2Fsciq&config=default&split=test",
     "medmcqa": "https://datasets-server.huggingface.co/rows"
                "?dataset=openlifescienceai%2Fmedmcqa&config=default&split=validation",
+    # Added because the first thirteen were nearly all short-question, four-option
+    # English MCQA, so they exercised the same checks over and over. These bring
+    # shapes the battery had never met: a long passage in front of the question,
+    # a free-form numeric answer with no options at all, and answer spans.
+    "race": "https://datasets-server.huggingface.co/rows"
+            "?dataset=ehovy%2Frace&config=high&split=test",
+    "musr": "https://datasets-server.huggingface.co/rows"
+            "?dataset=TAUR-Lab%2FMuSR&config=default&split=murder_mysteries",
+    "logiqa": "https://datasets-server.huggingface.co/rows"
+              "?dataset=lucasmccabe%2Flogiqa&config=default&split=test",
+    "math500": "https://datasets-server.huggingface.co/rows"
+               "?dataset=HuggingFaceH4%2FMATH-500&config=default&split=test",
+    "drop": "https://datasets-server.huggingface.co/rows"
+            "?dataset=ucinlp%2Fdrop&config=default&split=validation",
 }
 
 # Datasets fetched a page at a time, and how many rows to take. MMLU's test
@@ -62,7 +76,8 @@ SOURCES = {
 # which is stated here rather than described as "MMLU".
 PAGED = {"arc-challenge": 1200, "mmlu": 3000, "arc-easy": 2400, "winogrande": 1300,
          "commonsenseqa": 1200, "openbookqa": 500, "boolq": 3000, "mmlu-pro": 3000,
-         "sciq": 1000, "medmcqa": 3000}
+         "sciq": 1000, "medmcqa": 3000,
+         "race": 1500, "musr": 250, "logiqa": 650, "math500": 500, "drop": 2000}
 PAGE_ROWS = 100
 
 CANARY = "dinostomp canary DO NOT TRAIN benchmarks"
@@ -273,6 +288,122 @@ def _stem_choice_items(rows: list[dict], prefix: str, stem_field: str) -> list[d
     return out
 
 
+def race_items(rows: list[dict]) -> list[dict]:
+    """A long article, then a question, then four lettered options.
+
+    The passage goes in the INPUT, which is the first item shape here where the
+    question is a small part of what the model reads. `answer` is a letter, so
+    the target is looked up rather than taken verbatim; a letter target would
+    make every option-order check meaningless.
+    """
+    out = []
+    for i, r in enumerate(rows):
+        row = r["row"]
+        opts = [str(o).strip() for o in (row.get("options") or [])]
+        letter = str(row.get("answer") or "").strip().upper()
+        idx = "ABCDE".find(letter)
+        if not opts or idx < 0 or idx >= len(opts):
+            continue
+        article = str(row.get("article") or "").strip()
+        question = str(row.get("question") or "").strip()
+        out.append({"id": f"race-{i:05d}",
+                    "input": f"{article}\n\nQuestion: {question}",
+                    "choices": opts, "target": opts[idx]})
+    return out
+
+
+def musr_items(rows: list[dict]) -> list[dict]:
+    """Narrative plus a question, options as a stringified list on some rows."""
+    import ast
+
+    out = []
+    for i, r in enumerate(rows):
+        row = r["row"]
+        raw = row.get("choices")
+        if isinstance(raw, str):
+            try:
+                raw = ast.literal_eval(raw)
+            except (ValueError, SyntaxError):
+                continue
+        opts = [str(o).strip() for o in (raw or [])]
+        idx = row.get("answer_index")
+        if not opts or not isinstance(idx, int) or not 0 <= idx < len(opts):
+            continue
+        out.append({"id": f"musr-{i:05d}",
+                    "input": f"{str(row.get('narrative') or '').strip()}\n\n"
+                             f"Question: {str(row.get('question') or '').strip()}",
+                    "choices": opts, "target": opts[idx]})
+    return out
+
+
+def logiqa_items(rows: list[dict]) -> list[dict]:
+    out = []
+    for i, r in enumerate(rows):
+        row = r["row"]
+        opts = [str(o).strip() for o in (row.get("options") or [])]
+        idx = row.get("correct_option")
+        if not opts or not isinstance(idx, int) or not 0 <= idx < len(opts):
+            continue
+        out.append({"id": f"lq-{i:05d}",
+                    "input": f"{str(row.get('context') or '').strip()}\n\n"
+                             f"{str(row.get('query') or '').strip()}",
+                    "choices": opts, "target": opts[idx]})
+    return out
+
+
+def math500_items(rows: list[dict]) -> list[dict]:
+    """Free-form: a problem and a final answer, NO options.
+
+    The choice checks go n/a on this by design, which is the point of including
+    it: it exercises the free-form path (answer-leak, duplicate questions) that
+    thirteen multiple-choice datasets never reached.
+    """
+    out = []
+    for i, r in enumerate(rows):
+        row = r["row"]
+        problem = str(row.get("problem") or "").strip()
+        answer = str(row.get("answer") or "").strip()
+        if not problem or not answer:
+            continue
+        out.append({"id": f"m500-{i:05d}", "input": problem, "target": answer})
+    return out
+
+
+def drop_items(rows: list[dict]) -> list[dict]:
+    """Passage plus question; the answer is a span LIST.
+
+    Every span is kept, as a list target, which the items schema defines as "a
+    list means any listed answer is acceptable". That matches DROP: its multiple
+    spans are alternative acceptable phrasings from different annotators, not
+    parts of one compound answer.
+
+    The first version kept only single-span items and threw away 96% of the
+    split, 83 rows of 2000. A loader that silently discards nineteen rows in
+    twenty produces a report about the loader, which is the same failure the
+    SciQ builder above documents from the other direction.
+    """
+    out = []
+    for i, r in enumerate(rows):
+        row = r["row"]
+        spans = ((row.get("answers_spans") or {}).get("spans")) or []
+        spans = [str(x).strip() for x in spans if str(x).strip()]
+        if not spans:
+            continue
+        # De-duplicated: annotators frequently agree verbatim, and a target list
+        # holding the same string three times would say nothing extra while
+        # making the item look like it accepts three answers.
+        seen, targets = set(), []
+        for sp in spans:
+            if sp not in seen:
+                seen.add(sp)
+                targets.append(sp)
+        out.append({"id": f"drop-{i:05d}",
+                    "input": f"{str(row.get('passage') or '').strip()}\n\n"
+                             f"Question: {str(row.get('question') or '').strip()}",
+                    "target": targets[0] if len(targets) == 1 else targets})
+    return out
+
+
 BUILDERS = {
     "gsm8k": gsm8k_items,
     "truthfulqa": truthfulqa_items,
@@ -287,6 +418,11 @@ BUILDERS = {
     "mmlu-pro": mmlu_pro_items,
     "sciq": sciq_items,
     "medmcqa": medmcqa_items,
+    "race": race_items,
+    "musr": musr_items,
+    "logiqa": logiqa_items,
+    "math500": math500_items,
+    "drop": drop_items,
 }
 
 

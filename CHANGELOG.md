@@ -1,5 +1,40 @@
 # Changelog
 
+### v0.47.0 (2026-08-09)
+
+Five benchmarks with shapes the battery had never met, and four findings.
+
+The first thirteen were nearly all short-question, four-option English MCQA, so
+they exercised the same checks repeatedly. These bring a long passage in front
+of the question, a free-form numeric answer with no options, and answer spans.
+
+- **F-019 LogiQA**: 8 of 650 items offer a duplicated option, and three offer
+  `['.', '.', '.', '.']` — four identical full stops, unanswerable by
+  construction. Five have the KEYED answer duplicated. The contexts are intact,
+  so the options column of `lucasmccabe/logiqa` is damaged, not truncated in
+  transport.
+- **F-020 DROP**: 86 duplicated questions in 2000, and 37 keyed to DIFFERENT
+  accepted answers, so the same question is graded against different keys
+  depending which copy a sampler draws.
+- **F-021 MATH-500**: 2 problems whose answer is written in the question. The
+  first free-form dataset here, and the first to reach the answer-leak path at
+  all.
+- **F-022 RACE**: one item offering the same option twice; a four-option
+  question that offers three.
+- **MuSR: clean.** Reported because a clean result from a check that fires
+  elsewhere is worth as much as a finding.
+- **D-034: the DROP loader discarded 96% of the split**, keeping only
+  single-span answers, and the audit was run and read on the surviving 83 items
+  before anyone checked. Every number was wrong (`1/17/1` against the truth of
+  `86/0/37`), and the 17 answer-leaks were pure sampling artifact. Fixed with a
+  list target, which the items schema has always supported. Third loader defect
+  of this shape here, and they share one: a fetcher decision that looks like
+  tidiness is a claim about the data.
+- Twice this session the ad-hoc script written to VERIFY a finding was less
+  careful than the check it was auditing: a naive substring pass flagged 75
+  MATH-500 leaks where S2 reports 2, and an order-sensitive comparison called 38
+  DROP conflicts where S7 sorts and reports 37.
+
 ### v0.46.1 (2026-08-09)
 
 N-013's headline was wrong. This corrects it, and records why.
