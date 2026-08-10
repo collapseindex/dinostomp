@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/collapseindex/dinostomp/blob/main/docs/findings.schema.json",
+  "title": "dinostomp findings feed",
+  "description": "The machine-readable form of FINDINGS.md. FINDINGS.md is the source of truth; this file is generated from it by scripts/index_findings.py and validated against this schema before it is written. Compatibility: within a major version, fields are only ADDED. Removing a field, renaming one, or changing its type is a major bump.",
+  "type": "object",
+  "required": ["schema_version", "generated_from", "generator", "tool", "counts", "series", "status_classes", "findings"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Version of THIS contract, not of dinostomp. Check the major before parsing."
+    },
+    "generated_from": {"const": "FINDINGS.md"},
+    "generator": {"type": "string"},
+    "schema": {"type": "string", "description": "Repo-relative path to this schema."},
+    "tool": {
+      "type": "object",
+      "required": ["name", "version", "engine"],
+      "additionalProperties": false,
+      "description": "Which battery produced these findings. `engine` is the SHA-256 of dinostomp's own code and schema pack, the same value recorded as tool_sha256 in every run manifest.",
+      "properties": {
+        "name": {"const": "dinostomp"},
+        "version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+        "engine": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "counts": {
+      "type": "object",
+      "required": ["F", "D", "N", "total"],
+      "additionalProperties": false,
+      "properties": {
+        "F": {"type": "integer", "minimum": 0},
+        "D": {"type": "integer", "minimum": 0},
+        "N": {"type": "integer", "minimum": 0},
+        "total": {"type": "integer", "minimum": 0}
+      }
+    },
+    "series": {
+      "type": "object",
+      "required": ["F", "D", "N"],
+      "additionalProperties": false,
+      "properties": {
+        "F": {"type": "string"},
+        "D": {"type": "string"},
+        "N": {"type": "string"}
+      }
+    },
+    "status_classes": {
+      "type": "object",
+      "description": "The closed vocabulary status_class draws from, with what each one means. Published in the feed so a consumer never has to guess at a bucket.",
+      "additionalProperties": {"type": "string"}
+    },
+    "findings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "series", "series_name", "title", "summary", "subject",
+                     "check_label", "checks", "date", "date_iso", "date_precision",
+                     "status", "status_class", "anchor", "url"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[FDN]-\\d{3}$",
+            "description": "Permanent. A withdrawn finding keeps its id and says what killed it, so ids are never reused and never renumbered."
+          },
+          "series": {"enum": ["F", "D", "N"]},
+          "series_name": {"type": "string"},
+          "title": {"type": "string", "minLength": 1},
+          "summary": {"type": "string", "minLength": 1},
+          "subject": {
+            "type": "string",
+            "minLength": 1,
+            "description": "What the finding is against: a dataset, a harness, or dinostomp itself."
+          },
+          "check_label": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Verbatim prose, e.g. \"`dup-options` (S5)\" or \"the data-scope battery\". Not every finding comes from one named check; use `checks` for the machine-readable ids."
+          },
+          "checks": {
+            "type": "array",
+            "items": {"type": "string", "pattern": "^[A-Z]\\d+$"},
+            "description": "MAY BE EMPTY, and often is: roughly a third of these entries are findings about the battery, a loader or a method rather than the output of one check. An empty list means no check id was claimed, never that the check is unknown."
+          },
+          "date": {
+            "type": "string",
+            "minLength": 1,
+            "description": "VERBATIM from the ledger, and NOT guaranteed to be a date. One entry reads \"first live fleet\" because that is what it was dated against. Parse `date_iso` instead."
+          },
+          "date_iso": {
+            "type": ["string", "null"],
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Null whenever the ledger did not carry a full day, which includes every month-only and free-text date. Null is not missing data; it is the ledger declining to claim a precision it does not have."
+          },
+          "date_precision": {"enum": ["day", "month", "none"]},
+          "status": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Verbatim, including qualifiers and inline links: \"confirmed, underpowered\", \"fixed in v0.50.0\"."
+          },
+          "status_class": {
+            "enum": ["confirmed", "fixed", "negative", "measured", "open", "superseded", "withdrawn"],
+            "description": "A LOSSY bucket derived from the leading word of `status`. The qualifiers are dropped, so a `confirmed` here may be scoped, marginal or underpowered in the ledger. Read `status` before quoting one."
+          },
+          "anchor": {"type": "string", "pattern": "^#[fdn]-\\d{3}$"},
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Permalink into FINDINGS.md on the default branch, so it tracks the current text of the entry rather than the version you fetched."
+          }
+        }
+      }
+    }
+  }
+}

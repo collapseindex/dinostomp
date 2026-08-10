@@ -1,365 +1,511 @@
 {
+  "schema_version": "1.0.0",
   "generated_from": "FINDINGS.md",
+  "generator": "scripts/index_findings.py",
+  "schema": "docs/findings.schema.json",
+  "tool": {
+    "name": "dinostomp",
+    "version": "0.52.0",
+    "engine": "d9ec4738f87d215450ef39b50d3db7163e9f1936c50a91eb28e56f2db23ae3c4"
+  },
   "counts": {
     "F": 25,
-    "D": 39,
-    "N": 16
+    "D": 41,
+    "N": 16,
+    "total": 82
   },
   "series": {
     "F": "other people's evals",
     "D": "dinostomp itself",
     "N": "negative results"
   },
+  "status_classes": {
+    "confirmed": "a real defect in somebody else's eval, verified against the source",
+    "fixed": "a defect in dinostomp, repaired in a named release",
+    "negative": "looked, found nothing; recorded rather than dropped",
+    "measured": "quantified without a verdict either way",
+    "open": "known, scoped, deliberately not fixed",
+    "superseded": "closed by a later entry, which is named in the status",
+    "withdrawn": "retracted; the id is kept and the entry says what killed it"
+  },
   "findings": [
     {
       "id": "F-001",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "iris · two byte-identical measurement vectors",
+      "summary": "two byte-identical measurement vectors",
+      "subject": "iris",
       "check_label": "`dup-questions` (S1)",
       "checks": [
         "S1"
       ],
       "date": "2026-07",
+      "date_iso": null,
+      "date_precision": "month",
       "status": "confirmed",
+      "status_class": "confirmed",
       "anchor": "#f-001",
-      "subject": "iris",
-      "summary": "two byte-identical measurement vectors"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-001"
     },
     {
       "id": "F-002",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "MMLU · a subtraction item keyed to two correct options",
+      "summary": "a subtraction item keyed to two correct options",
+      "subject": "MMLU",
       "check_label": "`dup-options` (S5)",
       "checks": [
         "S5"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed",
+      "status_class": "confirmed",
       "anchor": "#f-002",
-      "subject": "MMLU",
-      "summary": "a subtraction item keyed to two correct options"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-002"
     },
     {
       "id": "F-003",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "MMLU · 90 duplicate rows in the first 3000",
+      "summary": "90 duplicate rows in the first 3000",
+      "subject": "MMLU",
       "check_label": "`dup-questions` (S1)",
       "checks": [
         "S1"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed",
+      "status_class": "confirmed",
       "anchor": "#f-003",
-      "subject": "MMLU",
-      "summary": "90 duplicate rows in the first 3000"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-003"
     },
     {
       "id": "F-004",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "TruthfulQA · an item passable by restating the question",
+      "summary": "an item passable by restating the question",
+      "subject": "TruthfulQA",
       "check_label": "`answer-leak` (S2)",
       "checks": [
         "S2"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed, scoped",
+      "status_class": "confirmed",
       "anchor": "#f-004",
-      "subject": "TruthfulQA",
-      "summary": "an item passable by restating the question"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-004"
     },
     {
       "id": "F-005",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "GSM8K · two of four models move beyond sampling noise on seed alone",
+      "summary": "two of four models move beyond sampling noise on seed alone",
+      "subject": "GSM8K",
       "check_label": "`seed-stability` (P10)",
       "checks": [
         "P10"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed costs $0.06 to reproduce",
+      "status_class": "confirmed",
       "anchor": "#f-005",
-      "subject": "GSM8K",
-      "summary": "two of four models move beyond sampling noise on seed alone"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-005"
     },
     {
       "id": "F-006",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "GSM8K · unfinished responses credited as correct",
+      "summary": "unfinished responses credited as correct",
+      "subject": "GSM8K",
       "check_label": "`truncation-credit` (R5)",
       "checks": [
         "R5"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed",
+      "status_class": "confirmed",
       "anchor": "#f-006",
-      "subject": "GSM8K",
-      "summary": "unfinished responses credited as correct"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-006"
     },
     {
       "id": "F-007",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "GSM8K · a formatting gap that reads as a capability gap",
+      "summary": "a formatting gap that reads as a capability gap",
+      "subject": "GSM8K",
       "check_label": "`uncheckable-rate` (R6)",
       "checks": [
         "R6"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed",
+      "status_class": "confirmed",
       "anchor": "#f-007",
-      "subject": "GSM8K",
-      "summary": "a formatting gap that reads as a capability gap"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-007"
     },
     {
       "id": "F-008",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "CommonsenseQA · 24 items with a repeated option, 6 of them the keyed answer",
+      "summary": "24 items with a repeated option; 6 repeat the keyed answer",
+      "subject": "CommonsenseQA",
       "check_label": "`dup-options` (S5)",
       "checks": [
         "S5"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed",
+      "status_class": "confirmed",
       "anchor": "#f-008",
-      "subject": "CommonsenseQA",
-      "summary": "24 items with a repeated option; 6 repeat the keyed answer"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-008"
     },
     {
       "id": "F-009",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "MedMCQA · 16 items with a repeated option, 4 of them the answer",
+      "summary": "16 items with a repeated option, 4 of them the answer",
+      "subject": "MedMCQA",
       "check_label": "`dup-options` (S5)",
       "checks": [
         "S5"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed",
+      "status_class": "confirmed",
       "anchor": "#f-009",
-      "subject": "MedMCQA",
-      "summary": "16 items with a repeated option, 4 of them the answer"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-009"
     },
     {
       "id": "F-010",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "SciQ · 9 items with a repeated option",
+      "summary": "9 items with a repeated option",
+      "subject": "SciQ",
       "check_label": "`dup-options` (S5)",
       "checks": [
         "S5"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed",
+      "status_class": "confirmed",
       "anchor": "#f-010",
-      "subject": "SciQ",
-      "summary": "9 items with a repeated option"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-010"
     },
     {
       "id": "F-011",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "MMLU-Pro · 64 duplicate rows in the first 3000",
+      "summary": "64 duplicate rows in the first 3000",
+      "subject": "MMLU-Pro",
       "check_label": "`dup-questions` (S1)",
       "checks": [
         "S1"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed",
+      "status_class": "confirmed",
       "anchor": "#f-011",
-      "subject": "MMLU-Pro",
-      "summary": "64 duplicate rows in the first 3000"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-011"
     },
     {
       "id": "F-012",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "MMLU-Pro vs MMLU · 158 of 3000 items reuse an MMLU question",
+      "summary": "158 of 3000 items reuse an MMLU question; 22 are unchanged",
+      "subject": "MMLU-Pro vs MMLU",
       "check_label": "`corpus-overlap` (S11)",
       "checks": [
         "S11"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed, expected",
+      "status_class": "confirmed",
       "anchor": "#f-012",
-      "subject": "MMLU-Pro vs MMLU",
-      "summary": "158 of 3000 items reuse an MMLU question; 22 are unchanged"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-012"
     },
     {
       "id": "F-013",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "SciQ · the gold option reuses a question word that no distractor does",
+      "summary": "the gold option reuses a question word no distractor does",
+      "subject": "SciQ",
       "check_label": "`surface-shortcut` (S9)",
       "checks": [
         "S9"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed, narrow",
+      "status_class": "confirmed",
       "anchor": "#f-013",
-      "subject": "SciQ",
-      "summary": "the gold option reuses a question word no distractor does"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-013"
     },
     {
       "id": "F-014",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "A judge (qwen3-30b) · stated confidence and appeals to authority flip its verdicts",
+      "summary": "stated confidence and authority flip its verdicts, always toward FAIL",
+      "subject": "a judge (qwen3-30b)",
       "check_label": "`judge-bias` (J2)",
       "checks": [
         "J2"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed [examples/hedge](examples/hedge/)",
+      "status_class": "confirmed",
       "anchor": "#f-014",
-      "subject": "a judge (qwen3-30b)",
-      "summary": "stated confidence and authority flip its verdicts, always toward FAIL"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-014"
     },
     {
       "id": "F-015",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "Four small models · 87% to 97% preserve a source's hedge, and the eval cannot separate them",
+      "summary": "87% to 97% preserve a source's hedge; the eval cannot separate them",
+      "subject": "four small models",
       "check_label": "`hedge-survival`",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed, underpowered costs $0.02 to reproduce",
+      "status_class": "confirmed",
       "anchor": "#f-015",
-      "subject": "four small models",
-      "summary": "87% to 97% preserve a source's hedge; the eval cannot separate them"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-015"
     },
     {
       "id": "F-016",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "llama-3.2-3b · \"You are an expert.\" is worth 10 points, marginally",
+      "summary": "\"You are an expert.\" is worth 10 points, marginally",
+      "subject": "llama-3.2-3b",
       "check_label": "`prompt-stability` (P11)",
       "checks": [
         "P11"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed, marginal [examples/presentation](examples/presentation/)",
+      "status_class": "confirmed",
       "anchor": "#f-016",
-      "subject": "llama-3.2-3b",
-      "summary": "\"You are an expert.\" is worth 10 points, marginally"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-016"
     },
     {
       "id": "F-017",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "A RAG agent · grounding it in its own retrieval made it 25 points worse",
+      "summary": "grounding it in its own retrieval made it 25 points WORSE",
+      "subject": "a RAG agent",
       "check_label": "`live-agent`",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed [examples/live-agent](examples/live-agent/) costs $0.02",
+      "status_class": "confirmed",
       "anchor": "#f-017",
-      "subject": "a RAG agent",
-      "summary": "grounding it in its own retrieval made it 25 points WORSE"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-017"
     },
     {
       "id": "F-018",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "MMLU-Redux 2.0 · two items whose keyed answer is offered twice, labelled `ok` by the annotators",
+      "summary": "two verbatim double-keyed items the human annotators marked `ok`",
+      "subject": "MMLU-Redux 2.0",
       "check_label": "`dup-options` (S5)",
       "checks": [
         "S5"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed",
+      "status_class": "confirmed",
       "anchor": "#f-018",
-      "subject": "MMLU-Redux 2.0",
-      "summary": "two verbatim double-keyed items the human annotators marked `ok`"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-018"
     },
     {
       "id": "F-019",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "LogiQA · 8 items with a duplicated option, and 3 offer the same option four times",
+      "summary": "8 items with a duplicated option; 3 offer the same option four times",
+      "subject": "LogiQA",
       "check_label": "`dup-options` (S5)",
       "checks": [
         "S5"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed",
+      "status_class": "confirmed",
       "anchor": "#f-019",
-      "subject": "LogiQA",
-      "summary": "8 items with a duplicated option; 3 offer the same option four times"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-019"
     },
     {
       "id": "F-020",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "DROP · 86 duplicated questions, 37 of them keyed to different accepted answers",
+      "summary": "86 duplicated questions, 37 keyed to different accepted answers",
+      "subject": "DROP",
       "check_label": "`dup-questions` (S1), `conflicting-keys` (S7)",
       "checks": [
         "S1",
         "S7"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed",
+      "status_class": "confirmed",
       "anchor": "#f-020",
-      "subject": "DROP",
-      "summary": "86 duplicated questions, 37 keyed to different accepted answers"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-020"
     },
     {
       "id": "F-021",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "MATH-500 · two problems whose answer is written in the question",
+      "summary": "2 problems whose answer is written in the question",
+      "subject": "MATH-500",
       "check_label": "`answer-leak` (S2)",
       "checks": [
         "S2"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed, scoped",
+      "status_class": "confirmed",
       "anchor": "#f-021",
-      "subject": "MATH-500",
-      "summary": "2 problems whose answer is written in the question"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-021"
     },
     {
       "id": "F-022",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "RACE · an item offering the same option twice",
+      "summary": "an item offering the same option twice",
+      "subject": "RACE",
       "check_label": "`dup-options` (S5)",
       "checks": [
         "S5"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "confirmed",
+      "status_class": "confirmed",
       "anchor": "#f-022",
-      "subject": "RACE",
-      "summary": "an item offering the same option twice"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-022"
     },
     {
       "id": "F-023",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "AQuA-RAT · 7 items offer a duplicated option, and most of them are double-keyed",
+      "summary": "7 items with a duplicated option, most of them double-keyed",
+      "subject": "AQuA-RAT",
       "check_label": "`dup-options` (S5)",
       "checks": [
         "S5"
       ],
       "date": "2026-08-10",
+      "date_iso": "2026-08-10",
+      "date_precision": "day",
       "status": "confirmed",
+      "status_class": "confirmed",
       "anchor": "#f-023",
-      "subject": "AQuA-RAT",
-      "summary": "7 items with a duplicated option, most of them double-keyed"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-023"
     },
     {
       "id": "F-024",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "Iranian driving licence test · the correct answer is the longest option 45% of the time",
+      "summary": "the answer is the longest option 45% of the time",
+      "subject": "Iranian driving test",
       "check_label": "`length-bias` (S4)",
       "checks": [
         "S4"
       ],
       "date": "2026-08-10",
+      "date_iso": "2026-08-10",
+      "date_precision": "day",
       "status": "confirmed",
+      "status_class": "confirmed",
       "anchor": "#f-024",
-      "subject": "Iranian driving test",
-      "summary": "the answer is the longest option 45% of the time"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-024"
     },
     {
       "id": "N-015",
       "series": "N",
+      "series_name": "negative results",
       "title": "MedQA-USMLE · a professionally written licensing exam passed every applicable check",
+      "summary": "a licensing exam passed every applicable check",
+      "subject": "MedQA-USMLE",
       "check_label": "the data-scope battery",
       "checks": [],
       "date": "2026-08-10",
+      "date_iso": "2026-08-10",
+      "date_precision": "day",
       "status": "negative",
+      "status_class": "negative",
       "anchor": "#n-015",
-      "subject": "MedQA-USMLE",
-      "summary": "a licensing exam passed every applicable check"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-015"
     },
     {
       "id": "N-001",
       "series": "N",
+      "series_name": "negative results",
       "title": "HellaSwag, ARC, MMLU · no position, length, or shortcut bias found",
+      "summary": "no position, length, or shortcut bias found",
+      "subject": "HellaSwag, ARC, MMLU",
       "check_label": "`position-bias` (S3), `length-bias` (S4), `surface-shortcut` (S9)",
       "checks": [
         "S3",
@@ -367,405 +513,555 @@
         "S9"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "negative",
+      "status_class": "negative",
       "anchor": "#n-001",
-      "subject": "HellaSwag, ARC, MMLU",
-      "summary": "no position, length, or shortcut bias found"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-001"
     },
     {
       "id": "N-002",
       "series": "N",
+      "series_name": "negative results",
       "title": "dinostomp · the uncheckable path was untested, and said so",
+      "summary": "the uncheckable path was untested, and said so",
+      "subject": "dinostomp",
       "check_label": "first live study",
       "checks": [],
       "date": "2026-08",
+      "date_iso": null,
+      "date_precision": "month",
       "status": "later closed by [F-007](#f-007)",
+      "status_class": "superseded",
       "anchor": "#n-002",
-      "subject": "dinostomp",
-      "summary": "the uncheckable path was untested, and said so"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-002"
     },
     {
       "id": "N-003",
       "series": "N",
+      "series_name": "negative results",
       "title": "ARC-Easy, ARC-Challenge, OpenBookQA, HellaSwag, WinoGrande · no repeated options",
+      "summary": "no repeated options in four datasets",
+      "subject": "ARC, OpenBookQA, HellaSwag, WinoGrande",
       "check_label": "`dup-options` (S5)",
       "checks": [
         "S5"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "negative",
+      "status_class": "negative",
       "anchor": "#n-003",
-      "subject": "ARC, OpenBookQA, HellaSwag, WinoGrande",
-      "summary": "no repeated options in four datasets"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-003"
     },
     {
       "id": "N-004",
       "series": "N",
+      "series_name": "negative results",
       "title": "Six dataset pairs · no cross-benchmark reuse found",
+      "summary": "no cross-benchmark reuse found",
+      "subject": "six dataset pairs",
       "check_label": "`corpus-overlap` (S11)",
       "checks": [
         "S11"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "negative",
+      "status_class": "negative",
       "anchor": "#n-004",
-      "subject": "six dataset pairs",
-      "summary": "no cross-benchmark reuse found"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-004"
     },
     {
       "id": "N-005",
       "series": "N",
+      "series_name": "negative results",
       "title": "Four models · re-ordering the options moved nobody beyond noise",
+      "summary": "re-ordering the options moved nobody beyond noise",
+      "subject": "four models",
       "check_label": "`order-stability` (P9)",
       "checks": [
         "P9"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "negative, underpowered",
+      "status_class": "negative",
       "anchor": "#n-005",
-      "subject": "four models",
-      "summary": "re-ordering the options moved nobody beyond noise"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-005"
     },
     {
       "id": "N-006",
       "series": "N",
+      "series_name": "negative results",
       "title": "Four models · the probe proved it can detect memorisation, then found none",
+      "summary": "probe demonstrably sensitive, and no canary reproduced",
+      "subject": "four models",
       "check_label": "`canary-regurgitated` (S10)",
       "checks": [
         "S10"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "negative",
+      "status_class": "negative",
       "anchor": "#n-006",
-      "subject": "four models",
-      "summary": "probe demonstrably sensitive, and no canary reproduced"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-006"
     },
     {
       "id": "N-007",
       "series": "N",
+      "series_name": "negative results",
       "title": "lm-evaluation-harness · both reported metrics re-derive exactly from the raw log-probabilities",
+      "summary": "both reported metrics re-derive from the raw log-probs",
+      "subject": "lm-eval-harness log",
       "check_label": "`verdict-rederive` (R8), by hand",
       "checks": [
         "R8"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "negative",
+      "status_class": "negative",
       "anchor": "#n-007",
-      "subject": "lm-eval-harness log",
-      "summary": "both reported metrics re-derive from the raw log-probs"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-007"
     },
     {
       "id": "N-008",
       "series": "N",
+      "series_name": "negative results",
       "title": "An even `run.repeats` reported p-squared instead of p, behind a confident interval",
+      "summary": "an even `run.repeats` reported p-squared, not p",
+      "subject": "dinostomp",
       "check_label": "`repeat-ties` (R20), measured against a known ground truth",
       "checks": [
         "R20"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "measured, fixed",
+      "status_class": "measured",
       "anchor": "#n-008",
-      "subject": "dinostomp",
-      "summary": "an even `run.repeats` reported p-squared, not p"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-008"
     },
     {
       "id": "N-009",
       "series": "N",
+      "series_name": "negative results",
       "title": "The same agent, the same run: co-occurrence says 0%, the counterfactual says 100%",
+      "summary": "T4 sees 0%, T7 sees 100%, on the same agent",
+      "subject": "dinostomp",
       "check_label": "`answer-grounding` (T4) against `answer-grounding-causal` (T7)",
       "checks": [
         "T4",
         "T7"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "measured",
+      "status_class": "measured",
       "anchor": "#n-009",
-      "subject": "dinostomp",
-      "summary": "T4 sees 0%, T7 sees 100%, on the same agent"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-009"
     },
     {
       "id": "N-010",
       "series": "N",
+      "series_name": "negative results",
       "title": "What the process boundary actually buys, measured claim by claim",
+      "summary": "what a process boundary buys, one claim at a time",
+      "subject": "dinostomp",
       "check_label": "`tests/test_sandbox.py`",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "measured",
+      "status_class": "measured",
       "anchor": "#n-010",
-      "subject": "dinostomp",
-      "summary": "what a process boundary buys, one claim at a time"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-010"
     },
     {
       "id": "N-011",
       "series": "N",
+      "series_name": "negative results",
       "title": "Inspect AI · the second foreign format cost one defect, where the first cost five",
+      "summary": "the second foreign format cost one defect, not five",
+      "subject": "Inspect AI",
       "check_label": "`dinostomp import` (adapter)",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "measured",
+      "status_class": "measured",
       "anchor": "#n-011",
-      "subject": "Inspect AI",
-      "summary": "the second foreign format cost one defect, not five"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-011"
     },
     {
       "id": "N-012",
       "series": "N",
+      "series_name": "negative results",
       "title": "dinostomp scored against human annotation: 5% recall, 25% precision, and 2 items the humans missed",
+      "summary": "scored against humans: 5% recall, and 2 items they missed",
+      "subject": "dinostomp",
       "check_label": "`dup-options` (S5) vs MMLU-Redux 2.0",
       "checks": [
         "S5"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "measured",
+      "status_class": "measured",
       "anchor": "#n-012",
-      "subject": "dinostomp",
-      "summary": "scored against humans: 5% recall, and 2 items they missed"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-012"
     },
     {
       "id": "N-013",
       "series": "N",
+      "series_name": "negative results",
       "title": "Capability buys PRECISION and costs RECALL. No judge tested is both.",
+      "summary": "capability buys precision and costs recall; first version retracted",
+      "subject": "LLM-as-judge",
       "check_label": "`semdup` extension",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "measured **supersedes this entry's first version, which was wrong**",
+      "status_class": "measured",
       "anchor": "#n-013",
-      "subject": "LLM-as-judge",
-      "summary": "capability buys precision and costs recall; first version retracted"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-013"
     },
     {
       "id": "N-014",
       "series": "N",
+      "series_name": "negative results",
       "title": "Nine adversarial pods, nine caught, and one check found blind",
+      "summary": "nine adversarial pods, nine caught, one check found blind",
+      "subject": "dinostomp",
       "check_label": "`trials`, by hand",
       "checks": [],
       "date": "2026-08-10",
+      "date_iso": "2026-08-10",
+      "date_precision": "day",
       "status": "measured",
+      "status_class": "measured",
       "anchor": "#n-014",
-      "subject": "dinostomp",
-      "summary": "nine adversarial pods, nine caught, one check found blind"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-014"
     },
     {
       "id": "F-025",
       "series": "F",
+      "series_name": "other people's evals",
       "title": "2023 Chinese Pharmacist Licensure Examination · 16 items offer the same option twice",
+      "summary": "16 items offer the same option twice",
+      "subject": "Pharmacist Licensure Exam",
       "check_label": "`dup-options` (S5)",
       "checks": [
         "S5"
       ],
       "date": "2026-08-10",
+      "date_iso": "2026-08-10",
+      "date_precision": "day",
       "status": "confirmed",
+      "status_class": "confirmed",
       "anchor": "#f-025",
-      "subject": "Pharmacist Licensure Exam",
-      "summary": "16 items offer the same option twice"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-025"
     },
     {
       "id": "N-016",
       "series": "N",
+      "series_name": "negative results",
       "title": "NCLEX-style nursing items · clean, on a sample too small to lean on",
+      "summary": "clean, on 28 items; the battery cannot read the other 58",
+      "subject": "NCLEX nursing",
       "check_label": "the data-scope battery",
       "checks": [],
       "date": "2026-08-10",
+      "date_iso": "2026-08-10",
+      "date_precision": "day",
       "status": "negative, underpowered",
+      "status_class": "negative",
       "anchor": "#n-016",
-      "subject": "NCLEX nursing",
-      "summary": "clean, on 28 items; the battery cannot read the other 58"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-016"
     },
     {
       "id": "D-001",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "The money invariant had only ever run at zero",
+      "summary": "the money invariant had only ever run at zero",
+      "subject": "dinostomp",
       "check_label": "`spend-ledger` (R3)",
       "checks": [
         "R3"
       ],
       "date": "first live fleet",
+      "date_iso": null,
+      "date_precision": "none",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-001",
-      "subject": "dinostomp",
-      "summary": "the money invariant had only ever run at zero"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-001"
     },
     {
       "id": "D-002",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "Pooling hid a model that never read the question",
+      "summary": "pooling hid a model that never read the question",
+      "subject": "dinostomp",
       "check_label": "`above-guessing` (R7)",
       "checks": [
         "R7"
       ],
       "date": "first live fleet",
+      "date_iso": null,
+      "date_precision": "none",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-002",
-      "subject": "dinostomp",
-      "summary": "pooling hid a model that never read the question"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-002"
     },
     {
       "id": "D-003",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "A collapsed model manufactured 8 phantom key errors",
+      "summary": "a collapsed model manufactured 8 phantom key errors",
+      "subject": "dinostomp",
       "check_label": "`item-discrimination` (P2)",
       "checks": [
         "P2"
       ],
       "date": "first live fleet",
+      "date_iso": null,
+      "date_precision": "none",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-003",
-      "subject": "dinostomp",
-      "summary": "a collapsed model manufactured 8 phantom key errors"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-003"
     },
     {
       "id": "D-004",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "A gating check returned BROKEN on all of GSM8K",
+      "summary": "a gating check returned BROKEN on all of GSM8K",
+      "subject": "dinostomp",
       "check_label": "`answer-leak` (S2)",
       "checks": [
         "S2"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-004",
-      "subject": "dinostomp",
-      "summary": "a gating check returned BROKEN on all of GSM8K"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-004"
     },
     {
       "id": "D-005",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "A choice item was keyed on its question alone",
+      "summary": "a choice item was keyed on its question alone",
+      "subject": "dinostomp",
       "check_label": "`dup-questions` (S1), `conflicting-keys` (S7)",
       "checks": [
         "S1",
         "S7"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-005",
-      "subject": "dinostomp",
-      "summary": "a choice item was keyed on its question alone"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-005"
     },
     {
       "id": "D-006",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "Any probe was read as the blind probe",
+      "summary": "any probe was read as the blind probe",
+      "subject": "dinostomp",
       "check_label": "`blind-solvable` (R13), `input-blind` (R15)",
       "checks": [
         "R13",
         "R15"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-006",
-      "subject": "dinostomp",
-      "summary": "any probe was read as the blind probe"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-006"
     },
     {
       "id": "D-007",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "Moves were compared to a flat percentage, not to noise",
+      "summary": "moves were compared to a flat percentage, not to noise",
+      "subject": "dinostomp",
       "check_label": "`order-stability` (P9), `seed-stability` (P10)",
       "checks": [
         "P9",
         "P10"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-007",
-      "subject": "dinostomp",
-      "summary": "moves were compared to a flat percentage, not to noise"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-007"
     },
     {
       "id": "D-008",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "31 manufactured key errors, and a first fix that was itself flattering",
+      "summary": "31 manufactured key errors, and a flattering first fix",
+      "subject": "dinostomp",
       "check_label": "`item-discrimination` (P2)",
       "checks": [
         "P2"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed, scoped",
+      "status_class": "fixed",
       "anchor": "#d-008",
-      "subject": "dinostomp",
-      "summary": "31 manufactured key errors, and a flattering first fix"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-008"
     },
     {
       "id": "D-009",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "`plan` understated a bill by 3x",
+      "summary": "`plan` understated a bill by 3x",
+      "subject": "dinostomp",
       "check_label": "`plan`",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-009",
-      "subject": "dinostomp",
-      "summary": "`plan` understated a bill by 3x"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-009"
     },
     {
       "id": "D-010",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "The engine hashed itself and nothing read it",
+      "summary": "the engine hashed itself and nothing read it",
+      "subject": "dinostomp",
       "check_label": "`engine-drift` (R19, new)",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-010",
-      "subject": "dinostomp",
-      "summary": "the engine hashed itself and nothing read it"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-010"
     },
     {
       "id": "D-011",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "Published reports only verified on the author's machine",
+      "summary": "published reports only verified on the author's machine",
+      "subject": "dinostomp",
       "check_label": "`verify`",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed found by CI",
+      "status_class": "fixed",
       "anchor": "#d-011",
-      "subject": "dinostomp",
-      "summary": "published reports only verified on the author's machine"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-011"
     },
     {
       "id": "D-012",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "Line-ending translation is drift",
+      "summary": "line-ending translation is drift",
+      "subject": "dinostomp",
       "check_label": "`input-drift` (R1)",
       "checks": [
         "R1"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed found by CI",
+      "status_class": "fixed",
       "anchor": "#d-012",
-      "subject": "dinostomp",
-      "summary": "line-ending translation is drift"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-012"
     },
     {
       "id": "D-013",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "Smaller ones: a wrong hint, two wrong witnesses, and a near-miss",
+      "summary": "smaller ones: a wrong hint, two wrong witnesses, a near-miss",
+      "subject": "dinostomp",
       "check_label": "various",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-013",
-      "subject": "dinostomp",
-      "summary": "smaller ones: a wrong hint, two wrong witnesses, a near-miss"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-013"
     },
     {
       "id": "D-014",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "The overlap check compared questions and ignored options",
+      "summary": "the overlap check compared questions and ignored options",
+      "subject": "dinostomp",
       "check_label": "`corpus-overlap` (S11)",
       "checks": [
         "S11"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-014",
-      "subject": "dinostomp",
-      "summary": "the overlap check compared questions and ignored options"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-014"
     },
     {
       "id": "D-015",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "Position and length bias reported class balance on a fixed label set",
+      "summary": "position and length bias reported class balance on a fixed label set",
+      "subject": "dinostomp",
       "check_label": "`position-bias` (S3), `length-bias` (S4), `surface-shortcut` (S9)",
       "checks": [
         "S3",
@@ -773,313 +1069,471 @@
         "S9"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-015",
-      "subject": "dinostomp",
-      "summary": "position and length bias reported class balance on a fixed label set"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-015"
     },
     {
       "id": "D-016",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "The SciQ fetcher put the answer at index 0 on every item",
+      "summary": "the SciQ fetcher put the answer at index 0 on every item",
+      "subject": "dinostomp",
       "check_label": "`position-bias` (S3)",
       "checks": [
         "S3"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-016",
-      "subject": "dinostomp",
-      "summary": "the SciQ fetcher put the answer at index 0 on every item"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-016"
     },
     {
       "id": "D-017",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "A truncated judge was diagnosed as a judge with no opinion",
+      "summary": "a truncated judge was diagnosed as a judge with no opinion",
+      "subject": "dinostomp",
       "check_label": "`judge-agreement` (J1)",
       "checks": [
         "J1"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-017",
-      "subject": "dinostomp",
-      "summary": "a truncated judge was diagnosed as a judge with no opinion"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-017"
     },
     {
       "id": "D-018",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "Every non-judge probe crashed the CLI, not just cross-judge",
+      "summary": "EVERY non-judge probe crashed the CLI, not just cross-judge",
+      "subject": "dinostomp",
       "check_label": "`--probe crossjudge`, `--probe canary`",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-018",
-      "subject": "dinostomp",
-      "summary": "EVERY non-judge probe crashed the CLI, not just cross-judge"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-018"
     },
     {
       "id": "D-019",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "The docs claimed a 28-point swing with no run behind it",
+      "summary": "the docs claimed a 28-point swing with no run behind it",
+      "subject": "dinostomp",
       "check_label": "METHODOLOGY.md",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "**WITHDRAWN**",
+      "status_class": "withdrawn",
       "anchor": "#d-019",
-      "subject": "dinostomp",
-      "summary": "the docs claimed a 28-point swing with no run behind it"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-019"
     },
     {
       "id": "D-020",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "The grounding check undercounts by 6x, by construction",
+      "summary": "the grounding check undercounts by 6x, by construction",
+      "subject": "dinostomp",
       "check_label": "`answer-grounding` (T4)",
       "checks": [
         "T4"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "scoped, not fixed",
+      "status_class": "open",
       "anchor": "#d-020",
-      "subject": "dinostomp",
-      "summary": "the grounding check undercounts by 6x, by construction"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-020"
     },
     {
       "id": "D-021",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "The most common eval-log shape in the field could not be imported at all",
+      "summary": "the most common eval-log shape in the field was unimportable",
+      "subject": "dinostomp",
       "check_label": "`dinostomp import`",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed in v0.40.0",
+      "status_class": "fixed",
       "anchor": "#d-021",
-      "subject": "dinostomp",
-      "summary": "the most common eval-log shape in the field was unimportable"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-021"
     },
     {
       "id": "D-022",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "A check overwrote the evidence contract's skip reason with a false one",
+      "summary": "a check overwrote the contract's skip reason with a false one",
+      "subject": "dinostomp",
       "check_label": "`scorer-artifact` (R16)",
       "checks": [
         "R16"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed in v0.40.0",
+      "status_class": "fixed",
       "anchor": "#d-022",
-      "subject": "dinostomp",
-      "summary": "a check overwrote the contract's skip reason with a false one"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-022"
     },
     {
       "id": "D-023",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "A rival score column was chosen silently, and it was the one nobody published",
+      "summary": "a rival score column was chosen silently, and it was the wrong one",
+      "subject": "dinostomp",
       "check_label": "`dinostomp import`",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed in v0.40.0",
+      "status_class": "fixed",
       "anchor": "#d-023",
-      "subject": "dinostomp",
-      "summary": "a rival score column was chosen silently, and it was the wrong one"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-023"
     },
     {
       "id": "D-024",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "`run --dry` would have fabricated a full set of records for a model it cannot call",
+      "summary": "`run --dry` would fabricate records for a model it cannot call",
+      "subject": "dinostomp",
       "check_label": "`dinostomp run`",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed in v0.40.0",
+      "status_class": "fixed",
       "anchor": "#d-024",
-      "subject": "dinostomp",
-      "summary": "`run --dry` would fabricate records for a model it cannot call"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-024"
     },
     {
       "id": "D-025",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "An error message named a flag nobody can type",
+      "summary": "an error message named a flag nobody can type",
+      "subject": "dinostomp",
       "check_label": "`dinostomp import`",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed in v0.40.0",
+      "status_class": "fixed",
       "anchor": "#d-025",
-      "subject": "dinostomp",
-      "summary": "an error message named a flag nobody can type"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-025"
     },
     {
       "id": "D-026",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "The item-majority estimator shipped for eleven versions without ever running live",
+      "summary": "the item-majority estimator was never run live until now",
+      "subject": "dinostomp",
       "check_label": "`dinostomp run`",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed in v0.41.0",
+      "status_class": "fixed",
       "anchor": "#d-026",
-      "subject": "dinostomp",
-      "summary": "the item-majority estimator was never run live until now"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-026"
     },
     {
       "id": "D-027",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "Two defects in the pod written to demonstrate the new rail",
+      "summary": "two defects in the pod written to demonstrate the new rail",
+      "subject": "dinostomp",
       "check_label": "`dup-questions` (S1), `forbidden-tool` (T1)",
       "checks": [
         "S1",
         "T1"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed in v0.42.0",
+      "status_class": "fixed",
       "anchor": "#d-027",
-      "subject": "dinostomp",
-      "summary": "two defects in the pod written to demonstrate the new rail"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-027"
     },
     {
       "id": "D-028",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "The line-ending guard could not see a file until the commit that broke it had happened",
+      "summary": "the line-ending guard could not see a file until after it shipped",
+      "subject": "dinostomp",
       "check_label": "`tests/test_examples_verify.py`",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed in v0.42.1",
+      "status_class": "fixed",
       "anchor": "#d-028",
-      "subject": "dinostomp",
-      "summary": "the line-ending guard could not see a file until after it shipped"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-028"
     },
     {
       "id": "D-029",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "\"Policy is enforced at call time\" was true only for an agent that asked",
+      "summary": "\"policy is enforced at call time\" held only for agents that asked",
+      "subject": "dinostomp",
       "check_label": "`harness.py`",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "corrected in v0.43.0",
+      "status_class": "fixed",
       "anchor": "#d-029",
-      "subject": "dinostomp",
-      "summary": "\"policy is enforced at call time\" held only for agents that asked"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-029"
     },
     {
       "id": "D-030",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "The consent mechanism told you a pod ships no code, while it shipped an agent and its tools",
+      "summary": "`inspect` called a pod codeless while it shipped an agent and tools",
+      "subject": "dinostomp",
       "check_label": "`dinostomp inspect`",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed in v0.43.1",
+      "status_class": "fixed",
       "anchor": "#d-030",
-      "subject": "dinostomp",
-      "summary": "`inspect` called a pod codeless while it shipped an agent and tools"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-030"
     },
     {
       "id": "D-031",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "An imported trajectory could never reach the six checks that read a trajectory",
+      "summary": "an imported trajectory could never reach the checks that read one",
+      "subject": "dinostomp",
       "check_label": "`trajectory` policy, T1-T6, `trace-observed` (T8)",
       "checks": [
         "T8"
       ],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed in v0.44.0",
+      "status_class": "fixed",
       "anchor": "#d-031",
-      "subject": "dinostomp",
-      "summary": "an imported trajectory could never reach the checks that read one"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-031"
     },
     {
       "id": "D-032",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "A valid JSONL file it refused to read, and the error blamed the data",
+      "summary": "a valid JSONL file it refused to read, blaming the data",
+      "subject": "dinostomp",
       "check_label": "`items.py`, and seven other readers",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed in v0.45.0",
+      "status_class": "fixed",
       "anchor": "#d-032",
-      "subject": "dinostomp",
-      "summary": "a valid JSONL file it refused to read, blaming the data"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-032"
     },
     {
       "id": "D-033",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "D-017 again, in the validation harness, written by the person who wrote D-017",
+      "summary": "D-017 again, in the harness written by the person who wrote D-017",
+      "subject": "dinostomp",
       "check_label": "`extensions/semdup/validate.py`",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-033",
-      "subject": "dinostomp",
-      "summary": "D-017 again, in the harness written by the person who wrote D-017"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-033"
     },
     {
       "id": "D-034",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "A loader that discarded 96% of a split, and the findings computed on what was left",
+      "summary": "a loader that discarded 96% of a split, and the findings computed on the rest",
+      "subject": "dinostomp",
       "check_label": "`benchmarks/fetch.py`",
       "checks": [],
       "date": "2026-08-09",
+      "date_iso": "2026-08-09",
+      "date_precision": "day",
       "status": "fixed",
+      "status_class": "fixed",
       "anchor": "#d-034",
-      "subject": "dinostomp",
-      "summary": "a loader that discarded 96% of a split, and the findings computed on the rest"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-034"
     },
     {
       "id": "D-035",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "Refused a valid file over three bytes, in an error that named its own fix",
+      "summary": "refused a valid file for a byte-order mark, naming the fix it did not apply",
+      "subject": "dinostomp",
       "check_label": "`items.py`, `dataset.py`, `contamination.py`",
       "checks": [],
       "date": "2026-08-10",
+      "date_iso": "2026-08-10",
+      "date_precision": "day",
       "status": "fixed in v0.48.0",
+      "status_class": "fixed",
       "anchor": "#d-035",
-      "subject": "dinostomp",
-      "summary": "refused a valid file for a byte-order mark, naming the fix it did not apply"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-035"
     },
     {
       "id": "D-036",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "Told a semicolon-CSV user their columns were badly named",
+      "summary": "told a semicolon-CSV user their columns were badly named",
+      "subject": "dinostomp",
       "check_label": "`dataset.py`",
       "checks": [],
       "date": "2026-08-10",
+      "date_iso": "2026-08-10",
+      "date_precision": "day",
       "status": "fixed in v0.48.0",
+      "status_class": "fixed",
       "anchor": "#d-036",
-      "subject": "dinostomp",
-      "summary": "told a semicolon-CSV user their columns were badly named"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-036"
     },
     {
       "id": "D-037",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "The leak check was blind to every numeric-answer dataset, by an exemption whose cost was never measured",
+      "summary": "the leak check was blind to every numeric-answer dataset",
+      "subject": "dinostomp",
       "check_label": "`answer-leak` (S2)",
       "checks": [
         "S2"
       ],
       "date": "2026-08-10",
+      "date_iso": "2026-08-10",
+      "date_precision": "day",
       "status": "fixed in v0.49.0",
+      "status_class": "fixed",
       "anchor": "#d-037",
-      "subject": "dinostomp",
-      "summary": "the leak check was blind to every numeric-answer dataset"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-037"
     },
     {
       "id": "D-038",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "Announced a `choices` mapping it then silently ignored",
+      "summary": "announced a `choices` mapping it then silently ignored",
+      "subject": "dinostomp",
       "check_label": "`dataset.py`",
       "checks": [],
       "date": "2026-08-10",
+      "date_iso": "2026-08-10",
+      "date_precision": "day",
       "status": "fixed in v0.49.1",
+      "status_class": "fixed",
       "anchor": "#d-038",
-      "subject": "dinostomp",
-      "summary": "announced a `choices` mapping it then silently ignored"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-038"
     },
     {
       "id": "D-039",
       "series": "D",
+      "series_name": "dinostomp itself",
       "title": "A loader that mis-keyed a whole exam by one, then reported the artifact as a finding",
+      "summary": "A loader that mis-keyed a whole exam by one, then reported the artifact as a finding",
+      "subject": "dinostomp",
       "check_label": "`benchmarks/fetch.py`",
       "checks": [],
       "date": "2026-08-10",
+      "date_iso": "2026-08-10",
+      "date_precision": "day",
       "status": "fixed in v0.50.0",
+      "status_class": "fixed",
       "anchor": "#d-039",
-      "subject": "",
-      "summary": "A loader that mis-keyed a whole exam by one, then reported the artifact as a finding"
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-039"
+    },
+    {
+      "id": "D-040",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "A machine-readable feed published for two releases with no contract, a `date` field that is not always a date, and a silently blank subject",
+      "summary": "the findings feed was published for two releases with no schema",
+      "subject": "dinostomp",
+      "check_label": "`scripts/index_findings.py`",
+      "checks": [],
+      "date": "2026-08-10",
+      "date_iso": "2026-08-10",
+      "date_precision": "day",
+      "status": "fixed in v0.52.0",
+      "status_class": "fixed",
+      "anchor": "#d-040",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-040"
+    },
+    {
+      "id": "D-041",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "The numeric scorer's default scored a live model 0.000 whose real accuracy was 0.438, and the case lived in a source comment instead of this file",
+      "summary": "a numeric scorer default scored a live model 0.000 against a real 0.438, uncited for six releases",
+      "subject": "dinostomp",
+      "check_label": "`scorer-artifact` (R16)",
+      "checks": [
+        "R16"
+      ],
+      "date": "2026-08-10",
+      "date_iso": "2026-08-10",
+      "date_precision": "day",
+      "status": "scoped, not fixed",
+      "status_class": "open",
+      "anchor": "#d-041",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-041"
     }
   ]
 }

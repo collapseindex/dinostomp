@@ -1,5 +1,54 @@
 # Changelog
 
+### v0.52.0 (2026-08-10)
+
+**The ledger is the product; the tool is the proof.** This release makes the
+repo say so. The README now LEADS with what was found rather than with what the
+tool is, and `findings.json` stops being a convenience dump and becomes a
+published, versioned, validated interface.
+
+- **`findings.json` is a contract now, at `schema_version` 1.0.0.** Validated
+  against the new [docs/findings.schema.json](docs/findings.schema.json) BEFORE
+  it is written, so a feed that violates it never reaches the disk to be
+  committed by accident. The compatibility rule is stated rather than implied:
+  within a major version, fields are only added. Every record gains
+  `series_name`, `date_iso`, `date_precision`, `status_class` and a permalink
+  `url`; the feed gains the dinostomp version and the engine fingerprint that
+  produced it.
+- **D-040: three defects the feed shipped with, found by writing the schema that
+  should have existed first.** `date` was not always a date, and one entry reads
+  `first live fleet`, so anything calling `date.fromisoformat` broke on it;
+  `date_iso` is now **null** wherever the ledger has no full day rather than
+  inventing one. A blank subject had passed silently and the very first
+  validation run rejected it ([D-039](FINDINGS.md#d-039)). And there was no
+  version, so nothing could depend on it.
+- **`status_class` refuses rather than defaults.** An unrecognised status raises
+  instead of dropping into an `"other"` bin, because a silent catch-all is how a
+  mis-typed status becomes a finding nobody can filter for. Every
+  default-shaped bug in this ledger has been the flattering one.
+- **D-041: the numeric scorer artifact finally has an id.** `kind: numeric`
+  extracts the FIRST number, which is a trap on a model that shows its working;
+  found live where it scored a model `0.000` against a real accuracy of `0.438`
+  and ranked it LAST in a fleet it was leading. Filed `scoped, not fixed`: the
+  default stays, because `extract: last` is a trap in the other direction, and
+  R16 exists to catch a wrong declaration. **The reason for the entry is worse
+  than the defect** -- the case lived in a source comment and one changelog line
+  for six releases while the README cited it under the sentence "every row is a
+  real finding with a receipt in FINDINGS.md". There was no receipt. It was
+  found by trying to put a finding id next to the claim.
+- **A case good enough to cite in a README is good enough to number**, now a
+  rule in CONTRIBUTING.md.
+- **The README's counts are pinned to the feed.** The footer said "the thirty
+  findings against itself" while the ledger held forty-one, for six releases.
+  Two new tests close the class: one pins the headline counts and the
+  self-audit sentence, one fails if the README cites a finding id that does not
+  exist. Both negative-tested by breaking the README and watching them fire.
+- Schema rejection is negative-tested on seven mutations (blank subject,
+  invented date, renumbered id, unknown bucket, stray field, empty feed,
+  truncated engine hash), each verified to fire rather than assumed to.
+
+482 tests. Trials unchanged at 86/86 and 15/15.
+
 ### v0.51.0 (2026-08-10)
 
 Two more assessments whose outcome is somebody's licence to practise.

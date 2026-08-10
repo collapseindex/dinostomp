@@ -212,9 +212,19 @@ the key, and the command that reproduces it.
 **Scope it honestly.** What the finding does NOT show.
 ```
 
-Then add the row to the index table at the top. A test fails the build if the
-index and the entries disagree, if an id is reused or a series has a gap, or if
-the scorecard's counts stop matching the file.
+Then add the row to the index table at the top, subject included, and run
+`python scripts/index_findings.py` to regenerate the index, the cross-references
+and `findings.json`. A test fails the build if the index and the entries
+disagree, if an id is reused or a series has a gap, if the scorecard's counts
+stop matching the file, or if the regenerated feed violates
+[docs/findings.schema.json](docs/findings.schema.json).
+
+**A case good enough to cite in a README is good enough to number.** The
+numeric-scorer artifact lived in a source comment and one changelog line for six
+releases while the README quoted it as a headline example under the sentence
+"every row is a real finding with a receipt in FINDINGS.md". There was no
+receipt ([D-041](FINDINGS.md#d-041)). If it is worth quoting, it gets an id; if
+it is not worth an id, it does not go in the README.
 
 **Five things that will get an entry sent back**, all of them mistakes made here
 first and recorded in the D series:

@@ -6,9 +6,55 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.51.0 · Apache-2.0 · engine `174eaaaec2ceaa8b` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.52.0 · Apache-2.0 · engine `d9ec4738f87d2154` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
+
+## What it found
+
+The ledger is the product. The tool is the proof, and exists so that none of
+this has to be taken on trust: every `F` below re-derives in seconds, offline,
+for free, from the command in the next section.
+
+**[FINDINGS.md](FINDINGS.md) — 82 entries, all permanent, none deleted.**
+
+| | | |
+|---|--:|---|
+| **F** | 25 | findings in other people's evals |
+| **D** | 41 | defects in dinostomp itself |
+| **N** | 16 | negative results, recorded rather than dropped |
+
+Across **23 benchmarks**, five of them assessments written for people, three of
+those professional licensing examinations:
+
+- MMLU keys "Subtract. 2,396 − 1,709" over `['687', '687', '1,493', '1,695']` — the answer is on the option list twice, so a model that computes it correctly picks the wrong letter half the time ([F-002](FINDINGS.md#f-002))
+- A national pharmacist licensing exam offers the same drug twice in one five-option list, on 16 items ([F-025](FINDINGS.md#f-025))
+- An Iranian driving-licence test keys the longest option 45% of the time, where chance is 25%: you can beat it knowing no road law ([F-024](FINDINGS.md#f-024))
+- A numeric scorer scored a live model `0.000` whose real accuracy was `0.438`, and ranked it last in a fleet it led ([D-041](FINDINGS.md#d-041))
+- Two GSM8K models moved 78→90% and 81→92% on the random seed alone ([F-005](FINDINGS.md#f-005))
+
+**Forty-one of the eighty-two are against this tool**, which is the number to read
+first. A validator that only publishes other people's mistakes is telling you
+which mistakes it is willing to look for. The ledger includes the entry it
+retracted after its own killer control killed it ([N-013](FINDINGS.md#n-013)),
+the loader bug that manufactured a finding about a driving test
+([D-039](FINDINGS.md#d-039)), and a defect in the findings feed itself
+([D-040](FINDINGS.md#d-040)).
+
+The honest ceiling, stated here rather than buried: **one entry was graded by
+somebody outside this repo.** Forty-one self-found defects is still self-grading.
+That number moves when an outsider runs it, not when the total goes up —
+[break it, please](CONTRIBUTING.md#break-it-please).
+
+Machine-readable: **[`findings.json`](findings.json)**, versioned and validated
+against [`docs/findings.schema.json`](docs/findings.schema.json) before it is
+written.
+
+```bash
+jq '.findings[] | select(.series=="F" and .status_class=="confirmed") | .subject' findings.json
+```
+
+## What it is
 
 dinostomp is a **verification layer for AI evaluations**. Not another harness:
 it checks every boundary an eval's evidence crosses, including the ones in
@@ -27,20 +73,16 @@ earlier stage said it was.** Summaries are recomputed from records, verdicts are
 re-scored from recorded text, and the engine hashes itself into its own output.
 
 Fifty-seven checks, each negative-tested to prove it fires, most invisible until
-something breaks.
+something breaks. Each stage above is a place the ledger has a receipt from:
 
-| stage | what goes wrong there | something it caught |
-|---|---|---|
-| **your data** | duplicate items, answers leaking into questions, an item with two correct options | MMLU keys "Subtract. 2,396 − 1,709" over `['687', '687', '1,493', '1,695']` |
-| **your scorer** | a scorer that cannot fail; one that grades format instead of capability | a numeric scorer scored a model `0.000` whose real accuracy was `0.438`, and ranked it last in a fleet it led |
-| **your runs** | truncated answers credited, spend disagreeing with the ledger, a model that stopped reading the question | 5 unfinished GSM8K responses scored correct |
-| **your number** | seed noise read as a result; a ranking that is really about prompt phrasing | two models moved 78→90% and 81→92% on the seed alone |
-| **your claim** | a published claim the evidence cannot support | a pod claiming 80% accuracy and a 20-point win, handed evidence for one model at 75%, goes `BROKEN` |
-| **this tool** | the auditor drifting, and nobody noticing | a `CLEAN` report computed over runs from two different engines |
-
-Every row is a real finding with a receipt in **[FINDINGS.md](FINDINGS.md)**,
-including the last one. A validator that only publishes other people's mistakes
-is telling you which mistakes it is willing to look for.
+| stage | what goes wrong there |
+|---|---|
+| **your data** | duplicate items, answers leaking into questions, an item with two correct options |
+| **your scorer** | a scorer that cannot fail; one that grades format instead of capability |
+| **your runs** | truncated answers credited, spend disagreeing with the ledger, a model that stopped reading the question |
+| **your number** | seed noise read as a result; a ranking that is really about prompt phrasing |
+| **your claim** | a published claim the evidence cannot support: a pod claiming 80% accuracy and a 20-point win, handed evidence for one model at 75%, goes `BROKEN` |
+| **this tool** | the auditor drifting, and nobody noticing: a `CLEAN` report computed over runs from two different engines |
 
 ## Two ways in
 
@@ -312,7 +354,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.51.0
+- uses: collapseindex/dinostomp@v0.52.0
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -386,12 +428,13 @@ the tool names them.
 - **[METHODOLOGY.md](METHODOLOGY.md)** — the fifty-seven checks, the pod format, the philosophy, the self-audit
 - **[SECURITY.md](SECURITY.md)** — pod code, untrusted model output, money, what this does not do
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — the entry fee for a new check is a planted defect, not an argument
+- **[findings.json](findings.json)** — the ledger as data: versioned, validated against [docs/findings.schema.json](docs/findings.schema.json) before it is written
 - **[REFERENCES.md](REFERENCES.md)** — where the borrowed methods come from, what the audited benchmarks are, and what this deliberately does not borrow
 - **[CHANGELOG.md](CHANGELOG.md)** — every release, including the ones that fixed its own flattering bugs
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`174eaaaec2ceaa8b3fe0ba628066aa825e21848b946292fdaac06c8304a287d4`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`d9ec4738f87d215450ef39b50d3db7163e9f1936c50a91eb28e56f2db23ae3c4`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 
@@ -400,7 +443,7 @@ fee for a new check and the rules a patch may not remove. [Apache-2.0](LICENSE).
 
 <sub>Built and maintained by one person, unfunded. If it caught something in your
 eval, [sponsorship](https://github.com/sponsors/collapseindex) buys time to keep
-pointing it at real benchmarks and publishing what it finds, including the thirty
+pointing it at real benchmarks and publishing what it finds, including the forty-one
 findings against itself. Adversarial pods and bug reports are worth more than
 money and are always free:
 [break it, please](CONTRIBUTING.md#break-it-please).</sub>

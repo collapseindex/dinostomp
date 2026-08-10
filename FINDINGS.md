@@ -116,7 +116,9 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-036](#d-036) | dinostomp | told a semicolon-CSV user their columns were badly named | fixed in v0.48.0 |
 | [D-037](#d-037) | dinostomp | the leak check was blind to every numeric-answer dataset | fixed in v0.49.0 |
 | [D-038](#d-038) | dinostomp | announced a `choices` mapping it then silently ignored | fixed in v0.49.1 |
-| [D-039](#d-039) |  | A loader that mis-keyed a whole exam by one, then reported the artifact as a finding | fixed in v0.50.0 |
+| [D-039](#d-039) | dinostomp | A loader that mis-keyed a whole exam by one, then reported the artifact as a finding | fixed in v0.50.0 |
+| [D-040](#d-040) | dinostomp | the findings feed was published for two releases with no schema | fixed in v0.52.0 |
+| [D-041](#d-041) | dinostomp | a numeric scorer default scored a live model 0.000 against a real 0.438, uncited for six releases | scoped, not fixed |
 
 <!-- INDEX:END -->
 
@@ -150,7 +152,7 @@ at fault.
 | `R8` | [N-007](#n-007) |
 | `R13` | [D-006](#d-006) |
 | `R15` | [D-006](#d-006) |
-| `R16` | [D-022](#d-022) |
+| `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
 | `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-020](#f-020), [D-005](#d-005), [D-027](#d-027) |
 | `S2` | [F-004](#f-004), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037) |
@@ -165,18 +167,17 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [N-015](#n-015), [N-002](#n-002), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [N-015](#n-015), [N-002](#n-002), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038) |
+| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | four models | [N-005](#n-005), [N-006](#n-006) |
 | MMLU | [F-002](#f-002), [F-003](#f-003) |
 | SciQ | [F-010](#f-010), [F-013](#f-013) |
-| (unattributed) | [D-039](#d-039) |
 | a judge (qwen3-30b) | [F-014](#f-014) |
 | a RAG agent | [F-017](#f-017) |
 | AQuA-RAT | [F-023](#f-023) |
@@ -2393,6 +2394,93 @@ property of that data.**
 
 ---
 
+### D-040
+**A machine-readable feed published for two releases with no contract, a `date` field that is not always a date, and a silently blank subject**
+`scripts/index_findings.py` · 2026-08-10 · fixed in v0.52.0
+
+`findings.json` shipped as "one record per entry, for anyone who would rather
+query than read 2,000 lines of markdown" and was then treated as a convenience
+dump rather than as an interface. Three consequences, found by writing the
+schema that should have existed first:
+
+**1. `date` is not a date.** One entry is dated `first live fleet`, and two dozen
+carry a month with no day. Anything doing the obvious thing:
+
+```python
+sorted(feed["findings"], key=lambda f: date.fromisoformat(f["date"]))   # raises
+```
+
+breaks on the first entry it meets. The feed now publishes `date_iso`, which is
+**null** whenever the ledger did not carry a full day, alongside
+`date_precision` and the verbatim `date`. A null is the ledger declining to
+claim a precision it has not got. Inventing a day would have made every consumer
+sortable and a quarter of them wrong.
+
+**2. A blank subject passed silently, and the schema caught it on its first
+run.** [D-039](#d-039) reached the index with an empty subject cell, because the
+generator PRESERVES editorial fields (correctly, it must not invent prose) and
+never checked that one was there. The cross-reference filed it under
+`(unattributed)` and said nothing. The very first validation run rejected it:
+
+```
+findings.json violates docs/findings.schema.json at findings/79/subject [D-039]:
+  '' should be non-empty
+```
+
+**3. No version, so no way to depend on it.** A consumer had no signal for
+"this field changed meaning". The feed now carries `schema_version`, the tool
+version and the engine fingerprint that produced it, and the compatibility rule
+is stated in `docs/findings.schema.json` rather than implied: within a major
+version, fields are only added.
+
+**The general shape, which is the point of the entry.** This file argues that a
+published number needs a checkable contract, and then published a data file
+without one for two releases. `status_class` is where that lesson is applied
+hardest: it buckets a free-text status, and an unrecognised status raises
+instead of falling into an `"other"` bin, because a silent catch-all is exactly
+how a mis-typed status becomes a finding nobody can filter for. Every
+default-shaped bug in this ledger has been the flattering one.
+
+---
+
+### D-041
+**The numeric scorer's default scored a live model 0.000 whose real accuracy was 0.438, and the case lived in a source comment instead of this file**
+`scorer-artifact` (R16) · 2026-08-10 · scoped, not fixed
+
+`scorer: {kind: numeric}` extracts the FIRST number in the output. That is the
+conservative reading of "reply with the number", and it is a trap on any model
+that shows its working:
+
+```
+"12*3 = 36, 8*5 = 40, 36+40 = 76"      ->  extracted 12
+```
+
+Found live, in a real fleet, where it scored one model **0.000** against a real
+accuracy of **0.438** and ranked it LAST in a fleet it was actually leading.
+Nothing about the model was wrong. The eval was reading the first token of its
+reasoning as its answer.
+
+**Why this is `scoped, not fixed`.** The default stays `first`, because
+`extract: last` is a trap in the other direction on any model that restates the
+question or appends a check. There is no default that is right for both, so the
+pod declares one and R16 exists to catch the case where the declaration is
+wrong: it fires when failed answers contain the reference string, which is what
+a scorer artifact looks like from the outside. `extract: last` is the knob.
+
+**The reason this entry exists at all is worse than the defect.** This case was
+documented in a comment in `scorers.py` and in one CHANGELOG line, and the
+README cited it as a headline example under the sentence *"Every row is a real
+finding with a receipt in FINDINGS.md."* There was no receipt. It was found
+while restructuring the README around the ledger, by trying to put a finding id
+next to the claim and discovering there was none to put.
+
+A ledger only works if things go INTO it. The rule that follows, and is now in
+[CONTRIBUTING.md](CONTRIBUTING.md): **a case good enough to cite in a README is
+good enough to number.** If it is worth quoting, it gets an id, and if it is not
+worth an id it does not go in the README.
+
+---
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -2410,9 +2498,9 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **16** |
-| defects in dinostomp itself (**D**) | **39** |
+| defects in dinostomp itself (**D**) | **41** |
 
-Thirty-nine to twenty-five. That ratio is the useful number to publish, and it is the
+Forty-one to twenty-five. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

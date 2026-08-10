@@ -353,3 +353,158 @@ def test_the_findings_feed_matches_the_ledger():
         assert feed["counts"][series] == n, f"feed count for {series} is wrong"
         assert f"| **{n}** |" in doc, (
             f"the scorecard does not state {n} for series {series}")
+
+
+# --- findings.json is a published contract, so it gets held to one ------------
+
+
+def _feed():
+    import json as _json
+
+    return _json.loads((REPO / "findings.json").read_text(encoding="utf-8"))
+
+
+def _schema():
+    import json as _json
+
+    return _json.loads((REPO / "docs" / "findings.schema.json").read_text(encoding="utf-8"))
+
+
+def test_the_feed_validates_against_its_published_schema():
+    """The generator validates before writing, so this only fails if the feed on
+    disk was edited by hand or the schema was tightened without regenerating."""
+    import jsonschema
+
+    jsonschema.validate(_feed(), _schema())
+
+
+def test_the_feed_schema_actually_rejects_things():
+    """A schema that passes everything is a comment.
+
+    Seven mutations, the first two modelling defects the feed actually shipped
+    with (D-040): a blank subject, and a date at a precision the ledger has not
+    got. Every one of them is verified to FIRE, because a negative test that
+    silently passes is the flattering kind.
+    """
+    import copy
+
+    import jsonschema
+    import pytest
+
+    schema = _schema()
+    for label, mutate in [
+        ("a blank subject", lambda f: f["findings"][0].update(subject="")),
+        ("an invented date", lambda f: f["findings"][0].update(date_iso="not-a-date")),
+        ("a renumbered id", lambda f: f["findings"][0].update(id="F-1")),
+        ("an unknown status bucket", lambda f: f["findings"][0].update(status_class="probably")),
+        ("a stray field", lambda f: f["findings"][0].update(severity="high")),
+        ("no findings at all", lambda f: f["findings"].clear()),
+        ("a truncated engine hash", lambda f: f["tool"].update(engine="deadbeef")),
+    ]:
+        broken = copy.deepcopy(_feed())
+        mutate(broken)
+        try:
+            jsonschema.validate(broken, schema)
+        except jsonschema.ValidationError:
+            continue
+        pytest.fail(f"the schema accepted a feed with {label}")
+
+
+def test_an_unrecognised_status_is_an_error_not_a_bucket():
+    """A silent "other" bin is how a mis-typed status becomes a finding nobody
+    can filter for. This asserts the generator refuses rather than defaults."""
+    import importlib.util
+    import sys as _sys
+
+    import pytest
+
+    spec = importlib.util.spec_from_file_location(
+        "_idx", REPO / "scripts" / "index_findings.py")
+    mod = importlib.util.module_from_spec(spec)
+    _sys.modules["_idx"] = mod
+    spec.loader.exec_module(mod)
+
+    assert mod.status_class("confirmed, underpowered") == "confirmed"
+    assert mod.status_class("fixed in v0.50.0") == "fixed"
+    assert mod.status_class("**WITHDRAWN**") == "withdrawn"
+    with pytest.raises(SystemExit) as exc:
+        mod.status_class("probably fine")
+    assert "not defaulted on purpose" in str(exc.value)
+
+
+def test_the_feed_never_invents_a_date():
+    """One ledger entry is dated "first live fleet". The feed must report null
+    for it rather than a day nobody wrote down."""
+    import re as _re
+
+    for f in _feed()["findings"]:
+        full_day = bool(_re.fullmatch(r"\d{4}-\d{2}-\d{2}", f["date"]))
+        assert (f["date_iso"] is not None) == full_day, (
+            f"{f['id']}: date {f['date']!r} and date_iso {f['date_iso']!r} disagree")
+        assert f["date_precision"] == ("day" if full_day else
+                                       "month" if _re.fullmatch(r"\d{4}-\d{2}", f["date"])
+                                       else "none")
+
+
+def test_the_feed_names_the_engine_that_produced_it():
+    """A findings feed is a result, and results in this project quote the engine
+    fingerprint. A feed carrying a stale version is a citation to code that no
+    longer exists."""
+    from dinostomp import __version__
+    from dinostomp.fingerprint import engine_fingerprint
+
+    tool = _feed()["tool"]
+    assert tool["version"] == __version__, (
+        "findings.json states a different version than the package; "
+        "run `python scripts/index_findings.py`")
+    assert tool["engine"] == engine_fingerprint()
+
+
+def test_every_status_class_is_documented_in_the_feed():
+    """The vocabulary travels with the data, so a consumer never guesses."""
+    feed = _feed()
+    used = {f["status_class"] for f in feed["findings"]}
+    assert used <= set(feed["status_classes"]), (
+        f"undocumented status_class values: {sorted(used - set(feed['status_classes']))}")
+
+
+def test_the_readme_headline_counts_match_the_ledger():
+    """The README now LEADS with the findings, which makes its counts a claim.
+
+    The footer said "the thirty findings against itself" while the ledger held
+    forty-one, for six releases, because the two were edited by different
+    passes. Pinning them to the feed removes the class instead of policing it.
+    """
+    import re as _re
+
+    feed = _feed()
+    counts, total = feed["counts"], feed["counts"]["total"]
+    # README.md specifically, NOT the concatenated DOCS: the scorecard in
+    # FINDINGS.md states the same numbers in a different shape, and a test that
+    # accepted either would pass on a README whose counts had gone stale.
+    flat = " ".join((REPO / "README.md").read_text(encoding="utf-8").split())
+    assert f"**[FINDINGS.md](FINDINGS.md) — {total} entries" in flat, (
+        f"the README does not state {total} entries")
+    for series in "FDN":
+        assert f"| **{series}** | {counts[series]} |" in flat, (
+            f"the README's {series} row is not {counts[series]}")
+    # The "N of M are against this tool" sentence, written in words.
+    words = {40: "Forty", 41: "Forty-one", 42: "Forty-two", 43: "Forty-three",
+             80: "eighty", 81: "eighty-one", 82: "eighty-two", 83: "eighty-three"}
+    if counts["D"] in words and total in words:
+        assert f"{words[counts['D']]} of the {words[total]} are against this tool" in flat, (
+            f"the self-audit sentence is not {words[counts['D']]} of {words[total]}")
+
+
+def test_every_finding_the_readme_cites_exists_and_says_what_it_claims():
+    """The README cites finding ids by hand. Two of them pointed at the wrong
+    entry within minutes of being written, and a third pointed at a finding that
+    did not exist at all (D-041)."""
+    import re as _re
+
+    ids = {f["id"] for f in _feed()["findings"]}
+    readme = (REPO / "README.md").read_text(encoding="utf-8")
+    cited = set(_re.findall(r"\(FINDINGS\.md#([fdn]-\d{3})\)", readme))
+    assert cited, "the README cites no findings"
+    dead = {c for c in cited if c.upper() not in ids}
+    assert not dead, f"the README cites findings that do not exist: {sorted(dead)}"

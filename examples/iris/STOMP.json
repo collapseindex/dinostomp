@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.51.0",
+  "version": "0.52.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -721,11 +721,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 6 run(s) were produced by a different engine than the one auditing them (now 174eaaaec2ceaa8b); re-run to get numbers this report can stand behind",
+      "detail": "0 of 6 run(s) were produced by a different engine than the one auditing them (now d9ec4738f87d2154); re-run to get numbers this report can stand behind",
       "witnesses": 6,
       "evidence": {
         "engines": {
-          "174eaaaec2ceaa8b": 6
+          "d9ec4738f87d2154": 6
         }
       }
     },
@@ -985,7 +985,7 @@
   },
   "runs": [
     {
-      "run_file": "20260810_031320_iris-species_dry-alpha_n149_s42.jsonl",
+      "run_file": "20260810_033524_iris-species_dry-alpha_n149_s42.jsonl",
       "model": "dry-alpha",
       "model_reported": "dry-alpha",
       "provider": "dry",
@@ -997,7 +997,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_031320_iris-species_dry-bravo_n149_s42.jsonl",
+      "run_file": "20260810_033525_iris-species_dry-bravo_n149_s42.jsonl",
       "model": "dry-bravo",
       "model_reported": "dry-bravo",
       "provider": "dry",
@@ -1009,7 +1009,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_031320_iris-species_dry-charlie_n149_s42.jsonl",
+      "run_file": "20260810_033525_iris-species_dry-charlie_n149_s42.jsonl",
       "model": "dry-charlie",
       "model_reported": "dry-charlie",
       "provider": "dry",
@@ -1021,7 +1021,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_031320_iris-species_dry-delta_n149_s42.jsonl",
+      "run_file": "20260810_033525_iris-species_dry-delta_n149_s42.jsonl",
       "model": "dry-delta",
       "model_reported": "dry-delta",
       "provider": "dry",
@@ -1033,7 +1033,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_031320_iris-species_dry-echo_n149_s42.jsonl",
+      "run_file": "20260810_033525_iris-species_dry-echo_n149_s42.jsonl",
       "model": "dry-echo",
       "model_reported": "dry-echo",
       "provider": "dry",
@@ -1045,7 +1045,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_031321_iris-species_dry-foxtrot_n149_s42.jsonl",
+      "run_file": "20260810_033525_iris-species_dry-foxtrot_n149_s42.jsonl",
       "model": "dry-foxtrot",
       "model_reported": "dry-foxtrot",
       "provider": "dry",
