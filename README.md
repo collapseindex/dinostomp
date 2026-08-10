@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.56.0 · Apache-2.0 · engine `c3b484cca480ef68` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.57.0 · Apache-2.0 · engine `9e3b8f138082fd93` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -228,7 +228,7 @@ judge.
 purpose.** dinostomp finds none of them:
 
 ```
-DINOCORPUS dev: dinostomp 0.56.0
+DINOCORPUS dev: dinostomp 0.57.0
 
   recall, classes it has a check for   100.0% of 72
   recall, classes it does NOT            4.9% of 81
@@ -249,9 +249,15 @@ commitment** to them so a revealed answer key can be proved unedited. Held-back
 defect classes are counted in every manifest and never named, which is the only
 defence against someone reading the taxonomy and writing one checker per class.
 
+Two splits are live: `dev` with labels, and `heldout-2026-08` (400 instances)
+whose labels are withheld behind a published commitment. Scores are
+**[corpus/LEADERBOARD.md](corpus/LEADERBOARD.md)**, never sorted by a single
+number, because a leaderboard ranked on recall rewards a detector that flags
+everything.
+
 The first scored run found three defects in the corpus and one in the battery
-([D-045](FINDINGS.md#d-045), [D-046](FINDINGS.md#d-046)). Details and the
-submission format: **[corpus/README.md](corpus/README.md)**.
+([D-045](FINDINGS.md#d-045), [D-046](FINDINGS.md#d-046)). Details, the split
+registry and the submission format: **[corpus/README.md](corpus/README.md)**.
 
 ## The report is an evaluation report, not just an audit
 
@@ -490,7 +496,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.56.0
+- uses: collapseindex/dinostomp@v0.57.0
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -570,7 +576,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`c3b484cca480ef688d43454de922afbf51336d0bba02b7d0d37e340a06a6cb39`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`9e3b8f138082fd935889f70acb362aba0ed61c59f68c74a54cfb530e0d29093e`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

@@ -16,7 +16,7 @@ without a judge.
 ## The number that matters
 
 ```
-DINOCORPUS dev: dinostomp 0.56.0
+DINOCORPUS dev: dinostomp 0.57.0
 
   recall, classes it has a check for   100.0% of 72
   recall, classes it does NOT            4.9% of 81
@@ -33,6 +33,10 @@ The blind-spot classes are not exotic. Two of them, *the keyed answer is simply
 wrong* and *two options are both correct*, are the most common defects in the
 benchmark-error literature, and neither leaves a structural trace that any
 single-file linter can see. Finding them needs a fleet of solvers, or a human.
+
+Scored on the withheld split (`heldout-2026-08`, 400 instances) the shape holds:
+100.0% covered, 0.0% blind under strict scoring, 5.0% false alarms. Current
+numbers for every detector: **[LEADERBOARD.md](LEADERBOARD.md)**.
 
 ## Why the taxonomy is not the check registry
 
@@ -172,5 +176,22 @@ rather than quietly omitted: `train-test-overlap`, `near-duplicate-asset`,
  "dev-00009": {"detected": false}}
 ```
 
-Instances you omit count as not detected, so a partial submission is scored on
-the whole corpus rather than on the part you chose to answer.
+- `detected` is required and must be a boolean. Absent is indistinguishable from
+  false, so it has to be explicit.
+- `checks` names whatever your tool calls the rule that fired. For a class with
+  an expected check, that check must be the one named.
+- `located` names the ITEM ids you flagged. It is what strict scoring reads: a
+  finding that names a different item has not found the planted defect.
+- Instances you omit count as not detected, so a partial submission is scored on
+  the whole corpus rather than on the part you chose to answer. The row says how
+  many you answered.
+
+`score.py` **refuses** a malformed submission rather than scoring it. An unknown
+instance id and a missing `detected` look exactly like "found nothing", and
+publishing a 0% about somebody's tool because of a typo is the worst thing this
+corpus could do.
+
+**Open an issue** with the [corpus submission
+template](../.github/ISSUE_TEMPLATE/corpus-submission.md). Your number is
+published as measured, and if the corpus turns out to be wrong it goes in
+FINDINGS.md as a defect in the corpus. Three already are (D-045).

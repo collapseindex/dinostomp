@@ -34,11 +34,16 @@ for development, and it is no longer evidence.
 
 | split | released | instances | status | labels_sha256 | notes |
 |---|---|---:|---|---|---|
-| `dev-v1` | 2026-08-10 | 204 | **public** | see `instances/dev/MANIFEST.json` | labels ship; tune against this freely |
+| `dev-v1` | 2026-08-10 | 204 | **public** | `021a18f2265b7801...` | labels ship; tune against this freely |
+| `heldout-2026-08` | 2026-08-10 | 400 | **withheld** | `357ce1610cf93b8d...` | labels not published; 100 clean, 162 blind-spot |
 
-No withheld split has been released yet. When one is, it lands here on the day
-it is generated, with its commitment, and before any score is computed against
-it.
+The full commitment for each split is in its own `MANIFEST.json`. Both rows were
+written before any submission was scored against them.
+
+`heldout-2026-08` carries **0 held-back classes**, because `holdback.py` does
+not exist yet. That is stated rather than implied: until it does, the
+taxonomy-overfitting defence is documented and not armed, and a submitter who
+writes one checker per published class can still score well on this split.
 
 ## Releasing a withheld split
 

@@ -63,6 +63,12 @@ benchmarks/*/data/raw/
 corpus/instances/*/labels.WITHHELD.jsonl
 corpus/holdback.py
 
+# Local working notes. Never committed: they are for one person's memory, not
+# for the repo, and a notes file that gets committed becomes documentation
+# nobody agreed to maintain.
+NOTES.local.md
+*.local.md
+
 # Judge verdict caches: reproducible by re-running validate.py with a key,
 # and not evidence anybody should trust without re-deriving.
 extensions/*/validation-cache*.json

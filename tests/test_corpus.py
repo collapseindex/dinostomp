@@ -141,18 +141,25 @@ def test_an_omitted_instance_counts_as_not_detected():
     assert card["recall_overall"] == 0.0
 
 
-def test_the_published_scorecard_is_current():
-    """corpus/scorecard-dinostomp.json is quoted in the corpus README, so it has
-    to be what the current battery actually scores."""
-    path = CORPUS / "scorecard-dinostomp.json"
-    assert path.is_file(), "no published scorecard"
-    card = json.loads(path.read_text(encoding="utf-8"))
+def test_the_published_scorecards_are_current():
+    """The scorecards are quoted in the corpus README and drive the leaderboard,
+    so they have to be what the current battery actually scores."""
     from dinostomp import __version__
 
-    assert card["detector"] == f"dinostomp {__version__}", (
-        f"scorecard is from {card['detector']}; re-run `python corpus/score.py "
-        f"--json corpus/scorecard-dinostomp.json`")
-    assert card["recall_blind_spot_strict"] is not None
+    cards = sorted((CORPUS / "scorecards").glob("*.json"))
+    assert cards, "no published scorecard"
+    mine = [json.loads(p.read_text(encoding="utf-8")) for p in cards
+            if json.loads(p.read_text(encoding="utf-8"))["detector"].startswith("dinostomp")]
+    assert mine, "dinostomp does not score itself, so its own number is not published"
+    for card in mine:
+        assert card["detector"] == f"dinostomp {__version__}", (
+            f"scorecard is from {card['detector']}; re-run "
+            f"`python corpus/score.py --split {card['split']} "
+            f"--json corpus/scorecards/...json`")
+        assert card["recall_blind_spot_strict"] is not None
+        assert card.get("labels_sha256"), (
+            "the scorecard does not carry the split's label commitment, so the number "
+            "cannot be tied to the split it was measured on")
 
 
 # --- withheld splits: the nonce, and the commitment --------------------------
@@ -285,3 +292,82 @@ def test_the_split_registry_lists_every_split_on_disk():
             continue
         assert folder.name.split("-")[0] in registry, (
             f"split {folder.name!r} is on disk but not in SPLITS.md")
+
+
+# --- the scorekeeper's workflow ----------------------------------------------
+
+
+def test_a_malformed_submission_is_refused_not_scored():
+    """The worst thing this corpus could do is publish 0.0% about somebody's
+    tool because of a typo. An unknown id and a missing `detected` both look
+    exactly like "found nothing"."""
+    import score
+
+    labels = _labels()[:5]
+    for bad in ([],
+                {"other-00001": {"detected": True}},
+                {labels[0]["id"]: {"checks": ["x"]}},
+                {labels[0]["id"]: {"detected": "yes"}},
+                {labels[0]["id"]: {"detected": True, "checks": "S5"}}):
+        assert score.validate_submission(bad, labels), f"accepted {bad!r}"
+    ok = {labels[0]["id"]: {"detected": True, "checks": ["S5"], "located": ["x"]}}
+    assert score.validate_submission(ok, labels) == [], "rejected a valid partial submission"
+
+
+def test_every_split_on_disk_has_a_commitment_and_a_registry_row():
+    registry = (CORPUS / "SPLITS.md").read_text(encoding="utf-8")
+    for folder in sorted((CORPUS / "instances").iterdir()):
+        if not folder.is_dir():
+            continue
+        manifest = json.loads((folder / "MANIFEST.json").read_text(encoding="utf-8"))
+        assert len(manifest.get("labels_sha256", "")) == 64, f"{folder.name} commits to nothing"
+        assert folder.name in registry or folder.name.split("-")[0] in registry, (
+            f"{folder.name} is scored but not in SPLITS.md, so its number cannot be checked later")
+
+
+def test_a_withheld_split_does_not_ship_its_answer_key():
+    """The gitignore rule is the only thing between labels.WITHHELD.jsonl and a
+    push. This asserts the rule actually covers it."""
+    import subprocess
+
+    for folder in sorted((CORPUS / "instances").iterdir()):
+        if not folder.is_dir():
+            continue
+        manifest = json.loads((folder / "MANIFEST.json").read_text(encoding="utf-8"))
+        if not manifest.get("withheld"):
+            continue
+        key = folder / "labels.WITHHELD.jsonl"
+        assert key.is_file(), f"{folder.name} is withheld but has no answer key on disk"
+        proc = subprocess.run(["git", "check-ignore", str(key)],
+                              capture_output=True, text=True, cwd=str(REPO))
+        assert proc.returncode == 0, (
+            f"{key} is NOT gitignored. One `git add -A` publishes the answer key.")
+        assert not (folder / "labels.jsonl").is_file(), (
+            f"{folder.name} is withheld but also ships public labels")
+
+
+def test_the_leaderboard_is_generated_and_current():
+    import subprocess
+
+    proc = subprocess.run([sys.executable, str(CORPUS / "leaderboard.py"), "--check"],
+                          capture_output=True, text=True, cwd=str(REPO))
+    assert proc.returncode == 0, (proc.stdout + proc.stderr +
+                                  "\nrun `python corpus/leaderboard.py`")
+
+
+def test_the_leaderboard_never_sorts_by_score():
+    """A leaderboard sorted on recall rewards a detector that flags everything.
+    Rows are ordered by split then name, and every row carries the false-alarm
+    rate beside the recall or it does not appear."""
+    source = (CORPUS / "leaderboard.py").read_text(encoding="utf-8")
+    assert 'key=lambda c: (c.get("split", ""), c.get("detector", ""))' in source
+    board = (CORPUS / "LEADERBOARD.md").read_text(encoding="utf-8")
+    assert "false alarms" in board and "blind (strict)" in board
+
+
+def test_the_submission_template_exists_and_points_at_the_format():
+    template = REPO / ".github" / "ISSUE_TEMPLATE" / "corpus-submission.md"
+    assert template.is_file(), "there is no way for anyone to submit"
+    text = template.read_text(encoding="utf-8")
+    assert "corpus/README.md#submitting-a-detector" in text
+    assert "split" in text.lower(), "a submission without a split id cannot be scored"

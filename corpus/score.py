@@ -108,6 +108,50 @@ def run_dinostomp(split: str, labels: list[dict]) -> dict[str, dict]:
     return out
 
 
+def validate_submission(answers, labels: list[dict]) -> list[str]:
+    """Problems with a submission, worst first. Empty means it can be scored.
+
+    A malformed submission must never be SCORED. Unknown instance ids and
+    missing `detected` flags both look exactly like "detected nothing", so a
+    typo in a key, a wrong split, or a list where an object was expected all
+    quietly produce 0.0% and a leaderboard row that says a tool found nothing.
+    Publishing that number about somebody else's work would be the worst thing
+    this corpus could do.
+
+    Coverage is a WARNING, not an error: a partial submission is legitimate and
+    is scored across the whole corpus (see the module docstring). It is reported
+    so the row can say so.
+    """
+    problems = []
+    if not isinstance(answers, dict):
+        return [f"submission is a {type(answers).__name__}, expected an object keyed by "
+                f"instance id"]
+    known = {x["id"] for x in labels}
+    unknown = sorted(set(answers) - known)
+    if unknown:
+        problems.append(
+            f"{len(unknown)} instance id(s) are not in this split, e.g. {unknown[:3]}. "
+            f"Wrong --split, or ids from a different corpus version?")
+    if not (set(answers) & known):
+        problems.append("no instance id in the submission belongs to this split at all")
+    for key, value in list(answers.items())[:2000]:
+        if not isinstance(value, dict):
+            problems.append(f"{key}: expected an object, got {type(value).__name__}")
+            break
+        if "detected" not in value:
+            problems.append(f"{key}: no `detected` field. Absent is indistinguishable from "
+                            f"false, so it has to be explicit.")
+            break
+        if not isinstance(value["detected"], bool):
+            problems.append(f"{key}: `detected` is {value['detected']!r}, expected true or false")
+            break
+        for field in ("checks", "located"):
+            if field in value and not isinstance(value[field], list):
+                problems.append(f"{key}: `{field}` must be a list of strings")
+                break
+    return problems
+
+
 def judge(label: dict, answer: dict, strict: bool = False) -> bool:
     """Did the detector catch THIS instance?
 
@@ -178,6 +222,17 @@ def main() -> int:
     if args.submission:
         answers = json.loads(Path(args.submission).read_text(encoding="utf-8"))
         who = Path(args.submission).stem
+        problems = validate_submission(answers, labels)
+        if problems:
+            raise SystemExit("\n".join(
+                [f"refusing to score {args.submission}:"]
+                + [f"  - {p}" for p in problems]
+                + ["", "A malformed submission scores as all-misses, which would publish 0.0% "
+                       "about somebody's tool because of a typo. Fix the file and re-run."]))
+        answered = len(set(answers) & {x["id"] for x in labels})
+        if answered < len(labels):
+            print(f"  partial submission: {answered} of {len(labels)} instances answered; "
+                  f"the rest count as not detected", file=sys.stderr)
     else:
         print(f"scoring dinostomp on {len(labels)} instances ...", file=sys.stderr)
         answers = run_dinostomp(args.split, labels)
@@ -187,6 +242,14 @@ def main() -> int:
     card = score(labels, answers)
     card["detector"] = who
     card["split"] = args.split
+    card["answered"] = len(set(answers) & {x["id"] for x in labels})
+    manifest_path = HERE / "instances" / args.split / "MANIFEST.json"
+    if manifest_path.is_file():
+        # The commitment travels WITH the score. A number quoted without the
+        # split it was measured on, and the labels hash that split committed to,
+        # is a number nobody can check later.
+        card["labels_sha256"] = json.loads(
+            manifest_path.read_text(encoding="utf-8")).get("labels_sha256")
 
     print(f"\nDINOCORPUS {args.split}: {who}\n")
     print(f"  recall, classes it has a check for   {card['recall_covered']:.1%} "

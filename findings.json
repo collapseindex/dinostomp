@@ -5,8 +5,8 @@
   "schema": "docs/findings.schema.json",
   "tool": {
     "name": "dinostomp",
-    "version": "0.56.0",
-    "engine": "c3b484cca480ef688d43454de922afbf51336d0bba02b7d0d37e340a06a6cb39"
+    "version": "0.57.0",
+    "engine": "9e3b8f138082fd935889f70acb362aba0ed61c59f68c74a54cfb530e0d29093e"
   },
   "counts": {
     "F": 25,
