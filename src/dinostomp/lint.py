@@ -307,6 +307,13 @@ THRESHOLD_PROVENANCE = {
     "template_swing_min": ("judgment", "same practical floor, for instruction framing"),
     "candidate_list_min": ("judgment", "3 other answer-space values before a question counts as "
                                        "offering a candidate list"),
+    "position_margin": ("calibrated", "measured against clean data by dinocorpus: the margin is "
+                        "ABSOLUTE and applied to each of k positions with no multiplicity "
+                        "correction, so on clean 4-option data a dataset trips S3 by chance 16.3% "
+                        "of the time at 20 items, 8.7% at 24, 3.3% at 30 and 0.4% at 50. "
+                        "min_choice_items=20 admits the noisiest end of that. Not retuned on one "
+                        "measurement; S3 warns and never gates, and the warning now states the "
+                        "rate at the size it fired on. Full curve: D-046."),
     "near_dup_bits": ("calibrated", "5 of 64 bits is conventional in the perceptual-hash "
                       "literature, and is now MEASURED against a human annotation: on ciFAIR's "
                       "hand-labelled CIFAR-10 duplicates it recovers 28.1% of them (70 of 249) "
@@ -946,11 +953,20 @@ def _item_checks(rep: Reporter, items: list[dict]) -> None:
     n_keyed = len(keyed)
     excess_by_pos = {p: (pos_counts.get(p, 0) - exp_counts.get(p, 0.0)) / n_keyed for p in exp_counts}
     worst_pos, worst_excess = max(excess_by_pos.items(), key=lambda kv: kv[1])
+    # A reader deciding what to do about a position-bias warning needs to know how
+    # often clean data produces one at THIS size. Measured by dinocorpus (D-046):
+    # the margin is absolute and unadjusted for the k positions it is tried
+    # against, so small sets warn by chance at a rate worth stating out loud.
+    chance_rate = _s3_chance_rate(n_keyed, k)
+    caveat = (f"; at {n_keyed} items a dataset with no position bias at all trips this "
+              f"about {chance_rate:.0%} of the time, so read the counts before acting"
+              if chance_rate >= 0.03 else "")
     rep.check(
         "S3", worst_excess < THRESHOLDS["position_margin"],
         f"gold overshoots position {worst_pos} by {worst_excess:+.0%} over its per-item expectation "
-        f"({pos_counts.get(worst_pos, 0)} of {n_keyed})",
-        n=n_keyed, evidence={"position": worst_pos, "excess": round(worst_excess, 4)},
+        f"({pos_counts.get(worst_pos, 0)} of {n_keyed}){caveat}",
+        n=n_keyed, evidence={"position": worst_pos, "excess": round(worst_excess, 4),
+                             "chance_rate_at_this_n": round(chance_rate, 4)},
     )
     lexcess = (longest - exp_longest) / n_keyed
     rep.check(
@@ -961,6 +977,29 @@ def _item_checks(rep: Reporter, items: list[dict]) -> None:
 
 
 # --------------------------------------------------------------------------- runs
+
+
+def _s3_chance_rate(n: int, k: int) -> float:
+    """How often clean k-option data of this size trips S3 by chance.
+
+    Analytic, not simulated, so the report costs nothing to produce it: the
+    per-position count is Binomial(n, 1/k), the check trips if ANY of the k
+    positions clears the absolute margin, and the positions are treated as
+    independent. That last step overstates slightly (the counts sum to n and so
+    are weakly negatively correlated), which is the conservative direction for a
+    caveat: it never understates the chance of a false alarm.
+    """
+    from math import comb
+
+    if n <= 0 or k <= 0:
+        return 0.0
+    threshold = n / k + THRESHOLDS["position_margin"] * n
+    need = int(threshold) + (0 if threshold == int(threshold) else 1)
+    if need > n:
+        return 0.0
+    p = 1.0 / k
+    one = sum(comb(n, x) * (p ** x) * ((1 - p) ** (n - x)) for x in range(need, n + 1))
+    return 1.0 - (1.0 - one) ** k
 
 
 def _shortcut_check(rep: Reporter, keyed: list[dict]) -> None:

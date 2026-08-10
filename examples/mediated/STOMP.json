@@ -1,13 +1,13 @@
 {
   "tool": "dinostomp",
-  "version": "0.54.0",
+  "version": "0.55.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
       "value": 0.2,
       "source": "default",
-      "provenance": "judgment",
-      "basis": "author judgment; no derivation or calibration on record"
+      "provenance": "calibrated",
+      "basis": "measured against clean data by dinocorpus: the margin is ABSOLUTE and applied to each of k positions with no multiplicity correction, so on clean 4-option data a dataset trips S3 by chance 16.3% of the time at 20 items, 8.7% at 24, 3.3% at 30 and 0.4% at 50. min_choice_items=20 admits the noisiest end of that. Not retuned on one measurement; S3 warns and never gates, and the warning now states the rate at the size it fired on. Full curve: D-046."
     },
     "length_margin": {
       "value": 0.1,
@@ -760,11 +760,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 3 run(s) were produced by a different engine than the one auditing them (now f55e58da3a42578d); re-run to get numbers this report can stand behind",
+      "detail": "0 of 3 run(s) were produced by a different engine than the one auditing them (now 0a23c152273b7922); re-run to get numbers this report can stand behind",
       "witnesses": 3,
       "evidence": {
         "engines": {
-          "f55e58da3a42578d": 3
+          "0a23c152273b7922": 3
         }
       }
     },
@@ -1048,7 +1048,7 @@
   },
   "runs": [
     {
-      "run_file": "20260810_082456_mediated-grounding_greedy_n24_s7.jsonl",
+      "run_file": "20260810_085723_mediated-grounding_greedy_n24_s7.jsonl",
       "model": "greedy",
       "model_reported": "greedy",
       "provider": "mediated",
@@ -1060,7 +1060,7 @@
       "trajectory_steps": 72
     },
     {
-      "run_file": "20260810_082456_mediated-grounding_grounded_n24_s7.jsonl",
+      "run_file": "20260810_085723_mediated-grounding_grounded_n24_s7.jsonl",
       "model": "grounded",
       "model_reported": "grounded",
       "provider": "mediated",
@@ -1072,7 +1072,7 @@
       "trajectory_steps": 24
     },
     {
-      "run_file": "20260810_082456_mediated-grounding_oneshot_n24_s7.jsonl",
+      "run_file": "20260810_085723_mediated-grounding_oneshot_n24_s7.jsonl",
       "model": "oneshot",
       "model_reported": "oneshot",
       "provider": "mediated",

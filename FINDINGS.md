@@ -123,6 +123,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-043](#d-043) | dinostomp | S15's false-positive class: images sharing one gradient direction all hash alike | scoped, documented, not fixed |
 | [N-017](#n-017) | CIFAR-10 / ciFAIR | 28% recall against a human duplicate annotation; byte-level checks get 0% | measured |
 | [D-044](#d-044) | dinostomp | the asset-path guard asked the local OS what absolute means, and got two answers | fixed in v0.53.1 |
+| [D-045](#d-045) | dinocorpus | the corpus's first scored run found three defects in the corpus | fixed in v0.55.0 |
+| [D-046](#d-046) | dinostomp | S3 warns on 1 clean dataset in 6 at the size its own rule admits | measured, scoped, not retuned |
 
 <!-- INDEX:END -->
 
@@ -160,7 +162,7 @@ at fault.
 | `R20` | [N-008](#n-008) |
 | `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-020](#f-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
 | `S2` | [F-004](#f-004), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037) |
-| `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016) |
+| `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-012](#n-012), [F-025](#f-025) |
 | `S7` | [F-020](#f-020), [D-005](#d-005), [D-042](#d-042) |
@@ -173,13 +175,13 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [N-015](#n-015), [N-002](#n-002), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [N-015](#n-015), [N-002](#n-002), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044) |
+| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | four models | [N-005](#n-005), [N-006](#n-006) |
 | MMLU | [F-002](#f-002), [F-003](#f-003) |
@@ -190,6 +192,7 @@ at fault.
 | ARC, OpenBookQA, HellaSwag, WinoGrande | [N-003](#n-003) |
 | CIFAR-10 / ciFAIR | [N-017](#n-017) |
 | CommonsenseQA | [F-008](#f-008) |
+| dinocorpus | [D-045](#d-045) |
 | DROP | [F-020](#f-020) |
 | four small models | [F-015](#f-015) |
 | HellaSwag, ARC, MMLU | [N-001](#n-001) |
@@ -2692,6 +2695,97 @@ here, it is the only instrument.
 
 ---
 
+### D-045
+**The corpus's first scored run found three defects in the corpus and none in the battery**
+`corpus/generate.py`, `corpus/basepool.py` · 2026-08-10 · fixed in v0.55.0
+
+`corpus/` is a benchmark for detectors of broken evals: 204 instances, each a
+small dataset with exactly one planted defect. Scoring dinostomp on it the first
+time produced three numbers that all turned out to be about the generator.
+
+**1. The clean pool was not clean.** 20 of 51 instances labelled CLEAN were
+flagged by `position-bias` (S3), and S3 was right on every one. Arithmetic
+options were sorted numerically and the distractors straddle the answer, so the
+gold landed in a middle slot far more often than chance:
+
+```
+gold overshoots position 2 by +21% over its per-item expectation (11 of 24)
+```
+
+A control arm with a real defect in it makes every false-alarm number
+meaningless, and the false-alarm number is half of what this corpus reports.
+
+**2. A defect planted where the check cannot look.** `answer-leak` scored 0%
+recall. S2 is `n/a` on multiple-choice items ON PURPOSE, because an option list
+already names every candidate answer and treating that as a leak is a
+false-positive machine. The planter appended the answer to a choice item and
+then labelled S2 as the check that should catch it. Planted into a free-form
+item, recall is 100%.
+
+**3. A shortcut that was not a shortcut.** `surface-shortcut` scored 0%. The
+planter wrote `[orrin]` into the stem and `orrin` into the gold option; S9
+tokenises on whitespace WITHOUT stripping punctuation, so `[orrin]` and `orrin`
+never matched. That rule is deliberate and measured: stripping punctuation costs
+75 extra false positives on MMLU-Redux for 2 extra catches. The generator was
+what had to change.
+
+**Every one of the three was in the direction that makes the battery look
+worse**, which is worth recording precisely because it is the unusual direction.
+The standing pattern in this file is that a measurement error flatters whoever
+made it ([D-004](#d-004), [D-008](#d-008), [D-033](#d-033) and the rest). A new
+instrument scoring its author's tool has the opposite incentive, and got the
+opposite bias. The lesson generalises to anyone submitting a detector here: **the
+first run of a new instrument measures the instrument.**
+
+---
+
+### D-046
+**S3 warns on one clean dataset in six at exactly the size its own applicability rule admits**
+`position-bias` (S3) · 2026-08-10 · measured, scoped, not retuned
+
+The corpus's clean arm is 51 datasets with nothing wrong with them. S3 fired on
+8, a rate of 15.7%. That is not a bug in the corpus this time: it is the check's
+designed behaviour, and the rate is calculable.
+
+S3 trips when a position's gold count exceeds its per-item expectation by 20% of
+n. The margin is ABSOLUTE and it is applied to each of four positions with no
+multiplicity correction, so on clean four-option data:
+
+```
+  n items   threshold   P(a clean dataset trips S3)
+       20           9                        16.3%
+       24          11                         8.7%
+       30          14                         3.3%
+       50          23                         0.4%
+      100          45                         0.0%
+```
+
+The analytic rate at n=24 is 8.5%, inside the 95% interval on the observed 8 of
+51 ([5.7%, 25.7%]), so the corpus and the maths agree.
+
+**The uncomfortable part is the interaction with the applicability rule.**
+`min_choice_items = 20` is the threshold at which S3 starts running, and n=20 is
+where **one clean dataset in six warns**. The check switches itself on precisely
+where it is noisiest, and the rate does not become negligible until about 50
+items. At n=20 the margin sits roughly two standard deviations from the mean,
+with four chances to cross it.
+
+**Not retuned, deliberately.** S3 is a DIAGNOSTIC: it warns, it never gates, and
+it prints the underlying counts so a reader can see 11 of 24 and judge it. A
+Bonferroni correction across the four positions, or raising `min_choice_items`,
+would each fix it, and picking one on a single measurement is the move this
+ledger has warned against since the MMLU-Redux comparison nearly reversed a
+case-folding decision on one dataset. `position_margin` moves from `judgment` to
+`calibrated` and the curve is published; the dial is named and the next
+measurement is what should move it.
+
+What changes today is what the report says. A `position-bias` warning on a
+20-item set is now qualified with the rate at that size, because a reader
+deserves to know that one clean dataset in six produces the line they are
+reading.
+
+---
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -2709,9 +2803,9 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **17** |
-| defects in dinostomp itself (**D**) | **44** |
+| defects in dinostomp itself (**D**) | **46** |
 
-Forty-four to twenty-five. That ratio is the useful number to publish, and it is the
+Forty-six to twenty-five. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

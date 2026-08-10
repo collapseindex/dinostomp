@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.54.0 · Apache-2.0 · engine `f55e58da3a42578d` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.55.0 · Apache-2.0 · engine `0a23c152273b7922` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -25,15 +25,15 @@ Each of those is one entry in **[FINDINGS.md](FINDINGS.md)**, with the item id,
 the verbatim data and the command that reproduces it. Every `F` re-derives in
 seconds, offline, for free, using the command in the next section.
 
-**[FINDINGS.md](FINDINGS.md): 86 entries, all permanent, none deleted.**
+**[FINDINGS.md](FINDINGS.md): 88 entries, all permanent, none deleted.**
 
 | | | |
 |---|--:|---|
 | **F** | 25 | findings in other people's evals |
-| **D** | 44 | defects in dinostomp itself |
+| **D** | 46 | defects in dinostomp itself |
 | **N** | 17 | negative results, recorded rather than dropped |
 
-**Forty-four of the eighty-six are against this tool**, which is the number to
+**Forty-six of the eighty-eight are against this tool**, which is the number to
 read first. A validator that only publishes other people's mistakes is telling
 you which mistakes it is willing to look for. Included there: the entry it
 retracted after its own killer control killed it ([N-013](FINDINGS.md#n-013)),
@@ -41,12 +41,12 @@ the loader bug that manufactured a finding about a driving test
 ([D-039](FINDINGS.md#d-039)), and a defect in the findings feed itself
 ([D-040](FINDINGS.md#d-040)).
 
-One caveat belongs up here rather than at the bottom: **two of the eighty-six
+One caveat belongs up here rather than at the bottom: **two of the eighty-eight
 were graded against an answer key somebody outside this repo wrote**
 ([N-012](FINDINGS.md#n-012) against MMLU-Redux, [N-017](FINDINGS.md#n-017)
 against ciFAIR's hand-annotated CIFAR-10 duplicates). Both produced the least
 flattering numbers in the file, which is the argument for more of them.
-Forty-four self-found defects is still self-grading, and that number moves when
+Forty-six self-found defects is still self-grading, and that number moves when
 an outsider runs it rather than when the total goes up.
 [Break it, please](CONTRIBUTING.md#break-it-please).
 
@@ -216,6 +216,36 @@ every finding rests on it, and when a dataset is genuinely ambiguous the tool
 refuses rather than picking: TruthfulQA ships both a `Best Answer` and a
 `Correct Answers` column, and choosing one silently would put every finding on a
 coin flip.
+
+## dinocorpus: a benchmark this tool cannot win
+
+`corpus/` is 204 small datasets, each with exactly one planted defect, labelled
+with what was planted and where. Ground truth is a fact about how the file was
+written rather than a judgement about it, so it needs no annotators and no
+judge.
+
+**Nine of its twenty-one defect classes have no corresponding check here, on
+purpose.** dinostomp finds none of them:
+
+```
+DINOCORPUS dev: dinostomp 0.55.0
+
+  recall, classes it has a check for   100.0% of 72
+  recall, classes it does NOT            4.9% of 81
+    of which name the planted item       0.0%
+  false alarms on clean instances       15.7% of 51
+```
+
+The blind-spot classes are not exotic. *The keyed answer is simply wrong* and
+*two options are both correct* are the two most common defects in the
+benchmark-error literature, and neither leaves a structural trace a single-file
+linter can see. Two of the twenty-one classes come from this repo's own check
+registry; the other nineteen come from the literature or from real audits, and a
+test fails if that ratio starts to invert.
+
+The first scored run found three defects in the corpus and one in the battery
+([D-045](FINDINGS.md#d-045), [D-046](FINDINGS.md#d-046)). Details and the
+submission format: **[corpus/README.md](corpus/README.md)**.
 
 ## The report is an evaluation report, not just an audit
 
@@ -454,7 +484,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.54.0
+- uses: collapseindex/dinostomp@v0.55.0
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -534,7 +564,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`f55e58da3a42578dc17a0b6d553e575e5985423348ed22d807bf40590c5ee8a4`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`0a23c152273b792237d2a7247fb2fd6771c333da13c495f63bd36a872fcb8a56`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 
@@ -543,7 +573,7 @@ fee for a new check and the rules a patch may not remove. [Apache-2.0](LICENSE).
 
 <sub>Built and maintained by one person, unfunded. If it caught something in your
 eval, [sponsorship](https://github.com/sponsors/collapseindex) buys time to keep
-pointing it at real benchmarks and publishing what it finds, including the forty-four
+pointing it at real benchmarks and publishing what it finds, including the forty-six
 findings against itself. Adversarial pods and bug reports are worth more than
 money and are always free:
 [break it, please](CONTRIBUTING.md#break-it-please).</sub>

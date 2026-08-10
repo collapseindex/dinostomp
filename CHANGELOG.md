@@ -1,5 +1,48 @@
 # Changelog
 
+### v0.55.0 (2026-08-10)
+
+**dinocorpus: a benchmark for detectors of broken evals, built so this tool
+cannot win it.** 204 small datasets, one planted defect each, labelled with what
+and where. Ground truth is a fact about how the file was written, so it scales
+without annotators and without a judge.
+
+- **21 defect classes, 9 with no corresponding check**, planted deliberately.
+  dinostomp scores 100% on the classes it covers, **4.9% on the blind-spot arm
+  and 0.0% under strict scoring**, against a 15.7% false-alarm rate on the clean
+  arm. A benchmark whose author scores 100% measures the author.
+- **Two of the 21 classes come from this repo's own check registry.** The other
+  19 come from the benchmark-error literature or from real audits, each citing
+  its source, and a test fails if that ratio starts to invert.
+- **Strict scoring**, because generous scoring was wrong. On a blind-spot
+  instance any finding counts as a catch, and the first run credited four
+  catches that were all the same unrelated position-bias warning firing by
+  chance. Strict mode requires the finding to name an item the defect was
+  planted in.
+- **A clean arm at one instance in four.** Recall without a false-alarm rate is
+  half a number and both are always printed together.
+- Any tool can be scored: `python corpus/score.py --submission yours.json`.
+
+**D-045: the first scored run found three defects in the corpus and none in the
+battery.** The clean pool was not clean (arithmetic options were sorted
+numerically, so the gold sat mid-list and S3 correctly flagged 20 of 51
+"clean" instances); the answer-leak planter put its defect in a choice item,
+where S2 is n/a by design; and the surface-shortcut planter wrote `[orrin]` into
+the stem and `orrin` into the option, which S9 tokenises as different tokens on
+purpose. All three errors ran AGAINST the author's tool, which is the unusual
+direction and the reason it is recorded.
+
+**D-046: S3 warns on one clean dataset in six at exactly the size its own
+applicability rule admits.** The margin is absolute and applied to each of k
+positions with no multiplicity correction, so clean 4-option data trips it 16.3%
+of the time at 20 items, 8.7% at 24, 3.3% at 30 and 0.4% at 50. And
+`min_choice_items = 20` is where S3 starts running. Not retuned on one
+measurement: `position_margin` moves from `judgment` to `calibrated`, and the
+warning now states the chance rate at the size it fired on, computed
+analytically per report.
+
+12 new tests. Ledger: 88 entries, 25 F, 46 D, 17 N.
+
 ### v0.54.0 (2026-08-10)
 
 **The report is an evaluation report now, not just an audit.** It carried the
