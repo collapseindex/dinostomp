@@ -63,6 +63,11 @@ benchmarks/*/data/raw/
 corpus/instances/*/labels.WITHHELD.jsonl
 corpus/holdback.py
 
+# Probes written for a specific outside purpose (job applications, client
+# recon, one-off questions). They use the battery but are not part of it, and
+# several name third parties, so they stay out of the public history.
+probes/
+
 # The preprint. Drafts, LaTeX build litter and the PDF all live outside the
 # repo's history: the paper is written against a pushed commit and cites it,
 # rather than being versioned alongside the thing it describes.
