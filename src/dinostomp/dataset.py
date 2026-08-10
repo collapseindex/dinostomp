@@ -279,6 +279,26 @@ def build_items(rows: list[dict], mapping: dict[str, str], separator: str | None
         notes.append("the answer column indexes the options (a number or a letter) rather than "
                      "holding their text; resolved to the option text so the target survives "
                      "re-ordering")
+
+    # A choices column that produced NO choices. The mapping line above already
+    # printed `choices <- <column>`, so staying quiet here tells a reader the
+    # option checks ran when they silently went n/a and every item was audited
+    # as free-form (D-038). Naming the reason matters because the usual cause is
+    # a delimited string from a CSV export, which `data.separator` exists to
+    # split.
+    if ch_col and not any("choices" in i for i in items):
+        sample = next((row.get(ch_col) for row in rows if row.get(ch_col)), None)
+        hint = ""
+        if isinstance(sample, str):
+            found = next((d for d in ("|", ";", ",", "/") if d in sample), None)
+            hint = (f" The values look delimited ({sample[:40]!r}); declare "
+                    f"`data.separator: \"{found}\"` in a spec to split them into options."
+                    if found else
+                    f" The values are plain strings ({sample[:40]!r}), not lists of options.")
+        notes.append(f"the {ch_col!r} column was mapped to `choices` but yielded none, so every "
+                     f"item was audited as FREE-FORM and the option checks did not run."
+                     + hint)
+
     dropped = len(rows) - len(items)
     if dropped:
         notes.append(f"{dropped} row(s) dropped for an empty question or answer")

@@ -1,5 +1,15 @@
 # Changelog
 
+### v0.49.1 (2026-08-10)
+
+- **D-038: a `choices` mapping was announced and then silently ignored.** A
+  column holding a delimited string (`"a|b|c"`) printed `choices <- choices` and
+  the audit then treated every item as free-form, skipping five option checks
+  without saying so. The inverse of the rule the dataset audit rests on: the
+  guess was shown and its DISCARDING was not. Now named, with the remedy
+  (`data.separator`) named too, since the usual cause is a CSV export.
+  Negative-tested so a working choice pod stays quiet.
+
 ### v0.49.0 (2026-08-10)
 
 Attacked the SPEC the way CONTRIBUTING asks an outsider to, and ran every

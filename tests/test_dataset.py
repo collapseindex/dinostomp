@@ -338,3 +338,33 @@ def test_a_genuine_one_column_file_is_not_blamed_on_a_delimiter(tmp_path):
     report, issues, _ = lint_dataset(p)
     assert report is None
     assert not any("delimited" in i.message for i in issues), [i.message for i in issues]
+
+
+def test_a_choices_column_that_yields_no_choices_says_so(tmp_path):
+    """The mapping line prints `choices <- choices`, so silence here tells a
+    reader the option checks ran when every item was audited free-form (D-038).
+    """
+    from dinostomp.lint import lint_dataset
+
+    p = tmp_path / "delim.jsonl"
+    p.write_text("\n".join(json.dumps(
+        {"id": f"c{i}", "input": f"Question {i}?", "choices": "a|b|c", "target": "a"})
+        for i in range(12)) + "\n", encoding="utf-8")
+    report, issues, ctx = lint_dataset(p)
+    assert report is not None, [i.message for i in issues]
+    notes = " ".join(ctx.get("notes") or [])
+    assert "FREE-FORM" in notes and "did not run" in notes, notes
+    assert 'data.separator: "|"' in notes, "the actionable fix is not named"
+
+
+def test_a_real_choices_column_produces_no_such_note(tmp_path):
+    """The negative direction: the note must not fire on a working choice pod."""
+    from dinostomp.lint import lint_dataset
+
+    p = tmp_path / "real.jsonl"
+    p.write_text("\n".join(json.dumps(
+        {"id": f"r{i}", "input": f"Question {i}?", "choices": ["a", "b", "c", "d"],
+         "target": "a"}) for i in range(12)) + "\n", encoding="utf-8")
+    report, issues, ctx = lint_dataset(p)
+    assert report is not None
+    assert "FREE-FORM" not in " ".join(ctx.get("notes") or [])

@@ -101,6 +101,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-035](#d-035) | dinostomp | refused a valid file for a byte-order mark, naming the fix it did not apply | fixed |
 | [D-036](#d-036) | dinostomp | told a semicolon-CSV user their columns were badly named | fixed |
 | [D-037](#d-037) | dinostomp | the leak check was blind to every numeric-answer dataset | fixed |
+| [D-038](#d-038) | dinostomp | announced a `choices` mapping it then silently ignored | fixed |
 
 ---
 
@@ -2054,6 +2055,47 @@ tested so a disclosed `210` does not satisfy a search for `21`.
 
 ---
 
+### D-038
+**Announced a `choices` mapping it then silently ignored**
+`dataset.py` · 2026-08-10 · fixed in v0.49.1
+
+Spotted during the fuzz pass and left unfixed for a few hours, which is why it
+is written down rather than quietly patched.
+
+A file whose `choices` column holds a delimited STRING rather than a list:
+
+```
+{"id": "c1", "input": "q", "choices": "a|b|c", "target": "a"}
+```
+
+produced this:
+
+```
+  choices  <- choices                                    <- announced
+  [ok] answer-leak   0 of 2 FREE-FORM item(s) leak ...   <- and not used
+```
+
+The mapping line says the column was understood. The audit then treated every
+item as free-form and skipped the five option checks without saying so. A reader
+sees `choices <- choices` and concludes the option checks ran.
+
+This is the inverse of the rule the dataset audit is built on, that a guess the
+user cannot see is a guess the user cannot correct. Here the guess was shown and
+the fact that it was DISCARDED was not.
+
+Fixed by naming it, and naming the remedy, because the usual cause is a CSV
+export and `data.separator` exists precisely to split one:
+
+```
+  the 'choices' column was mapped to `choices` but yielded none, so every item
+  was audited as FREE-FORM and the option checks did not run. The values look
+  delimited ('a|b|c'); declare `data.separator: "|"` in a spec to split them.
+```
+
+Negative-tested: a working choice pod produces no such note.
+
+---
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -2071,9 +2113,9 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **14** |
-| defects in dinostomp itself (**D**) | **37** |
+| defects in dinostomp itself (**D**) | **38** |
 
-Thirty-seven to twenty-two. That ratio is the useful number to publish, and it is the
+Thirty-eight to twenty-two. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to
