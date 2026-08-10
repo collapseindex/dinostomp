@@ -119,6 +119,9 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-039](#d-039) | dinostomp | A loader that mis-keyed a whole exam by one, then reported the artifact as a finding | fixed in v0.50.0 |
 | [D-040](#d-040) | dinostomp | the findings feed was published for two releases with no schema | fixed in v0.52.0 |
 | [D-041](#d-041) | dinostomp | a numeric scorer default scored a live model 0.000 against a real 0.438, uncited for six releases | scoped, not fixed |
+| [D-042](#d-042) | dinostomp | the bare-file path dropped `input_ref`, reporting ten distinct photographs as one duplicate | fixed in v0.53.0 |
+| [D-043](#d-043) | dinostomp | S15's false-positive class: images sharing one gradient direction all hash alike | scoped, documented, not fixed |
+| [N-017](#n-017) | CIFAR-10 / ciFAIR | 28% recall against a human duplicate annotation; byte-level checks get 0% | measured |
 
 <!-- INDEX:END -->
 
@@ -154,15 +157,16 @@ at fault.
 | `R15` | [D-006](#d-006) |
 | `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
-| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-020](#f-020), [D-005](#d-005), [D-027](#d-027) |
+| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-020](#f-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
 | `S2` | [F-004](#f-004), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-012](#n-012), [F-025](#f-025) |
-| `S7` | [F-020](#f-020), [D-005](#d-005) |
+| `S7` | [F-020](#f-020), [D-005](#d-005), [D-042](#d-042) |
 | `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015) |
 | `S10` | [N-006](#n-006) |
 | `S11` | [F-012](#f-012), [N-004](#n-004), [D-014](#d-014) |
+| `S15` | [D-043](#d-043), [N-017](#n-017) |
 | `T1` | [D-027](#d-027) |
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
@@ -173,7 +177,7 @@ at fault.
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041) |
+| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | four models | [N-005](#n-005), [N-006](#n-006) |
 | MMLU | [F-002](#f-002), [F-003](#f-003) |
@@ -182,6 +186,7 @@ at fault.
 | a RAG agent | [F-017](#f-017) |
 | AQuA-RAT | [F-023](#f-023) |
 | ARC, OpenBookQA, HellaSwag, WinoGrande | [N-003](#n-003) |
+| CIFAR-10 / ciFAIR | [N-017](#n-017) |
 | CommonsenseQA | [F-008](#f-008) |
 | DROP | [F-020](#f-020) |
 | four small models | [F-015](#f-015) |
@@ -216,7 +221,7 @@ at fault.
 `dup-questions` (S1) · 2026-07 · confirmed
 
 The battery's first contact with real data was the most famous dataset in
-statistics. Transcript re-run under the current 57-check battery; the original
+statistics. Transcript re-run under the current 61-check battery; the original
 catch happened at 23 checks.
 
 ```
@@ -241,7 +246,7 @@ published report, which is what the fix looks like from the other side:
 
 ```
   [ok]   dup-questions   questions are unique   0 duplicated question(s) among 149
-MECHANICALLY SOUND: no integrity findings, full coverage (29 of 29 ran; 28 n/a of 57 declared)
+MECHANICALLY SOUND: no integrity findings, full coverage (29 of 29 ran; 32 n/a of 61 declared)
 ```
 
 ### F-002
@@ -2481,6 +2486,148 @@ worth an id it does not go in the README.
 
 ---
 
+### D-042
+**The bare-file path silently dropped `input_ref`, so ten distinct photographs were reported as one duplicated item**
+`dup-questions` (S1), `conflicting-keys` (S7) · 2026-08-10 · fixed in v0.53.0
+
+The first image pod ever run through `dinostomp stomp` came back like this, on
+ten pictures that share nothing but a prompt:
+
+```
+[FAIL] dup-questions     1 duplicated question(s) among 10
+         - which shape is in this image? || blob | gradient | square | stripe
+[FAIL] conflicting-keys  1 question(s) appear with conflicting targets
+```
+
+`build_items` constructs a fresh dict from the columns it recognises rather than
+copying the row, so anything it does not name is gone. It did not name
+`input_ref`. Every item then keyed on the prompt alone, every prompt was
+identical, and both gating checks fired on a dataset with no defect in it.
+
+**The docstring for the function that broke had described this exact failure,
+one commit earlier.** `_item_key` was written with a paragraph explaining that
+keying an asset item on its prompt collapses a whole dataset into one duplicate
+pile. Knowing the failure mode and writing it down did not prevent it, because
+the loss happened two files away in code that predates the feature.
+
+Fifth defect in this ledger of the form **an assumption about the shape of
+somebody's data, made silently, that the report then presents as a property of
+that data** ([D-016](#d-016), [D-034](#d-034), [D-038](#d-038),
+[D-039](#d-039)). The other four were about datasets this tool read. This one
+was about a dataset this tool WROTE, which is worse, and it is the argument for
+the example pod being in the repository rather than in a test fixture: it was
+found by looking at real output.
+
+---
+
+### D-043
+**S15's first specificity trial called ten distinct images near-duplicates, and it was not wrong**
+`near-dup-assets` (S15) · 2026-08-10 · scoped, documented, not fixed
+
+The clean-pod arm of the trials exists so a new check has to prove it stays
+quiet on good data. S15 failed it immediately:
+
+```
+clean image pod: distinct pictures, pinned, no split overlap
+  0 findings   ->   verdict=incomplete, findings: ['S15=warn']   ** FALSE ALARM **
+```
+
+The ten fixtures were `(seed*37 + x*11 + y*29) % 256`: ramps that differ only in
+PHASE. dHash compares each pixel to its right-hand neighbour, so it encodes
+gradient DIRECTION and discards absolute values. Every one of those images has
+the same gradient direction everywhere, so their hashes are identical, and by
+the only definition the check has they are duplicates.
+
+**The fixture was wrong AND the limitation is real**, and separating the two
+took building a second fixture out of blocks at varying positions and sizes,
+which comes back silent. So:
+
+  * the clean pod now uses structurally distinct images, and the ramp helper
+    carries a comment saying what it must not be used for.
+  * **S15 stays a DIAGNOSTIC.** It warns, it prints the Hamming distance for
+    every pair, and it never gates a verdict. A check with a known
+    false-positive class must not be able to turn a report `BROKEN`.
+  * the false-positive class is named in `perceptual.py`: a corpus whose images
+    share one dominant gradient (documents, spectrograms, plots on white) will
+    read as mutually near-duplicate, and on that kind of data this check is
+    measuring its own threshold rather than the dataset.
+
+Recorded because a false-positive class found by the author, before release, in
+the arm built to find it, is the cheapest one anybody will ever find. The
+alternative is that a stranger finds it in their own corpus and concludes the
+tool is noisy.
+
+---
+
+### N-017
+**Scored against a human answer key in a modality it was never built for: S15 finds 28% of the duplicates people found, and every byte-level check finds 0%**
+`near-dup-assets` (S15) · 2026-08-10 · measured
+
+Barz & Denzler hand-annotated every CIFAR-10 test image that has a
+near-duplicate in the training set and published the pairs with judgment codes
+(ciFAIR, CC-BY-SA). That is an answer key for a defect class this battery claims
+to detect, written by people who had never heard of it. Second entry of this
+kind, after [N-012](#n-012).
+
+**RECALL, and it is the unflattering half.** 249 pairs are judged genuine
+duplicates: the same camera shot, differently post-processed.
+
+```
+ bits      genuine duplicates    very similar
+    0            0/249 = 0.0%            0/37
+    3          27/249 = 10.8%            0/37
+    5          70/249 = 28.1%            0/37   <- shipped threshold
+    8         131/249 = 52.6%            5/37
+   12         193/249 = 77.5%           10/37
+   16         225/249 = 90.4%           20/37
+```
+
+At the shipped threshold the check recovers **fewer than one duplicate in
+three**. Anyone reading `no near-duplicate assets` on an image dataset should
+read it as "none of the kind this finds", and the check's own output now prints
+the distance for every pair so the threshold is visible rather than implied.
+
+**The 0.0% at zero bits is the other half, and it is why the check exists.** Not
+one of the 286 annotated pairs is byte-identical. `dup-questions` (S1),
+`conflicting-keys` (S7) and `split-leak` (S14) all key on the asset's SHA-256,
+so on this dataset they find **nothing at all**. The comparison at the shipped
+threshold is not 28% against some better check. It is 28% against zero.
+
+**PRECISION, on the 3,563-image pod.** 77 candidate pairs, 73 of them
+test-to-train, and **70 of the 73 are the exact edge ciFAIR annotated**.
+
+The other three looked like a finding and were not, which is the part worth
+recording. All three are the same white car:
+
+```
+cifar-test-03520 ~ cifar-train-46237  (4 bits)
+cifar-test-08356 ~ cifar-train-33063  (5 bits)
+cifar-test-02929 ~ cifar-train-49426  (5 bits)
+```
+
+The first reading was "three duplicates ciFAIR missed". Checking whether those
+ids appear in the annotation under a DIFFERENT partner killed it: every one of
+the six is annotated, just linked to another member of its own cluster.
+ciFAIR lists pairs, not cliques, and these are additional edges inside clusters
+it already found. **Zero of the 73 fall outside its known duplicate set**, which
+is a better result than the overclaim would have been and a worse headline.
+
+**What this is NOT.** It is not a finding against CIFAR-10. That CIFAR-10 has
+train/test duplicates is Barz & Denzler's result, published in 2020, and filing
+it in the `F` series would be claiming their work as this tool's. There is no F
+entry for CIFAR-10 in this file on purpose.
+
+**What it changes.** `near_dup_bits` moves from `convention` to `calibrated` in
+the threshold table: it was a citation to common practice and it is now a
+measurement with a curve behind it. The default STAYS at 5 despite 8 buying
+almost twice the recall, for the reason recorded when the MMLU-Redux comparison
+nearly reversed a case-folding decision: **a measurement on one dataset is not a
+licence to reset a default for every other.** 32x32 photographs are not
+documents, screenshots or spectrograms. The curve is published, the dial is
+named, and the next dataset to be measured is what would move it.
+
+---
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -2497,10 +2644,10 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **16** |
-| defects in dinostomp itself (**D**) | **41** |
+| negative results, recorded rather than dropped (**N**) | **17** |
+| defects in dinostomp itself (**D**) | **43** |
 
-Forty-one to twenty-five. That ratio is the useful number to publish, and it is the
+Forty-three to twenty-five. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.52.0",
+  "version": "0.53.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -44,6 +44,12 @@
       "source": "default",
       "provenance": "judgment",
       "basis": "2 characters before a target is long enough to 'appear' in a question"
+    },
+    "near_dup_bits": {
+      "value": 5.0,
+      "source": "default",
+      "provenance": "calibrated",
+      "basis": "5 of 64 bits is conventional in the perceptual-hash literature, and is now MEASURED against a human annotation: on ciFAIR's hand-labelled CIFAR-10 duplicates it recovers 28.1% of them (70 of 249) and flags 158 test/train pairs across 60,000 images, while every byte-level check recovers 0%. 8 bits nearly doubles recall to 52.6% for 3.2x the candidates and starts flagging images the annotators judged similar but NOT duplicates. The default stays at 5: that curve is one dataset of 32x32 photographs, and it is not a licence to reset a default for documents or spectrograms. Full curve: N-017, and `benchmarks/cifair/compare.py --sweep` re-derives it."
     },
     "kr20_min": {
       "value": 0.5,
@@ -263,7 +269,7 @@
     }
   },
   "coverage": {
-    "declared_total": 57,
+    "declared_total": 61,
     "declared": 42,
     "ran": 33,
     "skipped": [
@@ -328,6 +334,22 @@
       {
         "id": "S11",
         "reason": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot."
+      },
+      {
+        "id": "S12",
+        "reason": "no item carries an `input_ref`; nothing points at a file"
+      },
+      {
+        "id": "S13",
+        "reason": "no item carries an `input_ref`; nothing points at a file"
+      },
+      {
+        "id": "S14",
+        "reason": "no item carries an `input_ref`; nothing points at a file"
+      },
+      {
+        "id": "S15",
+        "reason": "no item carries an `input_ref`; nothing points at a file"
       },
       {
         "id": "C1",
@@ -480,6 +502,42 @@
       "witnesses": 0
     },
     {
+      "id": "S12",
+      "slug": "asset-drift",
+      "check": "every referenced asset resolves and still hashes the same",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no item carries an `input_ref`; nothing points at a file",
+      "witnesses": 0
+    },
+    {
+      "id": "S13",
+      "slug": "label-in-path",
+      "check": "no asset's own path gives away its label",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no item carries an `input_ref`; nothing points at a file",
+      "witnesses": 0
+    },
+    {
+      "id": "S14",
+      "slug": "split-leak",
+      "check": "no asset appears in two splits",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no item carries an `input_ref`; nothing points at a file",
+      "witnesses": 0
+    },
+    {
+      "id": "S15",
+      "slug": "near-dup-assets",
+      "check": "no near-duplicate assets",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no item carries an `input_ref`; nothing points at a file",
+      "witnesses": 0
+    },
+    {
       "id": "W1",
       "slug": "witness-coverage",
       "check": "witnesses kill the mutant scorers",
@@ -580,8 +638,8 @@
       "witnesses": 3,
       "evidence": {
         "per_model_accuracy": {
-          "greedy": 1.0,
           "grounded": 1.0,
+          "greedy": 1.0,
           "oneshot": 0.75
         },
         "chance_floor": 0.125,
@@ -636,8 +694,8 @@
       "witnesses": 3,
       "evidence": {
         "rates": {
-          "greedy": 0.0,
           "grounded": 0.0,
+          "greedy": 0.0,
           "oneshot": 0.0
         }
       }
@@ -702,11 +760,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 3 run(s) were produced by a different engine than the one auditing them (now d9ec4738f87d2154); re-run to get numbers this report can stand behind",
+      "detail": "0 of 3 run(s) were produced by a different engine than the one auditing them (now 759283b174f39951); re-run to get numbers this report can stand behind",
       "witnesses": 3,
       "evidence": {
         "engines": {
-          "d9ec4738f87d2154": 3
+          "759283b174f39951": 3
         }
       }
     },
@@ -990,19 +1048,7 @@
   },
   "runs": [
     {
-      "run_file": "20260810_033531_mediated-grounding_greedy_n24_s7.jsonl",
-      "model": "greedy",
-      "model_reported": "greedy",
-      "provider": "mediated",
-      "dry_run": false,
-      "seed": 7,
-      "records": 24,
-      "uncheckable": 0,
-      "spend_source": "metered",
-      "trajectory_steps": 72
-    },
-    {
-      "run_file": "20260810_033531_mediated-grounding_grounded_n24_s7.jsonl",
+      "run_file": "20260810_062058_mediated-grounding_grounded_n24_s7.jsonl",
       "model": "grounded",
       "model_reported": "grounded",
       "provider": "mediated",
@@ -1014,7 +1060,19 @@
       "trajectory_steps": 24
     },
     {
-      "run_file": "20260810_033531_mediated-grounding_oneshot_n24_s7.jsonl",
+      "run_file": "20260810_062102_mediated-grounding_greedy_n24_s7.jsonl",
+      "model": "greedy",
+      "model_reported": "greedy",
+      "provider": "mediated",
+      "dry_run": false,
+      "seed": 7,
+      "records": 24,
+      "uncheckable": 0,
+      "spend_source": "metered",
+      "trajectory_steps": 72
+    },
+    {
+      "run_file": "20260810_062102_mediated-grounding_oneshot_n24_s7.jsonl",
       "model": "oneshot",
       "model_reported": "oneshot",
       "provider": "mediated",

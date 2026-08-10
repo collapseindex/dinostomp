@@ -26,7 +26,7 @@ that is 34 of 43 of them. Nothing here converts a judgment call into a citation.
 | Paired bootstrap resampling | `ordering-noise` (P6), typed superiority claims | Efron, B. (1979). *Bootstrap methods: another look at the jackknife.* Annals of Statistics 7(1), 1–26. |
 | Mutation testing | `witness-coverage` (W1) | DeMillo, R. A., Lipton, R. J. & Sayward, F. G. (1978). *Hints on test data selection: help for the practicing programmer.* Computer 11(4), 34–41. The mutation gauntlet applies this to scorers: a witness suite that no mutant survives is a suite that constrains the scorer. |
 
-### The three `convention` thresholds, and what they lean on
+### The four `convention` thresholds, and what they lean on
 
 - **`kr20_min = 0.5`** — reliability coefficients are conventionally read against
   Nunnally's bands (Nunnally, J. C. (1978). *Psychometric Theory*, 2nd ed.), where
@@ -43,6 +43,12 @@ that is 34 of 43 of them. Nothing here converts a judgment call into a citation.
   bar for calling a surface feature real rather than sampling noise. Convention,
   not derivation; the null it is measured against is analytic and described in
   METHODOLOGY.
+- **`near_dup_bits = 5`** — a Hamming distance of 5 in a 64-bit perceptual hash
+  is the value the near-duplicate literature generally uses. It is the weakest
+  of the four: it is a citation to common practice rather than to a specific
+  result, S15 warns rather than gates because of that, and
+  `benchmarks/cifair/compare.py --sweep` is the measurement that says what other
+  values would buy and cost on real data.
 
 ## Benchmarks this repository audits
 
@@ -80,6 +86,25 @@ Findings against these datasets are in [FINDINGS.md](FINDINGS.md), series **F**.
 Each one is a defect in a specific artifact and none is a judgement of the work
 that produced it: these are the most-scrutinised benchmarks in the field, which
 is exactly why finding anything in them is worth publishing.
+
+### The human answer keys this repository is scored against
+
+Two datasets here are not audit TARGETS but GRADERS: somebody else annotated
+them by hand, so they can say what this battery misses rather than what it
+finds. That is the only kind of evidence in this repo that the author did not
+also produce.
+
+- **MMLU-Redux 2.0** — Gema, A. P. et al. (2024). *Are We Done with MMLU?*
+  arXiv:2406.04127. Manual re-annotation of MMLU items with error taxonomies.
+  Scored in [N-012](FINDINGS.md#n-012); [F-018](FINDINGS.md#f-018) is the pair
+  of items its annotators marked `ok` that the battery flagged.
+- **ciFAIR** — Barz, B. and Denzler, J. (2020). *Do We Train on Test Data?
+  Purging CIFAR of Near-Duplicates.* Journal of Imaging 6(6), 41.
+  <https://cvjena.github.io/cifair/>. Hand-annotated near-duplicate pairs
+  between the CIFAR-10/100 training and test sets, with judgment codes
+  distinguishing exact duplicates from re-processed copies of one camera shot
+  from merely similar images. Fetched by `benchmarks/cifair/fetch.py`, licensed
+  CC-BY-SA, not vendored.
 
 ## Failure modes the battery was built against
 

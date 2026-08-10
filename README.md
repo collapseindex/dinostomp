@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.52.0 · Apache-2.0 · engine `d9ec4738f87d2154` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.53.0 · Apache-2.0 · engine `759283b174f39951` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -25,15 +25,15 @@ Each of those is one entry in **[FINDINGS.md](FINDINGS.md)**, with the item id,
 the verbatim data and the command that reproduces it. Every `F` re-derives in
 seconds, offline, for free, using the command in the next section.
 
-**[FINDINGS.md](FINDINGS.md): 82 entries, all permanent, none deleted.**
+**[FINDINGS.md](FINDINGS.md): 85 entries, all permanent, none deleted.**
 
 | | | |
 |---|--:|---|
 | **F** | 25 | findings in other people's evals |
-| **D** | 41 | defects in dinostomp itself |
-| **N** | 16 | negative results, recorded rather than dropped |
+| **D** | 43 | defects in dinostomp itself |
+| **N** | 17 | negative results, recorded rather than dropped |
 
-**Forty-one of the eighty-two are against this tool**, which is the number to
+**Forty-three of the eighty-five are against this tool**, which is the number to
 read first. A validator that only publishes other people's mistakes is telling
 you which mistakes it is willing to look for. Included there: the entry it
 retracted after its own killer control killed it ([N-013](FINDINGS.md#n-013)),
@@ -41,9 +41,13 @@ the loader bug that manufactured a finding about a driving test
 ([D-039](FINDINGS.md#d-039)), and a defect in the findings feed itself
 ([D-040](FINDINGS.md#d-040)).
 
-One caveat belongs up here rather than at the bottom: **one entry was graded by
-somebody outside this repo.** Forty-one self-found defects is still self-grading.
-That number moves when an outsider runs it, not when the total goes up.
+One caveat belongs up here rather than at the bottom: **two of the eighty-five
+were graded against an answer key somebody outside this repo wrote**
+([N-012](FINDINGS.md#n-012) against MMLU-Redux, [N-017](FINDINGS.md#n-017)
+against ciFAIR's hand-annotated CIFAR-10 duplicates). Both produced the least
+flattering numbers in the file, which is the argument for more of them.
+Forty-three self-found defects is still self-grading, and that number moves when
+an outsider runs it rather than when the total goes up.
 [Break it, please](CONTRIBUTING.md#break-it-please).
 
 The same ledger as data, versioned and validated against
@@ -71,7 +75,7 @@ One invariant runs under all of it: **nothing becomes evidence merely because an
 earlier stage said it was.** Summaries are recomputed from records, verdicts are
 re-scored from recorded text, and the engine hashes itself into its own output.
 
-Fifty-seven checks, each negative-tested to prove it fires, most invisible until
+Sixty-one checks, each negative-tested to prove it fires, most invisible until
 something breaks. Each stage above is a place the ledger has a receipt from:
 
 | stage | what goes wrong there |
@@ -104,8 +108,8 @@ BROKEN AT DATA SCOPE: 2 gated finding(s) in the dataset itself
 
 That is a real run against the real MMLU test split, and `mmlu-02178` is the
 subtraction item above: the answer is on its option list twice, so a model that
-computes it correctly picks the wrong letter half the time. Ten of the
-fifty-seven checks read data at rest, which is why this costs nothing.
+computes it correctly picks the wrong letter half the time. Fourteen of the
+sixty-one checks read data at rest, which is why this costs nothing.
 
 **Five minutes, for the other forty-seven.** They need evidence: outputs, a
 scorer, a ledger, a claim.
@@ -169,7 +173,7 @@ Four things then happen that you did not ask for, and they are the product:
   between seeds is a finding; another moving 11.5 points is not, if its sample
   is smaller. The battery does that arithmetic so nobody has to eyeball it.
 - **Coverage is stated, always.** `MECHANICALLY SOUND: no integrity findings,
-  full coverage (29 of 29 ran; 28 n/a of 57 declared)` is a different claim from
+  full coverage (29 of 29 ran; 32 n/a of 61 declared)` is a different claim from
   a green tick, and the difference is printed every time.
 - **Nothing is trusted downstream of the run.** Summaries are recomputed from
   records, verdicts are re-scored offline, and hand-editing either is a gated
@@ -212,6 +216,69 @@ every finding rests on it, and when a dataset is genuinely ambiguous the tool
 refuses rather than picking: TruthfulQA ships both a `Best Answer` and a
 `Correct Answers` column, and choosing one silently would put every finding on a
 coin flip.
+
+## When the input is a file: images and audio
+
+A text eval carries its input in the dataset. A vision or audio eval carries a
+POINTER, and the thing pointed at can change without the dataset changing. An
+item declares its asset and its hash:
+
+```json
+{"id": "cifar-test-00042", "input": "Which of these ten classes is shown?",
+ "input_ref": {"kind": "image", "uri": "images/test/test-00042.png",
+               "sha256": "9f3c...", "split": "test"},
+ "choices": ["airplane", "automobile", "..."], "target": "cat"}
+```
+
+Most of the battery never looks at the modality. Every run check, every claim
+check, the witness gate and the mutation gauntlet are unchanged. What changes is
+that **an asset-backed item is identified by its asset's bytes**, so
+`dup-questions` and `conflicting-keys` work on pictures for free, and four
+checks exist that a text pod has no use for:
+
+| | |
+|---|---|
+| `asset-drift` | the file is there, inside the pod, and still hashes to what the dataset says |
+| `label-in-path` | one directory per class is how image datasets ship, and it puts the answer in the filename |
+| `split-leak` | the same asset in train and in test |
+| `near-dup-assets` | the same picture twice, at different bytes |
+
+The first three need nothing but the standard library. Only the last one needs
+pixels:
+
+```bash
+pip install 'dinostomp[vision]'
+```
+
+Without it that check **skips and says so**, because "no near-duplicates found"
+and "I cannot look for near-duplicates" are different sentences and only one of
+them is true. The core keeps its two dependencies.
+
+A ten-image demonstration ships with the repo, real PNGs and all, so the checks
+can be watched firing without downloading anything:
+
+```bash
+dinostomp stomp examples/shapes/items.jsonl
+```
+
+```
+  [FAIL] dup-questions     1 duplicated question(s) among 10
+  [FAIL] split-leak        1 asset(s) appear in more than one split
+           - bcb1988d1f76...: test, train
+  [warn] near-dup-assets   2 candidate near-duplicate pair(s) at Hamming distance <= 5 of 64
+           - shape-002 ~ shape-007 (0 bits)
+```
+
+**Scored against a human answer key.** Barz & Denzler hand-annotated every
+CIFAR-10 test image with a near-duplicate in the training set and published the
+pairs. `benchmarks/cifair/` runs the battery's own detector against that
+annotation, which is the second time anything here has been graded by someone
+outside this repo:
+
+```bash
+python benchmarks/cifair/fetch.py --meta      # the annotation alone, 10 KB
+python benchmarks/cifair/compare.py --sweep   # recall, and what each threshold costs
+```
 
 ## Beyond plain completions
 
@@ -338,7 +405,7 @@ extension is named, versioned and hashed in the report, so a `SOUND` is always a
 claim about a specific set of code.
 
 The full contract, including why an extension is trusted when a stranger's pod
-is not, is in **[METHODOLOGY.md](METHODOLOGY.md)** along with all fifty-seven
+is not, is in **[METHODOLOGY.md](METHODOLOGY.md)** along with all sixty-one
 checks and why each one exists.
 
 ## In CI
@@ -353,7 +420,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.52.0
+- uses: collapseindex/dinostomp@v0.53.0
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -396,10 +463,10 @@ measures the intended construct: NOT ESTABLISHED BY DINOSTOMP
 That is a constant. There is no flag and no code path that sets it to anything
 else, and a test walks the source to keep it that way. This battery checks
 mechanical integrity; construct validity is argued, not computed, and a trivial,
-mis-aimed, or saturated eval can pass every check here. Fifty-seven is not a
+mis-aimed, or saturated eval can pass every check here. Sixty-one is not a
 number that bounds the ways an eval can be invalid.
 
-**The self-tests are not independent validation.** 86 of 86 caught means every
+**The self-tests are not independent validation.** 92 of 92 caught means every
 check fires on the failure it was built for. Those failures were planted by the
 same hands that wrote the checks, so it says nothing about defects nobody here
 imagined, and the scorecard prints that caveat under its own score. The next
@@ -411,11 +478,11 @@ published next to the tool's own defects.
 **The battery ships with its own validation, and you can run it.**
 
 ```bash
-python trials/run_trials.py        # 86 planted defects, 15 pods that must stay clean
+python trials/run_trials.py        # 92 planted defects, 16 pods that must stay clean
 python trials/pin_thresholds.py    # which of its own thresholds are load-bearing
 ```
 
-The current answers are 86 of 86 caught, 0 false alarms, and 25 of 33 thresholds
+The current answers are 92 of 92 caught, 0 false alarms, and 25 of 33 thresholds
 pinned. That last number is published because it is uncomfortable: eight
 thresholds could be quietly loosened today without a single trial noticing, and
 the tool names them.
@@ -424,7 +491,7 @@ the tool names them.
 
 - **[AUTHORING.md](AUTHORING.md)** — writing a spec, or having a model write one: the schema contract and the self-correction loop
 - **[FINDINGS.md](FINDINGS.md)** — what it found, in MMLU, GSM8K, TruthfulQA, and in itself
-- **[METHODOLOGY.md](METHODOLOGY.md)** — the fifty-seven checks, the pod format, the philosophy, the self-audit
+- **[METHODOLOGY.md](METHODOLOGY.md)** — the sixty-one checks, the pod format, the philosophy, the self-audit
 - **[SECURITY.md](SECURITY.md)** — pod code, untrusted model output, money, what this does not do
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — the entry fee for a new check is a planted defect, not an argument
 - **[findings.json](findings.json)** — the ledger as data: versioned, validated against [docs/findings.schema.json](docs/findings.schema.json) before it is written
@@ -433,7 +500,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`d9ec4738f87d215450ef39b50d3db7163e9f1936c50a91eb28e56f2db23ae3c4`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`759283b174f3995142220036df5714bfb93e4df97233e8d31d144d4171689df5`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 
@@ -442,7 +509,7 @@ fee for a new check and the rules a patch may not remove. [Apache-2.0](LICENSE).
 
 <sub>Built and maintained by one person, unfunded. If it caught something in your
 eval, [sponsorship](https://github.com/sponsors/collapseindex) buys time to keep
-pointing it at real benchmarks and publishing what it finds, including the forty-one
+pointing it at real benchmarks and publishing what it finds, including the forty-three
 findings against itself. Adversarial pods and bug reports are worth more than
 money and are always free:
 [break it, please](CONTRIBUTING.md#break-it-please).</sub>

@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**MECHANICALLY SOUND**: no integrity findings at pod scope, full coverage (29 of 29 ran; 28 n/a of 57 declared)
+**MECHANICALLY SOUND**: no integrity findings at pod scope, full coverage (29 of 29 ran; 32 n/a of 61 declared)
 
 > All runs used the offline dry provider; results exercise the benchmark, not any real model.
 
@@ -34,6 +34,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | n/a | no option offered twice in one item | 0 | no multiple-choice items in this dataset |
 | n/a | every target is among its choices | 0 | no multiple-choice items in this dataset |
 | ok | no identical question with contradictory targets | 24 | 0 question(s) appear with conflicting targets |
+| n/a | every referenced asset resolves and still hashes the same | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
 | ok | every typed claim's evidence requirements hold | 6 | 2 of 2 typed claim(s) supported across 6 evidence requirement(s) (no multiplicity correction across 2 claims) |
 | ok | runs match the spec, data, and scorer on disk (no drift) | 6 | 0 of 6 run(s) no longer match the spec, data, or scorer on disk |
 | ok | the witness gate replays clean | 11 | replayed 5 witness(es): 5 behaved; 6 run manifest(s) checked |
@@ -61,6 +64,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | no surface feature predicts the gold answer | 0 | no multiple-choice items in this dataset |
 | n/a | no model reproduces the contamination canary | 0 | regurgitation probes need a hosted model; this pod's runs are all local |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
+| n/a | no near-duplicate assets | 0 | no item carries an `input_ref`; nothing points at a file |
 | ok | witnesses kill the mutant scorers | 5 | 0 of 5 applicable mutant scorer(s) survive the witness suite |
 | ok | uncheckable rate is sane | 144 | 0% of 144 record(s) are uncheckable |
 | ok | accuracy is distinguishable from guessing | 6 | 0 of 6 model(s) score no better than guessing; fleet spans 38% to 100% vs chance ~4% (modal target floor) |
@@ -71,7 +75,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | ok | failed answers do not contain the reference | 4 | 0 of 4 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 6 | 0 of 6 run(s) were produced by a different engine than the one auditing them (now d9ec4738f87d2154); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 6 | 0 of 6 run(s) were produced by a different engine than the one auditing them (now 759283b174f39951); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -118,7 +122,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"d9ec4738f87d2154": 6}}`
+- evidence: `{"engines": {"759283b174f39951": 6}}`
 
 </details>
 <details><summary>[ok] fleet score totals are reliable (KR-20)</summary>
@@ -151,16 +155,16 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260810_033523_fleet-arith_dry-alpha_n24_s42.jsonl | dry-alpha | (same) | dry | yes | 42 | 24 | 0 |
-| 20260810_033523_fleet-arith_dry-bravo_n24_s42.jsonl | dry-bravo | (same) | dry | yes | 42 | 24 | 0 |
-| 20260810_033523_fleet-arith_dry-charlie_n24_s42.jsonl | dry-charlie | (same) | dry | yes | 42 | 24 | 0 |
-| 20260810_033523_fleet-arith_dry-delta_n24_s42.jsonl | dry-delta | (same) | dry | yes | 42 | 24 | 0 |
-| 20260810_033523_fleet-arith_dry-echo_n24_s42.jsonl | dry-echo | (same) | dry | yes | 42 | 24 | 0 |
-| 20260810_033523_fleet-arith_dry-foxtrot_n24_s42.jsonl | dry-foxtrot | (same) | dry | yes | 42 | 24 | 0 |
+| 20260810_062042_fleet-arith_dry-alpha_n24_s42.jsonl | dry-alpha | (same) | dry | yes | 42 | 24 | 0 |
+| 20260810_062042_fleet-arith_dry-bravo_n24_s42.jsonl | dry-bravo | (same) | dry | yes | 42 | 24 | 0 |
+| 20260810_062042_fleet-arith_dry-charlie_n24_s42.jsonl | dry-charlie | (same) | dry | yes | 42 | 24 | 0 |
+| 20260810_062043_fleet-arith_dry-delta_n24_s42.jsonl | dry-delta | (same) | dry | yes | 42 | 24 | 0 |
+| 20260810_062043_fleet-arith_dry-echo_n24_s42.jsonl | dry-echo | (same) | dry | yes | 42 | 24 | 0 |
+| 20260810_062044_fleet-arith_dry-foxtrot_n24_s42.jsonl | dry-foxtrot | (same) | dry | yes | 42 | 24 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.52.0
+- tool: dinostomp 0.53.0
 - statistical power: at n=24 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~40% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `cc280622dc0f91aa3809e0072bf4125add1a99825319f4f97a681fb4e23657cc`
 - data_sha256: `742d30fda48436edace090596fe7659588d02761e788be1acdd3fbf2573437dd`

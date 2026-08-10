@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.52.0",
+  "version": "0.53.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -44,6 +44,12 @@
       "source": "default",
       "provenance": "judgment",
       "basis": "2 characters before a target is long enough to 'appear' in a question"
+    },
+    "near_dup_bits": {
+      "value": 5.0,
+      "source": "default",
+      "provenance": "calibrated",
+      "basis": "5 of 64 bits is conventional in the perceptual-hash literature, and is now MEASURED against a human annotation: on ciFAIR's hand-labelled CIFAR-10 duplicates it recovers 28.1% of them (70 of 249) and flags 158 test/train pairs across 60,000 images, while every byte-level check recovers 0%. 8 bits nearly doubles recall to 52.6% for 3.2x the candidates and starts flagging images the annotators judged similar but NOT duplicates. The default stays at 5: that curve is one dataset of 32x32 photographs, and it is not a licence to reset a default for documents or spectrograms. Full curve: N-017, and `benchmarks/cifair/compare.py --sweep` re-derives it."
     },
     "kr20_min": {
       "value": 0.5,
@@ -263,7 +269,7 @@
     }
   },
   "coverage": {
-    "declared_total": 57,
+    "declared_total": 61,
     "declared": 37,
     "ran": 31,
     "skipped": [
@@ -316,6 +322,22 @@
       {
         "id": "S11",
         "reason": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot."
+      },
+      {
+        "id": "S12",
+        "reason": "no item carries an `input_ref`; nothing points at a file"
+      },
+      {
+        "id": "S13",
+        "reason": "no item carries an `input_ref`; nothing points at a file"
+      },
+      {
+        "id": "S14",
+        "reason": "no item carries an `input_ref`; nothing points at a file"
+      },
+      {
+        "id": "S15",
+        "reason": "no item carries an `input_ref`; nothing points at a file"
       },
       {
         "id": "C1",
@@ -485,6 +507,42 @@
       "level": "n/a",
       "gating": false,
       "detail": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot.",
+      "witnesses": 0
+    },
+    {
+      "id": "S12",
+      "slug": "asset-drift",
+      "check": "every referenced asset resolves and still hashes the same",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no item carries an `input_ref`; nothing points at a file",
+      "witnesses": 0
+    },
+    {
+      "id": "S13",
+      "slug": "label-in-path",
+      "check": "no asset's own path gives away its label",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no item carries an `input_ref`; nothing points at a file",
+      "witnesses": 0
+    },
+    {
+      "id": "S14",
+      "slug": "split-leak",
+      "check": "no asset appears in two splits",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no item carries an `input_ref`; nothing points at a file",
+      "witnesses": 0
+    },
+    {
+      "id": "S15",
+      "slug": "near-dup-assets",
+      "check": "no near-duplicate assets",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no item carries an `input_ref`; nothing points at a file",
       "witnesses": 0
     },
     {
@@ -710,11 +768,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now d9ec4738f87d2154); re-run to get numbers this report can stand behind",
+      "detail": "0 of 4 run(s) were produced by a different engine than the one auditing them (now 759283b174f39951); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "evidence": {
         "engines": {
-          "d9ec4738f87d2154": 4
+          "759283b174f39951": 4
         }
       }
     },
@@ -991,7 +1049,7 @@
   },
   "runs": [
     {
-      "run_file": "20260810_033526_judge-capitals_bot-bare_n26_s42.jsonl",
+      "run_file": "20260810_062049_judge-capitals_bot-bare_n26_s42.jsonl",
       "model": "bot-bare",
       "model_reported": "bot-bare",
       "provider": "python",
@@ -1003,7 +1061,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_033526_judge-capitals_bot-chatty_n26_s42.jsonl",
+      "run_file": "20260810_062049_judge-capitals_bot-chatty_n26_s42.jsonl",
       "model": "bot-chatty",
       "model_reported": "bot-chatty",
       "provider": "python",
@@ -1015,7 +1073,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_033526_judge-capitals_bot-hedged_n26_s42.jsonl",
+      "run_file": "20260810_062049_judge-capitals_bot-hedged_n26_s42.jsonl",
       "model": "bot-hedged",
       "model_reported": "bot-hedged",
       "provider": "python",
@@ -1027,7 +1085,7 @@
       "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_033526_judge-capitals_bot-wrapped_n26_s42.jsonl",
+      "run_file": "20260810_062049_judge-capitals_bot-wrapped_n26_s42.jsonl",
       "model": "bot-wrapped",
       "model_reported": "bot-wrapped",
       "provider": "python",

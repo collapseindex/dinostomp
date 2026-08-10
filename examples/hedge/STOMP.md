@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 31 of 39 checks ran (31 of 39 ran; 18 n/a of 57 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 31 of 39 checks ran (31 of 39 ran; 22 n/a of 61 declared). Not a clean bill of health.
 
 ## Entitled claims
 
@@ -19,6 +19,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | n/a | no option offered twice in one item | 0 | no multiple-choice items in this dataset |
 | n/a | every target is among its choices | 0 | no multiple-choice items in this dataset |
 | ok | no identical question with contradictory targets | 30 | 0 question(s) appear with conflicting targets |
+| n/a | every referenced asset resolves and still hashes the same | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | every typed claim's evidence requirements hold | 0 | no typed claims declared |
 | ok | runs match the spec, data, and scorer on disk (no drift) | 4 | 0 of 4 run(s) no longer match the spec, data, or scorer on disk |
 | ok | the witness gate replays clean | 4 | hosted judge: gate NOT replayed (that would spend money during a lint); audited the witness claim in 4 run manifest(s) instead |
@@ -46,6 +49,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | no surface feature predicts the gold answer | 0 | no multiple-choice items in this dataset |
 | skip | no model reproduces the contamination canary | 0 | no canary probe on disk; run `dinostomp run <spec> --probe canary` to ask whether a model has already read this dataset |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
+| n/a | no near-duplicate assets | 0 | no item carries an `input_ref`; nothing points at a file |
 | skip | witnesses kill the mutant scorers | 0 | hosted judge: the mutation gauntlet would re-invoke it once per mutant per witness, which a lint must never pay for; run the judge probe instead |
 | ok | uncheckable rate is sane | 120 | 0% of 120 record(s) are uncheckable |
 | ok | accuracy is distinguishable from guessing | 4 | 0 of 4 model(s) score no better than guessing; fleet spans 87% to 97% vs chance ~3% (modal target floor) |
@@ -56,7 +60,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | ok | billed output tokens match the recorded text | 4 | 0 of 4 model(s) report far more output tokens than their recorded text accounts for (expected for hidden-reasoning models; otherwise check your invoice) |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now d9ec4738f87d2154); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 759283b174f39951); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -174,7 +178,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.52.0
+- tool: dinostomp 0.53.0
 - statistical power: at n=30 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~36% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `2195f25c46ce824a1bb5c48b0bdc701e4213819be267e7012cfaa83f32da0247`
 - data_sha256: `4f49a454472c4f7b7fbf7386304643163c016a525161e4391e48d6de68543bd9`

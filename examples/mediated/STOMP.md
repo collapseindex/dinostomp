@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 33 of 42 checks ran (33 of 42 ran; 15 n/a of 57 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 33 of 42 checks ran (33 of 42 ran; 19 n/a of 61 declared). Not a clean bill of health.
 
 ## Entitled claims
 
@@ -19,6 +19,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | n/a | no option offered twice in one item | 0 | no multiple-choice items in this dataset |
 | n/a | every target is among its choices | 0 | no multiple-choice items in this dataset |
 | ok | no identical question with contradictory targets | 24 | 0 question(s) appear with conflicting targets |
+| n/a | every referenced asset resolves and still hashes the same | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | every typed claim's evidence requirements hold | 0 | no typed claims declared |
 | ok | runs match the spec, data, and scorer on disk (no drift) | 3 | 0 of 3 run(s) no longer match the spec, data, or scorer on disk |
 | ok | the witness gate replays clean | 9 | replayed 6 witness(es): 6 behaved; 3 run manifest(s) checked |
@@ -46,6 +49,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | no surface feature predicts the gold answer | 0 | no multiple-choice items in this dataset |
 | skip | no model reproduces the contamination canary | 0 | no canary probe on disk; run `dinostomp run <spec> --probe canary` to ask whether a model has already read this dataset |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
+| n/a | no near-duplicate assets | 0 | no item carries an `input_ref`; nothing points at a file |
 | warn | witnesses kill the mutant scorers | 6 | 1 of 6 applicable mutant scorer(s) survive the witness suite |
 | ok | uncheckable rate is sane | 72 | 0% of 72 record(s) are uncheckable |
 | ok | accuracy is distinguishable from guessing | 3 | 0 of 3 model(s) score no better than guessing; fleet spans 75% to 100% vs chance ~12% (modal target floor) |
@@ -56,7 +60,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 1 | 0 of 1 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 3 | 0 of 3 run(s) were produced by a different engine than the one auditing them (now d9ec4738f87d2154); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 3 | 0 of 3 run(s) were produced by a different engine than the one auditing them (now 759283b174f39951); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | passing answers are grounded in tool evidence | 3 | 0 of 3 target(s) pass items whose answer does not APPEAR in their own evidence (0 such answer(s) in total). This is co-occurrence, not causation: an answer recalled from memory that also happens to appear in a retrieved snippet counts as grounded here, so this count is a floor |
 | ok | no model under-reports its trajectory | 3 | 0 of 3 target(s) report far fewer steps than the fleet (median 1.0); a thin trace can be efficiency OR omission |
@@ -104,7 +108,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"d9ec4738f87d2154": 3}}`
+- evidence: `{"engines": {"759283b174f39951": 3}}`
 
 </details>
 <details><summary>[ok] passing answers are grounded in tool evidence</summary>
@@ -154,13 +158,13 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260810_033531_mediated-grounding_greedy_n24_s7.jsonl | greedy | (same) | mediated | no | 7 | 24 | 0 |
-| 20260810_033531_mediated-grounding_grounded_n24_s7.jsonl | grounded | (same) | mediated | no | 7 | 24 | 0 |
-| 20260810_033531_mediated-grounding_oneshot_n24_s7.jsonl | oneshot | (same) | mediated | no | 7 | 24 | 0 |
+| 20260810_062058_mediated-grounding_grounded_n24_s7.jsonl | grounded | (same) | mediated | no | 7 | 24 | 0 |
+| 20260810_062102_mediated-grounding_greedy_n24_s7.jsonl | greedy | (same) | mediated | no | 7 | 24 | 0 |
+| 20260810_062102_mediated-grounding_oneshot_n24_s7.jsonl | oneshot | (same) | mediated | no | 7 | 24 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.52.0
+- tool: dinostomp 0.53.0
 - statistical power: at n=24 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~40% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `ae79cfd0e8319d80f9c565515d96632b8b952160f7f84a8c94f34075d9a6c15a`
 - data_sha256: `36fe2258536e2eb42b78699d92ab85fff93108c55cea33795f90f40f7be53c27`

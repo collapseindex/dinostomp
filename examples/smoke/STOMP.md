@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 18 of 28 checks ran (18 of 28 ran; 29 n/a of 57 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 18 of 28 checks ran (18 of 28 ran; 33 n/a of 61 declared). Not a clean bill of health.
 
 > All runs used the offline dry provider; results exercise the benchmark, not any real model.
 
@@ -21,6 +21,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | n/a | no option offered twice in one item | 0 | no multiple-choice items in this dataset |
 | n/a | every target is among its choices | 0 | no multiple-choice items in this dataset |
 | ok | no identical question with contradictory targets | 6 | 0 question(s) appear with conflicting targets |
+| n/a | every referenced asset resolves and still hashes the same | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | every typed claim's evidence requirements hold | 0 | no typed claims declared |
 | ok | runs match the spec, data, and scorer on disk (no drift) | 1 | 0 of 1 run(s) no longer match the spec, data, or scorer on disk |
 | ok | the witness gate replays clean | 6 | replayed 5 witness(es): 5 behaved; 1 run manifest(s) checked |
@@ -48,6 +51,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | no surface feature predicts the gold answer | 0 | no multiple-choice items in this dataset |
 | n/a | no model reproduces the contamination canary | 0 | regurgitation probes need a hosted model; this pod's runs are all local |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
+| n/a | no near-duplicate assets | 0 | no item carries an `input_ref`; nothing points at a file |
 | ok | witnesses kill the mutant scorers | 5 | 0 of 5 applicable mutant scorer(s) survive the witness suite |
 | ok | uncheckable rate is sane | 6 | 0% of 6 record(s) are uncheckable |
 | skip | accuracy is distinguishable from guessing | 0 | no model has 20+ checkable records (6 in total) |
@@ -58,7 +62,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 1 | 0 of 1 run(s) were produced by a different engine than the one auditing them (now d9ec4738f87d2154); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 1 | 0 of 1 run(s) were produced by a different engine than the one auditing them (now 759283b174f39951); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -95,7 +99,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"d9ec4738f87d2154": 1}}`
+- evidence: `{"engines": {"759283b174f39951": 1}}`
 
 </details>
 
@@ -103,11 +107,11 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260810_033522_smoke-arith_dry-strong_n6_s42.jsonl | dry-strong | (same) | dry | yes | 42 | 6 | 0 |
+| 20260810_062040_smoke-arith_dry-strong_n6_s42.jsonl | dry-strong | (same) | dry | yes | 42 | 6 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.52.0
+- tool: dinostomp 0.53.0
 - statistical power: at n=6 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~81% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `fca7dbcadb153b3133b04982dca162ac942495b32d1738505fb5f91e560219a9`
 - data_sha256: `0b56432c320054896104625b1a31ce453976ad63564baa96c5571ce414c9b623`

@@ -326,6 +326,159 @@ def t_dup_question(root):
     items = arith_items(); items[5]["input"] = items[3]["input"]
     return build_pod(root, items)
 
+# --- asset-backed items: the input is a FILE ---------------------------------
+#
+# Every one of these writes REAL PNG bytes. A trial over fake .png files would
+# prove that the checks read a JSON field, which is not what they claim to do:
+# S12 hashes bytes off the disk and S15 decodes pixels.
+
+
+def _png(rows) -> bytes:
+    """Minimal 8-bit greyscale PNG, stdlib only."""
+    import struct
+    import zlib
+
+    raw = b"".join(b"\x00" + bytes(r) for r in rows)
+
+    def chunk(tag, body):
+        return (struct.pack(">I", len(body)) + tag + body
+                + struct.pack(">I", zlib.crc32(tag + body) & 0xFFFFFFFF))
+
+    return (b"\x89PNG\r\n\x1a\n"
+            + chunk(b"IHDR", struct.pack(">IIBBBBB", len(rows[0]), len(rows), 8, 0, 0, 0, 0))
+            + chunk(b"IDAT", zlib.compress(raw, 9)) + chunk(b"IEND", b""))
+
+
+def _tile(seed: int, side: int = 16):
+    """A ramp whose PHASE varies with the seed.
+
+    Used where the trial needs images that differ in bytes. It must not be used
+    for the clean pod: every one of these has the same gradient direction, and
+    dHash encodes direction, so ten of them are near-identical to it however
+    different they look. That is not a hypothetical; the specificity arm flagged
+    all ten as near-duplicates and it was right to.
+    """
+    return [[(seed * 37 + x * 11 + y * 29) % 256 for x in range(side)] for y in range(side)]
+
+
+def _distinct_tile(seed: int, side: int = 16):
+    """Images with genuinely different STRUCTURE, not just different bytes.
+
+    A filled rectangle whose size and position move with the seed, so the
+    adjacent-pixel gradients that dHash reads land in different places. This is
+    what a clean image pod looks like, and building it was the only way to find
+    out whether S15 fires on any two images or only on similar ones.
+    """
+    x0, y0 = (seed * 3) % (side - 5), (seed * 5) % (side - 5)
+    w, h = 3 + (seed % 4), 3 + ((seed * 2) % 4)
+    return [[20 if x0 <= x < x0 + w and y0 <= y < y0 + h else 235
+             for x in range(side)] for y in range(side)]
+
+
+def asset_items(root: Path, n: int = 8, labels=("alpha", "beta"), subdir="images",
+                distinct: bool = False):
+    """n images, one file each, hashes pinned. No defect planted.
+
+    `distinct=True` gives structurally different pictures, which is what the
+    specificity arm needs. The default gives byte-different ones, which is all
+    the sensitivity trials require and which S15 correctly considers similar.
+    """
+    import hashlib
+
+    (root / subdir).mkdir(parents=True, exist_ok=True)
+    items = []
+    for i in range(n):
+        data = _png((_distinct_tile if distinct else _tile)(i + 1))
+        rel = f"{subdir}/img-{i:03d}.png"
+        (root / rel).write_bytes(data)
+        items.append({"id": f"a-{i:03d}", "input": "What is in this image?",
+                      "input_ref": {"kind": "image", "uri": rel,
+                                    "sha256": hashlib.sha256(data).hexdigest(),
+                                    "split": "train" if i % 2 else "test"},
+                      "choices": list(labels), "target": labels[i % len(labels)]})
+    return items
+
+
+def t_asset_changed_after_the_dataset(root):
+    # The classic drift, in the one place a text pod cannot have it: the dataset
+    # is untouched and correct, and the PICTURE it points at was replaced.
+    items = asset_items(root)
+    (root / items[2]["input_ref"]["uri"]).write_bytes(_png(_tile(99)))
+    return build_pod(root, items)
+
+
+def t_asset_missing(root):
+    items = asset_items(root)
+    (root / items[5]["input_ref"]["uri"]).unlink()
+    return build_pod(root, items)
+
+
+def t_asset_path_escapes_the_pod(root):
+    # A dataset is untrusted input. A uri that climbs out of the pod is refused
+    # rather than read, and refusing has to be a FINDING or it is invisible.
+    items = asset_items(root)
+    items[1]["input_ref"]["uri"] = "../../../etc/passwd"
+    return build_pod(root, items)
+
+
+def t_label_in_the_asset_path(root):
+    # How image datasets are stored: one directory per class. Harmless on disk,
+    # a leaked key the moment anything shows the model a filename.
+    import hashlib
+
+    items = asset_items(root)
+    for item in items:
+        label = item["target"]
+        (root / "byclass" / label).mkdir(parents=True, exist_ok=True)
+        data = (root / item["input_ref"]["uri"]).read_bytes()
+        rel = f"byclass/{label}/{item['id']}.png"
+        (root / rel).write_bytes(data)
+        item["input_ref"]["uri"] = rel
+        item["input_ref"]["sha256"] = hashlib.sha256(data).hexdigest()
+    return build_pod(root, items)
+
+
+def t_same_image_in_train_and_test(root):
+    # The leakage vision benchmarks actually suffer from. Byte-identical, so S1
+    # sees it too; S14 is what names it as a SPLIT problem rather than a
+    # duplicate row, which is the difference between "drop one" and "your test
+    # score is inflated".
+    import hashlib
+
+    items = asset_items(root)
+    data = (root / items[0]["input_ref"]["uri"]).read_bytes()
+    rel = "images/copy-of-000.png"
+    (root / rel).write_bytes(data)
+    items.append({"id": "a-dup", "input": "What is in this image?",
+                  "input_ref": {"kind": "image", "uri": rel,
+                                "sha256": hashlib.sha256(data).hexdigest(),
+                                "split": "test" if items[0]["input_ref"]["split"] == "train"
+                                         else "train"},
+                  "choices": items[0]["choices"], "target": items[0]["target"]})
+    return build_pod(root, items)
+
+
+def t_near_duplicate_images(root):
+    # NOT byte-identical: the same picture, brightened. The bytes differ
+    # completely, so S1 is blind to it by construction and only a perceptual
+    # comparison can see it.
+    import hashlib
+
+    items = asset_items(root)
+    rows = _tile(1)
+    brighter = [[min(255, v + 3) for v in row] for row in rows]
+    data = _png(brighter)
+    rel = "images/near-000.png"
+    (root / rel).write_bytes(data)
+    assert hashlib.sha256(data).hexdigest() != items[0]["input_ref"]["sha256"],         "the trial must not be byte-identical, or it tests S1 instead of S15"
+    items.append({"id": "a-near", "input": "What is in this image?",
+                  "input_ref": {"kind": "image", "uri": rel,
+                                "sha256": hashlib.sha256(data).hexdigest(),
+                                "split": items[0]["input_ref"]["split"]},
+                  "choices": items[0]["choices"], "target": items[0]["target"]})
+    return build_pod(root, items)
+
+
 def t_answer_leak(root):
     items = text_items()
     items[4]["input"] += " (hint: it is " + items[4]["target"] + ")"
@@ -1567,6 +1720,12 @@ TRIALS = [
     ("same option offered twice", t_dup_option, ("S5", "fail")),
     ("target missing from choices", t_keyless, ("S6", "fail")),
     ("identical question keyed two ways", t_contradictory, ("S7", "fail")),
+    ("the image changed after the dataset pinned it", t_asset_changed_after_the_dataset, ("S12", "fail")),
+    ("a referenced image is not on disk", t_asset_missing, ("S12", "fail")),
+    ("an asset path climbs out of the pod", t_asset_path_escapes_the_pod, ("S12", "fail")),
+    ("one directory per class, so the path names the answer", t_label_in_the_asset_path, ("S13", "fail")),
+    ("the same photograph in train and in test", t_same_image_in_train_and_test, ("S14", "fail")),
+    ("the same photograph, brightened, so the bytes differ", t_near_duplicate_images, ("S15", "warn")),
     ("no contamination canary", t_no_canary, ("S8", "warn")),
     ("witnesses too weak (blind spots)", t_weak_witnesses, ("W1", "warn")),
     ("scorer laxer than its witnesses claim", t_lying_scorer_gated, ("RUNNER", GATED)),
@@ -1761,12 +1920,26 @@ def clean_forced_choice(root):
     return ran(root, items=items, models=FLEET, witnesses=TEXT_WITNESSES)
 
 
+def clean_asset_pod(root):
+    """Well-formed image items: distinct pictures, pinned hashes, no split
+    overlap, paths that do not name the class.
+
+    The specificity arm matters more for S12 to S15 than for most checks here.
+    A near-duplicate detector that fires on any two images from the same dataset
+    is not a check, it is a nuisance, and the only way to know which one it is
+    was to build a pod that must come back silent.
+    """
+    items = asset_items(root, n=10, subdir="pics", distinct=True)
+    return ran(root, items=items)
+
+
 CLEAN_TRIALS = [
     ("clean free-form fleet", lambda root: ran(root, items=arith_items(), models=FLEET)),
     ("clean pod whose odd repeats decide every item", t_clean_odd_repeats),
     ("clean mediated pod whose answers need their evidence", t_clean_mediated_pod),
     ("clean mediated pod run behind a process boundary", t_clean_sandboxed_pod),
     ("clean choice fleet", lambda root: ran(root, items=choice_items(), models=FLEET)),
+    ("clean image pod: distinct pictures, pinned, no split overlap", clean_asset_pod),
     ("clean single-model pod (incomplete, but zero findings)",
      lambda root: ran(root, items=arith_items())),
     ("clean mixed-format pod with a separated ordering claim",

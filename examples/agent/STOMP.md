@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 38 of 42 checks ran (38 of 42 ran; 15 n/a of 57 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 38 of 42 checks ran (38 of 42 ran; 19 n/a of 61 declared). Not a clean bill of health.
 
 ## Entitled claims
 
@@ -29,6 +29,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | n/a | no option offered twice in one item | 0 | no multiple-choice items in this dataset |
 | n/a | every target is among its choices | 0 | no multiple-choice items in this dataset |
 | ok | no identical question with contradictory targets | 26 | 0 question(s) appear with conflicting targets |
+| n/a | every referenced asset resolves and still hashes the same | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
 | ok | every typed claim's evidence requirements hold | 6 | 2 of 2 typed claim(s) supported across 6 evidence requirement(s) (no multiplicity correction across 2 claims) |
 | ok | runs match the spec, data, and scorer on disk (no drift) | 4 | 0 of 4 run(s) no longer match the spec, data, or scorer on disk |
 | ok | the witness gate replays clean | 9 | replayed 5 witness(es): 5 behaved; 4 run manifest(s) checked |
@@ -56,6 +59,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | no surface feature predicts the gold answer | 0 | no multiple-choice items in this dataset |
 | skip | no model reproduces the contamination canary | 0 | no canary probe on disk; run `dinostomp run <spec> --probe canary` to ask whether a model has already read this dataset |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
+| n/a | no near-duplicate assets | 0 | no item carries an `input_ref`; nothing points at a file |
 | ok | witnesses kill the mutant scorers | 6 | 0 of 6 applicable mutant scorer(s) survive the witness suite |
 | ok | uncheckable rate is sane | 104 | 0% of 104 record(s) are uncheckable |
 | ok | accuracy is distinguishable from guessing | 4 | 0 of 4 model(s) score no better than guessing; fleet spans 35% to 100% vs chance ~4% (modal target floor) |
@@ -66,7 +70,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | ok | each model beats its own blind baseline | 4 | 0 of 4 model(s) score no better informed than blind; their numbers are not evidence about this task (unpaired: separate runs) |
 | ok | failed answers do not contain the reference | 2 | 0 of 2 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 4 | 0 of 4 run(s) were produced by a different engine than the one auditing them (now d9ec4738f87d2154); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 4 | 0 of 4 run(s) were produced by a different engine than the one auditing them (now 759283b174f39951); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | passing answers are grounded in tool evidence | 4 | 0 of 4 target(s) pass items whose answer does not APPEAR in their own evidence (2 such answer(s) in total). This is co-occurrence, not causation: an answer recalled from memory that also happens to appear in a retrieved snippet counts as grounded here, so this count is a floor |
 | ok | no model under-reports its trajectory | 4 | 0 of 4 target(s) report far fewer steps than the fleet (median 1.2); a thin trace can be efficiency OR omission |
@@ -129,7 +133,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"d9ec4738f87d2154": 4}}`
+- evidence: `{"engines": {"759283b174f39951": 4}}`
 
 </details>
 <details><summary>[ok] passing answers are grounded in tool evidence</summary>
@@ -179,14 +183,14 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260810_033528_agent-capitals_agent-grounded_n26_s42.jsonl | agent-grounded | (same) | python | no | 42 | 26 | 0 |
-| 20260810_033528_agent-capitals_agent-narrow_n26_s42.jsonl | agent-narrow | (same) | python | no | 42 | 26 | 0 |
-| 20260810_033528_agent-capitals_agent-partial_n26_s42.jsonl | agent-partial | (same) | python | no | 42 | 26 | 0 |
-| 20260810_033529_agent-capitals_agent-lazy_n26_s42.jsonl | agent-lazy | (same) | python | no | 42 | 26 | 0 |
+| 20260810_062052_agent-capitals_agent-grounded_n26_s42.jsonl | agent-grounded | (same) | python | no | 42 | 26 | 0 |
+| 20260810_062052_agent-capitals_agent-lazy_n26_s42.jsonl | agent-lazy | (same) | python | no | 42 | 26 | 0 |
+| 20260810_062052_agent-capitals_agent-narrow_n26_s42.jsonl | agent-narrow | (same) | python | no | 42 | 26 | 0 |
+| 20260810_062052_agent-capitals_agent-partial_n26_s42.jsonl | agent-partial | (same) | python | no | 42 | 26 | 0 |
 
 ## Provenance
 
-- tool: dinostomp 0.52.0
+- tool: dinostomp 0.53.0
 - statistical power: at n=26 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~39% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `66a70cdee88cac64a2400c41b4a919c92d4e2e8345f4b4257b9433215195aeb1`
 - data_sha256: `5dfd19b1348d90405cd81c07540d53a4583e766dfbb690420cf78bdeb5cb530c`

@@ -39,19 +39,19 @@ def rerun_pod(name: str, tmp_path: Path, capsys, probe: bool = False) -> str:
 @pytest.mark.parametrize("pod, quoted_lines, probe", [
     ("smoke", [
         "smoke-arith | dry-strong | complete | acc 1.000 [0.61, 1.00] on 6 checkable",
-        "INCOMPLETE: no failures, but only 18 of 28 checks ran (29 n/a of 57 declared).",
+        "INCOMPLETE: no failures, but only 18 of 28 checks ran (33 n/a of 61 declared).",
     ], False),
     ("fleet", [
         "fleet-arith | dry-alpha | complete | acc 1.000 [0.86, 1.00] on 24 checkable",
         "0 of 6 model(s) score no better than guessing; fleet spans 38% to 100% vs chance ~4% (modal target floor)",
-        "MECHANICALLY SOUND: no integrity findings, full coverage (29 of 29 ran; 28 n/a of 57 declared)",
+        "MECHANICALLY SOUND: no integrity findings, full coverage (29 of 29 ran; 32 n/a of 61 declared)",
     ], False),
     ("iris", [
-        "(29 of 29 ran; 28 n/a of 57 declared)",
+        "(29 of 29 ran; 32 n/a of 61 declared)",
     ], False),
     ("agent", [
         "agent-capitals | agent-grounded | complete | acc 0.923 [0.76, 0.98] on 26 checkable",
-        "INCOMPLETE: no failures, but only 38 of 42 checks ran (15 n/a of 57 declared).",
+        "INCOMPLETE: no failures, but only 38 of 42 checks ran (19 n/a of 61 declared).",
     ], True),
 ])
 def test_readme_transcripts_match_reality(pod, quoted_lines, probe, tmp_path, capsys):
@@ -308,7 +308,8 @@ def test_readme_data_scope_prose_matches_the_registry():
     """
     from dinostomp.lint import CHECKS, SCOPE_CHECKS
 
-    words = {10: "Ten", 47: "forty-seven", 57: "fifty-seven"}
+    words = {10: "Ten", 14: "Fourteen", 47: "forty-seven",
+             57: "fifty-seven", 61: "sixty-one"}
     data_n = len(SCOPE_CHECKS["data"])
     rest_n = len(CHECKS) - data_n
     # The sentence wraps, so compare against normalised whitespace.

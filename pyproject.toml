@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dinostomp"
-version = "0.52.0"
+version = "0.53.0"
 description = "Build evals fast. Everything gets stomped before it gets believed."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -18,6 +18,11 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0"]
+# Image DECODING, and nothing else. The core stays at two dependencies: an
+# image's bytes answer "is this the same file", and only "is this the same
+# picture" needs pixels. S15 is the one check that does, and it skips loudly
+# when this is absent rather than passing quietly.
+vision = ["Pillow>=9.0"]
 
 [project.scripts]
 dinostomp = "dinostomp.cli:main"

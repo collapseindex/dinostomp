@@ -59,6 +59,7 @@ from dinostomp.extensions import ExtensionError, discover, run_extensions
 from dinostomp.dataset import (DATA_SUFFIXES, build_items, infer_mapping,
                                looks_like_dataset, read_rows, repair_items,
                                sniff_separator, unrepairable_findings)
+from dinostomp import modality, perceptual
 from dinostomp.fingerprint import engine_fingerprint
 from dinostomp.spec import Issue, jsonl_lines, load_spec, spec_sha256, validate_obj
 
@@ -83,6 +84,11 @@ CHECKS: list[tuple[str, str, bool, str]] = [
     ("S10", "no model reproduces the contamination canary", False, "canary probe on disk"),
     ("S11", "no item already appears in a reference dataset", False,
      "a reference corpus supplied with --against"),
+    ("S12", "every referenced asset resolves and still hashes the same", True,
+     "items carrying input_ref"),
+    ("S13", "no asset's own path gives away its label", True, "items carrying input_ref"),
+    ("S14", "no asset appears in two splits", True, "input_ref items declaring a split"),
+    ("S15", "no near-duplicate assets", False, "input_ref images, with the vision extra installed"),
     ("W1", "witnesses kill the mutant scorers", False, "always"),
     ("C1", "every typed claim's evidence requirements hold", True, "typed claims declared"),
     ("R1", "runs match the spec, data, and scorer on disk (no drift)", True, "runs on disk"),
@@ -144,6 +150,7 @@ THRESHOLDS = {
     "min_choice_items": 20,    # S3/S4/S9 need at least this many keyed choice items
     "min_checkable": MIN_EVIDENCE,   # R7/R13/C1 need at least this many scored units
     "min_leak_len": 2,         # S2 ignores 1-char targets (too many false hits)
+    "near_dup_bits": 5,        # S15: dHash Hamming distance counting as a near-duplicate
     "kr20_min": 0.50,          # P1 warns below this reliability
     "negative_discrimination": -0.20,  # P2 flags items at or below this r_pb
     "dead_weight_max": 0.50,   # P3 warns when more than half the items separate nobody
@@ -222,6 +229,8 @@ SLUGS = {
     "S4": "length-bias", "S5": "dup-options", "S6": "target-not-offered",
     "S7": "conflicting-keys", "S8": "canary-present", "S9": "surface-shortcut",
     "S10": "canary-regurgitated", "S11": "corpus-overlap",
+    "S12": "asset-drift", "S13": "label-in-path", "S14": "split-leak",
+    "S15": "near-dup-assets",
     "W1": "witness-coverage", "C1": "claim-evidence",
     "R1": "input-drift", "R2": "witness-replay", "R3": "spend-ledger",
     "R4": "record-integrity", "R5": "truncation-credit", "R6": "uncheckable-rate",
@@ -247,7 +256,8 @@ BY_SLUG = {v: k for k, v in SLUGS.items()}
 # Which checks each SCOPE is answerable for. A verdict is only as broad as the
 # evidence it was given, and saying so is cheaper than an asterisk.
 SCOPE_CHECKS = {
-    "data": {"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S11"},
+    "data": {"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S11",
+             "S12", "S13", "S14", "S15"},
 }
 SCOPE_CHECKS["pod"] = {cid for cid, *_ in CHECKS}
 
@@ -297,6 +307,16 @@ THRESHOLD_PROVENANCE = {
     "template_swing_min": ("judgment", "same practical floor, for instruction framing"),
     "candidate_list_min": ("judgment", "3 other answer-space values before a question counts as "
                                        "offering a candidate list"),
+    "near_dup_bits": ("calibrated", "5 of 64 bits is conventional in the perceptual-hash "
+                      "literature, and is now MEASURED against a human annotation: on ciFAIR's "
+                      "hand-labelled CIFAR-10 duplicates it recovers 28.1% of them (70 of 249) "
+                      "and flags 158 test/train pairs across 60,000 images, while every "
+                      "byte-level check recovers 0%. 8 bits nearly doubles recall to 52.6% for "
+                      "3.2x the candidates and starts flagging images the annotators judged "
+                      "similar but NOT duplicates. The default stays at 5: that curve is one "
+                      "dataset of 32x32 photographs, and it is not a licence to reset a default "
+                      "for documents or spectrograms. Full curve: N-017, and "
+                      "`benchmarks/cifair/compare.py --sweep` re-derives it."),
     "min_leak_len": ("judgment", "2 characters before a target is long enough to 'appear' in a "
                                  "question"),
     "collapse_exclude_share": ("judgment", "95% identical before a model is called constant"),
@@ -597,8 +617,31 @@ def _item_key(item: dict) -> str:
     Options are compared as a SET. Two items offering the same four options in
     a different order are the same item presented differently, which is what
     S1 is for; P9 is the check that cares about order.
+
+    An ASSET-backed item is identified by its asset's BYTES, and by its prompt
+    too when it has one. Both halves matter and dropping either fabricates a
+    finding on a gating check:
+
+      * keying on the uri instead of the bytes calls two paths to the same
+        photograph two different items, which is the leakage S1 and S7 exist to
+        catch.
+      * keying on the prompt alone collapses every item behind a shared prompt
+        ("What is in this image?") into one duplicate pile, which is a whole
+        dataset reported as duplicated. Same shape as D-016 and D-039: an
+        assumption about somebody's data, presented as a property of it.
     """
-    key = _norm(item["input"])
+    parts = []
+    ref = modality.ref_of(item)
+    if ref:
+        # The sha256 is the DECLARED one. S12 is what proves the file still
+        # matches it, and a pod where S12 fails is already BROKEN before these
+        # are read. With no declared hash the uri is all there is, and that is
+        # weaker: it is why S12 counts unpinned assets out loud.
+        digest = str(ref.get("sha256") or "").lower()
+        parts.append(f"asset:{digest}" if digest else f"uri:{_norm(ref['uri'])}")
+    if isinstance(item.get("input"), str):
+        parts.append(_norm(item["input"]))
+    key = " ++ ".join(parts)
     choices = item.get("choices")
     if isinstance(choices, list):
         key += " || " + " | ".join(sorted(_norm(c) for c in choices))
@@ -665,8 +708,116 @@ def _duplicate_option_checks(rep: Reporter, choice_items: list[dict]) -> None:
               n=len(choice_items), examples=keyless)
 
 
+def _asset_checks(rep: Reporter, items: list[dict], base_dir: Path | None) -> None:
+    """S12 to S15: facts about inputs that live in FILES.
+
+    All four are skipped, not passed, on a dataset with no `input_ref`. A text
+    eval has no assets to drift, and reporting `pass` on zero assets is the
+    zero-witness pass this project treats as a defect everywhere else.
+    """
+    refs = [i for i in items if modality.ref_of(i)]
+    if not refs:
+        for cid in ("S12", "S13", "S14", "S15"):
+            rep.not_applicable(cid, "no item carries an `input_ref`; nothing points at a file")
+        return
+
+    if base_dir is None:
+        # A bare `dinostomp stomp data.jsonl` knows where the data file is, so
+        # this only happens if a caller forgets to pass it. Skipping loudly
+        # beats resolving against the working directory, which would read
+        # whatever happened to be there.
+        for cid in ("S12", "S13", "S14", "S15"):
+            rep.skip(cid, "no pod directory to resolve asset paths against")
+        return
+
+    # S12: the assets are there, they are inside the pod, and they still hash
+    # to what the dataset says they hash to.
+    problems, digests = modality.verify_refs(refs, base_dir)
+    unpinned = [str(i["id"]) for i in refs if not modality.ref_of(i).get("sha256")]
+    detail = f"{len(problems)} asset(s) missing, unreadable, or changed since the dataset was written"
+    if unpinned:
+        detail += (f"; {len(unpinned)} of {len(refs)} carry NO sha256, so their bytes are "
+                   f"unverifiable and only their presence was checked")
+    rep.check("S12", not problems, detail, n=len(refs),
+              examples=[f"{p.item_id}: {p.kind}, {p.detail}" for p in problems[:8]],
+              evidence={"unpinned": len(unpinned), "assets": len(refs),
+                        "by_kind": dict(Counter(p.kind for p in problems))})
+
+    # S13: the label in the asset's own path. Not a defect in the dataset; a
+    # defect waiting to happen in any pipeline that shows the model a filename.
+    leaks = []
+    for item in refs:
+        found = modality.path_leaks_label(str(modality.ref_of(item)["uri"]), _targets_of(item))
+        if found:
+            leaks.append(f"{item['id']}: {modality.ref_of(item)['uri']} contains {found!r}")
+    rep.check("S13", not leaks,
+              f"{len(leaks)} asset path(s) contain their own answer as a path segment",
+              n=len(refs), examples=leaks[:8])
+
+    # S14: the same asset in two splits. This is the leakage form that vision
+    # benchmarks actually suffer from, and no text check looks for it because a
+    # text pod is one split.
+    split_of: dict[str, set] = {}
+    for item in refs:
+        ref = modality.ref_of(item)
+        split = ref.get("split")
+        digest = digests.get(str(item["id"])) or str(ref.get("sha256") or "")
+        if split and digest:
+            split_of.setdefault(digest, set()).add(str(split))
+    if not split_of:
+        rep.not_applicable("S14", "no asset declares a `split`; there are no splits to leak between")
+    else:
+        crossers = [d for d, splits in split_of.items() if len(splits) > 1]
+        rep.check("S14", not crossers,
+                  f"{len(crossers)} asset(s) appear in more than one split",
+                  n=len(split_of),
+                  examples=[f"{d[:12]}...: {', '.join(sorted(split_of[d]))}" for d in crossers[:8]])
+
+    # S15: near-duplicates. Needs pixels, so needs the optional extra, and says
+    # so rather than passing.
+    images = [i for i in refs if modality.ref_of(i).get("kind") == "image"]
+    if not images:
+        rep.not_applicable("S15", "no image assets; near-duplicate detection is image-only")
+    elif not perceptual.available():
+        rep.skip("S15", perceptual.missing_reason())
+    else:
+        hashes, undecodable = {}, []
+        for item in images:
+            path = modality.resolve(str(modality.ref_of(item)["uri"]), base_dir)
+            h = perceptual.dhash(path) if path and path.is_file() else None
+            if h is None:
+                undecodable.append(str(item["id"]))
+            else:
+                hashes[str(item["id"])] = h
+        # Byte-identical pairs are S1's finding, not this one. Reporting them
+        # here as well would double-count one defect across two checks and
+        # inflate the ledger.
+        exact = {}
+        for item in images:
+            d = digests.get(str(item["id"]))
+            if d:
+                exact.setdefault(d, []).append(str(item["id"]))
+        same_bytes = {tuple(sorted(g)) for g in exact.values() if len(g) > 1}
+        pairs = [(a, b, d) for a, b, d in
+                 perceptual.near_duplicate_pairs(hashes, int(THRESHOLDS["near_dup_bits"]))
+                 if (a, b) not in {p[:2] for p in same_bytes} and tuple(sorted((a, b))) not in same_bytes]
+        detail = (f"{len(pairs)} candidate near-duplicate pair(s) at Hamming distance "
+                  f"<= {int(THRESHOLDS['near_dup_bits'])} of 64, beyond the byte-identical ones S1 reports")
+        if undecodable:
+            detail += f"; {len(undecodable)} image(s) did not decode and were not compared"
+        rep.check("S15", not pairs, detail, n=len(hashes),
+                  examples=[f"{a} ~ {b} ({d} bits)" for a, b, d in pairs[:8]],
+                  evidence={"undecodable": len(undecodable), "compared": len(hashes),
+                            "max_bits": int(THRESHOLDS["near_dup_bits"])})
+
+
 def _item_checks(rep: Reporter, items: list[dict]) -> None:
-    text_items = [i for i in items if "choices" not in i]
+    # An asset-backed item may carry no inline `input` at all: a classification
+    # pod's item IS the image. Those are excluded from the free-form pool rather
+    # than defaulted to an empty string, because an empty question makes every
+    # such item look identical to every other and S2's answer-space collapses.
+    # S13 is the leak check that applies to them.
+    text_items = [i for i in items if "choices" not in i and isinstance(i.get("input"), str)]
     choice_items = [i for i in items if "choices" in i]
 
     # S1: duplicate items (question, plus options when it has them)
@@ -689,7 +840,11 @@ def _item_checks(rep: Reporter, items: list[dict]) -> None:
     # options, not leaking the key. Without this rule the check is mostly
     # false positives on instruction-style prompts.
     if not text_items:
-        rep.not_applicable("S2", "no free-form items in this dataset")
+        asset_only = sum(1 for i in items if "choices" not in i and modality.ref_of(i))
+        rep.not_applicable(
+            "S2", f"no free-form items in this dataset"
+                  + (f"; {asset_only} carry their input in a file, where the leak to look for is "
+                     f"the label in the PATH (S13), not in the question" if asset_only else ""))
     else:
         answer_space = {_norm(t) for i in text_items for t in _targets_of(i)
                         if len(t) >= THRESHOLDS["min_leak_len"]}
@@ -2672,6 +2827,7 @@ def lint_eval(spec_path: str | Path, trust_code: bool = False,
 
     rep = Reporter()
     _item_checks(rep, items)
+    _asset_checks(rep, items, base)
     _canary_check(rep, base, spec["data"])
     # A pod's dataset deserves the overlap check as much as a bare file does.
     _overlap_check(rep, items, references or {})
@@ -2877,6 +3033,7 @@ def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
 
     rep = Reporter()
     _item_checks(rep, items)
+    _asset_checks(rep, items, path.parent)
     _overlap_check(rep, items, references or {})
     for reason, cids in DATASET_NA.items():
         for cid in cids:

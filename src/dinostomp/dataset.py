@@ -249,6 +249,17 @@ def build_items(rows: list[dict], mapping: dict[str, str], separator: str | None
         item: dict[str, Any] = {"id": str(row[id_col]) if id_col and row.get(id_col) is not None
                                 else f"row-{i:06d}"}
         item["input"] = str(row.get(in_col, "")).strip()
+        # Carry an asset reference through UNTOUCHED. This function builds a
+        # fresh dict rather than copying the row, so anything not named here is
+        # silently gone, and `input_ref` going missing is not a cosmetic loss:
+        # every image behind a shared prompt ("Which shape is in this image?")
+        # then keys identically, and S1 and S7 report a whole dataset as
+        # duplicated and self-contradictory. Found by running the first image
+        # pod through `stomp`, which reported exactly that on ten distinct
+        # pictures.
+        ref = row.get("input_ref")
+        if isinstance(ref, dict) and ref.get("uri"):
+            item["input_ref"] = ref
         choices = _extract_choices(row.get(ch_col)) if ch_col else None
         if choices is None and ch_col and separator:
             raw = row.get(ch_col)
@@ -271,7 +282,10 @@ def build_items(rows: list[dict], mapping: dict[str, str], separator: str | None
         # items is fewer chances for a check to find anything.
         missing = target is None or (isinstance(target, str) and not target.strip())             or (isinstance(target, list) and not target)
         item["target"] = target if isinstance(target, list) else str(target).strip()
-        if not item["input"] or missing:
+        # An item with an asset needs no inline prompt: a classification pod's
+        # item IS the image. Requiring `input` here would drop every one of them
+        # and report a clean audit over an empty dataset.
+        if (not item["input"] and "input_ref" not in item) or missing:
             continue
         items.append(item)
 

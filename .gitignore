@@ -42,6 +42,20 @@ benchmarks/inspect-import/*.json
 # fetch.py and compare.py are committed; what they download is not.
 benchmarks/mmlu-redux/*.jsonl
 benchmarks/mmlu-redux/.cache/
+# CIFAR-10 images. fetch.py rebuilds every one of them from the archive it
+# downloads, so committing 4,000 PNGs would vendor somebody else's dataset in
+# the least reviewable form available. The ciFAIR ANNOTATION is not committed
+# either: it is CC-BY-SA and belongs to its authors.
+benchmarks/cifair/images/
+
+# Anything a fetcher DOWNLOADED. The `!benchmarks/*/data/**` exception above
+# exists so a pod's committed RUN RECORDS survive the blanket `data/` rule, and
+# it silently re-included this too: the 163MB CIFAR-10 archive was committed and
+# GitHub's 100MB limit is what caught it. Run records are evidence this repo
+# produced; raw/ is somebody else's dataset, and the rule everywhere else is
+# fetched, not vendored.
+benchmarks/*/data/raw/
+
 # Judge verdict caches: reproducible by re-running validate.py with a key,
 # and not evidence anybody should trust without re-deriving.
 extensions/*/validation-cache*.json

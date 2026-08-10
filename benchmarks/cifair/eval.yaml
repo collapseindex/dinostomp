@@ -1,0 +1,41 @@
+name: bench-cifar10
+version: 0.1.0
+question: "Which of the ten CIFAR-10 classes is shown in the image?"
+
+# CIFAR-10 (Krizhevsky, 2009), built by `python benchmarks/cifair/fetch.py`.
+# The first pod here whose items are FILES rather than strings: each carries an
+# `input_ref` with the image's sha256 and its split.
+#
+# THIS SAMPLE IS CONSTRUCTED, and no prevalence may be read off it. Every image
+# named in the ciFAIR duplicate annotation is included FIRST, then a
+# deterministic fill. A random 4,000-image sample of CIFAR-10 would contain
+# almost none of the 286 annotated pairs, and a pod that cannot contain the
+# defect cannot demonstrate the check. What this pod shows is that the checks
+# fire on real photographs; what they would find in the full 60,000 is the
+# separate question `compare.py` answers.
+#
+# SCOPE: this audits the CIFAR-10 archive as distributed by its authors. The
+# duplicate annotation is Barz & Denzler's (ciFAIR, CC-BY-SA), fetched not
+# vendored, and their judgment codes are theirs rather than this battery's.
+
+entitled_claims:
+  - "Which class each model picks on these CIFAR-10 images, per model."
+  - "Nothing about CIFAR-10's prevalence of anything: the sample is constructed around the annotated duplicates."
+
+data: {path: items.jsonl, format: jsonl, render_choices: true}
+
+models:
+  - {provider: dry, model: dry-strong}
+
+scorer:
+  kind: includes
+  witnesses:
+    - {output: "automobile", target: "automobile", expect: pass}
+    - {output: "The answer is automobile", target: "automobile", expect: pass}
+    - {output: "truck", target: "automobile", expect: fail}
+    - {output: "", target: "automobile", expect: fail}
+    - {output: "AUTOMOBILE", target: "automobile", expect: fail, why: "substring matching is case-sensitive, and this pod says so"}
+    - {output: "auto", target: "automobile", expect: fail, why: "a strict prefix is not the answer"}
+    - {output: "car", target: "automobile", expect: fail, why: "a synonym is not the keyed label"}
+
+run: {n: 200, seed: 7, budget_usd: 0}

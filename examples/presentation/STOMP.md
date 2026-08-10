@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 36 of 38 checks ran (36 of 38 ran; 19 n/a of 57 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 36 of 38 checks ran (36 of 38 ran; 23 n/a of 61 declared). Not a clean bill of health.
 
 ## Entitled claims
 
@@ -19,6 +19,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | ok | no option offered twice in one item | 40 | 0 item(s) offer a duplicate option |
 | ok | every target is among its choices | 40 | 0 item(s) whose target is not among their choices |
 | ok | no identical question with contradictory targets | 40 | 0 question(s) appear with conflicting targets |
+| n/a | every referenced asset resolves and still hashes the same | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | every typed claim's evidence requirements hold | 0 | no typed claims declared |
 | ok | runs match the spec, data, and scorer on disk (no drift) | 4 | 0 of 4 run(s) no longer match the spec, data, or scorer on disk |
 | ok | the witness gate replays clean | 11 | replayed 7 witness(es): 7 behaved; 4 run manifest(s) checked |
@@ -46,6 +49,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | ok | no surface feature predicts the gold answer | 40 | 0 surface feature(s) beat the per-item chance null on 40 keyed item(s) |
 | ok | no model reproduces the contamination canary | 4 | 0 of 4 model(s) with a DEMONSTRATED-sensitive probe reproduced this pod's canary |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
+| n/a | no near-duplicate assets | 0 | no item carries an `input_ref`; nothing points at a file |
 | ok | witnesses kill the mutant scorers | 5 | 0 of 5 applicable mutant scorer(s) survive the witness suite |
 | ok | uncheckable rate is sane | 160 | 0% of 160 record(s) are uncheckable |
 | ok | accuracy is distinguishable from guessing | 4 | 0 of 4 model(s) score no better than guessing; fleet spans 88% to 100% vs chance ~25% (uniform choice floor) |
@@ -56,7 +60,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 1 | 0 of 1 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now d9ec4738f87d2154); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 759283b174f39951); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -170,7 +174,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.52.0
+- tool: dinostomp 0.53.0
 - statistical power: at n=40 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~31% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `5bacd458ad54056ede6d5cca8071816c1f9f31dc510571c29b23c7124dc47878`
 - data_sha256: `d9e5a5096d3d36c846d4d90320ec9f19b0b835df5d4b6baa68dd4b0d870ba32e`

@@ -1,5 +1,87 @@
 # Changelog
 
+### v0.53.0 (2026-08-10)
+
+**An item's input can be a FILE now: an image, an audio clip.** The battery was
+built for text and most of it never looked at the modality, which turned out to
+be the interesting part. Every run check, every claim check, the witness gate
+and the mutation gauntlet work unchanged. The four checks that are new are the
+ones a text pod has no use for.
+
+- **`input_ref` in the items schema**: `{kind, uri, sha256, split}`. A pointer
+  can go stale without the dataset changing, which is the drift problem this
+  project already solves for specs, scorers and engines, arriving somewhere new
+  and getting the same answer.
+- **An asset-backed item is identified by its asset's BYTES**, so
+  `dup-questions` (S1) and `conflicting-keys` (S7) work on pictures for free
+  rather than needing image-shaped copies of themselves.
+- **Four new checks, 57 to 61.** `asset-drift` (S12) re-hashes every referenced
+  file and refuses any path that leaves the pod; `label-in-path` (S13) catches
+  the one-directory-per-class layout that puts the answer in the filename;
+  `split-leak` (S14) catches the same asset in train and in test;
+  `near-dup-assets` (S15) catches the same picture at different bytes.
+- **The core keeps its two dependencies.** Only S15 needs pixels, and it lives
+  behind `pip install 'dinostomp[vision]'`. Without it that check SKIPS and says
+  what it could not do, because "no near-duplicates found" and "I cannot look
+  for near-duplicates" are different sentences and only one of them is true.
+- **Six planted-defect trials and one clean pod**, so 92 of 92 and 16 of 16.
+  Every image in them is a real PNG written by a forty-line stdlib encoder: a
+  trial over fake `.png` files would prove the checks read a JSON field, which
+  is not what they claim to do.
+
+**N-017: scored against a human answer key, in a modality the battery was never
+built for.** Barz & Denzler hand-annotated every CIFAR-10 test image with a
+near-duplicate in the training set and published the pairs (ciFAIR).
+`benchmarks/cifair/` runs the battery's own detector against that annotation:
+
+```
+ bits    recall on genuine duplicates   also on very-similar   test/train pairs flagged
+    0                    0/249 = 0.0%                   0/37                          2
+    3                  27/249 = 10.8%                   0/37                         55
+    5                  70/249 = 28.1%                   0/37                        158  <- shipped
+    8                 131/249 = 52.6%                   5/37                        506
+```
+
+Fewer than one duplicate in three at the shipped threshold, which is the
+unflattering half and now stated in the ledger. The other half is the `0.0%` at
+zero bits: **not one of the 286 annotated pairs is byte-identical**, so S1, S7
+and S14 find none of them, and 28% is measured against zero rather than against
+a better check.
+
+On the pod, 70 of the 73 flagged test/train pairs are the exact edge ciFAIR
+annotated. The other three looked like duplicates ciFAIR had missed and were
+not: all six images are annotated, each linked to a different member of its own
+cluster, because ciFAIR publishes pairs rather than cliques. `compare.py` now
+reports that three-way split itself, so the distinction between a result and an
+overclaim is computed rather than remembered.
+
+`near_dup_bits` moves from `convention` to `calibrated`. The default STAYS at 5
+even though 8 nearly doubles recall, for the reason recorded when the MMLU-Redux
+comparison nearly reversed a case-folding decision: a measurement on one dataset
+of 32x32 photographs is not a licence to reset a default for documents or
+spectrograms. There is **no `F` entry for CIFAR-10**, deliberately: that it has
+train/test duplicates is Barz & Denzler's 2020 result, and filing it in the
+findings-against-others series would be claiming their work.
+
+**D-042: the bare-file path dropped `input_ref`, and reported ten distinct
+photographs as one duplicated item.** `build_items` rebuilds items from the
+columns it recognises rather than copying the row, and it did not recognise this
+one, so every image keyed on the shared prompt and two GATING checks fired on a
+dataset with no defect in it. The docstring of the function that broke had
+described this exact failure one commit earlier. Fifth entry of that shape in
+the ledger, and the first where the dataset being misread was one this tool
+wrote.
+
+**D-043: the specificity arm caught a false-positive class in S15 before
+release, and the check was not wrong.** Ten "distinct" fixtures were ramps
+differing only in phase; dHash compares each pixel to its neighbour, so it
+encodes gradient DIRECTION and they are identical to it. The fixture is fixed,
+the limitation is documented in `perceptual.py`, and S15 stays a diagnostic that
+warns and prints its distances rather than gating a verdict. A check with a
+known false-positive class must not be able to turn a report `BROKEN`.
+
+495 tests, trials 92/92 and 16/16. Ledger: 85 entries, 25 F, 43 D, 17 N.
+
 ### v0.52.0 (2026-08-10)
 
 The README now LEADS with what the battery found rather than with what it is,
