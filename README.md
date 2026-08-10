@@ -12,11 +12,20 @@ An eval is an instrument. Almost nobody checks the instrument.
 
 ## What it found
 
-The ledger is the product. The tool is the proof, and exists so that none of
-this has to be taken on trust: every `F` below re-derives in seconds, offline,
-for free, from the command in the next section.
+Across **23 benchmarks**, five of them assessments written for people, three of
+those professional licensing examinations:
 
-**[FINDINGS.md](FINDINGS.md) — 82 entries, all permanent, none deleted.**
+- MMLU keys "Subtract. 2,396 − 1,709" over `['687', '687', '1,493', '1,695']`. The answer is on the option list twice, so a model that computes it correctly picks the wrong letter half the time ([F-002](FINDINGS.md#f-002))
+- A national pharmacist licensing exam offers the same drug twice in one five-option list, on 16 items ([F-025](FINDINGS.md#f-025))
+- An Iranian driving-licence test keys the longest option 45% of the time, where chance is 25%: you can beat it knowing no road law ([F-024](FINDINGS.md#f-024))
+- A numeric scorer scored a live model `0.000` whose real accuracy was `0.438`, and ranked it last in a fleet it led ([D-041](FINDINGS.md#d-041))
+- Two GSM8K models moved 78→90% and 81→92% on the random seed alone ([F-005](FINDINGS.md#f-005))
+
+Each of those is one entry in **[FINDINGS.md](FINDINGS.md)**, with the item id,
+the verbatim data and the command that reproduces it. Every `F` re-derives in
+seconds, offline, for free, using the command in the next section.
+
+**[FINDINGS.md](FINDINGS.md): 82 entries, all permanent, none deleted.**
 
 | | | |
 |---|--:|---|
@@ -24,31 +33,21 @@ for free, from the command in the next section.
 | **D** | 41 | defects in dinostomp itself |
 | **N** | 16 | negative results, recorded rather than dropped |
 
-Across **23 benchmarks**, five of them assessments written for people, three of
-those professional licensing examinations:
-
-- MMLU keys "Subtract. 2,396 − 1,709" over `['687', '687', '1,493', '1,695']` — the answer is on the option list twice, so a model that computes it correctly picks the wrong letter half the time ([F-002](FINDINGS.md#f-002))
-- A national pharmacist licensing exam offers the same drug twice in one five-option list, on 16 items ([F-025](FINDINGS.md#f-025))
-- An Iranian driving-licence test keys the longest option 45% of the time, where chance is 25%: you can beat it knowing no road law ([F-024](FINDINGS.md#f-024))
-- A numeric scorer scored a live model `0.000` whose real accuracy was `0.438`, and ranked it last in a fleet it led ([D-041](FINDINGS.md#d-041))
-- Two GSM8K models moved 78→90% and 81→92% on the random seed alone ([F-005](FINDINGS.md#f-005))
-
-**Forty-one of the eighty-two are against this tool**, which is the number to read
-first. A validator that only publishes other people's mistakes is telling you
-which mistakes it is willing to look for. The ledger includes the entry it
+**Forty-one of the eighty-two are against this tool**, which is the number to
+read first. A validator that only publishes other people's mistakes is telling
+you which mistakes it is willing to look for. Included there: the entry it
 retracted after its own killer control killed it ([N-013](FINDINGS.md#n-013)),
 the loader bug that manufactured a finding about a driving test
 ([D-039](FINDINGS.md#d-039)), and a defect in the findings feed itself
 ([D-040](FINDINGS.md#d-040)).
 
-The honest ceiling, stated here rather than buried: **one entry was graded by
+One caveat belongs up here rather than at the bottom: **one entry was graded by
 somebody outside this repo.** Forty-one self-found defects is still self-grading.
-That number moves when an outsider runs it, not when the total goes up —
-[break it, please](CONTRIBUTING.md#break-it-please).
+That number moves when an outsider runs it, not when the total goes up.
+[Break it, please](CONTRIBUTING.md#break-it-please).
 
-Machine-readable: **[`findings.json`](findings.json)**, versioned and validated
-against [`docs/findings.schema.json`](docs/findings.schema.json) before it is
-written.
+The same ledger as data, versioned and validated against
+[`docs/findings.schema.json`](docs/findings.schema.json) before it is written:
 
 ```bash
 jq '.findings[] | select(.series=="F" and .status_class=="confirmed") | .subject' findings.json

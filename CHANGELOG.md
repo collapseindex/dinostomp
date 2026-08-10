@@ -2,10 +2,9 @@
 
 ### v0.52.0 (2026-08-10)
 
-**The ledger is the product; the tool is the proof.** This release makes the
-repo say so. The README now LEADS with what was found rather than with what the
-tool is, and `findings.json` stops being a convenience dump and becomes a
-published, versioned, validated interface.
+The README now LEADS with what the battery found rather than with what it is,
+and `findings.json` stops being a convenience dump and becomes a published,
+versioned, validated interface.
 
 - **`findings.json` is a contract now, at `schema_version` 1.0.0.** Validated
   against the new [docs/findings.schema.json](docs/findings.schema.json) BEFORE

@@ -483,7 +483,7 @@ def test_the_readme_headline_counts_match_the_ledger():
     # FINDINGS.md states the same numbers in a different shape, and a test that
     # accepted either would pass on a README whose counts had gone stale.
     flat = " ".join((REPO / "README.md").read_text(encoding="utf-8").split())
-    assert f"**[FINDINGS.md](FINDINGS.md) — {total} entries" in flat, (
+    assert f"{total} entries, all permanent, none deleted" in flat, (
         f"the README does not state {total} entries")
     for series in "FDN":
         assert f"| **{series}** | {counts[series]} |" in flat, (
