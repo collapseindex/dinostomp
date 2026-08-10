@@ -1,5 +1,22 @@
 # Changelog
 
+### v0.53.1 (2026-08-10)
+
+**D-044: the asset-path guard asked the local operating system what "absolute"
+means.** `Path(uri).is_absolute()` answers for the current platform, so
+`C:/Windows/System32/...` was refused here and accepted on Linux, where it is an
+ordinary relative path whose first segment is named `C:`. CI caught it within a
+minute of the v0.53.0 push. Nothing escaped: the containment test after it is
+what confines a read and was never fooled, so the consequence was a
+non-portable path that one platform quietly accepted rather than an escape. Now
+tested under both conventions plus root-anchored-without-drive and UNC forms,
+with the Windows shapes asserted on every platform and a second test proving
+ordinary relative paths still resolve.
+
+Third defect here that only a second operating system could find, after the
+line-ending pair. CI on a different OS is not redundancy for this class, it is
+the only instrument.
+
 ### v0.53.0 (2026-08-10)
 
 **An item's input can be a FILE now: an image, an audio clip.** The battery was

@@ -122,6 +122,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-042](#d-042) | dinostomp | the bare-file path dropped `input_ref`, reporting ten distinct photographs as one duplicate | fixed in v0.53.0 |
 | [D-043](#d-043) | dinostomp | S15's false-positive class: images sharing one gradient direction all hash alike | scoped, documented, not fixed |
 | [N-017](#n-017) | CIFAR-10 / ciFAIR | 28% recall against a human duplicate annotation; byte-level checks get 0% | measured |
+| [D-044](#d-044) | dinostomp | the asset-path guard asked the local OS what absolute means, and got two answers | fixed in v0.53.1 |
 
 <!-- INDEX:END -->
 
@@ -166,6 +167,7 @@ at fault.
 | `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015) |
 | `S10` | [N-006](#n-006) |
 | `S11` | [F-012](#f-012), [N-004](#n-004), [D-014](#d-014) |
+| `S12` | [D-044](#d-044) |
 | `S15` | [D-043](#d-043), [N-017](#n-017) |
 | `T1` | [D-027](#d-027) |
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
@@ -177,7 +179,7 @@ at fault.
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043) |
+| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | four models | [N-005](#n-005), [N-006](#n-006) |
 | MMLU | [F-002](#f-002), [F-003](#f-003) |
@@ -2628,6 +2630,48 @@ named, and the next dataset to be measured is what would move it.
 
 ---
 
+### D-044
+**The asset-path guard asked the local operating system what "absolute" means, so it refused a path on Windows and accepted it on Linux**
+`asset-drift` (S12) · 2026-08-10 · fixed in v0.53.1
+
+`resolve()` began with `Path(uri).is_absolute()`, which answers for the CURRENT
+platform. `C:/Windows/System32/drivers/etc/hosts` is absolute on Windows and, on
+Linux, is an ordinary relative path whose first segment happens to be called
+`C:`. The same dataset therefore got two different answers on two machines.
+
+The test suite asserted the refusal. It passed here and failed in CI within a
+minute of the first push:
+
+```
+E   AssertionError: 'C:/Windows/System32/drivers/etc/hosts' was allowed to resolve
+E   assert PosixPath('/tmp/pytest-.../C:/Windows/System32/drivers/etc/hosts') is None
+```
+
+**SCOPE, and it is smaller than the headline sounds.** Nothing escaped. The
+resolved path was `<pod>/C:/Windows/...`, still inside the pod, because the
+CONTAINMENT test after it is what actually confines a read and it was never
+fooled. What failed was the earlier, cheaper guard whose job is to refuse a
+non-portable path outright. The consequence was a pod that a Windows user could
+not build and a Linux user could, quietly, by reading a directory literally
+named `C:`.
+
+The fix tests absoluteness under BOTH conventions plus the two forms neither
+`is_absolute` catches everywhere: root-anchored-without-drive (`/etc/passwd`
+read by Windows) and UNC shares (`\\host\share`). The suite now runs the
+Windows and UNC shapes on every platform, and a second test asserts the guard
+does NOT refuse ordinary relative paths, including the backslash form a
+Windows-authored pod produces.
+
+**Third defect in this ledger that only a second operating system could find**,
+after the line-ending pair ([D-002](#d-002), [D-014](#d-014)). All three have
+the same shape: a platform-dependent primitive used where a platform-independent
+answer was meant, on a machine that only ever sees one platform. The standing
+lesson is not "test on Linux". It is that **the local suite is structurally
+incapable of catching this class**, and CI on a different OS is not redundancy
+here, it is the only instrument.
+
+---
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -2645,9 +2689,9 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **17** |
-| defects in dinostomp itself (**D**) | **43** |
+| defects in dinostomp itself (**D**) | **44** |
 
-Forty-three to twenty-five. That ratio is the useful number to publish, and it is the
+Forty-four to twenty-five. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to

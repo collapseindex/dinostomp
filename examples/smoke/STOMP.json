@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.53.0",
+  "version": "0.53.1",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
@@ -800,11 +800,11 @@
       "check": "the runs were produced by this engine",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 1 run(s) were produced by a different engine than the one auditing them (now 759283b174f39951); re-run to get numbers this report can stand behind",
+      "detail": "0 of 1 run(s) were produced by a different engine than the one auditing them (now b21d854fceebd8ec); re-run to get numbers this report can stand behind",
       "witnesses": 1,
       "evidence": {
         "engines": {
-          "759283b174f39951": 1
+          "b21d854fceebd8ec": 1
         }
       }
     },
@@ -1040,7 +1040,7 @@
   },
   "runs": [
     {
-      "run_file": "20260810_062040_smoke-arith_dry-strong_n6_s42.jsonl",
+      "run_file": "20260810_064034_smoke-arith_dry-strong_n6_s42.jsonl",
       "model": "dry-strong",
       "model_reported": "dry-strong",
       "provider": "dry",

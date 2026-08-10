@@ -28,7 +28,7 @@ from __future__ import annotations
 
 import hashlib
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 
 # Streamed in chunks: the point is that a 4GB video and a 4KB thumbnail cost the
 # same memory. 1 MiB is large enough that syscall overhead disappears and small
@@ -67,6 +67,28 @@ def kinds_present(items: list[dict]) -> set[str]:
     return {str(ref_of(i).get("kind") or "?") for i in items if ref_of(i)}
 
 
+def is_absolute_anywhere(uri: str) -> bool:
+    """Absolute under POSIX **or** Windows rules, whichever platform we are on.
+
+    `Path.is_absolute()` answers for the CURRENT platform only, and that is the
+    wrong question for a portability check. `C:/Windows/System32` is absolute on
+    Windows and, on Linux, is an ordinary relative path whose first segment
+    happens to be named `C:`. A guard built on the local answer therefore
+    refuses it on one operating system and accepts it on the other, from the
+    same dataset.
+
+    Caught by CI on Linux, which is the only place it could be caught: the whole
+    development machine here is Windows. Same shape as the line-ending defect
+    ([D-002](FINDINGS.md#d-002)) and the same reason it survived.
+    """
+    if PurePosixPath(uri).is_absolute() or PureWindowsPath(uri).is_absolute():
+        return True
+    # Root-anchored without a drive (`/etc/passwd` read by Windows) and UNC
+    # shares (`\\host\share`). Neither is `is_absolute` on every platform, and
+    # both name somewhere outside the pod.
+    return PureWindowsPath(uri).root != "" or uri.startswith(("\\\\", "//"))
+
+
 def resolve(uri: str, base_dir: Path) -> Path | None:
     """Resolve an asset path INSIDE the pod, or None if it escapes.
 
@@ -75,7 +97,13 @@ def resolve(uri: str, base_dir: Path) -> Path | None:
     a pod is only portable if everything it needs travels with it, so an
     absolute path is a defect even when it happens to be harmless here. Both
     are reported as findings by the caller.
+
+    Two independent guards, deliberately. The absoluteness test above rejects
+    what a pod must never contain; the containment test below is what actually
+    keeps a read inside the pod, and it holds even when the first one is fooled.
     """
+    if is_absolute_anywhere(uri):
+        return None
     candidate = Path(uri)
     if candidate.is_absolute():
         return None

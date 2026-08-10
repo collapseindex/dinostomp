@@ -5,14 +5,14 @@
   "schema": "docs/findings.schema.json",
   "tool": {
     "name": "dinostomp",
-    "version": "0.53.0",
-    "engine": "759283b174f3995142220036df5714bfb93e4df97233e8d31d144d4171689df5"
+    "version": "0.53.1",
+    "engine": "b21d854fceebd8ecadacfc4439b8ae3502dbf5ea64fe959ae2b357096d84464f"
   },
   "counts": {
     "F": 25,
-    "D": 43,
+    "D": 44,
     "N": 17,
-    "total": 85
+    "total": 86
   },
   "series": {
     "F": "other people's evals",
@@ -1592,6 +1592,25 @@
       "status_class": "measured",
       "anchor": "#n-017",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-017"
+    },
+    {
+      "id": "D-044",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "The asset-path guard asked the local operating system what \"absolute\" means, so it refused a path on Windows and accepted it on Linux",
+      "summary": "the asset-path guard asked the local OS what absolute means, and got two answers",
+      "subject": "dinostomp",
+      "check_label": "`asset-drift` (S12)",
+      "checks": [
+        "S12"
+      ],
+      "date": "2026-08-10",
+      "date_iso": "2026-08-10",
+      "date_precision": "day",
+      "status": "fixed in v0.53.1",
+      "status_class": "fixed",
+      "anchor": "#d-044",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-044"
     }
   ]
 }

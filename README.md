@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.53.0 · Apache-2.0 · engine `759283b174f39951` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.53.1 · Apache-2.0 · engine `b21d854fceebd8ec` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -25,15 +25,15 @@ Each of those is one entry in **[FINDINGS.md](FINDINGS.md)**, with the item id,
 the verbatim data and the command that reproduces it. Every `F` re-derives in
 seconds, offline, for free, using the command in the next section.
 
-**[FINDINGS.md](FINDINGS.md): 85 entries, all permanent, none deleted.**
+**[FINDINGS.md](FINDINGS.md): 86 entries, all permanent, none deleted.**
 
 | | | |
 |---|--:|---|
 | **F** | 25 | findings in other people's evals |
-| **D** | 43 | defects in dinostomp itself |
+| **D** | 44 | defects in dinostomp itself |
 | **N** | 17 | negative results, recorded rather than dropped |
 
-**Forty-three of the eighty-five are against this tool**, which is the number to
+**Forty-four of the eighty-six are against this tool**, which is the number to
 read first. A validator that only publishes other people's mistakes is telling
 you which mistakes it is willing to look for. Included there: the entry it
 retracted after its own killer control killed it ([N-013](FINDINGS.md#n-013)),
@@ -41,12 +41,12 @@ the loader bug that manufactured a finding about a driving test
 ([D-039](FINDINGS.md#d-039)), and a defect in the findings feed itself
 ([D-040](FINDINGS.md#d-040)).
 
-One caveat belongs up here rather than at the bottom: **two of the eighty-five
+One caveat belongs up here rather than at the bottom: **two of the eighty-six
 were graded against an answer key somebody outside this repo wrote**
 ([N-012](FINDINGS.md#n-012) against MMLU-Redux, [N-017](FINDINGS.md#n-017)
 against ciFAIR's hand-annotated CIFAR-10 duplicates). Both produced the least
 flattering numbers in the file, which is the argument for more of them.
-Forty-three self-found defects is still self-grading, and that number moves when
+Forty-four self-found defects is still self-grading, and that number moves when
 an outsider runs it rather than when the total goes up.
 [Break it, please](CONTRIBUTING.md#break-it-please).
 
@@ -420,7 +420,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.53.0
+- uses: collapseindex/dinostomp@v0.53.1
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -500,7 +500,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`759283b174f3995142220036df5714bfb93e4df97233e8d31d144d4171689df5`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`b21d854fceebd8ecadacfc4439b8ae3502dbf5ea64fe959ae2b357096d84464f`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 
@@ -509,7 +509,7 @@ fee for a new check and the rules a patch may not remove. [Apache-2.0](LICENSE).
 
 <sub>Built and maintained by one person, unfunded. If it caught something in your
 eval, [sponsorship](https://github.com/sponsors/collapseindex) buys time to keep
-pointing it at real benchmarks and publishing what it finds, including the forty-three
+pointing it at real benchmarks and publishing what it finds, including the forty-four
 findings against itself. Adversarial pods and bug reports are worth more than
 money and are always free:
 [break it, please](CONTRIBUTING.md#break-it-please).</sub>

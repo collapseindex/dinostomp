@@ -14,6 +14,8 @@ import pytest
 
 from dinostomp import modality, perceptual
 
+BS = chr(92)
+
 
 def png(rows) -> bytes:
     raw = b"".join(b"\x00" + bytes(r) for r in rows)
@@ -40,15 +42,31 @@ def block(x0=2, y0=2, w=5, h=5, side=16):
     "../../escape.png",
     "sub/../../escape.png",
     "C:/Windows/System32/drivers/etc/hosts",
+    "C:" + BS + "Windows" + BS + "notepad.exe",
     "/etc/passwd",
+    "//server/share/x.png",
+    BS * 2 + "server" + BS + "share" + BS + "x.png",
 ])
 def test_an_asset_path_may_not_leave_the_pod(uri, tmp_path):
     """A uri comes from a dataset, and a dataset can be written by anyone.
 
     Absolute paths are refused even when harmless: a pod is only portable if
     everything it needs travels with it.
+
+    The Windows and UNC forms run on EVERY platform on purpose. `is_absolute()`
+    answers for the local platform, so a drive-letter path is absolute on
+    Windows and an ordinary relative path on Linux; this suite passed on the
+    Windows machine it was written on and failed in CI (D-044).
     """
     assert modality.resolve(uri, tmp_path) is None, f"{uri!r} was allowed to resolve"
+
+
+@pytest.mark.parametrize("uri", ["images/a.png", "sub/dir/b.png", "./c.png",
+                                 "images" + BS + "windows-style.png"])
+def test_ordinary_relative_paths_are_not_caught_by_the_guard(uri, tmp_path):
+    """The other direction. A guard that refuses everything is not a guard, and
+    a Windows-authored pod writing `images\a.png` must still work."""
+    assert modality.resolve(uri, tmp_path) is not None, f"{uri!r} was wrongly refused"
 
 
 def test_an_ordinary_relative_path_resolves(tmp_path):
