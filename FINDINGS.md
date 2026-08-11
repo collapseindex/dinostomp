@@ -565,11 +565,23 @@ activities, SOC occupations and a request taxonomy: 1,636,573 rows in the
 `node_name` and a `node_external_id`, and the README defines the latter as "the
 source identifier for the node".
 
-**Source.** Anthropic Economic Index report: *Cadences*, released 2026-06-26
-(Massenkoff, Lyubich, Sacher, Hitzig, Zhang, Heller and McCrory).
+**Source.** Anthropic Economic Index report: *Cadences*, released 2026-06-26.
 [Report](https://www.anthropic.com/research/economic-index-june-2026-report) ·
 [data explorer](https://www.anthropic.com/economic-index#data-explorer). Data
-released under CC-BY. Audited as downloaded, unmodified:
+released under CC-BY. Cite it as the release itself asks:
+
+```bibtex
+@online{anthropic2026aeiv6,
+        author = {Maxim Massenkoff and Eva Lyubich and Szymon Sacher and
+                  Zoe Hitzig and Shaoyi Zhang and Ryan Heller and Peter McCrory},
+        title = {Anthropic Economic Index report: Cadences},
+        date = {2026-06-26},
+        year = {2026},
+        url = {https://www.anthropic.com/research/economic-index-june-2026-report},
+}
+```
+
+Audited as downloaded, unmodified:
 
 ```
 aei_1p_api_2026-06-26.csv       77,282,477 bytes    491,705 rows
@@ -952,11 +964,23 @@ metric vocabulary with units, a rounding rule, a hierarchy depth per category,
 half-open monthly reporting periods, geo-code forms, and a suppression policy.
 That is an evidence contract, so it can be checked. Both files, every clause:
 
-**Source.** Anthropic Economic Index report: *Cadences*, released 2026-06-26
-(Massenkoff, Lyubich, Sacher, Hitzig, Zhang, Heller and McCrory).
+**Source.** Anthropic Economic Index report: *Cadences*, released 2026-06-26.
 [Report](https://www.anthropic.com/research/economic-index-june-2026-report) ·
 [data explorer](https://www.anthropic.com/economic-index#data-explorer). Data
-released under CC-BY. Audited as downloaded, unmodified:
+released under CC-BY. Cite it as the release itself asks:
+
+```bibtex
+@online{anthropic2026aeiv6,
+        author = {Maxim Massenkoff and Eva Lyubich and Szymon Sacher and
+                  Zoe Hitzig and Shaoyi Zhang and Ryan Heller and Peter McCrory},
+        title = {Anthropic Economic Index report: Cadences},
+        date = {2026-06-26},
+        year = {2026},
+        url = {https://www.anthropic.com/research/economic-index-june-2026-report},
+}
+```
+
+Audited as downloaded, unmodified:
 
 ```
 aei_1p_api_2026-06-26.csv       77,282,477 bytes    491,705 rows
