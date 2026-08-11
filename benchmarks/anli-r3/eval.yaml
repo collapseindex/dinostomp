@@ -1,0 +1,36 @@
+name: bench-anli-r3
+version: 0.1.0
+question: "Does the model pick the entailment label ANLI keys for this premise and hypothesis?"
+
+# ANLI round 3 (Nie et al., 2020), test split, fetched by
+# `python benchmarks/fetch.py anli-r3`.
+#
+# MAPPING DECISION: the source has no option list at all, only a 0/1/2 label. The
+# three verdicts are written out as choices so the pod scores like every other one
+# here, and so that a repeated premise-and-hypothesis pair carrying different
+# labels would be visible rather than invisible.
+
+entitled_claims:
+  - "Which of the three verdicts each model picks on these ANLI R3 items, per model."
+  - "Nothing about the dataset's quality beyond what the checks below actually read."
+
+data: {path: items.jsonl, format: jsonl, render_choices: true}
+
+models:
+  - {provider: dry, model: dry-strong}
+
+scorer:
+  kind: includes
+  witnesses:
+    - {output: "entailment", target: "entailment", expect: pass}
+    - {output: "The answer is entailment", target: "entailment", expect: pass}
+    - {output: "contradiction", target: "entailment", expect: fail}
+    - {output: "", target: "entailment", expect: fail}
+    - {output: "ENTAILMENT", target: "entailment", expect: fail, why: "substring matching is case-sensitive, and this pod says so"}
+    - {output: "entailme", target: "entailment", expect: fail, why: "a strict prefix is not the answer"}
+    # Kills the space-blind mutant: a doubled internal space is a different
+    # string, and a scorer that shrugs at it would credit a wrong answer.
+    - {output: "not  entailed", target: "not entailed", expect: fail, why: "a doubled internal space is a different string"}
+    - {output: "not entailed", target: "not entailed", expect: pass}
+
+run: {n: 1200, seed: 7, budget_usd: 0}

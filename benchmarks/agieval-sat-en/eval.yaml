@@ -1,0 +1,36 @@
+name: bench-agieval-sat-en
+version: 0.1.0
+question: "Does the model pick the option the SAT reading section keys as correct?"
+
+# AGIEval SAT reading (Zhong et al., 2024), "train" split (206 items; the validation split holds only 3), fetched by
+# `python benchmarks/fetch.py agieval-sat-en`. A college-entrance exam written for
+# people, which makes it the sixth such assessment in this repository.
+#
+# MAPPING DECISION: the source bakes the letter into each option, as
+# '(A)consumers ...'. The prefix is STRIPPED. Left in, every option is unique by
+# construction and a genuinely duplicated option could never be detected.
+
+entitled_claims:
+  - "Which option each model picks on these SAT reading items, per model."
+  - "Nothing about the dataset's quality beyond what the checks below actually read."
+
+data: {path: items.jsonl, format: jsonl, render_choices: true}
+
+models:
+  - {provider: dry, model: dry-strong}
+
+scorer:
+  kind: includes
+  witnesses:
+    - {output: "two-sided solar panels are gaining popularity", target: "two-sided solar panels are gaining popularity", expect: pass}
+    - {output: "The answer is two-sided solar panels are gaining popularity", target: "two-sided solar panels are gaining popularity", expect: pass}
+    - {output: "consumers do not understand solar panels", target: "two-sided solar panels are gaining popularity", expect: fail}
+    - {output: "", target: "two-sided solar panels are gaining popularity", expect: fail}
+    - {output: "TWO-SIDED SOLAR PANELS ARE GAINING POPULARITY", target: "two-sided solar panels are gaining popularity", expect: fail, why: "substring matching is case-sensitive, and this pod says so"}
+    - {output: "two-sided solar panels are gaining populari", target: "two-sided solar panels are gaining popularity", expect: fail, why: "a strict prefix is not the answer"}
+    # Kills the space-blind mutant: a doubled internal space is a different
+    # string, and a scorer that shrugs at it would credit a wrong answer.
+    - {output: "the  passage suggests", target: "the passage suggests", expect: fail, why: "a doubled internal space is a different string"}
+    - {output: "the passage suggests", target: "the passage suggests", expect: pass}
+
+run: {n: 206, seed: 7, budget_usd: 0}

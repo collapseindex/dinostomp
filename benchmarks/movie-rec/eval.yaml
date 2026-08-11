@@ -1,0 +1,36 @@
+name: bench-movie-rec
+version: 0.1.0
+question: "Does the model pick the movie BIG-bench keys as the best recommendation?"
+
+# BIG-bench movie_recommendation (Srivastava et al., 2023), test split, fetched
+# by `python benchmarks/fetch.py movie-rec`.
+#
+# MAPPING DECISION: the options live one per column, `answer_0` to `answer_3`, and
+# nothing in a bare audit assembles them. Without that, prompts are compared
+# stripped of the candidate sets that distinguish them, and items that repeat a
+# seed list with different candidates look contradictory (D-057).
+
+entitled_claims:
+  - "Which candidate each model picks on these movie_recommendation items, per model."
+  - "Nothing about the dataset's quality beyond what the checks below actually read."
+
+data: {path: items.jsonl, format: jsonl, render_choices: true}
+
+models:
+  - {provider: dry, model: dry-strong}
+
+scorer:
+  kind: includes
+  witnesses:
+    - {output: "In Cold Blood", target: "In Cold Blood", expect: pass}
+    - {output: "The answer is In Cold Blood", target: "In Cold Blood", expect: pass}
+    - {output: "Rosetta", target: "In Cold Blood", expect: fail}
+    - {output: "", target: "In Cold Blood", expect: fail}
+    - {output: "IN COLD BLOOD", target: "In Cold Blood", expect: fail, why: "substring matching is case-sensitive, and this pod says so"}
+    - {output: "In Cold Blo", target: "In Cold Blood", expect: fail, why: "a strict prefix is not the answer"}
+    # Kills the space-blind mutant: a doubled internal space is a different
+    # string, and a scorer that shrugs at it would credit a wrong answer.
+    - {output: "Pretty  Woman", target: "Pretty Woman", expect: fail, why: "a doubled internal space is a different string"}
+    - {output: "Pretty Woman", target: "Pretty Woman", expect: pass}
+
+run: {n: 500, seed: 7, budget_usd: 0}

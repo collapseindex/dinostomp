@@ -56,6 +56,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-017](#f-017) | a RAG agent | grounding it in its own retrieval made it 25 points WORSE | confirmed [examples/live-agent](examples/live-agent/) costs $0.02 |
 | [F-026](#f-026) | Anthropic Economic Index | one node_name shared by two O*NET ids, so grouping by name double-counts | confirmed, both files |
 | [F-027](#f-027) | QuaRTz | two questions whose -flip variant is byte-identical and keyed to the opposite answer | confirmed |
+| [F-028](#f-028) | AGIEval SAT reading | one question keyed to two different answers | confirmed |
+| [F-029](#f-029) | ASDiv | one word problem present twice | confirmed, minor |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
@@ -142,6 +144,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-056](#d-056) | dinostomp | J1's 90% threshold is unreachable by humans, and its message claims every key is known by construction | scoped, not retuned |
 | [D-057](#d-057) | dinostomp | a 4-dataset sweep produced 3 false findings from a guessed column mapping | fixed |
 | [D-058](#d-058) | dinostomp | the battery crashed on any dataset with ~1,200+ keyed choice items | fixed |
+| [D-059](#d-059) | dinostomp | S2 called 'no' a leaked answer because it is spelled inside 'enough' | fixed, with a residue scoped |
+| [D-060](#d-060) | dinostomp | five pods added; three prove the sweep's earlier findings were mapping artifacts | fixed |
 
 <!-- INDEX:END -->
 
@@ -177,13 +181,13 @@ at fault.
 | `R15` | [D-006](#d-006) |
 | `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
-| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
-| `S2` | [F-004](#f-004), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037) |
+| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-029](#f-029), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
+| `S2` | [F-004](#f-004), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052), [D-058](#d-058) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-020](#n-020), [N-012](#n-012), [F-025](#f-025) |
 | `S6` | [D-053](#d-053) |
-| `S7` | [F-027](#f-027), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-042](#d-042) |
+| `S7` | [F-027](#f-027), [F-028](#f-028), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-042](#d-042) |
 | `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015) |
 | `S10` | [N-006](#n-006) |
 | `S11` | [F-012](#f-012), [N-004](#n-004), [D-014](#d-014) |
@@ -193,13 +197,13 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058) |
+| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060) |
 | dinocorpus | [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
@@ -208,8 +212,10 @@ at fault.
 | SciQ | [F-010](#f-010), [F-013](#f-013) |
 | a judge (qwen3-30b) | [F-014](#f-014) |
 | a RAG agent | [F-017](#f-017) |
+| AGIEval SAT reading | [F-028](#f-028) |
 | AQuA-RAT | [F-023](#f-023) |
 | ARC, OpenBookQA, HellaSwag, WinoGrande | [N-003](#n-003) |
+| ASDiv | [F-029](#f-029) |
 | CIFAR-10 / ciFAIR | [N-017](#n-017) |
 | CommonsenseQA | [F-008](#f-008) |
 | dinostomp-aei | [D-050](#d-050) |
@@ -684,6 +690,59 @@ A finding that rests on a mapping choice has to publish the mapping choice.
 Auditing the raw dataset without a spec now refuses, because the unmapped `para`
 column trips a guard added the same day ([D-057](#d-057)). The pod exists partly
 so this finding does not depend on anyone reconstructing that mapping by hand.
+
+---
+
+### F-028
+**AGIEval SAT reading · one question keyed to two different answers**
+`conflicting-keys` (S7), `dup-questions` (S1) · 2026-08-11 · confirmed
+
+AGIEval (Zhong et al., 2024) packages college-entrance exams for model
+evaluation. In the SAT English section, two items are the same question:
+
+```
+sat-00100   passage, question and all four options byte-identical to sat-00101
+sat-00101
+
+  "Throughout the passage, the narrator is portrayed as someone who is"
+    reserved around unfamiliar people.      <- keyed correct in sat-00101
+    attuned to her immediate surroundings.  <- keyed correct in sat-00100
+    sympathetic to the needs of others.
+    anxious about her responsibilities.
+```
+
+A model answering both consistently is marked wrong on exactly one, whichever it
+picks. This is a scoring-floor item: it caps the achievable score below 100% and
+the cap is invisible in the reported number.
+
+**Sixth assessment written for people** in this repository, after MedQA-USMLE,
+NCLEX, the Chinese pharmacist exam, an Iranian driving test and AQuA-RAT.
+
+**Reproduce:** `python benchmarks/fetch.py agieval-sat-en` then
+`dinostomp stomp benchmarks/agieval-sat-en/eval.yaml`. The pod's spec records the
+mapping decision it rests on: the letter prefix baked into each option, as
+`(A)consumers ...`, is stripped, because leaving it in makes every option unique
+by construction and a duplicated option could never be seen.
+
+---
+
+### F-029
+**ASDiv · one word problem present twice**
+`dup-questions` (S1) · 2026-08-11 · confirmed, minor
+
+`asdiv-00675` and `asdiv-00676` are the same problem, with the same answer:
+
+```
+"A company donates 935 pencils to a school. The pencils are divided evenly
+ among 9 classrooms. The rest of the pencils are given to the library.
+ How many pencils are given to the library?"        both keyed '8 (pencils)'
+```
+
+One item in 1,000, keys agreeing, so nothing is unanswerable. It is recorded
+because a duplicate silently double-weights whatever the item measures, and
+because the same audit at a wrong mapping reported SIX duplicates here, which is
+the number that would have been published without the guards in
+[D-057](#d-057).
 
 ## Negative results
 
@@ -3557,11 +3616,71 @@ only once it is small. Every published value is unchanged to six decimal places
 rewrite that silently moves a published threshold is a worse defect than the
 crash it repairs.
 
+---
+
+### D-059
+**S2 called `no` a leaked answer because it is spelled inside `enough`**
+`answer-leak` (S2) · 2026-08-11 · fixed, with a residue scoped
+
+S2 asks whether a free-form item's answer appears in its own question. It tested
+`target in question`, a plain substring, so a short answer matched inside any
+longer word containing it. ASDiv keys a yes/no problem `No` and asks:
+
+```
+"Kyle has four dimes, one nickel, and one quarter.
+ Does he have enough to buy a book that costs $1.00?"
+                    ^^^^^^ e-NO-ugh
+```
+
+That is a false accusation against somebody else's dataset, manufactured by a
+substring test standing in for a word test. **Fixed** with a word-boundary match
+that still admits multi-word answers, so `Mrs. Hilt` matches and `no` inside
+`enough` does not. Two of ASDiv's fourteen flags were this.
+
+**The other twelve are a scope limit, not a bug, and are not being fixed today.**
+They are selection questions whose answer must appear in the prompt by
+construction: *"Two parts are blue and three parts are purple. Which color would
+you most likely spin?"* keyed `Purple`. The existing exemption covers explicit
+disjunctions ("X or Y?") and not this shape. Broadening it on the evidence of one
+dataset is the move this ledger has refused twice before, so the rate is
+published instead: **12 of 1,000 ASDiv items**, all of the same shape. A reader
+seeing `answer-leak` on a free-form selection set should check whether the answer
+could have been anywhere else.
+
+---
+
+### D-060
+**Five pods added, and three of them exist to prove the earlier findings were wrong**
+`benchmarks/` · 2026-08-11 · fixed
+
+The sweep in [D-057](#d-057) produced three false findings from guessed column
+mappings. Rather than delete them, the three datasets are now pods with explicit
+mappings, so the correction is reproducible rather than asserted:
+
+```
+  pod             mapping the pod records          audited result
+  copa            premise + question TYPE          clean, no gating findings
+  movie-rec       answer_0..answer_3 assembled     clean, no gating findings
+  asdiv           body AND question joined         1 duplicate (was 6), F-029
+```
+
+`copa` and `movie-rec` come back **clean**, which is the evidence that the
+earlier flags were artifacts of the mapping and not defects in the data. ASDiv
+drops from six duplicates to one, and the one is real.
+
+Two further pods were added in the same batch: `anli-r3`, which is clean, and
+`agieval-sat-en`, which is not ([F-028](#f-028)).
+
+Every one of the five records its mapping decision **in the spec** rather than in
+a builder function, because a finding that rests on a mapping choice has to
+publish the mapping choice, and a reader who disagrees with the choice needs
+somewhere to disagree with it.
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
 
-**Twenty-six benchmark pods**, all fetched from their authors and none
+**Thirty-one benchmark pods**, all fetched from their authors and none
 vendored: MMLU, MMLU-Pro, HellaSwag, ARC-Easy, ARC-Challenge, GSM8K,
 TruthfulQA, CommonsenseQA, OpenBookQA, BoolQ, WinoGrande, SciQ, MedMCQA, RACE,
 MuSR, LogiQA, MATH-500, DROP, AQuA-RAT, CIFAR-10, and an imported lm-eval log.
@@ -3575,12 +3694,12 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **27** |
+| findings in other people's evals (**F**) | **29** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **20** |
-| defects in dinostomp itself (**D**) | **58** |
+| defects in dinostomp itself (**D**) | **60** |
 
 Forty-seven to twenty-five. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to

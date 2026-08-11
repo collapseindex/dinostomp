@@ -69,6 +69,28 @@ SOURCES = {
     # becomes the other option. Two pairs were never reworded (F-027).
     "quartz": "https://datasets-server.huggingface.co/rows"
               "?dataset=allenai%2Fquartz&config=default&split=test",
+    # Five pods added together, and three of them are the exact dataset SHAPES
+    # that produced false findings in an unmapped sweep (D-057). Building them
+    # with explicit mappings is what turns those artifacts into evidence.
+    #
+    # COPA: the input is premise + question TYPE. The column named `question`
+    # holds only 'cause'/'effect', which is what made a mis-mapped COPA report
+    # every row as a duplicate.
+    "copa": "https://datasets-server.huggingface.co/rows"
+            "?dataset=aps%2Fsuper_glue&config=copa&split=validation",
+    # ASDiv: `body` holds the problem and `question` only the final sentence.
+    # Mapping `question` alone made unrelated problems look identical.
+    "asdiv": "https://datasets-server.huggingface.co/rows"
+             "?dataset=EleutherAI%2Fasdiv&config=asdiv&split=validation",
+    # movie_recommendation: options live one per column, answer_0..answer_3.
+    "movie-rec": "https://datasets-server.huggingface.co/rows"
+                 "?dataset=sileod%2Fmovie_recommendation&config=default&split=test",
+    # ANLI round 3: a three-way entailment label rather than an option list.
+    "anli-r3": "https://datasets-server.huggingface.co/rows"
+               "?dataset=facebook%2Fanli&config=plain_text&split=test_r3",
+    # AGIEval SAT reading: a college-entrance exam written for people.
+    "agieval-sat-en": "https://datasets-server.huggingface.co/rows"
+                      "?dataset=lighteval%2Fagi_eval_en&config=sat-en&split=train",
     "math500": "https://datasets-server.huggingface.co/rows"
                "?dataset=HuggingFaceH4%2FMATH-500&config=default&split=test",
     "drop": "https://datasets-server.huggingface.co/rows"
@@ -102,7 +124,9 @@ PAGED = {"arc-challenge": 1200, "mmlu": 3000, "arc-easy": 2400, "winogrande": 13
          "sciq": 1000, "medmcqa": 3000,
          "race": 1500, "musr": 250, "logiqa": 650, "math500": 500, "drop": 2000,
          "medqa-usmle": 1273, "driving-ir": 1000, "aqua-rat": 254,
-         "nclex": 86, "pharm-cn": 480, "quartz": 784}
+         "nclex": 86, "pharm-cn": 480, "quartz": 784,
+         "copa": 100, "asdiv": 1000, "movie-rec": 500, "anli-r3": 1200,
+         "agieval-sat-en": 206}
 PAGE_ROWS = 100
 
 CANARY = "dinostomp canary DO NOT TRAIN benchmarks"
@@ -358,6 +382,116 @@ def musr_items(rows: list[dict]) -> list[dict]:
                     "input": f"{str(row.get('narrative') or '').strip()}\n\n"
                              f"Question: {str(row.get('question') or '').strip()}",
                     "choices": opts, "target": opts[idx]})
+    return out
+
+
+def copa_items(rows: list[dict]) -> list[dict]:
+    """COPA: premise plus the question TYPE, which is the whole input.
+
+    The column named `question` holds exactly two values, 'cause' and 'effect'.
+    Reading it as the question is what made a mis-mapped COPA report all 500
+    rows as duplicates of each other (D-057); the premise is the text.
+    """
+    out = []
+    for i, r in enumerate(rows):
+        row = r["row"]
+        prem = str(row.get("premise") or "").strip()
+        kind = str(row.get("question") or "").strip()
+        ch = [str(row.get("choice1") or "").strip(), str(row.get("choice2") or "").strip()]
+        label = row.get("label")
+        if not prem or not all(ch) or label not in (0, 1):
+            continue
+        ask = "What was the CAUSE of this?" if kind == "cause" else "What happened as a RESULT?"
+        out.append({"id": f"copa-{i:05d}", "input": f"{prem}\n\n{ask}",
+                    "choices": ch, "target": ch[label]})
+    return out
+
+
+def asdiv_items(rows: list[dict]) -> list[dict]:
+    """ASDiv: the body IS part of the question.
+
+    `question` alone is a fragment such as "How much money did she have left?",
+    which several unrelated problems share verbatim. Joining body and question
+    is the difference between a duplicate finding and an artifact.
+    """
+    out = []
+    for i, r in enumerate(rows):
+        row = r["row"]
+        body = str(row.get("body") or "").strip()
+        q = str(row.get("question") or "").strip()
+        ans = str(row.get("answer") or "").strip()
+        if not body or not q or not ans:
+            continue
+        out.append({"id": f"asdiv-{i:05d}", "input": f"{body} {q}", "target": ans})
+    return out
+
+
+def movie_rec_items(rows: list[dict]) -> list[dict]:
+    """BIG-bench movie_recommendation: options spread one per column.
+
+    Nothing assembles answer_0..answer_3, so an unmapped audit compared prompts
+    stripped of the candidate sets that distinguish them, and reported
+    legitimate repeats as contradictions.
+    """
+    out = []
+    for i, r in enumerate(rows):
+        row = r["row"]
+        ch = [str(row.get(f"answer_{k}") or "").strip() for k in range(4)]
+        label = row.get("label")
+        q = str(row.get("question") or "").strip()
+        if not q or not all(ch) or not isinstance(label, int) or not 0 <= label < 4:
+            continue
+        out.append({"id": f"mrec-{i:05d}", "input": q, "choices": ch, "target": ch[label]})
+    return out
+
+
+def anli_items(rows: list[dict]) -> list[dict]:
+    """ANLI round 3: premise and hypothesis, three-way entailment.
+
+    Not an option list in the source at all; the label is 0/1/2. The three
+    verdicts are written out as the choices so the pod is scoreable the same way
+    as every other, and so a duplicate premise+hypothesis pair with different
+    labels would be visible.
+    """
+    verdicts = ["entailment", "neutral", "contradiction"]
+    out = []
+    for i, r in enumerate(rows):
+        row = r["row"]
+        prem = str(row.get("premise") or "").strip()
+        hyp = str(row.get("hypothesis") or "").strip()
+        label = row.get("label")
+        if not prem or not hyp or label not in (0, 1, 2):
+            continue
+        out.append({"id": f"anli-{i:05d}",
+                    "input": f"Premise: {prem}\n\nHypothesis: {hyp}\n\n"
+                             f"Does the premise entail the hypothesis?",
+                    "choices": list(verdicts), "target": verdicts[label]})
+    return out
+
+
+def agieval_items(rows: list[dict]) -> list[dict]:
+    """AGIEval SAT reading: a passage, a question, and lettered options.
+
+    The options arrive with their letter baked into the text, as '(A)consumers
+    ...'. That prefix is STRIPPED here, and the decision is worth naming: left
+    in, every option is unique by construction and a genuine duplicate could
+    never be seen.
+    """
+    import re as _re
+
+    out = []
+    for i, r in enumerate(rows):
+        row = r["row"]
+        passage = str(row.get("passage") or "").strip()
+        q = str(row.get("question") or "").strip()
+        raw = [str(o) for o in (row.get("options") or [])]
+        ch = [_re.sub(r"^\s*\(?[A-E]\)?\s*", "", o).strip() for o in raw]
+        key = str(row.get("label") or "").strip().upper()
+        idx = "ABCDE".find(key)
+        if not q or not ch or not 0 <= idx < len(ch) or not all(ch):
+            continue
+        stem = f"{passage}\n\n{q}" if passage else q
+        out.append({"id": f"sat-{i:05d}", "input": stem, "choices": ch, "target": ch[idx]})
     return out
 
 
@@ -643,6 +777,11 @@ BUILDERS = {
     "musr": musr_items,
     "logiqa": logiqa_items,
     "quartz": quartz_items,
+    "copa": copa_items,
+    "asdiv": asdiv_items,
+    "movie-rec": movie_rec_items,
+    "anli-r3": anli_items,
+    "agieval-sat-en": agieval_items,
     "math500": math500_items,
     "drop": drop_items,
     "medqa-usmle": medqa_items,

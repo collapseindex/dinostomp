@@ -1,0 +1,36 @@
+name: bench-asdiv
+version: 0.1.0
+question: "Does the model produce the numeric answer ASDiv keys?"
+
+# ASDiv (Miao et al., 2020), validation split, fetched by
+# `python benchmarks/fetch.py asdiv`.
+#
+# MAPPING DECISION: the input is `body` AND `question` joined. `question` alone is
+# a fragment such as "How much money did she have left?", which several unrelated
+# problems share verbatim; mapping it alone reported them as duplicates when the
+# problems are entirely different (D-057). Free-form, so there are no choices.
+
+entitled_claims:
+  - "Which answer string each model produces on these ASDiv problems, per model."
+  - "Nothing about the dataset's quality beyond what the checks below actually read."
+
+data: {path: items.jsonl, format: jsonl}
+
+models:
+  - {provider: dry, model: dry-strong}
+
+scorer:
+  kind: includes
+  witnesses:
+    - {output: "9 (apples)", target: "9 (apples)", expect: pass}
+    - {output: "The answer is 9 (apples)", target: "9 (apples)", expect: pass}
+    - {output: "15 (balls)", target: "9 (apples)", expect: fail}
+    - {output: "", target: "9 (apples)", expect: fail}
+    - {output: "9 (APPLES)", target: "9 (apples)", expect: fail, why: "substring matching is case-sensitive, and this pod says so"}
+    - {output: "9 (apple", target: "9 (apples)", expect: fail, why: "a strict prefix is not the answer"}
+    # Kills the space-blind mutant: a doubled internal space is a different
+    # string, and a scorer that shrugs at it would credit a wrong answer.
+    - {output: "42  (cents)", target: "42 (cents)", expect: fail, why: "a doubled internal space is a different string"}
+    - {output: "42 (cents)", target: "42 (cents)", expect: pass}
+
+run: {n: 1000, seed: 7, budget_usd: 0}

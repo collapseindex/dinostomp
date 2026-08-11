@@ -877,9 +877,9 @@ def _item_checks(rep: Reporter, items: list[dict]) -> None:
             # introduces the 15 as an answer. "The answer is 15" is disclosure.
             own = {o for o in own
                    if not NUMERIC_RE.fullmatch(o) or _numeric_disclosed(q, o)}
-            if not own or not any(t in q for t in own):
+            if not own or not any(_word_in(t, q) for t in own):
                 continue
-            others_present = sum(1 for t in answer_space - own if t in q)
+            others_present = sum(1 for t in answer_space - own if _word_in(t, q))
             if others_present >= exempt_at:
                 continue  # candidate list, not a leak
             # A forced-choice question has to name its own answer: "Have
@@ -889,7 +889,7 @@ def _item_checks(rep: Reporter, items: list[dict]) -> None:
             # two, below its bar. Found on TruthfulQA.
             if _is_offered_alternative(q, own):
                 continue
-            leaked = next(t for t in own if t in q)
+            leaked = next(t for t in own if _word_in(t, q))
             leaks.append(f"{i['id']}: target {leaked!r} appears in its question "
                          f"(only {others_present} other answer-space value(s) present)")
         rep.check("S2", not leaks, f"{len(leaks)} of {len(text_items)} free-form item(s) leak their answer",
@@ -1019,6 +1019,25 @@ def _s3_chance_rate(n: int, k: int) -> float:
         if term > -745.0:                 # below this, exp() is 0.0 anyway
             one += exp(term)
     return 1.0 - (1.0 - min(one, 1.0)) ** k
+
+
+def _word_in(needle: str, haystack: str) -> bool:
+    """Is `needle` present in `haystack` as a WHOLE word or phrase?
+
+    Plain `needle in haystack` reported a leak whenever a short answer happened
+    to be spelled inside a longer word. ASDiv keys a yes/no problem "No" and
+    asks "Does he have enough to buy a book" -- and "e-NO-ugh" contains it. That
+    is a false accusation against somebody else's dataset, produced by a
+    substring test standing in for a word test (D-059).
+
+    Boundaries are non-alphanumeric on both sides, so multi-word answers like
+    "Mrs. Hilt" still match and "no" no longer matches inside "enough".
+    """
+    import re as _re
+
+    if not needle:
+        return False
+    return _re.search(rf"(?<![0-9a-z]){_re.escape(needle)}(?![0-9a-z])", haystack) is not None
 
 
 def _shortcut_check(rep: Reporter, keyed: list[dict]) -> None:

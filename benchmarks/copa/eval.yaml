@@ -1,0 +1,37 @@
+name: bench-copa
+version: 0.1.0
+question: "Does the model pick the alternative COPA keys as the cause or effect?"
+
+# COPA, from SuperGLUE (Wang et al., 2019; Roemmele et al., 2011), validation
+# split, fetched by `python benchmarks/fetch.py copa`.
+#
+# MAPPING DECISION, written down because a finding would rest on it: the input is
+# the PREMISE plus the question type, not the column named `question`. That column
+# holds exactly two values, 'cause' and 'effect'. Reading it as the question is
+# what made a mis-mapped COPA report all 500 rows as duplicates of one another
+# (D-057), and this pod is the corrected version of that mistake.
+
+entitled_claims:
+  - "Which alternative each model picks on these COPA items, per model."
+  - "Nothing about the dataset's quality beyond what the checks below actually read."
+
+data: {path: items.jsonl, format: jsonl, render_choices: true}
+
+models:
+  - {provider: dry, model: dry-strong}
+
+scorer:
+  kind: includes
+  witnesses:
+    - {output: "Water flowed from the spout.", target: "Water flowed from the spout.", expect: pass}
+    - {output: "The answer is Water flowed from the spout.", target: "Water flowed from the spout.", expect: pass}
+    - {output: "The toilet filled with water.", target: "Water flowed from the spout.", expect: fail}
+    - {output: "", target: "Water flowed from the spout.", expect: fail}
+    - {output: "WATER FLOWED FROM THE SPOUT.", target: "Water flowed from the spout.", expect: fail, why: "substring matching is case-sensitive, and this pod says so"}
+    - {output: "Water flowed from the spou", target: "Water flowed from the spout.", expect: fail, why: "a strict prefix is not the answer"}
+    # Kills the space-blind mutant: a doubled internal space is a different
+    # string, and a scorer that shrugs at it would credit a wrong answer.
+    - {output: "the  sun rose", target: "the sun rose", expect: fail, why: "a doubled internal space is a different string"}
+    - {output: "the sun rose", target: "the sun rose", expect: pass}
+
+run: {n: 100, seed: 7, budget_usd: 0}

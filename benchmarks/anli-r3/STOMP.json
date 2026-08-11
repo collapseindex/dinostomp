@@ -270,66 +270,138 @@
   },
   "coverage": {
     "declared_total": 61,
-    "declared": 41,
-    "ran": 32,
+    "declared": 34,
+    "ran": 7,
     "skipped": [
       {
-        "id": "S10",
-        "reason": "no canary probe on disk; run `dinostomp run <spec> --probe canary` to ask whether a model has already read this dataset"
+        "id": "R1",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R3",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R4",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R5",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R6",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R7",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R8",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R9",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R10",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R11",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R12",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
       },
       {
         "id": "R13",
-        "reason": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock"
+        "reason": "no runs on disk yet"
+      },
+      {
+        "id": "R14",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
       },
       {
         "id": "R15",
-        "reason": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock"
+        "reason": "no runs on disk yet"
+      },
+      {
+        "id": "R16",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R17",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R18",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R19",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R20",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
       },
       {
         "id": "P1",
-        "reason": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock"
+        "reason": "no runs on disk yet"
       },
       {
         "id": "P2",
-        "reason": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock"
+        "reason": "no runs on disk yet"
       },
       {
         "id": "P3",
-        "reason": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock"
+        "reason": "no runs on disk yet"
       },
       {
-        "id": "P9",
-        "reason": "no shuffle probe on disk; set data.render_choices and run `dinostomp run <spec> --probe shuffle` to unlock"
+        "id": "P4",
+        "reason": "no runs on disk yet"
       },
       {
-        "id": "P11",
-        "reason": "no template probe on disk; run `dinostomp run <spec> --probe template` to unlock"
+        "id": "P5",
+        "reason": "no runs on disk yet"
       },
       {
-        "id": "P12",
-        "reason": "no template probe on disk; run `dinostomp run <spec> --probe template` to unlock"
+        "id": "P6",
+        "reason": "no runs on disk yet"
+      },
+      {
+        "id": "P7",
+        "reason": "no runs on disk yet"
+      },
+      {
+        "id": "P8",
+        "reason": "no runs on disk yet"
       }
     ],
     "not_applicable": [
       {
+        "id": "S2",
+        "reason": "no free-form items in this dataset"
+      },
+      {
         "id": "S3",
-        "reason": "no multiple-choice items in this dataset"
+        "reason": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'entailment' is the answer 34% of the time"
       },
       {
         "id": "S4",
-        "reason": "no multiple-choice items in this dataset"
-      },
-      {
-        "id": "S5",
-        "reason": "no multiple-choice items in this dataset"
-      },
-      {
-        "id": "S6",
-        "reason": "no multiple-choice items in this dataset"
+        "reason": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'entailment' is the answer 34% of the time"
       },
       {
         "id": "S9",
-        "reason": "no multiple-choice items in this dataset"
+        "reason": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'entailment' is the answer 34% of the time"
+      },
+      {
+        "id": "S10",
+        "reason": "regurgitation probes need a hosted model; this pod's runs are all local"
       },
       {
         "id": "S11",
@@ -356,16 +428,36 @@
         "reason": "no typed claims declared"
       },
       {
-        "id": "R18",
-        "reason": "no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably"
+        "id": "T1",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
-        "id": "R20",
-        "reason": "no run on disk repeats an item; a single pass per item cannot tie"
+        "id": "T2",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
+      },
+      {
+        "id": "T3",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
+      },
+      {
+        "id": "T4",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
+      },
+      {
+        "id": "T5",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
+      },
+      {
+        "id": "T6",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "T7",
-        "reason": "no mediated agent on disk; only the harness can withhold a tool result, and a self-reporting target calls its own functions"
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
+      },
+      {
+        "id": "T8",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "J1",
@@ -384,19 +476,27 @@
         "reason": "this eval does not score with a judge"
       },
       {
-        "id": "P6",
-        "reason": "no entitled claim asserts a model ordering"
+        "id": "P9",
+        "reason": "presentation-order probes need a real provider; this pod's runs are all local"
       },
       {
         "id": "P10",
         "reason": "the spec declares no extra seeds; a single seed cannot show its own spread (run.seeds is how you ask)"
+      },
+      {
+        "id": "P11",
+        "reason": "instruction-framing probes need runs on disk"
+      },
+      {
+        "id": "P12",
+        "reason": "instruction-framing probes need runs on disk"
       }
     ]
   },
   "summary": {
     "fail": 0,
-    "warn": 5,
-    "skip": 9,
+    "warn": 0,
+    "skip": 27,
     "verdict": "incomplete",
     "scope": "pod"
   },
@@ -412,17 +512,17 @@
       "check": "questions are unique",
       "level": "pass",
       "gating": true,
-      "detail": "0 duplicated question(s) among 24",
-      "witnesses": 24
+      "detail": "0 duplicated question(s) among 1200",
+      "witnesses": 1200
     },
     {
       "id": "S2",
       "slug": "answer-leak",
       "check": "no answer leaks into its own question",
-      "level": "pass",
+      "level": "n/a",
       "gating": true,
-      "detail": "0 of 24 free-form item(s) leak their answer",
-      "witnesses": 24
+      "detail": "no free-form items in this dataset",
+      "witnesses": 0
     },
     {
       "id": "S3",
@@ -430,7 +530,7 @@
       "check": "gold answer does not favour an option position",
       "level": "n/a",
       "gating": false,
-      "detail": "no multiple-choice items in this dataset",
+      "detail": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'entailment' is the answer 34% of the time",
       "witnesses": 0
     },
     {
@@ -439,26 +539,26 @@
       "check": "gold answer is not systematically the longest option",
       "level": "n/a",
       "gating": false,
-      "detail": "no multiple-choice items in this dataset",
+      "detail": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'entailment' is the answer 34% of the time",
       "witnesses": 0
     },
     {
       "id": "S5",
       "slug": "dup-options",
       "check": "no option offered twice in one item",
-      "level": "n/a",
+      "level": "pass",
       "gating": true,
-      "detail": "no multiple-choice items in this dataset",
-      "witnesses": 0
+      "detail": "0 item(s) offer a duplicate option",
+      "witnesses": 1200
     },
     {
       "id": "S6",
       "slug": "target-not-offered",
       "check": "every target is among its choices",
-      "level": "n/a",
+      "level": "pass",
       "gating": true,
-      "detail": "no multiple-choice items in this dataset",
-      "witnesses": 0
+      "detail": "0 item(s) whose target is not among their choices",
+      "witnesses": 1200
     },
     {
       "id": "S7",
@@ -467,7 +567,7 @@
       "level": "pass",
       "gating": true,
       "detail": "0 question(s) appear with conflicting targets",
-      "witnesses": 24
+      "witnesses": 1200
     },
     {
       "id": "S8",
@@ -475,7 +575,7 @@
       "check": "a contamination canary travels with the data",
       "level": "pass",
       "gating": false,
-      "detail": "canary present (dinostomp canary DO NOT TRAIN live-agent...)",
+      "detail": "canary present (dinostomp canary DO NOT TRAIN benchmarks)",
       "witnesses": 1
     },
     {
@@ -484,16 +584,16 @@
       "check": "no surface feature predicts the gold answer",
       "level": "n/a",
       "gating": false,
-      "detail": "no multiple-choice items in this dataset",
+      "detail": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'entailment' is the answer 34% of the time",
       "witnesses": 0
     },
     {
       "id": "S10",
       "slug": "canary-regurgitated",
       "check": "no model reproduces the contamination canary",
-      "level": "skip",
+      "level": "n/a",
       "gating": false,
-      "detail": "no canary probe on disk; run `dinostomp run <spec> --probe canary` to ask whether a model has already read this dataset",
+      "detail": "regurgitation probes need a hosted model; this pod's runs are all local",
       "witnesses": 0
     },
     {
@@ -545,13 +645,10 @@
       "id": "W1",
       "slug": "witness-coverage",
       "check": "witnesses kill the mutant scorers",
-      "level": "warn",
+      "level": "pass",
       "gating": false,
-      "detail": "1 of 5 applicable mutant scorer(s) survive the witness suite",
-      "witnesses": 5,
-      "examples": [
-        "space-blind (ignores whitespace differences) survives; add a witness whose output differs from the target only by a RUN of internal whitespace (e.g. a doubled space), with the expected verdict pinned"
-      ],
+      "detail": "0 of 4 applicable mutant scorer(s) survive the witness suite",
+      "witnesses": 4,
       "evidence": {
         "killed": [
           "always-pass",
@@ -560,6 +657,7 @@
           "prefix-lenient"
         ],
         "not_applicable": [
+          "space-blind",
           "substring-lenient",
           "negation-blind",
           "uncheckable-credit"
@@ -579,10 +677,10 @@
       "id": "R1",
       "slug": "input-drift",
       "check": "runs match the spec, data, and scorer on disk (no drift)",
-      "level": "pass",
+      "level": "skip",
       "gating": true,
-      "detail": "0 of 3 run(s) no longer match the spec, data, or scorer on disk",
-      "witnesses": 3
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
     },
     {
       "id": "R2",
@@ -590,119 +688,98 @@
       "check": "the witness gate replays clean",
       "level": "pass",
       "gating": true,
-      "detail": "replayed 7 witness(es): 7 behaved; 3 run manifest(s) checked",
-      "witnesses": 10
+      "detail": "replayed 8 witness(es): 8 behaved; 0 run manifest(s) checked",
+      "witnesses": 8
     },
     {
       "id": "R3",
       "slug": "spend-ledger",
       "check": "ledger spend agrees with the manifest and the spec cap",
-      "level": "pass",
+      "level": "skip",
       "gating": true,
-      "detail": "0 money discrepanc(ies) across 3 run(s)",
-      "witnesses": 3
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
     },
     {
       "id": "R4",
       "slug": "record-integrity",
       "check": "every run record is schema-valid, unique, and its manifest's own",
-      "level": "pass",
+      "level": "skip",
       "gating": true,
-      "detail": "0 integrity problem(s) across 72 record(s)",
-      "witnesses": 72
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
     },
     {
       "id": "R5",
       "slug": "truncation-credit",
       "check": "truncated outputs are never credited",
-      "level": "pass",
+      "level": "skip",
       "gating": true,
-      "detail": "0 truncated output(s) scored as pass; a cut-off response can still have stated its answer, so read these before raising max_tokens and re-running",
-      "witnesses": 72
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
     },
     {
       "id": "R6",
       "slug": "uncheckable-rate",
       "check": "uncheckable rate is sane",
-      "level": "pass",
+      "level": "skip",
       "gating": false,
-      "detail": "0% of 72 record(s) are uncheckable",
-      "witnesses": 72,
-      "evidence": {
-        "rate": 0.0
-      }
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
     },
     {
       "id": "R7",
       "slug": "above-guessing",
       "check": "accuracy is distinguishable from guessing",
-      "level": "pass",
+      "level": "skip",
       "gating": false,
-      "detail": "0 of 3 model(s) score no better than guessing; fleet spans 54% to 83% vs chance ~8% (modal target floor)",
-      "witnesses": 3,
-      "evidence": {
-        "per_model_accuracy": {
-          "live-grounded": 0.5417,
-          "live-oneshot": 0.7917,
-          "live-greedy": 0.8333
-        },
-        "chance_floor": 0.0833,
-        "uniform": 0.0,
-        "modal": 0.0833,
-        "modal_target": "oxygen"
-      }
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
     },
     {
       "id": "R8",
       "slug": "verdict-rederive",
       "check": "recorded verdicts re-score identically",
-      "level": "pass",
+      "level": "skip",
       "gating": true,
-      "detail": "0 of 72 recorded verdict(s) do not reproduce under the current scorer",
-      "witnesses": 72
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
     },
     {
       "id": "R9",
       "slug": "summary-rederive",
       "check": "summaries match their run records",
-      "level": "pass",
+      "level": "skip",
       "gating": true,
-      "detail": "0 summary discrepanc(ies) across 3 run(s)",
-      "witnesses": 3
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
     },
     {
       "id": "R10",
       "slug": "run-scope",
       "check": "runs cover the spec's declared scope, nothing foreign",
-      "level": "pass",
+      "level": "skip",
       "gating": false,
-      "detail": "0 run(s) outside the spec's declared scope",
-      "witnesses": 3
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
     },
     {
       "id": "R11",
       "slug": "selection-coverage",
       "check": "records cover exactly the seeded selection",
-      "level": "pass",
+      "level": "skip",
       "gating": true,
-      "detail": "0 of 3 run(s) do not cover their seeded selection",
-      "witnesses": 3
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
     },
     {
       "id": "R12",
       "slug": "scorer-escape",
       "check": "no model selectively escapes the scorer",
-      "level": "pass",
+      "level": "skip",
       "gating": false,
-      "detail": "0 of 3 model(s) escape the scorer more than the fleet does",
-      "witnesses": 3,
-      "evidence": {
-        "rates": {
-          "live-grounded": 0.0,
-          "live-oneshot": 0.0,
-          "live-greedy": 0.0
-        }
-      }
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
     },
     {
       "id": "R13",
@@ -710,17 +787,17 @@
       "check": "the eval is not solvable blind",
       "level": "skip",
       "gating": false,
-      "detail": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock",
+      "detail": "no runs on disk yet",
       "witnesses": 0
     },
     {
       "id": "R14",
       "slug": "response-collapse",
       "check": "no model collapses onto one answer",
-      "level": "pass",
+      "level": "skip",
       "gating": false,
-      "detail": "0 of 3 model(s) answer with one response far more often than any target warrants",
-      "witnesses": 3
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
     },
     {
       "id": "R15",
@@ -728,143 +805,107 @@
       "check": "each model beats its own blind baseline",
       "level": "skip",
       "gating": false,
-      "detail": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock",
+      "detail": "no runs on disk yet",
       "witnesses": 0
     },
     {
       "id": "R16",
       "slug": "scorer-artifact",
       "check": "failed answers do not contain the reference",
-      "level": "warn",
+      "level": "skip",
       "gating": false,
-      "detail": "2 of 2 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness",
-      "witnesses": 2,
-      "examples": [
-        "live-grounded: 6 of 11 failed answer(s) (55%) contain the reference answer verbatim",
-        "live-oneshot: 3 of 5 failed answer(s) (60%) contain the reference answer verbatim"
-      ]
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
     },
     {
       "id": "R17",
       "slug": "nothing-scoreable",
       "check": "every model produced something scoreable",
-      "level": "pass",
+      "level": "skip",
       "gating": true,
-      "detail": "0 of 3 model(s) produced nothing scoreable",
-      "witnesses": 3
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
     },
     {
       "id": "R18",
       "slug": "billing-mismatch",
       "check": "billed output tokens match the recorded text",
-      "level": "n/a",
+      "level": "skip",
       "gating": false,
-      "detail": "no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably",
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
       "witnesses": 0
     },
     {
       "id": "R19",
       "slug": "engine-drift",
       "check": "the runs were produced by this engine",
-      "level": "warn",
+      "level": "skip",
       "gating": false,
-      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now a2afef33d9a14dd3); re-run to get numbers this report can stand behind",
-      "witnesses": 3,
-      "examples": [
-        "engine be4c83d7129cec32: live-grounded seed 7 (tool 0.38.0), live-oneshot seed 7 (tool 0.38.0), live-greedy seed 7 (tool 0.38.0)"
-      ],
-      "evidence": {
-        "engines": {
-          "be4c83d7129cec32": 3
-        }
-      }
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
     },
     {
       "id": "R20",
       "slug": "repeat-ties",
       "check": "repeated items reached a verdict",
-      "level": "n/a",
+      "level": "skip",
       "gating": false,
-      "detail": "no run on disk repeats an item; a single pass per item cannot tie",
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
       "witnesses": 0
     },
     {
       "id": "T1",
       "slug": "forbidden-tool",
       "check": "no forbidden tool is called",
-      "level": "pass",
+      "level": "n/a",
       "gating": true,
-      "detail": "0 forbidden tool call(s) across 72 trajector(ies)",
-      "witnesses": 72
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
     },
     {
       "id": "T2",
       "slug": "required-tool",
       "check": "every required tool is actually called",
-      "level": "pass",
+      "level": "n/a",
       "gating": true,
-      "detail": "0 of 72 trajector(ies) skipped a required tool",
-      "witnesses": 72
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
     },
     {
       "id": "T3",
       "slug": "trajectory-shape",
       "check": "trajectories are well-formed",
-      "level": "pass",
+      "level": "n/a",
       "gating": true,
-      "detail": "0 malformed trajector(ies) of 72",
-      "witnesses": 72
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
     },
     {
       "id": "T4",
       "slug": "answer-grounding",
       "check": "passing answers are grounded in tool evidence",
-      "level": "warn",
+      "level": "n/a",
       "gating": false,
-      "detail": "2 of 3 target(s) pass items whose answer does not APPEAR in their own evidence (6 such answer(s) in total). This is co-occurrence, not causation: an answer recalled from memory that also happens to appear in a retrieved snippet counts as grounded here, so this count is a floor",
-      "witnesses": 3,
-      "examples": [
-        "live-greedy: 3 of 20 passing answer(s) (15%) appear in no retrieved evidence",
-        "live-oneshot: 3 of 19 passing answer(s) (16%) appear in no retrieved evidence",
-        "la-01 (live-greedy): passed, but its answer appears in no tool result",
-        "la-16 (live-greedy): passed, but its answer appears in no tool result",
-        "la-17 (live-greedy): passed, but its answer appears in no tool result",
-        "la-01 (live-oneshot): passed, but its answer appears in no tool result",
-        "la-04 (live-oneshot): passed, but its answer appears in no tool result",
-        "la-07 (live-oneshot): passed, but its answer appears in no tool result"
-      ],
-      "evidence": {
-        "models_judged": 3,
-        "ungrounded_records": 6,
-        "measures": "co-occurrence in the recorded trace, not causal use"
-      }
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
     },
     {
       "id": "T5",
       "slug": "trace-underreport",
       "check": "no model under-reports its trajectory",
-      "level": "pass",
+      "level": "n/a",
       "gating": false,
-      "detail": "0 of 3 target(s) report far fewer steps than the fleet (median 1.0); a thin trace can be efficiency OR omission",
-      "witnesses": 3,
-      "evidence": {
-        "fleet_median_steps": 1.0
-      }
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
     },
     {
       "id": "T6",
       "slug": "redundant-calls",
       "check": "tool calls are not redundant",
-      "level": "warn",
+      "level": "n/a",
       "gating": false,
-      "detail": "1 of 3 target(s) repeat identical calls in more than 25% of their trajectories",
-      "witnesses": 3,
-      "examples": [
-        "live-greedy: 24 of 24 trajector(ies) (100%) repeat an identical call",
-        "la-00 (live-greedy): 2 repeated identical call(s)",
-        "la-01 (live-greedy): 2 repeated identical call(s)",
-        "la-02 (live-greedy): 1 repeated identical call(s)"
-      ]
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
     },
     {
       "id": "T7",
@@ -872,29 +913,17 @@
       "check": "passing answers CHANGE when their evidence is withheld",
       "level": "n/a",
       "gating": false,
-      "detail": "no mediated agent on disk; only the harness can withhold a tool result, and a self-reporting target calls its own functions",
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
       "witnesses": 0
     },
     {
       "id": "T8",
       "slug": "trace-observed",
       "check": "the trajectory was observed, not self-reported",
-      "level": "pass",
+      "level": "n/a",
       "gating": false,
-      "detail": "all 3 target(s) write their own trajectory, so T1-T6 verify the RECORD and not the EXECUTION: a target that omits a call from its own trace cannot be caught by reading it. Supported and stated, not a defect. Provider `mediated` moves the tools into the harness if you want the trace to be a log",
-      "witnesses": 3,
-      "evidence": {
-        "trajectory_sources": {
-          "self_reported": [
-            "live-greedy",
-            "live-grounded",
-            "live-oneshot"
-          ]
-        },
-        "isolation": [
-          "n/a"
-        ]
-      }
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
     },
     {
       "id": "J1",
@@ -938,7 +967,7 @@
       "check": "fleet score totals are reliable (KR-20)",
       "level": "skip",
       "gating": false,
-      "detail": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock",
+      "detail": "no runs on disk yet",
       "witnesses": 0
     },
     {
@@ -947,7 +976,7 @@
       "check": "no item anti-correlates with fleet skill",
       "level": "skip",
       "gating": false,
-      "detail": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock",
+      "detail": "no runs on disk yet",
       "witnesses": 0
     },
     {
@@ -956,68 +985,61 @@
       "check": "dead-weight items stay a minority",
       "level": "skip",
       "gating": false,
-      "detail": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock",
+      "detail": "no runs on disk yet",
       "witnesses": 0
     },
     {
       "id": "P4",
       "slug": "matrix-complete",
       "check": "every model was asked the same items",
-      "level": "pass",
+      "level": "skip",
       "gating": true,
-      "detail": "0 of 3 model(s) were asked a different item set",
-      "witnesses": 3
+      "detail": "no runs on disk yet",
+      "witnesses": 0
     },
     {
       "id": "P5",
       "slug": "unanimous-wrong",
       "check": "no unanimous identical wrong answers",
-      "level": "pass",
+      "level": "skip",
       "gating": false,
-      "detail": "0 item(s) where the whole fleet gave one identical wrong answer; candidate key errors",
-      "witnesses": 24
+      "detail": "no runs on disk yet",
+      "witnesses": 0
     },
     {
       "id": "P6",
       "slug": "ordering-noise",
       "check": "entitled ordering claims are separated beyond sampling noise",
-      "level": "n/a",
+      "level": "skip",
       "gating": false,
-      "detail": "no entitled claim asserts a model ordering",
+      "detail": "no runs on disk yet",
       "witnesses": 0
     },
     {
       "id": "P7",
       "slug": "ceiling-floor",
       "check": "the fleet is not pinned at a ceiling or floor",
-      "level": "pass",
+      "level": "skip",
       "gating": false,
-      "detail": "fleet accuracy spans 54% to 83% on 24 item(s)",
-      "witnesses": 3,
-      "evidence": {
-        "min": 0.5417,
-        "max": 0.8333
-      }
+      "detail": "no runs on disk yet",
+      "witnesses": 0
     },
     {
       "id": "P8",
       "slug": "dynamic-range",
       "check": "the eval separates the fleet (dynamic range)",
-      "level": "pass",
+      "level": "skip",
       "gating": false,
-      "detail": "fleet spread 29% across 3 model(s) on 24 item(s)",
-      "witnesses": 3,
-      "evidence": {
-        "spread": 0.2917
-      }
+      "detail": "no runs on disk yet",
+      "witnesses": 0
     },
     {
       "id": "P9",
       "slug": "order-stability",
       "check": "answers survive re-ordering the options",
-      "level": "skip",
+      "level": "n/a",
       "gating": false,
-      "detail": "no shuffle probe on disk; set data.render_choices and run `dinostomp run <spec> --probe shuffle` to unlock",
+      "detail": "presentation-order probes need a real provider; this pod's runs are all local",
       "witnesses": 0
     },
     {
@@ -1033,478 +1055,53 @@
       "id": "P11",
       "slug": "prompt-stability",
       "check": "the number survives re-phrasing the instruction",
-      "level": "skip",
+      "level": "n/a",
       "gating": false,
-      "detail": "no template probe on disk; run `dinostomp run <spec> --probe template` to unlock",
+      "detail": "instruction-framing probes need runs on disk",
       "witnesses": 0
     },
     {
       "id": "P12",
       "slug": "ranking-stability",
       "check": "the fleet ORDERING survives re-phrasing the instruction",
-      "level": "skip",
+      "level": "n/a",
       "gating": false,
-      "detail": "no template probe on disk; run `dinostomp run <spec> --probe template` to unlock",
+      "detail": "instruction-framing probes need runs on disk",
       "witnesses": 0
     }
   ],
   "inputs": {
-    "spec_sha256": "40ec29a2e7b222d3ab5988e6140f4f51f1250a60ed5584b3683e6a03065c216f",
-    "data_sha256": "308236893b61320ddd8b4e45a4c36f00173d2f43ffc98736fa8b65d22cef3120",
-    "target_sha256": {
-      "live-grounded": "4f8a7f8a8f09e4607d3fda36ccf78651c05e3536fd3f6820e760098bfda03ce6",
-      "live-oneshot": "4f8a7f8a8f09e4607d3fda36ccf78651c05e3536fd3f6820e760098bfda03ce6",
-      "live-greedy": "4f8a7f8a8f09e4607d3fda36ccf78651c05e3536fd3f6820e760098bfda03ce6"
-    }
+    "spec_sha256": "ca938fe458041b42286c5423c52d0faeebeccf78b37a0d0c324bd9582f7b29f6",
+    "data_sha256": "d89baf328e5be787fb48c0be486829e3ea5fe2ae916fda459d9971c0d0c4ea67"
   },
-  "runs": [
-    {
-      "run_file": "20260809_120340_live-agent_live-grounded_n24_s7.jsonl",
-      "model": "live-grounded",
-      "model_reported": "live-grounded",
-      "provider": "python",
-      "dry_run": false,
-      "seed": 7,
-      "records": 24,
-      "uncheckable": 0,
-      "spend_source": "target_reported",
-      "trajectory_steps": 24
-    },
-    {
-      "run_file": "20260809_120411_live-agent_live-oneshot_n24_s7.jsonl",
-      "model": "live-oneshot",
-      "model_reported": "live-oneshot",
-      "provider": "python",
-      "dry_run": false,
-      "seed": 7,
-      "records": 24,
-      "uncheckable": 0,
-      "spend_source": "target_reported",
-      "trajectory_steps": 24
-    },
-    {
-      "run_file": "20260809_120447_live-agent_live-greedy_n24_s7.jsonl",
-      "model": "live-greedy",
-      "model_reported": "live-greedy",
-      "provider": "python",
-      "dry_run": false,
-      "seed": 7,
-      "records": 24,
-      "uncheckable": 0,
-      "spend_source": "target_reported",
-      "trajectory_steps": 72
-    }
-  ],
+  "runs": [],
   "entitled_claims": [
-    "Whether each configuration's correct answers appear in the evidence it retrieved, on 24 questions answerable from the pod's corpus.",
-    "Nothing about retrieval quality in general: one corpus, one tool, three configurations."
+    "Which of the three verdicts each model picks on these ANLI R3 items, per model.",
+    "Nothing about the dataset's quality beyond what the checks below actually read."
   ],
   "power": {
-    "n_items": 24,
-    "mde_unpaired_80pct": 0.4044
+    "n_items": 1200,
+    "mde_unpaired_80pct": 0.0572
   },
   "results": {
-    "models": [
-      {
-        "model": "live-greedy",
-        "provider": "python",
-        "dry_run": false,
-        "runs": 1,
-        "n_records": 24,
-        "n_checkable": 24,
-        "n_uncheckable": 0,
-        "n_passes": 20,
-        "n_failures": 4,
-        "accuracy": 0.8333,
-        "ci95": [
-          0.641,
-          0.933
-        ],
-        "judgeability": 1.0,
-        "tokens_in": 0,
-        "tokens_out": 0,
-        "spend_usd": 0.000966,
-        "finish_reasons": {
-          "stop": 24
-        },
-        "modal_output": {
-          "text": "Photosynthesis converts light energy into glucose.",
-          "count": 1,
-          "share": 0.0417
-        }
-      },
-      {
-        "model": "live-grounded",
-        "provider": "python",
-        "dry_run": false,
-        "runs": 1,
-        "n_records": 24,
-        "n_checkable": 24,
-        "n_uncheckable": 0,
-        "n_passes": 13,
-        "n_failures": 11,
-        "accuracy": 0.5417,
-        "ci95": [
-          0.351,
-          0.721
-        ],
-        "judgeability": 1.0,
-        "tokens_in": 0,
-        "tokens_out": 0,
-        "spend_usd": 0.000198,
-        "finish_reasons": {
-          "stop": 24
-        },
-        "modal_output": {
-          "text": "No.",
-          "count": 2,
-          "share": 0.0833
-        }
-      },
-      {
-        "model": "live-oneshot",
-        "provider": "python",
-        "dry_run": false,
-        "runs": 1,
-        "n_records": 24,
-        "n_checkable": 24,
-        "n_uncheckable": 0,
-        "n_passes": 19,
-        "n_failures": 5,
-        "accuracy": 0.7917,
-        "ci95": [
-          0.595,
-          0.908
-        ],
-        "judgeability": 1.0,
-        "tokens_in": 0,
-        "tokens_out": 0,
-        "spend_usd": 0.000152,
-        "finish_reasons": {
-          "stop": 24
-        },
-        "modal_output": {
-          "text": "Photosynthesis is the process that converts light energy into glucose.",
-          "count": 1,
-          "share": 0.0417
-        }
-      }
-    ],
+    "models": [],
     "fleet": {
-      "n_models": 3,
-      "n_items": 24,
-      "mean_accuracy": 0.7222,
-      "min_accuracy": 0.5417,
-      "max_accuracy": 0.8333,
-      "spread": 0.2916,
-      "kr20": 0.8008,
-      "n_all_right": 11,
-      "n_all_wrong": 3,
-      "dead_share": 0.5833,
-      "mde_unpaired": 0.4044
+      "n_models": 0,
+      "n_items": 0,
+      "mean_accuracy": null,
+      "min_accuracy": null,
+      "max_accuracy": null,
+      "spread": null,
+      "kr20": null,
+      "n_all_right": 0,
+      "n_all_wrong": 0,
+      "dead_share": null,
+      "mde_unpaired": null
     },
-    "items": [
-      {
-        "id": "la-00",
-        "target": "photosynthesis",
-        "n_answered": 3,
-        "n_correct": 0,
-        "p": 0.0,
-        "discrimination": null,
-        "missed_by": [
-          "live-greedy",
-          "live-grounded",
-          "live-oneshot"
-        ],
-        "top_wrong_answer": "photosynthesis converts light energy into glucose.",
-        "separates": false
-      },
-      {
-        "id": "la-01",
-        "target": "chloroplasts",
-        "n_answered": 3,
-        "n_correct": 2,
-        "p": 0.6667,
-        "discrimination": 0.9878,
-        "missed_by": [
-          "live-grounded"
-        ],
-        "top_wrong_answer": "i'm unable to answer that question as the reference provided is empty.",
-        "separates": true
-      },
-      {
-        "id": "la-02",
-        "target": "oxygen",
-        "n_answered": 3,
-        "n_correct": 2,
-        "p": 0.6667,
-        "discrimination": 0.9878,
-        "missed_by": [
-          "live-grounded"
-        ],
-        "top_wrong_answer": "oxygen.",
-        "separates": true
-      },
-      {
-        "id": "la-03",
-        "target": "ATP",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "la-04",
-        "target": "mitochondria",
-        "n_answered": 3,
-        "n_correct": 1,
-        "p": 0.3333,
-        "discrimination": 0.2402,
-        "missed_by": [
-          "live-greedy",
-          "live-grounded"
-        ],
-        "top_wrong_answer": "the **mitochondrion** carries out most cellular respiration.",
-        "separates": true
-      },
-      {
-        "id": "la-05",
-        "target": "oxygen",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "la-06",
-        "target": "stomata",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "la-07",
-        "target": "roots",
-        "n_answered": 3,
-        "n_correct": 2,
-        "p": 0.6667,
-        "discrimination": 0.9878,
-        "missed_by": [
-          "live-grounded"
-        ],
-        "top_wrong_answer": "the reference does not contain the answer to the question.",
-        "separates": true
-      },
-      {
-        "id": "la-08",
-        "target": "two",
-        "n_answered": 3,
-        "n_correct": 2,
-        "p": 0.6667,
-        "discrimination": 0.9878,
-        "missed_by": [
-          "live-grounded"
-        ],
-        "top_wrong_answer": "two.",
-        "separates": true
-      },
-      {
-        "id": "la-09",
-        "target": "growth",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "la-10",
-        "target": "four",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "la-11",
-        "target": "gametes",
-        "n_answered": 3,
-        "n_correct": 2,
-        "p": 0.6667,
-        "discrimination": 0.9878,
-        "missed_by": [
-          "live-grounded"
-        ],
-        "top_wrong_answer": "meiosis produces four genetically distinct haploid cells.",
-        "separates": true
-      },
-      {
-        "id": "la-12",
-        "target": "water",
-        "n_answered": 3,
-        "n_correct": 0,
-        "p": 0.0,
-        "discrimination": null,
-        "missed_by": [
-          "live-greedy",
-          "live-grounded",
-          "live-oneshot"
-        ],
-        "top_wrong_answer": "water moves across a membrane during osmosis.",
-        "separates": false
-      },
-      {
-        "id": "la-13",
-        "target": "higher",
-        "n_answered": 3,
-        "n_correct": 2,
-        "p": 0.6667,
-        "discrimination": -0.5,
-        "missed_by": [
-          "live-oneshot"
-        ],
-        "top_wrong_answer": "osmosis moves water toward a lower solute concentration.",
-        "separates": true
-      },
-      {
-        "id": "la-14",
-        "target": "no",
-        "n_answered": 3,
-        "n_correct": 2,
-        "p": 0.6667,
-        "discrimination": 0.9878,
-        "missed_by": [
-          "live-grounded"
-        ],
-        "top_wrong_answer": "no.",
-        "separates": true
-      },
-      {
-        "id": "la-15",
-        "target": "lower",
-        "n_answered": 3,
-        "n_correct": 2,
-        "p": 0.6667,
-        "discrimination": -0.5,
-        "missed_by": [
-          "live-oneshot"
-        ],
-        "top_wrong_answer": "diffusion moves particles from areas of high concentration to areas of low concentration.",
-        "separates": true
-      },
-      {
-        "id": "la-16",
-        "target": "protein",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "la-17",
-        "target": "activation energy",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "la-18",
-        "target": "four",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "la-19",
-        "target": "uracil",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "la-20",
-        "target": "single",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "la-21",
-        "target": "messenger RNA",
-        "n_answered": 3,
-        "n_correct": 0,
-        "p": 0.0,
-        "discrimination": null,
-        "missed_by": [
-          "live-greedy",
-          "live-grounded",
-          "live-oneshot"
-        ],
-        "top_wrong_answer": "messenger rna carries instructions from dna to ribosomes.",
-        "separates": false
-      },
-      {
-        "id": "la-22",
-        "target": "double helix",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "la-23",
-        "target": "not consumed",
-        "n_answered": 3,
-        "n_correct": 2,
-        "p": 0.6667,
-        "discrimination": 0.9878,
-        "missed_by": [
-          "live-grounded"
-        ],
-        "top_wrong_answer": "no.",
-        "separates": true
-      }
-    ],
+    "items": [],
     "slices": {},
     "cost": {
-      "total_usd": 0.001316,
+      "total_usd": 0.0,
       "total_tokens_in": 0,
       "total_tokens_out": 0,
       "all_dry": false
