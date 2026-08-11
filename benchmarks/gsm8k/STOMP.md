@@ -1,6 +1,61 @@
 # 🦖 stomp report: eval.yaml
 
-**BROKEN**: 2 gated finding(s) (31 of 37 ran; 20 n/a of 57 declared)
+**BROKEN**: 2 gated finding(s) (31 of 37 ran; 24 n/a of 61 declared)
+
+## Results
+
+> These numbers come from an eval with **gated findings**. They describe what the runs contain; whether they can be published is decided under Checks.
+
+| model | provider | records | checkable | judgeable | accuracy | 95% CI | passes | fails | out tok | spend |
+|---|---|---:|---:|---:|---:|---|---:|---:|---:|---:|
+| meta-llama/llama-3.1-8b-instruct | openrouter | 360 | 360 | 100% | 84.7% | [0.806, 0.881] | 305 | 55 | 78931 | $0.0076 |
+| meta-llama/llama-3.2-3b-instruct | openrouter | 360 | 326 | 91% | 44.8% | [0.395, 0.502] | 146 | 180 | 42335 | $0.0146 |
+| mistralai/ministral-8b-2512 | openrouter | 360 | 360 | 100% | 86.1% | [0.822, 0.893] | 310 | 50 | 104864 | $0.0193 |
+| qwen/qwen3-30b-a3b-instruct-2507 | openrouter | 360 | 360 | 100% | 78.9% | [0.744, 0.828] | 284 | 76 | 91234 | $0.0188 |
+
+Accuracy is ON CHECKABLE output: `judgeable` is the share the scorer reached a verdict on at all, and 80% accurate on 60%-judgeable output is not 80% accurate.
+
+**4 model(s) x 332 item(s)**, mean 73.6%, spanning 44.8% to 86.1% (41% spread), KR-20 0.99.
+
+100 item(s) every model passed and 12 every model failed: 34% of the set separated nobody in this fleet.
+
+At 332 items an UNPAIRED comparison resolves gaps down to about 11%; smaller differences between the models above are not distinguishable from sampling noise by that test.
+
+<details><summary>Item difficulty: the 25 hardest of 332, hardest first</summary>
+
+| item | target | p | discrimination | missed by | most common wrong answer |
+|---|---|---:|---:|---|---|
+| gsm-0062 | 25000 | 0% | - | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: calculate the value of the pe |
+| gsm-0153 | 48 | 0% | - | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: let's denote the initial numb |
+| gsm-0301 | 8 | 0% | - | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: understand the problem the pr |
+| gsm-0307 | 16 | 0% | - | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | to find out how many weeks it will take  |
+| gsm-0580 | 500 | 0% | - | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: determine the percentage by w |
+| gsm-0675 | 33 | 0% | - | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: determine the initial number  |
+| gsm-0749 | 3 | 0% | - | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: calculate the number of stude |
+| gsm-0782 | 54 | 0% | - | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: calculate the number of times |
+| gsm-0796 | 2880000 | 0% | - | meta-llama/llama-3.1-8b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: calculate the total number of |
+| gsm-0814 | 11 | 0% | - | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | to find out how much money is used, we n |
+| gsm-0830 | 1128 | 0% | - | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: calculate the total time brit |
+| gsm-0962 | 1000 | 0% | - | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: determine the cost of the sup |
+| gsm-0984 | 342 | 0% | - | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: calculate the total length of |
+| gsm-1035 | 35 | 0% | - | meta-llama/llama-3.1-8b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: calculate the total number of |
+| gsm-0214 | 8 | 25% | -0.99 | meta-llama/llama-3.1-8b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: let's denote the amount of wa |
+| gsm-0241 | 6 | 25% | +0.34 | meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | to find the total number of books they w |
+| gsm-0340 | 4 | 25% | -0.99 | meta-llama/llama-3.1-8b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: determine how many balls josh |
+| gsm-0406 | 200 | 25% | +0.34 | meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: determine the initial number  |
+| gsm-0420 | 17000 | 25% | +0.45 | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: determine the amount of money |
+| gsm-0752 | 240 | 25% | +0.17 | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512 | ## step 1: calculate the total cost of e |
+| gsm-0779 | 255 | 25% | +0.45 | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, qwen/qwen3-30b-a3b-instruct-2507 | ## step 1: calculate the speed at which  |
+| gsm-0780 | 25 | 25% | +0.17 | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512 | ## step 1: define the variables for the  |
+| gsm-0906 | 10 | 25% | +0.34 | meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512, qwen/qwen3-30b-a3b-instruct-2507 | to find out how many shoeboxes are left, |
+| gsm-0923 | 2 | 25% | +0.17 | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512 | ## step 1: calculate the total number of |
+| gsm-0936 | 250 | 25% | +0.17 | meta-llama/llama-3.1-8b-instruct, meta-llama/llama-3.2-3b-instruct, mistralai/ministral-8b-2512 | to find out how much cameron would save, |
+
+`p` is the share of the fleet that answered correctly and `discrimination` is the point-biserial with fleet skill. Both DESCRIBE; a hard item is not a defect. A negative discrimination is what P2 examines. All 332 rows are in [STOMP.json](STOMP.json).
+
+</details>
+
+**Cost**: $0.0604 across 88,487 input and 317,364 output tokens, summed from the RECORDS. R3 is the check that compares this against the manifest ledger.
 
 ## Entitled claims
 
@@ -37,6 +92,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | n/a | no option offered twice in one item | 0 | no multiple-choice items in this dataset |
 | n/a | every target is among its choices | 0 | no multiple-choice items in this dataset |
 | ok | no identical question with contradictory targets | 1319 | 0 question(s) appear with conflicting targets |
+| n/a | every referenced asset resolves and still hashes the same | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
 | ok | every typed claim's evidence requirements hold | 12 | 4 of 4 typed claim(s) supported across 12 evidence requirement(s) (no multiplicity correction across 4 claims) |
 | **FAIL** | runs match the spec, data, and scorer on disk (no drift) | 12 | 12 of 12 run(s) no longer match the spec, data, or scorer on disk |
 | ok | the witness gate replays clean | 18 | replayed 6 witness(es): 6 behaved; 12 run manifest(s) checked |
@@ -64,6 +122,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | no surface feature predicts the gold answer | 0 | no multiple-choice items in this dataset |
 | skip | no model reproduces the contamination canary | 0 | no canary probe on disk; run `dinostomp run <spec> --probe canary` to ask whether a model has already read this dataset |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
+| n/a | no near-duplicate assets | 0 | no item carries an `input_ref`; nothing points at a file |
 | ok | witnesses kill the mutant scorers | 4 | 0 of 4 applicable mutant scorer(s) survive the witness suite |
 | ok | uncheckable rate is sane | 1440 | 2% of 1440 record(s) are uncheckable |
 | ok | accuracy is distinguishable from guessing | 4 | 0 of 4 model(s) score no better than guessing; fleet spans 45% to 86% vs chance ~3% (modal target floor) |
@@ -74,7 +133,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | warn | failed answers do not contain the reference | 4 | 3 of 4 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | ok | billed output tokens match the recorded text | 4 | 0 of 4 model(s) report far more output tokens than their recorded text accounts for (expected for hidden-reasoning models; otherwise check your invoice) |
-| warn | the runs were produced by this engine | 12 | 12 of 12 run(s) were produced by a different engine than the one auditing them (now ff8e0f4b4a381cd0); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 12 | 12 of 12 run(s) were produced by a different engine than the one auditing them (now afeb26713e503a6c); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -220,7 +279,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.49.0
+- tool: dinostomp 0.60.0
 - statistical power: at n=120 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~18% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `e4434ae46b201444323f04e3a651d6aeb0e163130067bc83e14cd5fef649a39a`
 - data_sha256: `168ff4314b8164161ce2f6137ca4b2a3805c5509ad5a89152a6b3d3c090371cc`

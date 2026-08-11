@@ -1,6 +1,58 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 18 of 38 checks ran (18 of 38 ran; 19 n/a of 57 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 18 of 38 checks ran (18 of 38 ran; 23 n/a of 61 declared). Not a clean bill of health.
+
+## Results
+
+> These numbers come from an eval with **incomplete coverage**. They describe what the runs contain; whether they can be published is decided under Checks.
+
+| model | provider | records | checkable | judgeable | accuracy | 95% CI | passes | fails | out tok | spend |
+|---|---|---:|---:|---:|---:|---|---:|---:|---:|---:|
+| Corianas/111m | imported | 1172 | 1172 | 100% | 19.7% | [0.175, 0.221] | 231 | 941 | 0 | $0.0000 |
+
+Accuracy is ON CHECKABLE output: `judgeable` is the share the scorer reached a verdict on at all, and 80% accurate on 60%-judgeable output is not 80% accurate.
+
+**1 model(s) x 1172 item(s)**, mean 19.7%.
+
+231 item(s) every model passed and 941 every model failed: 100% of the set separated nobody in this fleet.
+
+At 1172 items an UNPAIRED comparison resolves gaps down to about 6%; smaller differences between the models above are not distinguishable from sampling noise by that test.
+
+<details><summary>Item difficulty: the 25 hardest of 1172, hardest first</summary>
+
+| item | target | p | discrimination | missed by | most common wrong answer |
+|---|---|---:|---:|---|---|
+| ACTAAP_2007_7_3 | Water droplets disappear from the grass. | 0% | - | Corianas/111m | - |
+| ACTAAP_2007_7_36 | trees | 0% | - | Corianas/111m | - |
+| ACTAAP_2008_5_10 | A river used to run through this area | 0% | - | Corianas/111m | - |
+| ACTAAP_2009_5_12 | Black | 0% | - | Corianas/111m | - |
+| ACTAAP_2009_5_8 | cell wall | 0% | - | Corianas/111m | - |
+| ACTAAP_2009_7_8 | An individual who flosses daily will be  | 0% | - | Corianas/111m | - |
+| ACTAAP_2010_5_1 | The fish and dinosaur both lived near a  | 0% | - | Corianas/111m | - |
+| ACTAAP_2010_5_7 | Solid | 0% | - | Corianas/111m | - |
+| ACTAAP_2010_7_14 | The oxygen is a solute that is dissolved | 0% | - | Corianas/111m | - |
+| ACTAAP_2010_7_3 | A southward dip in the jet stream | 0% | - | Corianas/111m | - |
+| ACTAAP_2011_5_1 | the name of the insect and the location  | 0% | - | Corianas/111m | - |
+| ACTAAP_2011_5_8 | jumping rope | 0% | - | Corianas/111m | - |
+| ACTAAP_2012_7_9 | They combine in different numbers and ra | 0% | - | Corianas/111m | - |
+| ACTAAP_2013_5_8 | nitrogen | 0% | - | Corianas/111m | - |
+| ACTAAP_2013_7_16 | ammonia | 0% | - | Corianas/111m | - |
+| ACTAAP_2014_5_8 | The sun would be tiny next to one of the | 0% | - | Corianas/111m | - |
+| ACTAAP_2014_7_13 | Salt is the solute and water is the solv | 0% | - | Corianas/111m | - |
+| ACTAAP_2014_7_5 | anemometer and thermometer | 0% | - | Corianas/111m | - |
+| ACTAAP_2015_7_9 | The planet farthest from the Sun. | 0% | - | Corianas/111m | - |
+| AIMS_2008_4_5 | the person reading the temperature measu | 0% | - | Corianas/111m | - |
+| AIMS_2008_8_11 | trees losing their leaves in the fall | 0% | - | Corianas/111m | - |
+| AIMS_2008_8_6 | It dissolves in water and causes acid ra | 0% | - | Corianas/111m | - |
+| AIMS_2009_4_5 | repair your broken television | 0% | - | Corianas/111m | - |
+| AKDE&ED_2008_4_19 | It helps explain how things work. | 0% | - | Corianas/111m | - |
+| AKDE&ED_2008_4_25 | Air is a mixture of gases. | 0% | - | Corianas/111m | - |
+
+`p` is the share of the fleet that answered correctly and `discrimination` is the point-biserial with fleet skill. Both DESCRIBE; a hard item is not a defect. A negative discrimination is what P2 examines. All 1172 rows are in [STOMP.json](STOMP.json).
+
+</details>
+
+**Cost**: $0.0000 across 0 input and 0 output tokens, summed from the RECORDS. R3 is the check that compares this against the manifest ledger.
 
 ## Entitled claims
 
@@ -19,6 +71,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | ok | no option offered twice in one item | 1172 | 0 item(s) offer a duplicate option |
 | ok | every target is among its choices | 1172 | 0 item(s) whose target is not among their choices |
 | ok | no identical question with contradictory targets | 1172 | 0 question(s) appear with conflicting targets |
+| n/a | every referenced asset resolves and still hashes the same | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | every typed claim's evidence requirements hold | 0 | no typed claims declared |
 | ok | runs match the spec, data, and scorer on disk (no drift) | 1 | 0 of 1 run(s) no longer match the spec, data, or scorer on disk |
 | ok | the witness gate replays clean | 7 | replayed 6 witness(es): 6 behaved; 1 run manifest(s) checked |
@@ -46,6 +101,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | ok | no surface feature predicts the gold answer | 1172 | 0 surface feature(s) beat the per-item chance null on 1172 keyed item(s) |
 | skip | no model reproduces the contamination canary | 0 | no canary probe on disk; run `dinostomp run <spec> --probe canary` to ask whether a model has already read this dataset |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
+| n/a | no near-duplicate assets | 0 | no item carries an `input_ref`; nothing points at a file |
 | warn | witnesses kill the mutant scorers | 5 | 1 of 5 applicable mutant scorer(s) survive the witness suite |
 | ok | uncheckable rate is sane | 1172 | 0% of 1172 record(s) are uncheckable |
 | warn | accuracy is distinguishable from guessing | 1 | 1 of 1 model(s) score no better than guessing; fleet spans 20% to 20% vs chance ~25% (uniform choice floor) |
@@ -83,7 +139,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 <details><summary>[ok] gold answer does not favour an option position</summary>
 
-- evidence: `{"excess": 0.0152, "position": 1}`
+- evidence: `{"chance_rate_at_this_n": 0.0, "excess": 0.0152, "position": 1}`
 
 </details>
 <details><summary>[ok] gold answer is not systematically the longest option</summary>
@@ -142,7 +198,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.49.0
+- tool: dinostomp 0.60.0
 - statistical power: at n=1172 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~6% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `967c38cc964d1369f96ddf6ab68a1c52eaac0c25d27a13b6e9bb1995c3491cb1`
 - data_sha256: `63af045e1154054f7927b7969aa0fb23c7b80cc11ce1921605744124e6005267`

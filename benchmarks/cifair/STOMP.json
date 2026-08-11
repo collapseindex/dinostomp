@@ -270,8 +270,8 @@
   },
   "coverage": {
     "declared_total": 61,
-    "declared": 37,
-    "ran": 10,
+    "declared": 38,
+    "ran": 11,
     "skipped": [
       {
         "id": "R1",
@@ -388,28 +388,24 @@
         "reason": "no free-form items in this dataset"
       },
       {
+        "id": "S3",
+        "reason": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'frog' is the answer 12% of the time"
+      },
+      {
+        "id": "S4",
+        "reason": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'frog' is the answer 12% of the time"
+      },
+      {
+        "id": "S9",
+        "reason": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'frog' is the answer 12% of the time"
+      },
+      {
         "id": "S10",
         "reason": "regurgitation probes need a hosted model; this pod's runs are all local"
       },
       {
         "id": "S11",
         "reason": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot."
-      },
-      {
-        "id": "S12",
-        "reason": "no item carries an `input_ref`; nothing points at a file"
-      },
-      {
-        "id": "S13",
-        "reason": "no item carries an `input_ref`; nothing points at a file"
-      },
-      {
-        "id": "S14",
-        "reason": "no item carries an `input_ref`; nothing points at a file"
-      },
-      {
-        "id": "S15",
-        "reason": "no item carries an `input_ref`; nothing points at a file"
       },
       {
         "id": "C1",
@@ -482,10 +478,10 @@
     ]
   },
   "summary": {
-    "fail": 1,
-    "warn": 0,
+    "fail": 0,
+    "warn": 2,
     "skip": 27,
-    "verdict": "broken",
+    "verdict": "incomplete",
     "scope": "pod"
   },
   "construct_validity": {
@@ -500,8 +496,8 @@
       "check": "questions are unique",
       "level": "pass",
       "gating": true,
-      "detail": "0 duplicated question(s) among 650",
-      "witnesses": 650
+      "detail": "0 duplicated question(s) among 3563",
+      "witnesses": 3563
     },
     {
       "id": "S2",
@@ -516,46 +512,28 @@
       "id": "S3",
       "slug": "position-bias",
       "check": "gold answer does not favour an option position",
-      "level": "pass",
+      "level": "n/a",
       "gating": false,
-      "detail": "gold overshoots position 3 by +2% over its per-item expectation (178 of 650)",
-      "witnesses": 650,
-      "evidence": {
-        "position": 3,
-        "excess": 0.0238,
-        "chance_rate_at_this_n": 0.0
-      }
+      "detail": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'frog' is the answer 12% of the time",
+      "witnesses": 0
     },
     {
       "id": "S4",
       "slug": "length-bias",
       "check": "gold answer is not systematically the longest option",
-      "level": "pass",
+      "level": "n/a",
       "gating": false,
-      "detail": "gold is strictly longest +3% over its per-item expectation (185 of 650)",
-      "witnesses": 650,
-      "evidence": {
-        "excess": 0.0346
-      }
+      "detail": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'frog' is the answer 12% of the time",
+      "witnesses": 0
     },
     {
       "id": "S5",
       "slug": "dup-options",
       "check": "no option offered twice in one item",
-      "level": "fail",
+      "level": "pass",
       "gating": true,
-      "detail": "8 item(s) offer a duplicate option",
-      "witnesses": 650,
-      "examples": [
-        "lq-00002",
-        "lq-00090",
-        "lq-00246",
-        "lq-00285",
-        "lq-00489",
-        "lq-00543",
-        "lq-00598",
-        "lq-00643"
-      ]
+      "detail": "0 item(s) offer a duplicate option",
+      "witnesses": 3563
     },
     {
       "id": "S6",
@@ -564,7 +542,7 @@
       "level": "pass",
       "gating": true,
       "detail": "0 item(s) whose target is not among their choices",
-      "witnesses": 650
+      "witnesses": 3563
     },
     {
       "id": "S7",
@@ -573,25 +551,25 @@
       "level": "pass",
       "gating": true,
       "detail": "0 question(s) appear with conflicting targets",
-      "witnesses": 650
+      "witnesses": 3563
     },
     {
       "id": "S8",
       "slug": "canary-present",
       "check": "a contamination canary travels with the data",
-      "level": "pass",
+      "level": "warn",
       "gating": false,
-      "detail": "canary present (dinostomp canary DO NOT TRAIN benchmarks)",
+      "detail": "no {\"_canary\": ...} line in the data file; add one so trained-on copies are detectable",
       "witnesses": 1
     },
     {
       "id": "S9",
       "slug": "surface-shortcut",
       "check": "no surface feature predicts the gold answer",
-      "level": "pass",
+      "level": "n/a",
       "gating": false,
-      "detail": "0 surface feature(s) beat the per-item chance null on 650 keyed item(s)",
-      "witnesses": 650
+      "detail": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'frog' is the answer 12% of the time",
+      "witnesses": 0
     },
     {
       "id": "S10",
@@ -615,37 +593,57 @@
       "id": "S12",
       "slug": "asset-drift",
       "check": "every referenced asset resolves and still hashes the same",
-      "level": "n/a",
+      "level": "pass",
       "gating": true,
-      "detail": "no item carries an `input_ref`; nothing points at a file",
-      "witnesses": 0
+      "detail": "0 asset(s) missing, unreadable, or changed since the dataset was written",
+      "witnesses": 3563,
+      "evidence": {
+        "unpinned": 0,
+        "assets": 3563,
+        "by_kind": {}
+      }
     },
     {
       "id": "S13",
       "slug": "label-in-path",
       "check": "no asset's own path gives away its label",
-      "level": "n/a",
+      "level": "pass",
       "gating": true,
-      "detail": "no item carries an `input_ref`; nothing points at a file",
-      "witnesses": 0
+      "detail": "0 asset path(s) contain their own answer as a path segment",
+      "witnesses": 3563
     },
     {
       "id": "S14",
       "slug": "split-leak",
       "check": "no asset appears in two splits",
-      "level": "n/a",
+      "level": "pass",
       "gating": true,
-      "detail": "no item carries an `input_ref`; nothing points at a file",
-      "witnesses": 0
+      "detail": "0 asset(s) appear in more than one split",
+      "witnesses": 3563
     },
     {
       "id": "S15",
       "slug": "near-dup-assets",
       "check": "no near-duplicate assets",
-      "level": "n/a",
+      "level": "warn",
       "gating": false,
-      "detail": "no item carries an `input_ref`; nothing points at a file",
-      "witnesses": 0
+      "detail": "77 candidate near-duplicate pair(s) at Hamming distance <= 5 of 64, beyond the byte-identical ones S1 reports",
+      "witnesses": 3563,
+      "examples": [
+        "cifar-test-07293 ~ cifar-train-09640 (1 bits)",
+        "cifar-test-06893 ~ cifar-train-37546 (1 bits)",
+        "cifar-test-05423 ~ cifar-train-41088 (1 bits)",
+        "cifar-test-07264 ~ cifar-train-01148 (1 bits)",
+        "cifar-test-00673 ~ cifar-train-34116 (2 bits)",
+        "cifar-test-01103 ~ cifar-train-12009 (2 bits)",
+        "cifar-test-00535 ~ cifar-train-23051 (2 bits)",
+        "cifar-test-05606 ~ cifar-train-49063 (2 bits)"
+      ],
+      "evidence": {
+        "undecodable": 0,
+        "compared": 3563,
+        "max_bits": 5
+      }
     },
     {
       "id": "W1",
@@ -653,17 +651,17 @@
       "check": "witnesses kill the mutant scorers",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 5 applicable mutant scorer(s) survive the witness suite",
-      "witnesses": 5,
+      "detail": "0 of 4 applicable mutant scorer(s) survive the witness suite",
+      "witnesses": 4,
       "evidence": {
         "killed": [
           "always-pass",
           "always-fail",
           "case-blind",
-          "space-blind",
           "prefix-lenient"
         ],
         "not_applicable": [
+          "space-blind",
           "substring-lenient",
           "negation-blind",
           "uncheckable-credit"
@@ -1077,17 +1075,17 @@
     }
   ],
   "inputs": {
-    "spec_sha256": "0008b07f94c949dab56bd1b4deac9cff5e97d5aab0d9d50f4131e03a25148280",
-    "data_sha256": "394db751da68871d41a01f5d90e93b1d4d3fd47411f3be768eb4efe0a864cafe"
+    "spec_sha256": "e3f274d6907065c908d5daea9282bafe9cd3b8abbb355fdcdf7a42b944637908",
+    "data_sha256": "efccc95d22d657d7fe9101dec4384d8599d844ca2a16d6c827260ec417717f75"
   },
   "runs": [],
   "entitled_claims": [
-    "Which option each model picks on these LogiQA items, per model.",
-    "Nothing about the dataset's quality beyond what the checks below actually read."
+    "Which class each model picks on these CIFAR-10 images, per model.",
+    "Nothing about CIFAR-10's prevalence of anything: the sample is constructed around the annotated duplicates."
   ],
   "power": {
-    "n_items": 650,
-    "mde_unpaired_80pct": 0.0777
+    "n_items": 200,
+    "mde_unpaired_80pct": 0.1401
   },
   "results": {
     "models": [],

@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.60.0 · Apache-2.0 · engine `a2afef33d9a14dd3` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.60.0 · Apache-2.0 · engine `afeb26713e503a6c` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -25,12 +25,12 @@ Each of those is one entry in **[FINDINGS.md](FINDINGS.md)**, with the item id,
 the verbatim data and the command that reproduces it. Every `F` re-derives in
 seconds, offline, for free, using the command in the next section.
 
-**[FINDINGS.md](FINDINGS.md): 109 entries, all permanent, none deleted.**
+**[FINDINGS.md](FINDINGS.md): 110 entries, all permanent, none deleted.**
 
 | series | count | what it records |
 |---|--:|---|
 | **F** | 29 | findings in other people's evals |
-| **D** | 60 | defects in dinostomp itself |
+| **D** | 61 | defects in dinostomp itself |
 | **N** | 20 | negative results, recorded rather than dropped |
 
 **Forty-seven of the eighty-nine are against this tool**, which is the number to
@@ -576,7 +576,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`a2afef33d9a14dd376f9b19ab10d748a9bae609736432506b3340d03bf0c1355`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`afeb26713e503a6c12812160918d827c1567033ff91fa71d33ce5e88005857d2`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

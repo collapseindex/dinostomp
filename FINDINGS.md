@@ -146,6 +146,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-058](#d-058) | dinostomp | the battery crashed on any dataset with ~1,200+ keyed choice items | fixed |
 | [D-059](#d-059) | dinostomp | S2 called 'no' a leaked answer because it is spelled inside 'enough' | fixed, with a residue scoped |
 | [D-060](#d-060) | dinostomp | five pods added; three prove the sweep's earlier findings were mapping artifacts | fixed |
+| [D-061](#d-061) | dinostomp | S9 passed a Chinese exam it could not read, because it tokenises on spaces | fixed |
 
 <!-- INDEX:END -->
 
@@ -188,7 +189,7 @@ at fault.
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-020](#n-020), [N-012](#n-012), [F-025](#f-025) |
 | `S6` | [D-053](#d-053) |
 | `S7` | [F-027](#f-027), [F-028](#f-028), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-042](#d-042) |
-| `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015) |
+| `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015), [D-061](#d-061) |
 | `S10` | [N-006](#n-006) |
 | `S11` | [F-012](#f-012), [N-004](#n-004), [D-014](#d-014) |
 | `S12` | [D-044](#d-044) |
@@ -203,7 +204,7 @@ at fault.
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060) |
+| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061) |
 | dinocorpus | [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
@@ -3676,6 +3677,59 @@ a builder function, because a finding that rests on a mapping choice has to
 publish the mapping choice, and a reader who disagrees with the choice needs
 somewhere to disagree with it.
 
+---
+
+### D-061
+**S9 reported a clean pass on a Chinese licensing exam because it tokenises on spaces**
+`surface-shortcut` (S9) · 2026-08-11 · fixed
+
+Predicted before it was looked for, which is the only reason it is worth much:
+every fixture in the corpus is ASCII, so the prediction was that the next
+untested *shape* would break something, and the shape named was writing systems
+without spaces.
+
+S9 asks whether a surface feature predicts the gold option, and one of its
+features is token overlap between the stem and each choice. Tokens come from
+`str.split()`. Chinese, Japanese and Thai are written without word separators, so
+the whole stem is **one token** and the overlap can only fire when two strings
+are byte-identical.
+
+```
+  pod          avg whitespace tokens per stem     S9
+  logiqa                 78.8 over 466 chars      runs
+  driving-ir             11.2 over  58 chars      runs
+  pharm-cn                1.5 over  56 chars      passed, meaninglessly
+```
+
+**The controlled version.** The same shortcut planted twice, once in English and
+once in Chinese, identical structure, only the script differing:
+
+```
+  english   7.0 tokens/stem   S9 = warn   1 surface feature beats the null
+  chinese   1.0 tokens/stem   S9 = pass   0 surface features beat the null
+```
+
+Same defect. One language finds it, the other does not, and the one that does
+not says `pass`.
+
+**Fixed** by skipping rather than passing when stems average under two
+whitespace tokens across more than ten characters. That is this project's rule
+everywhere else -- a check that cannot discriminate skips -- and it was not
+applied here because nobody had run S9 on a script that breaks its tokeniser.
+English pods are unaffected; `pharm-cn` moves from a `pass` it could not earn to
+a `skip` that names the reason.
+
+**What is NOT fixed.** S9 still cannot audit these scripts. Doing so needs a
+segmenter, which is a dependency and a judgement call about segmentation quality,
+and neither belongs in a check that currently costs nothing to run. The gap is
+now visible in the report instead of hidden behind a green line.
+
+**Third defect in two days found by feeding the tool a shape its fixtures never
+had**, after binary items ([D-053](#d-053)) and large item counts
+([D-058](#d-058)). The corpus measures the battery on 24-item ASCII
+four-option instances, and the battery's working range is wider than that in
+every direction anybody has looked.
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -3699,7 +3753,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **20** |
-| defects in dinostomp itself (**D**) | **60** |
+| defects in dinostomp itself (**D**) | **61** |
 
 Forty-seven to twenty-five. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to

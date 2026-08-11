@@ -6,13 +6,13 @@
   "tool": {
     "name": "dinostomp",
     "version": "0.60.0",
-    "engine": "a2afef33d9a14dd376f9b19ab10d748a9bae609736432506b3340d03bf0c1355"
+    "engine": "afeb26713e503a6c12812160918d827c1567033ff91fa71d33ce5e88005857d2"
   },
   "counts": {
     "F": 29,
-    "D": 60,
+    "D": 61,
     "N": 20,
-    "total": 109
+    "total": 110
   },
   "series": {
     "F": "other people's evals",
@@ -2028,6 +2028,25 @@
       "status_class": "fixed",
       "anchor": "#d-060",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-060"
+    },
+    {
+      "id": "D-061",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "S9 reported a clean pass on a Chinese licensing exam because it tokenises on spaces",
+      "summary": "S9 passed a Chinese exam it could not read, because it tokenises on spaces",
+      "subject": "dinostomp",
+      "check_label": "`surface-shortcut` (S9)",
+      "checks": [
+        "S9"
+      ],
+      "date": "2026-08-11",
+      "date_iso": "2026-08-11",
+      "date_precision": "day",
+      "status": "fixed",
+      "status_class": "fixed",
+      "anchor": "#d-061",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-061"
     }
   ]
 }

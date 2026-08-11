@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**BROKEN**: 1 gated finding(s) (10 of 37 ran; 20 n/a of 57 declared)
+**BROKEN**: 1 gated finding(s) (10 of 37 ran; 24 n/a of 61 declared)
 
 ## Entitled claims
 
@@ -19,6 +19,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | **FAIL** | no option offered twice in one item | 254 | 7 item(s) offer a duplicate option |
 | ok | every target is among its choices | 254 | 0 item(s) whose target is not among their choices |
 | ok | no identical question with contradictory targets | 254 | 0 question(s) appear with conflicting targets |
+| n/a | every referenced asset resolves and still hashes the same | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | every typed claim's evidence requirements hold | 0 | no typed claims declared |
 | skip | runs match the spec, data, and scorer on disk (no drift) | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | ok | the witness gate replays clean | 7 | replayed 7 witness(es): 7 behaved; 0 run manifest(s) checked |
@@ -46,6 +49,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | ok | no surface feature predicts the gold answer | 254 | 0 surface feature(s) beat the per-item chance null on 254 keyed item(s) |
 | n/a | no model reproduces the contamination canary | 0 | regurgitation probes need a hosted model; this pod's runs are all local |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
+| n/a | no near-duplicate assets | 0 | no item carries an `input_ref`; nothing points at a file |
 | ok | witnesses kill the mutant scorers | 5 | 0 of 5 applicable mutant scorer(s) survive the witness suite |
 | skip | uncheckable rate is sane | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | skip | accuracy is distinguishable from guessing | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
@@ -83,7 +87,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 <details><summary>[ok] gold answer does not favour an option position</summary>
 
-- evidence: `{"excess": 0.052, "position": 0}`
+- evidence: `{"chance_rate_at_this_n": 0.0, "excess": 0.052, "position": 0}`
 
 </details>
 <details><summary>[ok] gold answer is not systematically the longest option</summary>
@@ -110,7 +114,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.50.0
+- tool: dinostomp 0.60.0
 - statistical power: at n=254 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~12% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `c5e412e03a657aa906df78e9a56246e833a5ea6da56c8da29b28a51f81e3c3d9`
 - data_sha256: `fc898aaa51c0b2a282cbdfe82d7509f7c039f22a32951a39b7cbf4ffebd77651`

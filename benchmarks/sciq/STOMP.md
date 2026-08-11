@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**BROKEN**: 1 gated finding(s) (10 of 36 ran; 18 n/a of 54 declared)
+**BROKEN**: 1 gated finding(s) (10 of 37 ran; 24 n/a of 61 declared)
 
 ## Entitled claims
 
@@ -19,6 +19,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | **FAIL** | no option offered twice in one item | 1000 | 9 item(s) offer a duplicate option |
 | ok | every target is among its choices | 1000 | 0 item(s) whose target is not among their choices |
 | ok | no identical question with contradictory targets | 1000 | 0 question(s) appear with conflicting targets |
+| n/a | every referenced asset resolves and still hashes the same | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | every typed claim's evidence requirements hold | 0 | no typed claims declared |
 | skip | runs match the spec, data, and scorer on disk (no drift) | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | ok | the witness gate replays clean | 7 | replayed 7 witness(es): 7 behaved; 0 run manifest(s) checked |
@@ -29,9 +32,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | skip | summaries match their run records | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | skip | records cover exactly the seeded selection | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | skip | every model produced something scoreable | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
-| n/a | no forbidden tool is called | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | every required tool is actually called | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | trajectories are well-formed | 0 | this spec runs no python targets; nothing produces a trajectory |
+| n/a | no forbidden tool is called | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | every required tool is actually called | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | trajectories are well-formed | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | skip | every model was asked the same items | 0 | no runs on disk yet |
 
 ### Diagnostics (statistical, advisory)
@@ -46,6 +49,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | warn | no surface feature predicts the gold answer | 1000 | 1 surface feature(s) beat the per-item chance null on 1000 keyed item(s) |
 | n/a | no model reproduces the contamination canary | 0 | regurgitation probes need a hosted model; this pod's runs are all local |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
+| n/a | no near-duplicate assets | 0 | no item carries an `input_ref`; nothing points at a file |
 | ok | witnesses kill the mutant scorers | 5 | 0 of 5 applicable mutant scorer(s) survive the witness suite |
 | skip | uncheckable rate is sane | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | skip | accuracy is distinguishable from guessing | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
@@ -57,9 +61,12 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | failed answers do not contain the reference | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | skip | billed output tokens match the recorded text | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | skip | the runs were produced by this engine | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
-| n/a | passing answers are grounded in tool evidence | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | no model under-reports its trajectory | 0 | this spec runs no python targets; nothing produces a trajectory |
-| n/a | tool calls are not redundant | 0 | this spec runs no python targets; nothing produces a trajectory |
+| skip | repeated items reached a verdict | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
+| n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | tool calls are not redundant | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | passing answers CHANGE when their evidence is withheld | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | the trajectory was observed, not self-reported | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | the judge agrees with cases whose answer is known | 0 | this eval does not score with a judge |
 | n/a | the judge is invariant to content-free perturbations | 0 | this eval does not score with a judge |
 | n/a | the judge agrees with itself on identical input | 0 | this eval does not score with a judge |
@@ -80,7 +87,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 <details><summary>[ok] gold answer does not favour an option position</summary>
 
-- evidence: `{"excess": 0.027, "position": 3}`
+- evidence: `{"chance_rate_at_this_n": 0.0, "excess": 0.027, "position": 3}`
 
 </details>
 <details><summary>[ok] gold answer is not systematically the longest option</summary>
@@ -113,7 +120,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.39.0
+- tool: dinostomp 0.60.0
 - statistical power: at n=1000 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~6% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `40ca82e07eb52249056d6bf9d6bd4eb8e6b45fd9e0d7fb77acd9f112ca970089`
 - data_sha256: `802059bb926e15dc31f0de497c30b2a2d94652f99283dc8ac927d11338644ce1`

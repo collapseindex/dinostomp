@@ -1,13 +1,13 @@
 {
   "tool": "dinostomp",
-  "version": "0.50.0",
+  "version": "0.60.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
       "value": 0.2,
       "source": "default",
-      "provenance": "judgment",
-      "basis": "author judgment; no derivation or calibration on record"
+      "provenance": "calibrated",
+      "basis": "measured against clean data by dinocorpus: the margin is ABSOLUTE and applied to each of k positions with no multiplicity correction, so on clean 4-option data a dataset trips S3 by chance 16.3% of the time at 20 items, 8.7% at 24, 3.3% at 30 and 0.4% at 50. min_choice_items=20 admits the noisiest end of that. Not retuned on one measurement; S3 warns and never gates, and the warning now states the rate at the size it fired on. Full curve: D-046."
     },
     "length_margin": {
       "value": 0.1,
@@ -44,6 +44,12 @@
       "source": "default",
       "provenance": "judgment",
       "basis": "2 characters before a target is long enough to 'appear' in a question"
+    },
+    "near_dup_bits": {
+      "value": 5.0,
+      "source": "default",
+      "provenance": "calibrated",
+      "basis": "5 of 64 bits is conventional in the perceptual-hash literature, and is now MEASURED against a human annotation: on ciFAIR's hand-labelled CIFAR-10 duplicates it recovers 28.1% of them (70 of 249) and flags 158 test/train pairs across 60,000 images, while every byte-level check recovers 0%. 8 bits nearly doubles recall to 52.6% for 3.2x the candidates and starts flagging images the annotators judged similar but NOT duplicates. The default stays at 5: that curve is one dataset of 32x32 photographs, and it is not a licence to reset a default for documents or spectrograms. Full curve: N-017, and `benchmarks/cifair/compare.py --sweep` re-derives it."
     },
     "kr20_min": {
       "value": 0.5,
@@ -263,7 +269,7 @@
     }
   },
   "coverage": {
-    "declared_total": 57,
+    "declared_total": 61,
     "declared": 37,
     "ran": 10,
     "skipped": [
@@ -390,6 +396,22 @@
         "reason": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot."
       },
       {
+        "id": "S12",
+        "reason": "no item carries an `input_ref`; nothing points at a file"
+      },
+      {
+        "id": "S13",
+        "reason": "no item carries an `input_ref`; nothing points at a file"
+      },
+      {
+        "id": "S14",
+        "reason": "no item carries an `input_ref`; nothing points at a file"
+      },
+      {
+        "id": "S15",
+        "reason": "no item carries an `input_ref`; nothing points at a file"
+      },
+      {
         "id": "C1",
         "reason": "no typed claims declared"
       },
@@ -500,7 +522,8 @@
       "witnesses": 126,
       "evidence": {
         "position": 3,
-        "excess": 0.1548
+        "excess": 0.1548,
+        "chance_rate_at_this_n": 0.0
       }
     },
     {
@@ -576,6 +599,42 @@
       "level": "n/a",
       "gating": false,
       "detail": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot.",
+      "witnesses": 0
+    },
+    {
+      "id": "S12",
+      "slug": "asset-drift",
+      "check": "every referenced asset resolves and still hashes the same",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no item carries an `input_ref`; nothing points at a file",
+      "witnesses": 0
+    },
+    {
+      "id": "S13",
+      "slug": "label-in-path",
+      "check": "no asset's own path gives away its label",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no item carries an `input_ref`; nothing points at a file",
+      "witnesses": 0
+    },
+    {
+      "id": "S14",
+      "slug": "split-leak",
+      "check": "no asset appears in two splits",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no item carries an `input_ref`; nothing points at a file",
+      "witnesses": 0
+    },
+    {
+      "id": "S15",
+      "slug": "near-dup-assets",
+      "check": "no near-duplicate assets",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no item carries an `input_ref`; nothing points at a file",
       "witnesses": 0
     },
     {
@@ -1019,5 +1078,29 @@
   "power": {
     "n_items": 126,
     "mde_unpaired_80pct": 0.1765
+  },
+  "results": {
+    "models": [],
+    "fleet": {
+      "n_models": 0,
+      "n_items": 0,
+      "mean_accuracy": null,
+      "min_accuracy": null,
+      "max_accuracy": null,
+      "spread": null,
+      "kr20": null,
+      "n_all_right": 0,
+      "n_all_wrong": 0,
+      "dead_share": null,
+      "mde_unpaired": null
+    },
+    "items": [],
+    "slices": {},
+    "cost": {
+      "total_usd": 0.0,
+      "total_tokens_in": 0,
+      "total_tokens_out": 0,
+      "all_dry": false
+    }
   }
 }

@@ -1051,11 +1051,32 @@ def _shortcut_check(rep: Reporter, keyed: list[dict]) -> None:
         q_tokens = set(_norm(item["input"]).split())
         return len(q_tokens & set(_norm(choice).split()))
 
+    # TOKENISATION IS WHITESPACE, AND NOT EVERY SCRIPT USES IT. Chinese, Japanese
+    # and Thai write without word separators, so `split()` returns the whole stem
+    # as ONE token and the overlap feature can only fire on identical strings. On
+    # a real Chinese pharmacist licensing exam that produced a confident `pass`
+    # over 400 items, and a shortcut S9 catches in English is invisible in the
+    # Chinese version of the same planted file (D-061).
+    #
+    # A check that cannot discriminate SKIPS. That is this project's rule
+    # everywhere else, and a pass here would be a clean bill of health the check
+    # has no means to earn.
+    if keyed:
+        avg_tokens = sum(len(_norm(i["input"]).split()) for i in keyed) / len(keyed)
+        avg_chars = sum(len(_norm(i["input"])) for i in keyed) / len(keyed)
+        if avg_tokens < 2.0 and avg_chars > 10:
+            rep.skip("S9", f"stems average {avg_tokens:.1f} whitespace token(s) over "
+                           f"{avg_chars:.0f} characters, so this text is not space-separated and "
+                           f"the token-overlap feature cannot discriminate. Scripts written "
+                           f"without spaces need a segmenter this check does not have, and a "
+                           f"pass here would mean nothing")
+            return
+
+    findings = []
     features = {
         "highest question-overlap": overlap,
         "shortest option": lambda item, c: -len(c),
     }
-    findings = []
     n = len(keyed)
     for fname, score in features.items():
         # The null only covers items the feature can actually DECIDE (a unique

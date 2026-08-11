@@ -1,13 +1,13 @@
 {
   "tool": "dinostomp",
-  "version": "0.49.0",
+  "version": "0.60.0",
   "target": "eval.yaml",
   "thresholds": {
     "position_margin": {
       "value": 0.2,
       "source": "default",
-      "provenance": "judgment",
-      "basis": "author judgment; no derivation or calibration on record"
+      "provenance": "calibrated",
+      "basis": "measured against clean data by dinocorpus: the margin is ABSOLUTE and applied to each of k positions with no multiplicity correction, so on clean 4-option data a dataset trips S3 by chance 16.3% of the time at 20 items, 8.7% at 24, 3.3% at 30 and 0.4% at 50. min_choice_items=20 admits the noisiest end of that. Not retuned on one measurement; S3 warns and never gates, and the warning now states the rate at the size it fired on. Full curve: D-046."
     },
     "length_margin": {
       "value": 0.1,
@@ -44,6 +44,12 @@
       "source": "default",
       "provenance": "judgment",
       "basis": "2 characters before a target is long enough to 'appear' in a question"
+    },
+    "near_dup_bits": {
+      "value": 5.0,
+      "source": "default",
+      "provenance": "calibrated",
+      "basis": "5 of 64 bits is conventional in the perceptual-hash literature, and is now MEASURED against a human annotation: on ciFAIR's hand-labelled CIFAR-10 duplicates it recovers 28.1% of them (70 of 249) and flags 158 test/train pairs across 60,000 images, while every byte-level check recovers 0%. 8 bits nearly doubles recall to 52.6% for 3.2x the candidates and starts flagging images the annotators judged similar but NOT duplicates. The default stays at 5: that curve is one dataset of 32x32 photographs, and it is not a licence to reset a default for documents or spectrograms. Full curve: N-017, and `benchmarks/cifair/compare.py --sweep` re-derives it."
     },
     "kr20_min": {
       "value": 0.5,
@@ -263,7 +269,7 @@
     }
   },
   "coverage": {
-    "declared_total": 57,
+    "declared_total": 61,
     "declared": 37,
     "ran": 31,
     "skipped": [
@@ -316,6 +322,22 @@
       {
         "id": "S11",
         "reason": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot."
+      },
+      {
+        "id": "S12",
+        "reason": "no item carries an `input_ref`; nothing points at a file"
+      },
+      {
+        "id": "S13",
+        "reason": "no item carries an `input_ref`; nothing points at a file"
+      },
+      {
+        "id": "S14",
+        "reason": "no item carries an `input_ref`; nothing points at a file"
+      },
+      {
+        "id": "S15",
+        "reason": "no item carries an `input_ref`; nothing points at a file"
       },
       {
         "id": "R20",
@@ -485,6 +507,42 @@
       "level": "n/a",
       "gating": false,
       "detail": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot.",
+      "witnesses": 0
+    },
+    {
+      "id": "S12",
+      "slug": "asset-drift",
+      "check": "every referenced asset resolves and still hashes the same",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no item carries an `input_ref`; nothing points at a file",
+      "witnesses": 0
+    },
+    {
+      "id": "S13",
+      "slug": "label-in-path",
+      "check": "no asset's own path gives away its label",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no item carries an `input_ref`; nothing points at a file",
+      "witnesses": 0
+    },
+    {
+      "id": "S14",
+      "slug": "split-leak",
+      "check": "no asset appears in two splits",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no item carries an `input_ref`; nothing points at a file",
+      "witnesses": 0
+    },
+    {
+      "id": "S15",
+      "slug": "near-dup-assets",
+      "check": "no near-duplicate assets",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no item carries an `input_ref`; nothing points at a file",
       "witnesses": 0
     },
     {
@@ -743,7 +801,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "12 of 12 run(s) were produced by a different engine than the one auditing them (now ff8e0f4b4a381cd0); re-run to get numbers this report can stand behind",
+      "detail": "12 of 12 run(s) were produced by a different engine than the one auditing them (now afeb26713e503a6c); re-run to get numbers this report can stand behind",
       "witnesses": 12,
       "examples": [
         "engine 0c79d2fabc826532: meta-llama/llama-3.2-3b-instruct seed 23 (tool 0.29.0)",
@@ -1199,6 +1257,4346 @@
   "power": {
     "n_items": 120,
     "mde_unpaired_80pct": 0.1808
+  },
+  "results": {
+    "models": [
+      {
+        "model": "meta-llama/llama-3.1-8b-instruct",
+        "provider": "openrouter",
+        "dry_run": false,
+        "runs": 3,
+        "n_records": 360,
+        "n_checkable": 360,
+        "n_uncheckable": 0,
+        "n_passes": 305,
+        "n_failures": 55,
+        "accuracy": 0.8472,
+        "ci95": [
+          0.806,
+          0.881
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 26089,
+        "tokens_out": 78931,
+        "spend_usd": 0.007619,
+        "finish_reasons": {
+          "length": 6,
+          "stop": 354
+        },
+        "modal_output": {
+          "text": "## Step 1: Determine the number of red sticks.\nThere are 9 red sticks.\n\n## Step 2: Calculate the number of blue sticks.\n",
+          "count": 2,
+          "share": 0.0056
+        }
+      },
+      {
+        "model": "meta-llama/llama-3.2-3b-instruct",
+        "provider": "openrouter",
+        "dry_run": false,
+        "runs": 3,
+        "n_records": 360,
+        "n_checkable": 326,
+        "n_uncheckable": 34,
+        "n_passes": 146,
+        "n_failures": 180,
+        "accuracy": 0.4479,
+        "ci95": [
+          0.395,
+          0.502
+        ],
+        "judgeability": 0.9056,
+        "tokens_in": 13351,
+        "tokens_out": 42335,
+        "spend_usd": 0.014638,
+        "finish_reasons": {
+          "error": 173,
+          "stop": 187
+        },
+        "modal_output": {
+          "text": "## Step 1: Calculate the amount of the file that Carla can download before the restart.\nCarla can download 2 GB/minute. ",
+          "count": 2,
+          "share": 0.0056
+        }
+      },
+      {
+        "model": "mistralai/ministral-8b-2512",
+        "provider": "openrouter",
+        "dry_run": false,
+        "runs": 3,
+        "n_records": 360,
+        "n_checkable": 360,
+        "n_uncheckable": 0,
+        "n_passes": 310,
+        "n_failures": 50,
+        "accuracy": 0.8611,
+        "ci95": [
+          0.822,
+          0.893
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 23797,
+        "tokens_out": 104864,
+        "spend_usd": 0.019299,
+        "finish_reasons": {
+          "length": 36,
+          "stop": 324
+        },
+        "modal_output": {
+          "text": "To determine how many wheels will be left after assembling all the toys, let's follow these steps:\n\n1. **Calculate the t",
+          "count": 2,
+          "share": 0.0056
+        }
+      },
+      {
+        "model": "qwen/qwen3-30b-a3b-instruct-2507",
+        "provider": "openrouter",
+        "dry_run": false,
+        "runs": 3,
+        "n_records": 360,
+        "n_checkable": 360,
+        "n_uncheckable": 0,
+        "n_passes": 284,
+        "n_failures": 76,
+        "accuracy": 0.7889,
+        "ci95": [
+          0.744,
+          0.828
+        ],
+        "judgeability": 1.0,
+        "tokens_in": 25250,
+        "tokens_out": 91234,
+        "spend_usd": 0.01882,
+        "finish_reasons": {
+          "error": 1,
+          "length": 15,
+          "stop": 344
+        },
+        "modal_output": {
+          "text": "We are given:\n\n- Ben has:\n  - 4 tubes of blue paint\n  - 3 tubes of yellow paint\n\nJasper has:\n- Half as many tubes of blu",
+          "count": 2,
+          "share": 0.0056
+        }
+      }
+    ],
+    "fleet": {
+      "n_models": 4,
+      "n_items": 332,
+      "mean_accuracy": 0.7363,
+      "min_accuracy": 0.4479,
+      "max_accuracy": 0.8611,
+      "spread": 0.4132,
+      "kr20": 0.988,
+      "n_all_right": 100,
+      "n_all_wrong": 12,
+      "dead_share": 0.3373,
+      "mde_unpaired": 0.1087
+    },
+    "items": [
+      {
+        "id": "gsm-0005",
+        "target": "64",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find the total cost, we need to calculate the cost of the glasses with the discount and the cost of the glasses witho",
+        "separates": true
+      },
+      {
+        "id": "gsm-0006",
+        "target": "260",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0007",
+        "target": "160",
+        "n_answered": 3,
+        "n_correct": 1,
+        "p": 0.3333,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total amount of data to be downloaded the total amount of data to be downloaded is 200 gb. ## s",
+        "separates": true
+      },
+      {
+        "id": "gsm-0009",
+        "target": "460",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0022",
+        "target": "7",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0027",
+        "target": "16",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how much cynthia will spend on ice cream, we need to calculate the total number of servings she will eat in ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0029",
+        "target": "104",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "let's break down the information: 1. one pair of heels costs $33. 2. the other pair of heels costs twice as much as the ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0032",
+        "target": "35",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total hours john spends taking care of dogs per day, multiply the number of dogs by the time each dog takes ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0039",
+        "target": "18",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate dana's running speed dana's skipping speed is given as 3 miles per hour, and it is stated that her ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0045",
+        "target": "104",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0054",
+        "target": "40",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total number of kittens, we need to calculate the number of kittens from each cat. patchy has had thrice the",
+        "separates": true
+      },
+      {
+        "id": "gsm-0057",
+        "target": "83",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find the maximum number of boxes that can be loaded onto the truck, we need to subtract the combined weight of the dr",
+        "separates": true
+      },
+      {
+        "id": "gsm-0062",
+        "target": "25000",
+        "n_answered": 4,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the value of the pension after 20 years the value of the pension after 20 years is $50,000/year * 2",
+        "separates": false
+      },
+      {
+        "id": "gsm-0070",
+        "target": "7425",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find out how much judy makes in a week, we need to calculate the total number of classes she teaches and multiply it ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0073",
+        "target": "255",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to calculate the total amount shiela will pay, we need to calculate the interest for each phone and add it to the cost o",
+        "separates": true
+      },
+      {
+        "id": "gsm-0076",
+        "target": "5",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0077",
+        "target": "100",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0078",
+        "target": "6",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": -0.562,
+        "missed_by": [
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to determine how much vincent saves by buying 18 flowers at the better price, let's compare the cost per flower for each",
+        "separates": true
+      },
+      {
+        "id": "gsm-0088",
+        "target": "8000",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.1878,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "let\u2019s solve the problem step by step. let: - $ h $ = number of copies harald sold - then marilyn sold $ 10h $ copies (si",
+        "separates": true
+      },
+      {
+        "id": "gsm-0093",
+        "target": "36",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: first, we need to understand the initial relationship between lee's and gerald's speeds. lee runs the 400-met",
+        "separates": true
+      },
+      {
+        "id": "gsm-0110",
+        "target": "45",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0111",
+        "target": "16",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.4684,
+        "missed_by": [
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "alright, let's tackle this problem step by step. i'll try to break it down to understand how much water julia's boat too",
+        "separates": true
+      },
+      {
+        "id": "gsm-0122",
+        "target": "48",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the hours slept on monday sadie slept 8 hours on monday. ## step 2: calculate the hours slept on tu",
+        "separates": true
+      },
+      {
+        "id": "gsm-0128",
+        "target": "880",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0135",
+        "target": "40",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0138",
+        "target": "105",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many questions mark completed, we need to calculate the total number of questions he answered in both te",
+        "separates": true
+      },
+      {
+        "id": "gsm-0141",
+        "target": "400",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0153",
+        "target": "48",
+        "n_answered": 4,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: let's denote the initial number of french fries in the pack as x. we are trying to find the value of x. ## st",
+        "separates": false
+      },
+      {
+        "id": "gsm-0156",
+        "target": "1400",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.1878,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "we are given the monthly banana needs for different primates: - monkeys: 200 bananas per month - gorillas: 400 bananas p",
+        "separates": true
+      },
+      {
+        "id": "gsm-0164",
+        "target": "15",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0165",
+        "target": "77",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0171",
+        "target": "1210",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find the total number of legs, we need to calculate the legs of each type of creature and add them together. spiders:",
+        "separates": true
+      },
+      {
+        "id": "gsm-0180",
+        "target": "20",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0181",
+        "target": "160",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0190",
+        "target": "360",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.4684,
+        "missed_by": [
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "to determine how many peaches john collects in 3 hours, let's break down the problem step by step. ### **step 1: convert",
+        "separates": true
+      },
+      {
+        "id": "gsm-0192",
+        "target": "91",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.5479,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the number of trees tom plants over 10 years. tom plants 10 trees a year. over 10 years, he will pl",
+        "separates": true
+      },
+      {
+        "id": "gsm-0193",
+        "target": "24",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.445,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "to solve this problem, we need to calculate the number of pink plastic flamingos and white plastic flamingos at noon on ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0197",
+        "target": "6277",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find the number of children in soda, we need to subtract the number of men and women from the total population. total",
+        "separates": true
+      },
+      {
+        "id": "gsm-0207",
+        "target": "2600",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0214",
+        "target": "8",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": -0.9851,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: let's denote the amount of water in the small pool 4 minutes ago as x gallons. since the big pool had twice a",
+        "separates": true
+      },
+      {
+        "id": "gsm-0216",
+        "target": "220",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.1878,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "let's break down the problem step by step. ### step 1: calculate the total amount janeth must repay she borrowed **$2000",
+        "separates": true
+      },
+      {
+        "id": "gsm-0219",
+        "target": "54",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0220",
+        "target": "70",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total time spent, we need to calculate the time spent on crossword puzzles and sudoku puzzles separately, th",
+        "separates": true
+      },
+      {
+        "id": "gsm-0222",
+        "target": "140",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total number of flowers andy plants, we need to add the number of geraniums and petunias. number of geranium",
+        "separates": true
+      },
+      {
+        "id": "gsm-0224",
+        "target": "180",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total cost, we need to calculate the cost for carlos and benji separately and then add them together. carlos",
+        "separates": true
+      },
+      {
+        "id": "gsm-0231",
+        "target": "50",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many shells kylie collects on tuesday, we need to first find out how many shells she collects on monday.",
+        "separates": true
+      },
+      {
+        "id": "gsm-0233",
+        "target": "12",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many penguins are still sunbathing, we need to first calculate how many penguins left the sunbathing are",
+        "separates": true
+      },
+      {
+        "id": "gsm-0238",
+        "target": "68",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0241",
+        "target": "6",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.3361,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find the total number of books they will collectively read, we need to add the number of books each person has and th",
+        "separates": true
+      },
+      {
+        "id": "gsm-0248",
+        "target": "300",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total cost, we need to calculate the total weight of onions and then multiply it by the cost per pound. 4 ba",
+        "separates": true
+      },
+      {
+        "id": "gsm-0249",
+        "target": "5600",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find out how many cookies sue and her sister ate, we need to calculate the number of cookies each of them ate on mond",
+        "separates": true
+      },
+      {
+        "id": "gsm-0252",
+        "target": "73",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0254",
+        "target": "84",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many times anne went down the water slide, we need to calculate 30% less than mitchel's",
+        "separates": true
+      },
+      {
+        "id": "gsm-0255",
+        "target": "192",
+        "n_answered": 3,
+        "n_correct": 1,
+        "p": 0.3333,
+        "discrimination": null,
+        "missed_by": [
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "let's break down the problem step by step. 1. **initial number of cows:** - **stalls:** 10 - **cows per stall:** 20 - **",
+        "separates": true
+      },
+      {
+        "id": "gsm-0258",
+        "target": "6",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0259",
+        "target": "168",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.5479,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: determine the number of apples jamal has. since andrea has 8 more apples than jamal and she has 52 apples, we",
+        "separates": true
+      },
+      {
+        "id": "gsm-0261",
+        "target": "62",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0273",
+        "target": "315",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0282",
+        "target": "195",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.3517,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total number of team members and their guests. there are 12 team members and each brings 2 gues",
+        "separates": true
+      },
+      {
+        "id": "gsm-0284",
+        "target": "360",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0285",
+        "target": "21",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0289",
+        "target": "16",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0300",
+        "target": "78",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many minutes peter needs to exercise on tuesday, we need to calculate the total amount of time he exerci",
+        "separates": true
+      },
+      {
+        "id": "gsm-0301",
+        "target": "8",
+        "n_answered": 4,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: understand the problem the problem asks for the number of pieces of paper needed to create a 32-page tabloid,",
+        "separates": false
+      },
+      {
+        "id": "gsm-0307",
+        "target": "16",
+        "n_answered": 4,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find out how many weeks it will take sandy to lose the same amount of weight, we need to determine how much weight jo",
+        "separates": false
+      },
+      {
+        "id": "gsm-0310",
+        "target": "2050",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.445,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "to find out how much theo has to spend on gifts, we need to calculate how much he has spent on the trip so far and subtr",
+        "separates": true
+      },
+      {
+        "id": "gsm-0312",
+        "target": "32",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find trent's age, we need to follow the relationships between the ages of jane, trent, and quinn. 1. quinn is",
+        "separates": true
+      },
+      {
+        "id": "gsm-0314",
+        "target": "30",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0317",
+        "target": "12",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the cost to fill the pool, we need to calculate the volume of the pool in cubic feet. the formula for the volume",
+        "separates": true
+      },
+      {
+        "id": "gsm-0321",
+        "target": "1",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0323",
+        "target": "75",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0325",
+        "target": "224000",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the number of junior programmers. the number of junior programmers is 2/5 of the total number of em",
+        "separates": true
+      },
+      {
+        "id": "gsm-0326",
+        "target": "14",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0327",
+        "target": "31",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0328",
+        "target": "2",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0330",
+        "target": "31",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the rewards earned from the customer's last shopping trip. the customer spent $80 and gets $1 off f",
+        "separates": true
+      },
+      {
+        "id": "gsm-0334",
+        "target": "6",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0340",
+        "target": "4",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": -0.9851,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: determine how many balls josh started with. josh started with 3 balls. ## step 2: calculate how many balls jo",
+        "separates": true
+      },
+      {
+        "id": "gsm-0341",
+        "target": "260",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.5479,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: determine the weight of the blue beetle since the pink frog weighs the same as the blue beetle, and the pink ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0349",
+        "target": "2640",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.1878,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "let's break down madeline's monthly expenses for her dog and then calculate the annual cost. ### monthly expenses: 1. **",
+        "separates": true
+      },
+      {
+        "id": "gsm-0350",
+        "target": "8",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total hours of peyton's after-work activities, we need to calculate the time for each activity and add them ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0353",
+        "target": "20",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.445,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "to find out how much time john spent sightseeing, we need to first calculate the total time he spent on all activities. ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0356",
+        "target": "21",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0358",
+        "target": "20",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": -0.4612,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total cost of the lollipops for one day the cost of one lollipop is 25 cents, and marisa buys 4",
+        "separates": true
+      },
+      {
+        "id": "gsm-0359",
+        "target": "4",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to solve this problem, let's break it down step by step. 1. billy starts with $10. 2. he buys candy, which costs $",
+        "separates": true
+      },
+      {
+        "id": "gsm-0360",
+        "target": "25",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "let's denote carver's son's age as 'x'. since carver is 5 years less than twice the age of his son, we can write an equa",
+        "separates": true
+      },
+      {
+        "id": "gsm-0361",
+        "target": "20",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total distance the train travels in one trip, we need to calculate the distance from the third city to the f",
+        "separates": true
+      },
+      {
+        "id": "gsm-0362",
+        "target": "23",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0371",
+        "target": "50",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.4684,
+        "missed_by": [
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "let's break down the problem step by step to find out how many tennis shoes were sold by the end of the sale. 1. **frida",
+        "separates": true
+      },
+      {
+        "id": "gsm-0375",
+        "target": "48",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many pieces of rolls mrs. sherman fed to the chickens, we need to follow these steps: 1. mrs. sherman st",
+        "separates": true
+      },
+      {
+        "id": "gsm-0376",
+        "target": "15",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0379",
+        "target": "21",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0387",
+        "target": "36",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0389",
+        "target": "6",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how much david saves, we need to calculate the cost of buying ride tickets for 9 rides and compare it to the",
+        "separates": true
+      },
+      {
+        "id": "gsm-0404",
+        "target": "22",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the average number of stripes, we need to find the total number of stripes and divide it by the number of zebras",
+        "separates": true
+      },
+      {
+        "id": "gsm-0406",
+        "target": "200",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.3361,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: determine the initial number of corns and cannolis. allan has twice as much corn as cannolis, and he has a to",
+        "separates": true
+      },
+      {
+        "id": "gsm-0417",
+        "target": "3140",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total distance tom traveled, we need to break it down into three parts: the first 4 days, the next 2 days, a",
+        "separates": true
+      },
+      {
+        "id": "gsm-0419",
+        "target": "3000",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the difference in elevation between stanley and the comb. the difference in elevation between stanl",
+        "separates": true
+      },
+      {
+        "id": "gsm-0420",
+        "target": "17000",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.4546,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: determine the amount of money mr. josue received from the first bank. mr. josue received $4000 from the first",
+        "separates": true
+      },
+      {
+        "id": "gsm-0429",
+        "target": "13",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0433",
+        "target": "6",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many gallons josey needed, we need to find out how many gallons were in each container. 15 gallons /",
+        "separates": true
+      },
+      {
+        "id": "gsm-0443",
+        "target": "59",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.5479,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total time it took jon to complete the triathlon. first, we need to convert all times to minute",
+        "separates": true
+      },
+      {
+        "id": "gsm-0446",
+        "target": "2",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0451",
+        "target": "11050",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": null,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "we are given: - on a certain day, the total cost to fill **20 helium balloons** was **$900**. - two days later, the **co",
+        "separates": true
+      },
+      {
+        "id": "gsm-0452",
+        "target": "50",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the average speed, we need to calculate the total distance traveled and the total time taken. distance = speed x",
+        "separates": true
+      },
+      {
+        "id": "gsm-0453",
+        "target": "6400",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0460",
+        "target": "84",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0463",
+        "target": "18",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total amount ashley should give the delivery man, we need to calculate 1/5 of the pizza delivery cost and ad",
+        "separates": true
+      },
+      {
+        "id": "gsm-0465",
+        "target": "30",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many students miss maria has, we need to first calculate the total number of cards she has. she has 6 de",
+        "separates": true
+      },
+      {
+        "id": "gsm-0466",
+        "target": "1",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0472",
+        "target": "6",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "let's say the number of carrot sticks matt eats is x. since he can have half as many cookies as the number of carrot sti",
+        "separates": true
+      },
+      {
+        "id": "gsm-0473",
+        "target": "10",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0474",
+        "target": "80",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "let's say the total number of students is x. since three-fourths of students have a desktop computer, the number of stud",
+        "separates": true
+      },
+      {
+        "id": "gsm-0480",
+        "target": "11",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0485",
+        "target": "220",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the cost of jillian's handbag, we need to first calculate 3 times the cost of her shoes.",
+        "separates": true
+      },
+      {
+        "id": "gsm-0487",
+        "target": "4",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.1878,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "let's break down the problem step by step: ### given: - uncle ben has **4 horses** - each horse eats **5 pounds of oats ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0488",
+        "target": "6",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0491",
+        "target": "16",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many eggs jaime won't be able to place on the tray, we need to calculate how many eggs he can fit on the",
+        "separates": true
+      },
+      {
+        "id": "gsm-0495",
+        "target": "200",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0498",
+        "target": "40",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0502",
+        "target": "26",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total number of gifts cherrie bought, we need to calculate the gifts for each group of friends and add them ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0504",
+        "target": "2",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0521",
+        "target": "39",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0525",
+        "target": "12",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.5479,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total amount of raisins available heather has 27 cups of raisins in the bag. ## step 2: determi",
+        "separates": true
+      },
+      {
+        "id": "gsm-0533",
+        "target": "300",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0538",
+        "target": "18",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find out how many vlogs emma needs to make to complete the 72 vlogs per month, we need to subtract the number of vlog",
+        "separates": true
+      },
+      {
+        "id": "gsm-0540",
+        "target": "39",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how much the eldest boy had initially, we need to divide the total amount ($18) by",
+        "separates": true
+      },
+      {
+        "id": "gsm-0547",
+        "target": "81",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": null,
+        "missed_by": [
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "alright, let's tackle this phone tree problem step by step. i'm going to break it down to understand how many families w",
+        "separates": true
+      },
+      {
+        "id": "gsm-0553",
+        "target": "92",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many bottles bill needs, we need to calculate the total number of bottles he already has and the total n",
+        "separates": true
+      },
+      {
+        "id": "gsm-0565",
+        "target": "5",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many sandwiches are left, we need to calculate how many sandwiches cody and trevor ate. cody ate a third",
+        "separates": true
+      },
+      {
+        "id": "gsm-0566",
+        "target": "10",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "let's break this down step by step. shiloh is 44 years old today. in 7 years, he will be 44 + 7 = 5",
+        "separates": true
+      },
+      {
+        "id": "gsm-0567",
+        "target": "9",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0570",
+        "target": "23",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.5479,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the amount spent on wooden action figures from sunday through wednesday. peter spent $5 each day fo",
+        "separates": true
+      },
+      {
+        "id": "gsm-0579",
+        "target": "7",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0580",
+        "target": "500",
+        "n_answered": 4,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: determine the percentage by which the oven is off to find the percentage by which the oven is off, we need to",
+        "separates": false
+      },
+      {
+        "id": "gsm-0586",
+        "target": "800",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0592",
+        "target": "1",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0595",
+        "target": "13",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.3517,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: let's denote jerry's current age as \"j\". we are given that jerry is twice as old as he was 5 years ago. ## st",
+        "separates": true
+      },
+      {
+        "id": "gsm-0601",
+        "target": "104",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.5479,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the number of games steve gets in the first year. in the first year, steve gets 5 games as a birthd",
+        "separates": true
+      },
+      {
+        "id": "gsm-0602",
+        "target": "5",
+        "n_answered": 3,
+        "n_correct": 1,
+        "p": 0.3333,
+        "discrimination": null,
+        "missed_by": [
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to determine how many additional hours it would take the plane to travel an additional 2000 miles at the same rate, foll",
+        "separates": true
+      },
+      {
+        "id": "gsm-0607",
+        "target": "10",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the cost of each pump, we need to first find the total number of washings jackie will get with 1 pump per wash. ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0609",
+        "target": "7",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.445,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "to find out how many pounds of butter juan will need, we need to calculate the total number of croissants he wants to ma",
+        "separates": true
+      },
+      {
+        "id": "gsm-0612",
+        "target": "30",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total ounces of meat consumed, we need to calculate the ounces of meat each player ate and then add them tog",
+        "separates": true
+      },
+      {
+        "id": "gsm-0620",
+        "target": "1509",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0623",
+        "target": "8",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0625",
+        "target": "160",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the number of bloomed flowers, we need to first find the total number of flowers in the garden. there are 10 row",
+        "separates": true
+      },
+      {
+        "id": "gsm-0631",
+        "target": "4800",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total price of all three jewels, we need to find the prices of gold and silver jewels first. since the price",
+        "separates": true
+      },
+      {
+        "id": "gsm-0657",
+        "target": "330000",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find the total cost of the plane for the first year, we need to calculate the cost of the plane itself, the monthly r",
+        "separates": true
+      },
+      {
+        "id": "gsm-0658",
+        "target": "120",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total cooking time, we need to find the cooking time for each food item. we know that it took 30 minutes to ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0659",
+        "target": "3",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0660",
+        "target": "15",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.445,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "let's denote the number of sheep as 's' and the number of geese as 'g'. since each sheep has 1 head and each goose has 1",
+        "separates": true
+      },
+      {
+        "id": "gsm-0661",
+        "target": "44",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0666",
+        "target": "120",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to solve this problem, we need to find out how much money each person has. aurelia has $120. kassidy has 3/4 times as mu",
+        "separates": true
+      },
+      {
+        "id": "gsm-0670",
+        "target": "4",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how much candy they have in total, we need to add up the amount of candy each of them had after halloween. r",
+        "separates": true
+      },
+      {
+        "id": "gsm-0673",
+        "target": "9",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "let's say sally has x books. since janey has 3 more than twice the number of books sally has, we can write an equation: ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0675",
+        "target": "33",
+        "n_answered": 4,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: determine the initial number of dogs and toys james had. james initially had 4 dogs and 4 toys. ## step 2: ca",
+        "separates": false
+      },
+      {
+        "id": "gsm-0677",
+        "target": "36",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.5479,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total number of signatures collected by both sisters in the first five weeks. carol has 20 sign",
+        "separates": true
+      },
+      {
+        "id": "gsm-0682",
+        "target": "80",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0690",
+        "target": "5760",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many coins rong and neil have after 10 years, we need to calculate the total number of coins they saved ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0696",
+        "target": "145",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.1878,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "let's break down the problem step by step to find out how many points the class is missing to reach the 400-point thresh",
+        "separates": true
+      },
+      {
+        "id": "gsm-0697",
+        "target": "27",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0699",
+        "target": "8",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0706",
+        "target": "9",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0708",
+        "target": "168",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.4684,
+        "missed_by": [
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "to determine how much alex charges for 2 weeks of tutoring at \\$12 per day, follow these steps: 1. **calculate the numbe",
+        "separates": true
+      },
+      {
+        "id": "gsm-0712",
+        "target": "14",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total number of days in two weeks. there are 7 days in a week, so two weeks is 7 * 2 = 14 days.",
+        "separates": true
+      },
+      {
+        "id": "gsm-0715",
+        "target": "385000",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.1878,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "the company originally planned to buy 500 computers at $700 each. ### step 1: calculate the original total cost $$ 500 \\",
+        "separates": true
+      },
+      {
+        "id": "gsm-0718",
+        "target": "2",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0721",
+        "target": "2450",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find the total number of taps, we need to calculate the number of taps per minute for each scenario and then multiply",
+        "separates": true
+      },
+      {
+        "id": "gsm-0722",
+        "target": "255",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how much money ron saves by fixing the pothole, we need to calculate the total cost of fixing it and then su",
+        "separates": true
+      },
+      {
+        "id": "gsm-0725",
+        "target": "25",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.1878,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "we are given: - a **cat** eats **9 sausages in 30 minutes**. - a **dog** eats **9 sausages in 2/3 the time** the cat tak",
+        "separates": true
+      },
+      {
+        "id": "gsm-0727",
+        "target": "112",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the number of windows of the students' cars that hannah smashes. to find the total number of window",
+        "separates": true
+      },
+      {
+        "id": "gsm-0729",
+        "target": "1000",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.1878,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "we start with: - **initial number of people at 8:00:** 5000 --- ### step 1: by midday (12:00), **2/5** of the people had",
+        "separates": true
+      },
+      {
+        "id": "gsm-0734",
+        "target": "17",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the weight of cindy's history book. cindy's history book weighs twice as much as her english book, ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0737",
+        "target": "2",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0738",
+        "target": "4",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0740",
+        "target": "25",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the number of students who like to play video games, we need to first find the number of students who like to pl",
+        "separates": true
+      },
+      {
+        "id": "gsm-0745",
+        "target": "1100",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": null,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "let's break down the problem step by step to find mark's **profit**. --- ### **1. cost of the packs:** mark buys **3 pac",
+        "separates": true
+      },
+      {
+        "id": "gsm-0748",
+        "target": "336",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0749",
+        "target": "3",
+        "n_answered": 4,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the number of students per group in the original scenario. to find out how many students are in eac",
+        "separates": false
+      },
+      {
+        "id": "gsm-0752",
+        "target": "240",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.1708,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total cost of electricity per year. the electricity bill is $100 per month. to find the total c",
+        "separates": true
+      },
+      {
+        "id": "gsm-0756",
+        "target": "22",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to solve this problem, let's say the number of votes against the new regulation is x. since the number of votes in favor",
+        "separates": true
+      },
+      {
+        "id": "gsm-0759",
+        "target": "60000",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total number of hours in one playlist to find the total number of hours in one playlist, we mul",
+        "separates": true
+      },
+      {
+        "id": "gsm-0760",
+        "target": "16",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.1878,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "we are given: - 20% of 50 people think **horse #2** will win. - 60% of the **remaining** people think **horse #7** will ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0762",
+        "target": "85",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how much jayden needs, we first need to calculate how much money ava gave him. since ava gave him half of he",
+        "separates": true
+      },
+      {
+        "id": "gsm-0775",
+        "target": "276",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0777",
+        "target": "4400",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": null,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "let's break down the problem step by step. ### step 1: total number of movies mike has **600 movies**. --- ### step 2: m",
+        "separates": true
+      },
+      {
+        "id": "gsm-0779",
+        "target": "255",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.4546,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the speed at which the llesis family hiked. the llesis family hiked at an average of 5 miles per ho",
+        "separates": true
+      },
+      {
+        "id": "gsm-0780",
+        "target": "25",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.1708,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "## step 1: define the variables for the scores of ava and emma. let's denote ava's score as a and emma's score as e. ## ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0782",
+        "target": "54",
+        "n_answered": 4,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the number of times they ride their bikes on a usual day. they ride their bikes 3 times a day. ## s",
+        "separates": false
+      },
+      {
+        "id": "gsm-0786",
+        "target": "142",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0793",
+        "target": "250",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0794",
+        "target": "32",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0796",
+        "target": "2880000",
+        "n_answered": 3,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total number of employees after three months. the company starts with 200 employees and hires 2",
+        "separates": false
+      },
+      {
+        "id": "gsm-0798",
+        "target": "20",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.1878,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "let's break down the problem step by step. ### **billy's pay:** - **starting rate:** $10 per hour - **after 2 months:** ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0808",
+        "target": "12",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total amount of tea at the beginning of the party, we need to calculate the total amount of tea consumed and",
+        "separates": true
+      },
+      {
+        "id": "gsm-0811",
+        "target": "60",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many branches felix climbed per day, we need to first find out how many branches he climbed in total. we",
+        "separates": true
+      },
+      {
+        "id": "gsm-0814",
+        "target": "11",
+        "n_answered": 4,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find out how much money is used, we need to calculate the total time played by each friend and then determine how man",
+        "separates": false
+      },
+      {
+        "id": "gsm-0816",
+        "target": "4500",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0818",
+        "target": "16",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0824",
+        "target": "52",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0829",
+        "target": "14000",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find out how much boris produces in the fourth week, we need to calculate the production for the first three weeks an",
+        "separates": true
+      },
+      {
+        "id": "gsm-0830",
+        "target": "1128",
+        "n_answered": 4,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total time britany spends writing songs per week. britany spends 2 hours a week writing amateur",
+        "separates": false
+      },
+      {
+        "id": "gsm-0831",
+        "target": "324",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.5479,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "the interior design firm will install the initial 4 mirrors, 2 shelves, and 1 chandelier for $129.00. angela has 6 mirro",
+        "separates": true
+      },
+      {
+        "id": "gsm-0832",
+        "target": "42",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0837",
+        "target": "120",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.3517,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: determine the total amount erika needs to buy the laptop after trading in her old one. the original price of ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0840",
+        "target": "16",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total length of the glue sticks that are not used, we need to find the length of each glue stick that is not",
+        "separates": true
+      },
+      {
+        "id": "gsm-0853",
+        "target": "15",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0854",
+        "target": "144",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0856",
+        "target": "7",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.3517,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many packs mr. jackson needs to buy, we need to calculate the total number of glue sticks required and t",
+        "separates": true
+      },
+      {
+        "id": "gsm-0862",
+        "target": "40",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0870",
+        "target": "40",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how much keenan spends per week, we need to first find out how much he spends per month. since madeline pays",
+        "separates": true
+      },
+      {
+        "id": "gsm-0871",
+        "target": "48",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0872",
+        "target": "13",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0873",
+        "target": "12",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how much money david has left, we need to calculate the total cost of the bolts and subtract it from the amo",
+        "separates": true
+      },
+      {
+        "id": "gsm-0875",
+        "target": "60",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0880",
+        "target": "10",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0881",
+        "target": "16",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0884",
+        "target": "50",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0890",
+        "target": "25",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0895",
+        "target": "74",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0899",
+        "target": "16",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many cookies each nephew will get, we need to first subtract the cookies that susan's husband took. susa",
+        "separates": true
+      },
+      {
+        "id": "gsm-0900",
+        "target": "15",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0904",
+        "target": "8",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0906",
+        "target": "10",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.3361,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find out how many shoeboxes are left, we need to calculate the number of blue and red shoeboxes used and subtract tha",
+        "separates": true
+      },
+      {
+        "id": "gsm-0907",
+        "target": "16",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many books joseph has, we need to first find out how many books he had before he lost any. since joseph ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0909",
+        "target": "38",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct"
+        ],
+        "top_wrong_answer": "let's break down the problem step by step: 1. duncan's age eight years ago was 60 - 8 = 52. 2. let's denote adam's age f",
+        "separates": true
+      },
+      {
+        "id": "gsm-0910",
+        "target": "700",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total number of acres, we need to calculate the acres of each farm and then add them together. farmer brown'",
+        "separates": true
+      },
+      {
+        "id": "gsm-0911",
+        "target": "64",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0914",
+        "target": "3",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many tune-ups jon needs, we need to calculate the total miles he drives in 30 days. jon drives 10 miles ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0915",
+        "target": "23",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0916",
+        "target": "14",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.5479,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: determine the total cost of the items purchased. the total cost of the items purchased includes the cost of t",
+        "separates": true
+      },
+      {
+        "id": "gsm-0918",
+        "target": "56",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0919",
+        "target": "90",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0921",
+        "target": "4",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0923",
+        "target": "2",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.1708,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total number of cups used for chamomile and mint tea in each row. since lana divides the 27 cup",
+        "separates": true
+      },
+      {
+        "id": "gsm-0932",
+        "target": "24",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total number of balloons, we need to calculate the number of balloons each person has and then add them up. ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0936",
+        "target": "250",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.1708,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "to find out how much cameron would save, we need to calculate the cost of his stay with the option of adding on 70 pesos",
+        "separates": true
+      },
+      {
+        "id": "gsm-0938",
+        "target": "4",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.5479,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate john's total earnings for the week. john earned 50 dollars an hour and worked 6 hours in the week. ",
+        "separates": true
+      },
+      {
+        "id": "gsm-0944",
+        "target": "34",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how much jen will earn, we need to calculate the total amount she will get from selling each type of root cr",
+        "separates": true
+      },
+      {
+        "id": "gsm-0945",
+        "target": "17",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to solve this problem, we need to break it down into steps. step 1: calculate the distance james swims at 2 miles per ho",
+        "separates": true
+      },
+      {
+        "id": "gsm-0957",
+        "target": "45",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0961",
+        "target": "225",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.4684,
+        "missed_by": [
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "alright, let's tackle this problem step by step. i'll try to understand what's given and what's being asked, and then fi",
+        "separates": true
+      },
+      {
+        "id": "gsm-0962",
+        "target": "1000",
+        "n_answered": 4,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: determine the cost of the supplies. the cost of the supplies is given as $400. ## step 2: calculate the cost ",
+        "separates": false
+      },
+      {
+        "id": "gsm-0967",
+        "target": "30",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0968",
+        "target": "227",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0970",
+        "target": "33",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total number of players in both teams, we need to find the number of players in zeke's team and add it to th",
+        "separates": true
+      },
+      {
+        "id": "gsm-0973",
+        "target": "79",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total number of states in both countries, we need to first find the number of states in india and the usa. t",
+        "separates": true
+      },
+      {
+        "id": "gsm-0976",
+        "target": "540",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.445,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "## step 1: calculate the number of gingerbread boxes sold on saturday sunny sold 10 boxes of gingerbread on saturday. ##",
+        "separates": true
+      },
+      {
+        "id": "gsm-0977",
+        "target": "4",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many bottles of sunscreen pamela will need, we need to calculate the total number of hours she'll be out",
+        "separates": true
+      },
+      {
+        "id": "gsm-0978",
+        "target": "160",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.3517,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct"
+        ],
+        "top_wrong_answer": "the blue car costs $100. the red car is 40% cheaper than the blue car, so it costs 60% of the price of the blue car. 60%",
+        "separates": true
+      },
+      {
+        "id": "gsm-0984",
+        "target": "342",
+        "n_answered": 4,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total length of the flower bed in inches first, we need to convert the length of the flower bed",
+        "separates": false
+      },
+      {
+        "id": "gsm-0987",
+        "target": "3",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-0992",
+        "target": "52",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many checks buford writes per year, we need to calculate the number of checks he writes per month and th",
+        "separates": true
+      },
+      {
+        "id": "gsm-0996",
+        "target": "3",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.445,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total age of helene and the other two children. since the total age of the children is 20, and ",
+        "separates": true
+      },
+      {
+        "id": "gsm-1003",
+        "target": "480",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.4546,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total cost of renting the studio per session. the cost of renting the studio per session is $25",
+        "separates": true
+      },
+      {
+        "id": "gsm-1007",
+        "target": "34",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total number of sticks, we need to find the number of blue and yellow sticks first. number of red sticks: 9 ",
+        "separates": true
+      },
+      {
+        "id": "gsm-1008",
+        "target": "230",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1010",
+        "target": "5",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1012",
+        "target": "94",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.1708,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "## step 1: to solve this problem, we need to set up an equation that represents the charge remaining in the power bank a",
+        "separates": true
+      },
+      {
+        "id": "gsm-1015",
+        "target": "78",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total number of sweets in the box. first, we need to find out how many sweets are in the box in",
+        "separates": true
+      },
+      {
+        "id": "gsm-1018",
+        "target": "60",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1019",
+        "target": "98",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the initial number of guests who checked out. 24 guests elected for an early checkout. ## step 2: c",
+        "separates": true
+      },
+      {
+        "id": "gsm-1027",
+        "target": "12",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1028",
+        "target": "200",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1035",
+        "target": "35",
+        "n_answered": 3,
+        "n_correct": 0,
+        "p": 0.0,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total number of soda bottles that can fit along the driveway. to find the total number of soda ",
+        "separates": false
+      },
+      {
+        "id": "gsm-1041",
+        "target": "101",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1045",
+        "target": "420",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1053",
+        "target": "55",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total amount alison spent, we need to calculate the cost of each item and add them together. 1. tank top: $1",
+        "separates": true
+      },
+      {
+        "id": "gsm-1056",
+        "target": "156",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.1708,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total number of sheets greg puts on the beds every week. greg puts clean sheets on 4 twin beds ",
+        "separates": true
+      },
+      {
+        "id": "gsm-1058",
+        "target": "250",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.3517,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the number of stickers leo had two years ago. leo had 100 stickers two years ago. ## step 2: calcul",
+        "separates": true
+      },
+      {
+        "id": "gsm-1059",
+        "target": "2",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": -0.7027,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total amount of cat food imma feeds her cats per day. imma feeds her cats 60 grams of cat food ",
+        "separates": true
+      },
+      {
+        "id": "gsm-1060",
+        "target": "31",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1061",
+        "target": "58",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "let's say donovan's part took x minutes. since betsy's part took 18 minutes longer, betsy's part took x +",
+        "separates": true
+      },
+      {
+        "id": "gsm-1066",
+        "target": "14",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1069",
+        "target": "300",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1070",
+        "target": "18",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.1708,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "to find the total cost of the butter, we need to calculate the cost of 6 pounds of butter with the promotion. since denn",
+        "separates": true
+      },
+      {
+        "id": "gsm-1073",
+        "target": "21",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total number of bananas eaten by the first monkey per day. the first monkey eats 10 bananas eac",
+        "separates": true
+      },
+      {
+        "id": "gsm-1079",
+        "target": "10",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1083",
+        "target": "2",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how much money jenny saved, we need to calculate the total cost of buying bananas individually and the total",
+        "separates": true
+      },
+      {
+        "id": "gsm-1088",
+        "target": "30",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.4546,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total minutes spent in class per day john takes 2 extra classes, each 40 minutes long, so he sp",
+        "separates": true
+      },
+      {
+        "id": "gsm-1089",
+        "target": "32",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the height of the ball on its second bounce, we need to calculate the height of the ball after the first bounce ",
+        "separates": true
+      },
+      {
+        "id": "gsm-1095",
+        "target": "270",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1096",
+        "target": "240",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1099",
+        "target": "2",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1106",
+        "target": "5",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1108",
+        "target": "38",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how much your mom spent, we need to add the cost of the pots and the garden soil, then subtract the coupon d",
+        "separates": true
+      },
+      {
+        "id": "gsm-1110",
+        "target": "60",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many miles soledad needs to hike per day, we need to divide the total number of miles she wants to hike ",
+        "separates": true
+      },
+      {
+        "id": "gsm-1116",
+        "target": "60",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the number of students enrolled this year, you need to calculate 20% of the previous year's enrollment and add i",
+        "separates": true
+      },
+      {
+        "id": "gsm-1119",
+        "target": "18",
+        "n_answered": 3,
+        "n_correct": 1,
+        "p": 0.3333,
+        "discrimination": null,
+        "missed_by": [
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "let's break down the time each person took to complete their chores: 1. **amalia** mowed the lawn, which took her **4 ho",
+        "separates": true
+      },
+      {
+        "id": "gsm-1121",
+        "target": "35",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "since sofie walks twice as far as brian, we can set up an equation to represent the situation. let's say brian walks x m",
+        "separates": true
+      },
+      {
+        "id": "gsm-1122",
+        "target": "18",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.5479,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total number of toys produced by the first 4 workers in one hour. the first 2 workers produce 6",
+        "separates": true
+      },
+      {
+        "id": "gsm-1125",
+        "target": "90",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many m&m's john has, we need to multiply the number of bags by the weight of each bag and then multiply ",
+        "separates": true
+      },
+      {
+        "id": "gsm-1129",
+        "target": "8",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: let's denote the number of eggs painted by arnold as a, by madeline as m, by camden as c, and by sarah as s. ",
+        "separates": true
+      },
+      {
+        "id": "gsm-1130",
+        "target": "25",
+        "n_answered": 3,
+        "n_correct": 3,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1134",
+        "target": "7",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.1878,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "jane has saved $4 per week for 8 weeks. first, calculate how much she has already saved: $$ 4 \\text{ dollars/week} \\time",
+        "separates": true
+      },
+      {
+        "id": "gsm-1141",
+        "target": "20",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.1878,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "let's break it down step by step: ### step 1: eggs eaten in the first 30 days chester eats **3 eggs per day** for **30 d",
+        "separates": true
+      },
+      {
+        "id": "gsm-1143",
+        "target": "300",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many lemons tim gets in a decade, we need to calculate the total number of lemons he collects each year ",
+        "separates": true
+      },
+      {
+        "id": "gsm-1161",
+        "target": "170",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find out how much money abraham will earn, we need to calculate the total amount of money he earned from each sale. f",
+        "separates": true
+      },
+      {
+        "id": "gsm-1166",
+        "target": "2350",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.3361,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to solve this problem, we need to calculate the number of fruits each tree produces in each year. year 1: 5-year-old tre",
+        "separates": true
+      },
+      {
+        "id": "gsm-1168",
+        "target": "20",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1170",
+        "target": "2",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1178",
+        "target": "17",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1179",
+        "target": "50",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total number of teeth the dentist fixes. the dentist drills 4 teeth and caps 7 more than that, ",
+        "separates": true
+      },
+      {
+        "id": "gsm-1180",
+        "target": "5600",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to calculate the refund, we need to find out how many gallons of milk mr. marcellus returned. since 2/5 of the milk had ",
+        "separates": true
+      },
+      {
+        "id": "gsm-1182",
+        "target": "1800",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.4546,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the total number of books bob can buy with $27000 to find out how many books bob can buy in total, ",
+        "separates": true
+      },
+      {
+        "id": "gsm-1186",
+        "target": "19",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total miles sam ran this week, we need to add the miles he ran on monday, wednesday, and friday, and the mil",
+        "separates": true
+      },
+      {
+        "id": "gsm-1191",
+        "target": "100",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1194",
+        "target": "1200",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the number of gallons of blood in a shark, we need to multiply the number of gallons of blood in a whale by 3. n",
+        "separates": true
+      },
+      {
+        "id": "gsm-1197",
+        "target": "2400",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1206",
+        "target": "40000",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.4546,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: calculate the loan amount first, we need to calculate the amount of the loan. the house is worth $250,000, an",
+        "separates": true
+      },
+      {
+        "id": "gsm-1207",
+        "target": "64",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1218",
+        "target": "225",
+        "n_answered": 4,
+        "n_correct": 1,
+        "p": 0.25,
+        "discrimination": 0.1708,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct",
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "## step 1: calculate the number of groups that will try the escape room there are 10 students in each grade, and there a",
+        "separates": true
+      },
+      {
+        "id": "gsm-1226",
+        "target": "90",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.1878,
+        "missed_by": [
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "let's break down the cost step by step: 1. **basic manicure**: $35 2. **basic pedicure**: $40 3. **total before discount",
+        "separates": true
+      },
+      {
+        "id": "gsm-1227",
+        "target": "66",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find out how many magazines susan gets every year, we need to calculate the total number of issues she receives from ",
+        "separates": true
+      },
+      {
+        "id": "gsm-1229",
+        "target": "36",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1232",
+        "target": "15",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find out how many pomelos eve gave away, we need to first find out how many pomelos she had left. since eve is left w",
+        "separates": true
+      },
+      {
+        "id": "gsm-1236",
+        "target": "84",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the total number of grapes at the beginning, we need to work backwards. madeline ate 6 grapes, and her brother u",
+        "separates": true
+      },
+      {
+        "id": "gsm-1237",
+        "target": "78",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1240",
+        "target": "2",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "## step 1: determine the capacity of each shelf the bottom shelf can hold twice as many books as a middle shelf, and the",
+        "separates": true
+      },
+      {
+        "id": "gsm-1243",
+        "target": "50",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": 0.9845,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "to find the cost of each stick of jerky, we need to first find the total cost of the bag after the discount. the origina",
+        "separates": true
+      },
+      {
+        "id": "gsm-1244",
+        "target": "35",
+        "n_answered": 3,
+        "n_correct": 2,
+        "p": 0.6667,
+        "discrimination": null,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the number of questions audrey got right on the first test. audrey got 60% of 70 questions correct ",
+        "separates": true
+      },
+      {
+        "id": "gsm-1245",
+        "target": "96",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1246",
+        "target": "3360",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find the total number of points ara has scored, we need to multiply the number of games she has played by the number ",
+        "separates": true
+      },
+      {
+        "id": "gsm-1272",
+        "target": "296",
+        "n_answered": 4,
+        "n_correct": 3,
+        "p": 0.75,
+        "discrimination": -0.3517,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the cost of one night at the hotel. the cost of one night at the hotel is $80. ## step 2: calculate",
+        "separates": true
+      },
+      {
+        "id": "gsm-1273",
+        "target": "27",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.5479,
+        "missed_by": [
+          "meta-llama/llama-3.1-8b-instruct",
+          "meta-llama/llama-3.2-3b-instruct"
+        ],
+        "top_wrong_answer": "## step 1: calculate the number of marbles dallas has after dropping some. dallas started with 21 marbles and dropped 4,",
+        "separates": true
+      },
+      {
+        "id": "gsm-1279",
+        "target": "180",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1295",
+        "target": "2",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1300",
+        "target": "120",
+        "n_answered": 4,
+        "n_correct": 2,
+        "p": 0.5,
+        "discrimination": 0.6923,
+        "missed_by": [
+          "meta-llama/llama-3.2-3b-instruct",
+          "qwen/qwen3-30b-a3b-instruct-2507"
+        ],
+        "top_wrong_answer": "to find out how much josh makes in 2 weeks, we need to calculate the number of days he is open and the number of cars he",
+        "separates": true
+      },
+      {
+        "id": "gsm-1301",
+        "target": "23",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1305",
+        "target": "2325",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "gsm-1317",
+        "target": "5",
+        "n_answered": 2,
+        "n_correct": 1,
+        "p": 0.5,
+        "discrimination": null,
+        "missed_by": [
+          "mistralai/ministral-8b-2512"
+        ],
+        "top_wrong_answer": "alright, let's tackle this problem step by step. we have a farm with a total of 20 animals, all of which are either chic",
+        "separates": true
+      },
+      {
+        "id": "gsm-1318",
+        "target": "14",
+        "n_answered": 4,
+        "n_correct": 4,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      }
+    ],
+    "slices": {},
+    "cost": {
+      "total_usd": 0.060376,
+      "total_tokens_in": 88487,
+      "total_tokens_out": 317364,
+      "all_dry": false
+    }
   },
   "claims": [
     {

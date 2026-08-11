@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 10 of 37 checks ran (10 of 37 ran; 24 n/a of 61 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 11 of 38 checks ran (11 of 38 ran; 23 n/a of 61 declared). Not a clean bill of health.
 
 ## Entitled claims
 
@@ -14,14 +14,14 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 
 | | check | witnesses | detail |
 |---|---|---:|---|
-| ok | questions are unique | 500 | 0 duplicated question(s) among 500 |
+| ok | questions are unique | 3563 | 0 duplicated question(s) among 3563 |
 | n/a | no answer leaks into its own question | 0 | no free-form items in this dataset |
-| ok | no option offered twice in one item | 500 | 0 item(s) offer a duplicate option |
-| ok | every target is among its choices | 500 | 0 item(s) whose target is not among their choices |
-| ok | no identical question with contradictory targets | 500 | 0 question(s) appear with conflicting targets |
-| n/a | every referenced asset resolves and still hashes the same | 0 | no item carries an `input_ref`; nothing points at a file |
-| n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
-| n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
+| ok | no option offered twice in one item | 3563 | 0 item(s) offer a duplicate option |
+| ok | every target is among its choices | 3563 | 0 item(s) whose target is not among their choices |
+| ok | no identical question with contradictory targets | 3563 | 0 question(s) appear with conflicting targets |
+| ok | every referenced asset resolves and still hashes the same | 3563 | 0 asset(s) missing, unreadable, or changed since the dataset was written |
+| ok | no asset's own path gives away its label | 3563 | 0 asset path(s) contain their own answer as a path segment |
+| ok | no asset appears in two splits | 3563 | 0 asset(s) appear in more than one split |
 | n/a | every typed claim's evidence requirements hold | 0 | no typed claims declared |
 | skip | runs match the spec, data, and scorer on disk (no drift) | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | ok | the witness gate replays clean | 7 | replayed 7 witness(es): 7 behaved; 0 run manifest(s) checked |
@@ -43,14 +43,14 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | | check | witnesses | detail |
 |---|---|---:|---|
-| ok | gold answer does not favour an option position | 500 | gold overshoots position 0 by +3% over its per-item expectation (138 of 500) |
-| ok | gold answer is not systematically the longest option | 500 | gold is strictly longest +7% over its per-item expectation (160 of 500) |
-| ok | a contamination canary travels with the data | 1 | canary present (dinostomp canary DO NOT TRAIN benchmarks) |
-| ok | no surface feature predicts the gold answer | 500 | 0 surface feature(s) beat the per-item chance null on 500 keyed item(s) |
+| n/a | gold answer does not favour an option position | 0 | every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'frog' is the answer 12% of the time |
+| n/a | gold answer is not systematically the longest option | 0 | every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'frog' is the answer 12% of the time |
+| warn | a contamination canary travels with the data | 1 | no {"_canary": ...} line in the data file; add one so trained-on copies are detectable |
+| n/a | no surface feature predicts the gold answer | 0 | every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'frog' is the answer 12% of the time |
 | n/a | no model reproduces the contamination canary | 0 | regurgitation probes need a hosted model; this pod's runs are all local |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
-| n/a | no near-duplicate assets | 0 | no item carries an `input_ref`; nothing points at a file |
-| ok | witnesses kill the mutant scorers | 5 | 0 of 5 applicable mutant scorer(s) survive the witness suite |
+| warn | no near-duplicate assets | 3563 | 77 candidate near-duplicate pair(s) at Hamming distance <= 5 of 64, beyond the byte-identical ones S1 reports |
+| ok | witnesses kill the mutant scorers | 4 | 0 of 4 applicable mutant scorer(s) survive the witness suite |
 | skip | uncheckable rate is sane | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | skip | accuracy is distinguishable from guessing | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | skip | runs cover the spec's declared scope, nothing foreign | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
@@ -85,28 +85,36 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ### Receipts
 
-<details><summary>[ok] gold answer does not favour an option position</summary>
+<details><summary>[ok] every referenced asset resolves and still hashes the same</summary>
 
-- evidence: `{"chance_rate_at_this_n": 0.0, "excess": 0.026, "position": 0}`
+- evidence: `{"assets": 3563, "by_kind": {}, "unpinned": 0}`
 
 </details>
-<details><summary>[ok] gold answer is not systematically the longest option</summary>
+<details><summary>[warn] no near-duplicate assets</summary>
 
-- evidence: `{"excess": 0.07}`
+- cifar-test-07293 ~ cifar-train-09640 (1 bits)
+- cifar-test-06893 ~ cifar-train-37546 (1 bits)
+- cifar-test-05423 ~ cifar-train-41088 (1 bits)
+- cifar-test-07264 ~ cifar-train-01148 (1 bits)
+- cifar-test-00673 ~ cifar-train-34116 (2 bits)
+- cifar-test-01103 ~ cifar-train-12009 (2 bits)
+- cifar-test-00535 ~ cifar-train-23051 (2 bits)
+- cifar-test-05606 ~ cifar-train-49063 (2 bits)
+- evidence: `{"compared": 3563, "max_bits": 5, "undecodable": 0}`
 
 </details>
 <details><summary>[ok] witnesses kill the mutant scorers</summary>
 
-- evidence: `{"killed": ["always-pass", "always-fail", "case-blind", "space-blind", "prefix-lenient"], "not_applicable": ["substring-lenient", "negation-blind", "uncheckable-credit"]}`
+- evidence: `{"killed": ["always-pass", "always-fail", "case-blind", "prefix-lenient"], "not_applicable": ["space-blind", "substring-lenient", "negation-blind", "uncheckable-credit"]}`
 
 </details>
 
 ## Provenance
 
 - tool: dinostomp 0.60.0
-- statistical power: at n=500 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~9% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
-- spec_sha256: `d4dcd35b3b6aa45f99c32fd3d317ff7364e9cc88a3b43f76fb1d0d8f5b208e29`
-- data_sha256: `7bd615aa64398cc992d164533513f56e7dc91a99ea8cc72acf529389ecd881c0`
+- statistical power: at n=200 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~14% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
+- spec_sha256: `e3f274d6907065c908d5daea9282bafe9cd3b8abbb355fdcdf7a42b944637908`
+- data_sha256: `efccc95d22d657d7fe9101dec4384d8599d844ca2a16d6c827260ec417717f75`
 - thresholds: all defaults
 - reproducibility tiers, stated honestly: local inputs hash-pinned (spec, data, scorer); requests reproducible given each manifest's environment envelope; hosted-model immutability UNKNOWN unless the provider exposes a pinned revision (the runs table records what each provider claims answered)
 - raw report: [STOMP.json](STOMP.json) (both files omit volatile fields, so an unchanged pod re-reports to identical bytes; run manifests carry the timestamps)
