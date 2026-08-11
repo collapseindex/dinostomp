@@ -359,11 +359,37 @@ def verify_report(spec_path: str | Path, trust_code: bool = False) -> tuple[str,
                      pod's current truth)
       "unverifiable" no published report to check, or the pod cannot be
                      stomped at all
+      "unverifiable"  ... or the published report was produced with a set of
+                      extensions this machine does not have
+
+    THE EXTENSION SET IS AN INPUT. A report names every extension that helped
+    produce it, so re-deriving it means re-deriving it with those, and only
+    those. Verifying against whatever happens to be installed made the check
+    answer a different question than the one it prints: installing an unrelated
+    extension turned every previously published report in the repository into a
+    `mismatch`, and the reader had no way to tell that from a report that had
+    genuinely gone stale. A report is a claim about a specific set of code, or
+    it is not a claim, and that sentence has to hold on the verifying side too.
     """
-    report, issues = lint_eval(spec_path, trust_code=trust_code)
+    pod = Path(spec_path).resolve().parent
+    published = _published_extensions(pod)
+    # Three cases, and the middle one is the whole point. No published report:
+    # behave normally. A report naming NO extensions: re-derive core-only, or a
+    # machine with a plugin installed can never verify an artifact that was
+    # published without one. A report naming some: load them and check identity.
+    use_ext = True if published is False else bool(published)
+    report, issues = lint_eval(spec_path, trust_code=trust_code, use_extensions=use_ext)
     if report is None:
         return "unverifiable", [f"cannot stomp: {i.message}" for i in issues[:3]], None
-    pod = Path(spec_path).resolve().parent
+    if published:
+        here = {(e["name"], e["version"], e["sha256"]) for e in report.get("extensions", [])}
+        want = {(e["name"], e["version"], e["sha256"]) for e in published}
+        if here != want:
+            return "unverifiable", [
+                "this report was produced with extensions that do not match this machine's: "
+                f"published {sorted(n for n, _, _ in want)}, installed "
+                f"{sorted(n for n, _, _ in here)}. Install the same versions to verify it."
+            ], report
     stable = {k: v for k, v in report.items() if k != "generated_at"}
     expected = {
         MD_NAME: render_markdown(report),
@@ -383,10 +409,35 @@ def verify_report(spec_path: str | Path, trust_code: bool = False) -> tuple[str,
     return "verified", [f"{name} re-derives byte-for-byte" for name in expected], report
 
 
-def write_report(spec_path: str | Path, trust_code: bool = False) -> tuple[dict | None, list[Issue], list[Path]]:
+def _published_extensions(pod: Path) -> list | bool:
+    """What the published report says produced it.
+
+    Returns the extension list, `[]` for a report that names none, or False when
+    there is no published report to read. The three-way answer matters: `[]` is
+    a positive statement that the report was produced core-only and must be
+    re-derived core-only, which is not the same as "we do not know".
+    """
+    path = pod / JSON_NAME
+    if not path.is_file():
+        return False
+    try:
+        return json.loads(path.read_text(encoding="utf-8")).get("extensions", [])
+    except (json.JSONDecodeError, OSError):
+        return False
+
+
+def write_report(spec_path: str | Path, trust_code: bool = False,
+                 use_extensions: bool = True) -> tuple[dict | None, list[Issue], list[Path]]:
     """Stomp the pod and write STOMP.md, STOMP.json, and the badge next to
-    the spec. Returns (report, issues, written_paths)."""
-    report, issues = lint_eval(spec_path, trust_code=trust_code)
+    the spec. Returns (report, issues, written_paths).
+
+    `use_extensions=False` publishes a core-only report: one that re-derives on
+    any machine with this engine, rather than one that re-derives only where the
+    author's plugins are installed. That is the right default for an artifact
+    committed to a repository.
+    """
+    report, issues = lint_eval(spec_path, trust_code=trust_code,
+                               use_extensions=use_extensions)
     if report is None:
         return None, issues, []
     pod = Path(spec_path).resolve().parent

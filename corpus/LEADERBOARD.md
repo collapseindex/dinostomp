@@ -19,8 +19,8 @@ A score means nothing without its split. Splits and their label commitments:
 
 | detector | split | covered | blind (strict) | false alarms | answered |
 |---|---|---:|---:|---:|---:|
-| dinostomp 0.57.1 | `dev` | 100.0% | 0.0% | 15.7% | all |
-| dinostomp 0.57.1 | `heldout-2026-08` | 100.0% | 0.0% | 5.0% | all |
+| dinostomp 0.58.0 | `dev` | 100.0% | 0.0% | 15.7% | all |
+| dinostomp 0.58.0 | `heldout-2026-08` | 100.0% | 0.0% | 5.0% | all |
 
 `covered` is recall on defect classes the detector has a rule for; `blind` is recall on classes it does not, which is the column that says whether a detector generalises past its own rule list.
 

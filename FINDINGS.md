@@ -54,6 +54,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-015](#f-015) | four small models | 87% to 97% preserve a source's hedge; the eval cannot separate them | confirmed, underpowered costs $0.02 to reproduce |
 | [F-016](#f-016) | llama-3.2-3b | "You are an expert." is worth 10 points, marginally | confirmed, marginal [examples/presentation](examples/presentation/) |
 | [F-017](#f-017) | a RAG agent | grounding it in its own retrieval made it 25 points WORSE | confirmed [examples/live-agent](examples/live-agent/) costs $0.02 |
+| [F-026](#f-026) | Anthropic Economic Index | one node_name shared by two O*NET ids, so grouping by name double-counts | confirmed, both files |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
@@ -68,6 +69,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-004](#n-004) | six dataset pairs | no cross-benchmark reuse found | negative |
 | [N-005](#n-005) | four models | re-ordering the options moved nobody beyond noise | negative, underpowered |
 | [N-006](#n-006) | four models | probe demonstrably sensitive, and no canary reproduced | negative |
+| [N-018](#n-018) | Anthropic Economic Index | 2.1M rows audited against the release's own README: one warning, no failures | measured |
 | [N-007](#n-007) | lm-eval-harness log | both reported metrics re-derive from the raw log-probs | negative |
 | [N-008](#n-008) | dinostomp | an even `run.repeats` reported p-squared, not p | measured, fixed |
 | [N-009](#n-009) | dinostomp | T4 sees 0%, T7 sees 100%, on the same agent | measured |
@@ -126,6 +128,10 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-045](#d-045) | dinocorpus | the corpus's first scored run found three defects in the corpus | fixed in v0.55.0 |
 | [D-046](#d-046) | dinostomp | S3 warns on 1 clean dataset in 6 at the size its own rule admits | measured, scoped, not retuned |
 | [D-047](#d-047) | dinocorpus | the withheld split was public arithmetic, and fixing it silently rewrote the public split | fixed in v0.56.0 |
+| [D-048](#d-048) | dinostomp | the CLI printed OK over a report whose own summary said incomplete | fixed |
+| [D-049](#d-049) | dinostomp | installing any extension made every published report fail verification | fixed |
+| [D-050](#d-050) | dinostomp-aei | float arithmetic nearly reported a rounding convention as somebody else's defect | fixed before shipping |
+| [D-051](#d-051) | dinostomp | an extension is marked validated for declaring an evidence tax it never pays | scoped, not fixed |
 
 <!-- INDEX:END -->
 
@@ -176,14 +182,15 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [N-015](#n-015), [N-002](#n-002), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046) |
+| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
+| Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
 | dinocorpus | [D-045](#d-045), [D-047](#d-047) |
 | four models | [N-005](#n-005), [N-006](#n-006) |
 | MMLU | [F-002](#f-002), [F-003](#f-003) |
@@ -194,6 +201,7 @@ at fault.
 | ARC, OpenBookQA, HellaSwag, WinoGrande | [N-003](#n-003) |
 | CIFAR-10 / ciFAIR | [N-017](#n-017) |
 | CommonsenseQA | [F-008](#f-008) |
+| dinostomp-aei | [D-050](#d-050) |
 | DROP | [F-020](#f-020) |
 | four small models | [F-015](#f-015) |
 | HellaSwag, ARC, MMLU | [N-001](#n-001) |
@@ -547,6 +555,60 @@ in its worst light without ever saying why.
 
 ---
 
+### F-026
+**Anthropic Economic Index (2026-06) · `node_name` is not unique within a level, so grouping by the readable key double-counts**
+`x:dinostomp-aei:A10` · 2026-08-11 · confirmed, both files
+
+The Anthropic Economic Index publishes Claude usage aggregated onto O\*NET work
+activities, SOC occupations and a request taxonomy: 1,636,573 rows in the
+`claude_ai` release and 491,705 in `1p_api`, CC-BY. Every row carries both a
+`node_name` and a `node_external_id`, and the README defines the latter as "the
+source identifier for the node".
+
+**Source.** Anthropic Economic Index report: *Cadences*, released 2026-06-26
+(Massenkoff, Lyubich, Sacher, Hitzig, Zhang, Heller and McCrory).
+[Report](https://www.anthropic.com/research/economic-index-june-2026-report) ·
+[data explorer](https://www.anthropic.com/economic-index#data-explorer). Data
+released under CC-BY. Audited as downloaded, unmodified:
+
+```
+aei_1p_api_2026-06-26.csv       77,282,477 bytes    491,705 rows
+  sha256 62197f003e001945ad130c2f26f5e07f3fda45ff41644df91444b04fd524a19f
+aei_claude_ai_2026-06-26.csv   219,174,671 bytes  1,636,573 rows
+  sha256 f974b358bce0e5a8417510c61da4342234cd0de9d9d0b62acf4c6dbcf8ec7b68
+```
+
+Reproduce with `pip install -e extensions/dinostomp-aei && dinostomp stomp
+<file>.csv`. Every clause checked is transcribed from the README shipped with
+the release into `extensions/dinostomp-aei/dinostomp_aei/contract.py`; where that
+README is silent, so is the audit.
+
+Three `node_name` values in `claude_ai`, and two in `1p_api`, are shared by two
+different O\*NET element ids at the same `hierarchy_level`:
+
+```
+onet/L0  'Develop and interpret organizational goals, policies, an...'  ids 14630, 976
+onet/L0  'Prepare reports on students and activities as required b...'  ids 19097, 5623
+onet/L0  'Provide staff with assistance in performing difficult or ...'  ids 23169, 9665
+onet/L0  'Store, retrieve, and manipulate data for analysis of syst...'  ids 21676, 7401   (1p_api)
+```
+
+Nothing here contradicts the documentation. The README never says `node_name` is
+unique, and `node_external_id` disambiguates correctly. It is listed because
+`node_name` is the only human-readable column, so it is the column a reader
+groups by, and the failure is silent: a `use_case` partition for one of these
+names sums to 200.00 rather than 100.00, because two distinct tasks were added
+together. That is how this entry was found. The partition check reported groups
+carrying exactly double the expected term count, and the doubling, not the
+percentages, was the defect.
+
+**What it costs a reader.** Any aggregate keyed on `node_name` overstates these
+nodes by roughly a factor of two. Anyone joining the release to O\*NET should key
+on `node_external_id`.
+
+**Reported:** not yet. econ-research@anthropic.com is the address the README
+gives.
+
 ## Negative results
 
 ### F-018
@@ -880,6 +942,75 @@ marginal cost is small, because publishing the repository published the canary
 anyway, and that is the design: a canary is meant to be findable later.
 
 ---
+
+### N-018
+**A 2.1M-row published statistical release, audited against its own README: eleven contract checks, one warning, no failures**
+`x:dinostomp-aei:A1..A11` · 2026-08-11 · measured
+
+The Anthropic Economic Index release documentation states a column schema, a
+metric vocabulary with units, a rounding rule, a hierarchy depth per category,
+half-open monthly reporting periods, geo-code forms, and a suppression policy.
+That is an evidence contract, so it can be checked. Both files, every clause:
+
+**Source.** Anthropic Economic Index report: *Cadences*, released 2026-06-26
+(Massenkoff, Lyubich, Sacher, Hitzig, Zhang, Heller and McCrory).
+[Report](https://www.anthropic.com/research/economic-index-june-2026-report) ·
+[data explorer](https://www.anthropic.com/economic-index#data-explorer). Data
+released under CC-BY. Audited as downloaded, unmodified:
+
+```
+aei_1p_api_2026-06-26.csv       77,282,477 bytes    491,705 rows
+  sha256 62197f003e001945ad130c2f26f5e07f3fda45ff41644df91444b04fd524a19f
+aei_claude_ai_2026-06-26.csv   219,174,671 bytes  1,636,573 rows
+  sha256 f974b358bce0e5a8417510c61da4342234cd0de9d9d0b62acf4c6dbcf8ec7b68
+```
+
+Reproduce with `pip install -e extensions/dinostomp-aei && dinostomp stomp
+<file>.csv`. Every clause checked is transcribed from the README shipped with
+the release into `extensions/dinostomp-aei/dinostomp_aei/contract.py`; where that
+README is silent, so is the audit.
+
+```
+                                          1p_api        claude_ai
+  A1  documented columns, in order         pass          pass
+  A2  metric/geo/category vocabulary       pass          pass
+  A3  no value over two decimal places     pass          pass
+  A4  values inside their unit's range     pass          pass
+  A5  no cell published twice              pass          pass
+  A6  partition families sum to 100        pass (4/4)    pass (4/4)
+  A7  hierarchy depth per category         pass          pass
+  A8  periods tile as calendar months      pass          pass
+  A9  geo_id form per geo_level            pass          pass
+  A10 node_name <-> node_external_id       WARN (2)      WARN (3)
+  A11 published mass per distribution      88.8% median  78.0% median
+```
+
+The only finding is [F-026](#f-026). Everything else the release documents about
+itself, it does.
+
+**The number worth carrying away is A11.** The README says a missing row means a
+cell was not published rather than that it is zero. It does not say how much is
+missing, and the answer varies enormously by geography. Across 11,732 `pct`
+distributions in `claude_ai` the median publishes 78.0% of its mass, and the
+thinnest publish almost none:
+
+```
+  ZA-KZN / onet / L0    1.5% of the distribution published
+  BR-MT  / onet / L0    1.7%
+  ALB    / onet / L0    1.9%
+  DK-83  / request / L0 1.9%
+```
+
+Nothing is wrong with those rows. They are the documented suppression policy
+doing what it says. But a reader looking at a subregion's task breakdown in the
+data explorer is looking at 1.5% of a distribution, and that is not visible from
+the chart. Zero of 11,732 distributions are within half a point of whole.
+
+**What this negative result is not.** Eleven checks reading a README cannot tell
+you a published number is correct, that the sample is representative, or that
+the O\*NET mapping is sound. They say the release is internally consistent with
+its own documentation, which is the precondition for the harder questions rather
+than an answer to any of them.
 
 ## Defects in dinostomp itself
 
@@ -2840,6 +2971,114 @@ that fails when it does.
 
 ---
 
+### D-048
+**`stomp` printed OK over a report whose own summary said `incomplete`**
+`cli.py` · 2026-08-11 · fixed
+
+The dataset-audit verdict line tested `warns` before it tested the computed
+verdict:
+
+```python
+if fails:      ...
+elif warns:    print("OK AT DATA SCOPE: no failures, N warning(s)")
+elif verdict == "incomplete": ...
+```
+
+So an audit where every data check skipped and one check warned printed **OK AT
+DATA SCOPE** while `report["summary"]["verdict"]` said `incomplete`. The JSON
+and the human-readable line disagreed, and the human-readable line was the
+flattering one. Found by pointing the tool at a 209MB file that the core cannot
+read: 61 checks skipped, one warning, and the terminal said OK.
+
+Coverage now outranks tone: `incomplete` is reported before any warning count,
+and names how many checks could not run.
+
+### D-049
+**Installing any extension turned every previously published report into a `mismatch`**
+`report.py` · 2026-08-11 · fixed
+
+`verify_report` re-derived a pod's report using whatever extensions happened to
+be installed on the verifying machine, then byte-compared the result against the
+published artifact. Extensions are named and hashed inside the report precisely
+because a verdict is a claim about a specific set of code, and the verifier
+ignored that.
+
+Consequence: installing one unrelated plugin made all nine committed example
+reports fail verification, reported as `mismatch`, which reads as "this pod
+changed after publishing (stale), or the report was edited (worse)". Neither had
+happened. There was also no way to publish a core-only report, so an artifact
+committed to a repository was only verifiable on machines configured like the
+author's.
+
+Two fixes. `verify_report` now re-derives with the extension set the published
+report NAMES: none for a report that names none, and `unverifiable` with the
+missing names when the installed set differs, which is an honest answer rather
+than a wrong one. And `--no-extensions` now exists on `stomp`, `report` and
+`verify`, so a committed artifact can be published core-only.
+
+### D-050
+**The partition check nearly reported a rounding convention as a defect in somebody else's published data**
+`x:dinostomp-aei:A6` · 2026-08-11 · fixed before shipping
+
+The first version of the AEI partition check summed each metric family in
+floating point and compared against 100. It reported two violations in the
+`1p_api` release:
+
+```
+collaboration_bucket_augmentation_pct = 40.63
+collaboration_bucket_automation_pct   = 59.38
+                                sum   = 100.01
+```
+
+Both are correct. The underlying values are 40.625 and 59.375, each published
+rounded to two decimals as the README says, and two rounded values may miss their
+true total by up to 0.01. The sum sits exactly on the permitted bound. The check
+flagged it because `40.63 + 59.38` evaluates to `100.00999999999999` in binary
+floating point, which compared as greater than a tolerance of `0.01`.
+
+Had this shipped it would have been a fabricated finding against a real
+publisher, produced by an arithmetic bug, in a tool whose entire argument is that
+published numbers should be checkable. Everything in the extension now counts
+hundredths as integers, and the tolerance is derived rather than chosen: k values
+rounded to two decimals permit a miss of floor(k/2) hundredths.
+
+The same probe found the real defect ([F-026](#f-026)) in the same run. A checker
+that produces one true finding and one false one has not earned trust in either
+until you know which is which.
+
+### D-051
+**An extension is marked `validated` for DECLARING an evidence tax it never pays**
+`extensions.py` · 2026-08-11 · scoped, not fixed
+
+`extensions.py` states the rule plainly: "A third-party check ships with its own
+planted defect that must be caught and its own clean pod that must stay clean.
+Until it does, its findings are still REPORTED but they do not count toward
+coverage." What `_validated` actually tests is whether two attributes are
+non-empty:
+
+```python
+>>> m.TRIALS = ["trust me"]; m.CLEAN_PODS = ["honestly"]
+>>> _validated(m)
+(True, "")
+```
+
+Nothing runs the trials. Nothing checks that a planted defect is caught, that a
+clean pod stays quiet, or that the entries are even paths. An extension that
+declares two lists of arbitrary strings is marked validated, counts toward
+coverage, and its `fail` findings turn a verdict `broken`.
+
+This is the same class of defect the ledger keeps recording about this project's
+own checks, one level up: the check that polices the checkers is satisfied by a
+declaration. It is listed as open rather than fixed because executing a
+third-party trial suite needs a defined trial format and an isolation decision,
+and neither should be improvised. The docstring has been corrected in the
+meantime so the code no longer claims enforcement it does not perform.
+
+The extension shipped alongside this entry does pay the tax, in
+`extensions/dinostomp-aei/negtest.py`: a clean fixture that must stay silent and
+ten planted defects that must each fire their own check. That is run by hand and
+in the test suite, not by the core.
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -2858,12 +3097,12 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **25** |
+| findings in other people's evals (**F**) | **26** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **17** |
-| defects in dinostomp itself (**D**) | **47** |
+| negative results, recorded rather than dropped (**N**) | **18** |
+| defects in dinostomp itself (**D**) | **51** |
 
 Forty-seven to twenty-five. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to

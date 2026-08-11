@@ -1,0 +1,1441 @@
+date_start,date_end,geo_id,geo_level,category_name,hierarchy_level,metric_id,value,node_name,node_external_id
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,use_case_work_pct,33.33,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,use_case_personal_pct,33.33,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,use_case_coursework_pct,142.00,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,collaboration_bucket_automation_pct,50.00,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,collaboration_bucket_augmentation_pct,50.00,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,collaboration_directive_pct,16.67,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,collaboration_feedback_loop_pct,16.67,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,collaboration_task_iteration_pct,16.67,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,collaboration_learning_pct,16.66,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,collaboration_validation_pct,16.66,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,collaboration_none_pct,16.67,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_academic_paper_or_thesis_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_advice_or_recommendation_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_analysis_or_summary_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_app_or_website_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_audio_or_music_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_blog_or_article_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_chart_or_visualization_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_code_fix_or_debug_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_config_or_infra_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_creative_writing_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_data_or_spreadsheet_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_document_or_report_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_educational_material_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_email_or_message_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_explanation_or_answer_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_game_or_interactive_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_idea_or_brainstorm_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_image_or_graphic_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_marketing_or_social_content_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_math_or_calculation_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_ml_or_ai_system_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_none_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_other_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_plan_or_strategy_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_presentation_or_slides_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_recipe_or_meal_plan_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_resume_or_job_application_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_script_or_snippet_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_sql_or_database_query_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_translation_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_ui_or_design_mockup_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,artifact_video_or_animation_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,ai_autonomy_mean,3.10,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,human_only_time_mean,1.50,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,usage_per_capita_index,1.00,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,multitasking_pct,12.00,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,use_case_work_pct,33.33,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,use_case_personal_pct,33.34,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,use_case_coursework_pct,33.33,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,collaboration_bucket_automation_pct,50.00,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,collaboration_bucket_augmentation_pct,50.00,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,collaboration_directive_pct,16.67,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,collaboration_feedback_loop_pct,16.67,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,collaboration_task_iteration_pct,16.66,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,collaboration_learning_pct,16.66,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,collaboration_validation_pct,16.67,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,collaboration_none_pct,16.67,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_academic_paper_or_thesis_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_advice_or_recommendation_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_analysis_or_summary_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_app_or_website_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_audio_or_music_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_blog_or_article_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_chart_or_visualization_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_code_fix_or_debug_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_config_or_infra_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_creative_writing_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_data_or_spreadsheet_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_document_or_report_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_educational_material_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_email_or_message_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_explanation_or_answer_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_game_or_interactive_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_idea_or_brainstorm_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_image_or_graphic_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_marketing_or_social_content_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_math_or_calculation_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_ml_or_ai_system_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_none_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_other_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_plan_or_strategy_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_presentation_or_slides_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_recipe_or_meal_plan_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_resume_or_job_application_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_script_or_snippet_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_sql_or_database_query_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_translation_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_ui_or_design_mockup_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,artifact_video_or_animation_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,ai_autonomy_mean,3.10,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,human_only_time_mean,1.50,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,usage_per_capita_index,1.00,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,multitasking_pct,12.00,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,use_case_work_pct,33.34,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,use_case_personal_pct,33.33,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,use_case_coursework_pct,33.33,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,collaboration_bucket_automation_pct,50.00,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,collaboration_bucket_augmentation_pct,50.00,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,collaboration_directive_pct,16.67,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,collaboration_feedback_loop_pct,16.66,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,collaboration_task_iteration_pct,16.66,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,collaboration_learning_pct,16.67,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,collaboration_validation_pct,16.67,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,collaboration_none_pct,16.67,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_academic_paper_or_thesis_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_advice_or_recommendation_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_analysis_or_summary_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_app_or_website_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_audio_or_music_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_blog_or_article_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_chart_or_visualization_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_code_fix_or_debug_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_config_or_infra_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_creative_writing_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_data_or_spreadsheet_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_document_or_report_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_educational_material_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_email_or_message_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_explanation_or_answer_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_game_or_interactive_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_idea_or_brainstorm_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_image_or_graphic_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_marketing_or_social_content_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_math_or_calculation_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_ml_or_ai_system_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_none_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_other_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_plan_or_strategy_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_presentation_or_slides_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_recipe_or_meal_plan_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_resume_or_job_application_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_script_or_snippet_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_sql_or_database_query_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_translation_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_ui_or_design_mockup_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,artifact_video_or_animation_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,ai_autonomy_mean,3.10,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,human_only_time_mean,1.50,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,usage_per_capita_index,1.00,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,multitasking_pct,12.00,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,use_case_work_pct,33.33,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,use_case_personal_pct,33.33,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,use_case_coursework_pct,33.34,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,collaboration_bucket_automation_pct,50.00,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,collaboration_bucket_augmentation_pct,50.00,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,collaboration_directive_pct,16.66,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,collaboration_feedback_loop_pct,16.66,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,collaboration_task_iteration_pct,16.67,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,collaboration_learning_pct,16.67,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,collaboration_validation_pct,16.67,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,collaboration_none_pct,16.67,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_academic_paper_or_thesis_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_advice_or_recommendation_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_analysis_or_summary_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_app_or_website_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_audio_or_music_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_blog_or_article_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_chart_or_visualization_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_code_fix_or_debug_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_config_or_infra_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_creative_writing_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_data_or_spreadsheet_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_document_or_report_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_educational_material_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_email_or_message_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_explanation_or_answer_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_game_or_interactive_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_idea_or_brainstorm_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_image_or_graphic_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_marketing_or_social_content_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_math_or_calculation_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_ml_or_ai_system_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_none_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_other_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_plan_or_strategy_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_presentation_or_slides_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_recipe_or_meal_plan_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_resume_or_job_application_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_script_or_snippet_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_sql_or_database_query_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_translation_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_ui_or_design_mockup_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,artifact_video_or_animation_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,ai_autonomy_mean,3.10,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,human_only_time_mean,1.50,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,usage_per_capita_index,1.00,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,multitasking_pct,12.00,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,use_case_work_pct,33.33,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,use_case_personal_pct,33.34,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,use_case_coursework_pct,33.33,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,collaboration_bucket_automation_pct,50.00,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,collaboration_bucket_augmentation_pct,50.00,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,collaboration_directive_pct,16.66,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,collaboration_feedback_loop_pct,16.67,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,collaboration_task_iteration_pct,16.67,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,collaboration_learning_pct,16.67,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,collaboration_validation_pct,16.67,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,collaboration_none_pct,16.66,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_academic_paper_or_thesis_pct,3.13,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_advice_or_recommendation_pct,3.13,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_analysis_or_summary_pct,3.13,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_app_or_website_pct,3.13,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_audio_or_music_pct,3.13,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_blog_or_article_pct,3.13,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_chart_or_visualization_pct,3.13,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_code_fix_or_debug_pct,3.13,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_config_or_infra_pct,3.13,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_creative_writing_pct,3.13,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_data_or_spreadsheet_pct,3.13,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_document_or_report_pct,3.12,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_educational_material_pct,3.12,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_email_or_message_pct,3.12,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_explanation_or_answer_pct,3.12,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_game_or_interactive_pct,3.12,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_idea_or_brainstorm_pct,3.12,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_image_or_graphic_pct,3.12,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_marketing_or_social_content_pct,3.12,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_math_or_calculation_pct,3.12,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_ml_or_ai_system_pct,3.12,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_none_pct,3.12,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_other_pct,3.12,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_plan_or_strategy_pct,3.12,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_presentation_or_slides_pct,3.12,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_recipe_or_meal_plan_pct,3.12,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_resume_or_job_application_pct,3.12,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_script_or_snippet_pct,3.13,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_sql_or_database_query_pct,3.13,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_translation_pct,3.13,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_ui_or_design_mockup_pct,3.13,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,artifact_video_or_animation_pct,3.13,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,ai_autonomy_mean,3.10,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,human_only_time_mean,1.50,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,usage_per_capita_index,1.00,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,multitasking_pct,12.00,Overall,
+2026-04-01,2026-05-01,USA,country,onet,0,use_case_work_pct,33.34,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,use_case_personal_pct,33.33,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,use_case_coursework_pct,33.33,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,collaboration_bucket_automation_pct,50.00,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,collaboration_bucket_augmentation_pct,50.00,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,collaboration_directive_pct,16.67,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,collaboration_feedback_loop_pct,16.67,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,collaboration_task_iteration_pct,16.67,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,collaboration_learning_pct,16.67,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,collaboration_validation_pct,16.66,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,collaboration_none_pct,16.66,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_academic_paper_or_thesis_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_advice_or_recommendation_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_analysis_or_summary_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_app_or_website_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_audio_or_music_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_blog_or_article_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_chart_or_visualization_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_code_fix_or_debug_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_config_or_infra_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_creative_writing_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_data_or_spreadsheet_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_document_or_report_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_educational_material_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_email_or_message_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_explanation_or_answer_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_game_or_interactive_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_idea_or_brainstorm_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_image_or_graphic_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_marketing_or_social_content_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_math_or_calculation_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_ml_or_ai_system_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_none_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_other_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_plan_or_strategy_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_presentation_or_slides_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_recipe_or_meal_plan_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_resume_or_job_application_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_script_or_snippet_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_sql_or_database_query_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_translation_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_ui_or_design_mockup_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,artifact_video_or_animation_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,ai_autonomy_mean,3.10,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,human_only_time_mean,1.50,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,usage_per_capita_index,1.00,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,0,multitasking_pct,12.00,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,1,use_case_work_pct,33.33,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,use_case_personal_pct,33.33,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,use_case_coursework_pct,33.34,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,collaboration_bucket_automation_pct,50.00,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,collaboration_bucket_augmentation_pct,50.00,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,collaboration_directive_pct,16.67,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,collaboration_feedback_loop_pct,16.67,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,collaboration_task_iteration_pct,16.67,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,collaboration_learning_pct,16.66,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,collaboration_validation_pct,16.66,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,collaboration_none_pct,16.67,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_academic_paper_or_thesis_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_advice_or_recommendation_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_analysis_or_summary_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_app_or_website_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_audio_or_music_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_blog_or_article_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_chart_or_visualization_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_code_fix_or_debug_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_config_or_infra_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_creative_writing_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_data_or_spreadsheet_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_document_or_report_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_educational_material_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_email_or_message_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_explanation_or_answer_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_game_or_interactive_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_idea_or_brainstorm_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_image_or_graphic_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_marketing_or_social_content_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_math_or_calculation_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_ml_or_ai_system_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_none_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_other_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_plan_or_strategy_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_presentation_or_slides_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_recipe_or_meal_plan_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_resume_or_job_application_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_script_or_snippet_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_sql_or_database_query_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_translation_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_ui_or_design_mockup_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,artifact_video_or_animation_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,ai_autonomy_mean,3.10,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,human_only_time_mean,1.50,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,usage_per_capita_index,1.00,Write things,2001
+2026-04-01,2026-05-01,USA,country,onet,1,multitasking_pct,12.00,Write things,2001
+2026-04-01,2026-05-01,USA,country,request,0,use_case_work_pct,33.33,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,use_case_personal_pct,33.34,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,use_case_coursework_pct,33.33,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,collaboration_bucket_automation_pct,50.00,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,collaboration_bucket_augmentation_pct,50.00,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,collaboration_directive_pct,16.67,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,collaboration_feedback_loop_pct,16.67,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,collaboration_task_iteration_pct,16.66,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,collaboration_learning_pct,16.66,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,collaboration_validation_pct,16.67,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,collaboration_none_pct,16.67,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_academic_paper_or_thesis_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_advice_or_recommendation_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_analysis_or_summary_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_app_or_website_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_audio_or_music_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_blog_or_article_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_chart_or_visualization_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_code_fix_or_debug_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_config_or_infra_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_creative_writing_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_data_or_spreadsheet_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_document_or_report_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_educational_material_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_email_or_message_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_explanation_or_answer_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_game_or_interactive_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_idea_or_brainstorm_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_image_or_graphic_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_marketing_or_social_content_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_math_or_calculation_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_ml_or_ai_system_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_none_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_other_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_plan_or_strategy_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_presentation_or_slides_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_recipe_or_meal_plan_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_resume_or_job_application_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_script_or_snippet_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_sql_or_database_query_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_translation_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_ui_or_design_mockup_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,artifact_video_or_animation_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,ai_autonomy_mean,3.10,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,human_only_time_mean,1.50,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,usage_per_capita_index,1.00,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,request,0,multitasking_pct,12.00,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,use_case_work_pct,33.34,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,use_case_personal_pct,33.33,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,use_case_coursework_pct,33.33,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,collaboration_bucket_automation_pct,50.00,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,collaboration_bucket_augmentation_pct,50.00,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,collaboration_directive_pct,16.67,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,collaboration_feedback_loop_pct,16.66,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,collaboration_task_iteration_pct,16.66,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,collaboration_learning_pct,16.67,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,collaboration_validation_pct,16.67,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,collaboration_none_pct,16.67,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_academic_paper_or_thesis_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_advice_or_recommendation_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_analysis_or_summary_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_app_or_website_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_audio_or_music_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_blog_or_article_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_chart_or_visualization_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_code_fix_or_debug_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_config_or_infra_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_creative_writing_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_data_or_spreadsheet_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_document_or_report_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_educational_material_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_email_or_message_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_explanation_or_answer_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_game_or_interactive_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_idea_or_brainstorm_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_image_or_graphic_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_marketing_or_social_content_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_math_or_calculation_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_ml_or_ai_system_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_none_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_other_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_plan_or_strategy_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_presentation_or_slides_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_recipe_or_meal_plan_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_resume_or_job_application_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_script_or_snippet_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_sql_or_database_query_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_translation_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_ui_or_design_mockup_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,artifact_video_or_animation_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,ai_autonomy_mean,3.10,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,human_only_time_mean,1.50,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,usage_per_capita_index,1.00,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,multitasking_pct,12.00,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,overall,0,use_case_work_pct,33.33,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,use_case_personal_pct,33.33,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,use_case_coursework_pct,33.34,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,collaboration_bucket_automation_pct,50.00,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,collaboration_bucket_augmentation_pct,50.00,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,collaboration_directive_pct,16.66,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,collaboration_feedback_loop_pct,16.66,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,collaboration_task_iteration_pct,16.67,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,collaboration_learning_pct,16.67,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,collaboration_validation_pct,16.67,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,collaboration_none_pct,16.67,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_academic_paper_or_thesis_pct,3.13,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_advice_or_recommendation_pct,3.13,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_analysis_or_summary_pct,3.13,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_app_or_website_pct,3.13,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_audio_or_music_pct,3.13,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_blog_or_article_pct,3.13,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_chart_or_visualization_pct,3.12,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_code_fix_or_debug_pct,3.12,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_config_or_infra_pct,3.12,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_creative_writing_pct,3.12,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_data_or_spreadsheet_pct,3.12,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_document_or_report_pct,3.12,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_educational_material_pct,3.12,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_email_or_message_pct,3.12,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_explanation_or_answer_pct,3.12,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_game_or_interactive_pct,3.12,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_idea_or_brainstorm_pct,3.12,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_image_or_graphic_pct,3.12,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_marketing_or_social_content_pct,3.12,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_math_or_calculation_pct,3.12,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_ml_or_ai_system_pct,3.12,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_none_pct,3.12,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_other_pct,3.13,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_plan_or_strategy_pct,3.13,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_presentation_or_slides_pct,3.13,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_recipe_or_meal_plan_pct,3.13,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_resume_or_job_application_pct,3.13,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_script_or_snippet_pct,3.13,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_sql_or_database_query_pct,3.13,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_translation_pct,3.13,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_ui_or_design_mockup_pct,3.13,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,artifact_video_or_animation_pct,3.13,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,ai_autonomy_mean,3.10,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,human_only_time_mean,1.50,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,usage_per_capita_index,1.00,Overall,
+2026-04-01,2026-05-01,USA,country,overall,0,multitasking_pct,12.00,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,use_case_work_pct,33.33,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,use_case_personal_pct,33.34,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,use_case_coursework_pct,33.33,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,collaboration_bucket_automation_pct,50.00,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,collaboration_bucket_augmentation_pct,50.00,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,collaboration_directive_pct,16.66,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,collaboration_feedback_loop_pct,16.67,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,collaboration_task_iteration_pct,16.67,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,collaboration_learning_pct,16.67,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,collaboration_validation_pct,16.67,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,collaboration_none_pct,16.66,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_academic_paper_or_thesis_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_advice_or_recommendation_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_analysis_or_summary_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_app_or_website_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_audio_or_music_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_blog_or_article_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_chart_or_visualization_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_code_fix_or_debug_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_config_or_infra_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_creative_writing_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_data_or_spreadsheet_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_document_or_report_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_educational_material_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_email_or_message_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_explanation_or_answer_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_game_or_interactive_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_idea_or_brainstorm_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_image_or_graphic_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_marketing_or_social_content_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_math_or_calculation_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_ml_or_ai_system_pct,3.12,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_none_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_other_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_plan_or_strategy_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_presentation_or_slides_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_recipe_or_meal_plan_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_resume_or_job_application_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_script_or_snippet_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_sql_or_database_query_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_translation_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_ui_or_design_mockup_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,artifact_video_or_animation_pct,3.13,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,ai_autonomy_mean,3.10,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,human_only_time_mean,1.50,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,usage_per_capita_index,1.00,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,multitasking_pct,12.00,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,use_case_work_pct,33.34,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,use_case_personal_pct,33.33,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,use_case_coursework_pct,33.33,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,collaboration_bucket_automation_pct,50.00,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,collaboration_bucket_augmentation_pct,50.00,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,collaboration_directive_pct,16.67,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,collaboration_feedback_loop_pct,16.67,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,collaboration_task_iteration_pct,16.67,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,collaboration_learning_pct,16.67,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,collaboration_validation_pct,16.66,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,collaboration_none_pct,16.66,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_academic_paper_or_thesis_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_advice_or_recommendation_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_analysis_or_summary_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_app_or_website_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_audio_or_music_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_blog_or_article_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_chart_or_visualization_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_code_fix_or_debug_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_config_or_infra_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_creative_writing_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_data_or_spreadsheet_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_document_or_report_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_educational_material_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_email_or_message_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_explanation_or_answer_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_game_or_interactive_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_idea_or_brainstorm_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_image_or_graphic_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_marketing_or_social_content_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_math_or_calculation_pct,3.12,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_ml_or_ai_system_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_none_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_other_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_plan_or_strategy_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_presentation_or_slides_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_recipe_or_meal_plan_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_resume_or_job_application_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_script_or_snippet_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_sql_or_database_query_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_translation_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_ui_or_design_mockup_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,artifact_video_or_animation_pct,3.13,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,ai_autonomy_mean,3.10,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,human_only_time_mean,1.50,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,usage_per_capita_index,1.00,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,multitasking_pct,12.00,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,use_case_work_pct,33.33,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,use_case_personal_pct,33.33,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,use_case_coursework_pct,33.34,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,collaboration_bucket_automation_pct,50.00,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,collaboration_bucket_augmentation_pct,50.00,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,collaboration_directive_pct,16.67,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,collaboration_feedback_loop_pct,16.67,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,collaboration_task_iteration_pct,16.67,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,collaboration_learning_pct,16.66,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,collaboration_validation_pct,16.66,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,collaboration_none_pct,16.67,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_academic_paper_or_thesis_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_advice_or_recommendation_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_analysis_or_summary_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_app_or_website_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_audio_or_music_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_blog_or_article_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_chart_or_visualization_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_code_fix_or_debug_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_config_or_infra_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_creative_writing_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_data_or_spreadsheet_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_document_or_report_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_educational_material_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_email_or_message_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_explanation_or_answer_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_game_or_interactive_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_idea_or_brainstorm_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_image_or_graphic_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_marketing_or_social_content_pct,3.12,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_math_or_calculation_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_ml_or_ai_system_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_none_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_other_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_plan_or_strategy_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_presentation_or_slides_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_recipe_or_meal_plan_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_resume_or_job_application_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_script_or_snippet_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_sql_or_database_query_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_translation_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_ui_or_design_mockup_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,artifact_video_or_animation_pct,3.13,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,ai_autonomy_mean,3.10,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,human_only_time_mean,1.50,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,usage_per_capita_index,1.00,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,multitasking_pct,12.00,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,use_case_work_pct,33.33,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,use_case_personal_pct,33.34,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,use_case_coursework_pct,33.33,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,collaboration_bucket_automation_pct,50.00,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,collaboration_bucket_augmentation_pct,50.00,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,collaboration_directive_pct,16.67,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,collaboration_feedback_loop_pct,16.67,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,collaboration_task_iteration_pct,16.66,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,collaboration_learning_pct,16.66,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,collaboration_validation_pct,16.67,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,collaboration_none_pct,16.67,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_academic_paper_or_thesis_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_advice_or_recommendation_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_analysis_or_summary_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_app_or_website_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_audio_or_music_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_blog_or_article_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_chart_or_visualization_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_code_fix_or_debug_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_config_or_infra_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_creative_writing_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_data_or_spreadsheet_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_document_or_report_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_educational_material_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_email_or_message_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_explanation_or_answer_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_game_or_interactive_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_idea_or_brainstorm_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_image_or_graphic_pct,3.12,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_marketing_or_social_content_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_math_or_calculation_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_ml_or_ai_system_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_none_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_other_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_plan_or_strategy_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_presentation_or_slides_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_recipe_or_meal_plan_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_resume_or_job_application_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_script_or_snippet_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_sql_or_database_query_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_translation_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_ui_or_design_mockup_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,artifact_video_or_animation_pct,3.13,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,ai_autonomy_mean,3.10,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,human_only_time_mean,1.50,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,usage_per_capita_index,1.00,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,multitasking_pct,12.00,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,use_case_work_pct,33.34,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,use_case_personal_pct,33.33,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,use_case_coursework_pct,33.33,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,collaboration_bucket_automation_pct,50.00,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,collaboration_bucket_augmentation_pct,50.00,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,collaboration_directive_pct,16.67,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,collaboration_feedback_loop_pct,16.66,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,collaboration_task_iteration_pct,16.66,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,collaboration_learning_pct,16.67,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,collaboration_validation_pct,16.67,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,collaboration_none_pct,16.67,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_academic_paper_or_thesis_pct,3.13,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_advice_or_recommendation_pct,3.12,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_analysis_or_summary_pct,3.12,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_app_or_website_pct,3.12,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_audio_or_music_pct,3.12,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_blog_or_article_pct,3.12,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_chart_or_visualization_pct,3.12,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_code_fix_or_debug_pct,3.12,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_config_or_infra_pct,3.12,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_creative_writing_pct,3.12,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_data_or_spreadsheet_pct,3.12,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_document_or_report_pct,3.12,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_educational_material_pct,3.12,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_email_or_message_pct,3.12,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_explanation_or_answer_pct,3.12,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_game_or_interactive_pct,3.12,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_idea_or_brainstorm_pct,3.12,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_image_or_graphic_pct,3.13,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_marketing_or_social_content_pct,3.13,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_math_or_calculation_pct,3.13,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_ml_or_ai_system_pct,3.13,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_none_pct,3.13,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_other_pct,3.13,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_plan_or_strategy_pct,3.13,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_presentation_or_slides_pct,3.13,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_recipe_or_meal_plan_pct,3.13,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_resume_or_job_application_pct,3.13,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_script_or_snippet_pct,3.13,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_sql_or_database_query_pct,3.13,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_translation_pct,3.13,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_ui_or_design_mockup_pct,3.13,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,artifact_video_or_animation_pct,3.13,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,ai_autonomy_mean,3.10,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,human_only_time_mean,1.50,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,usage_per_capita_index,1.00,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,multitasking_pct,12.00,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,use_case_work_pct,33.33,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,use_case_personal_pct,33.33,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,use_case_coursework_pct,33.34,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,collaboration_bucket_automation_pct,50.00,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,collaboration_bucket_augmentation_pct,50.00,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,collaboration_directive_pct,16.66,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,collaboration_feedback_loop_pct,16.66,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,collaboration_task_iteration_pct,16.67,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,collaboration_learning_pct,16.67,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,collaboration_validation_pct,16.67,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,collaboration_none_pct,16.67,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_academic_paper_or_thesis_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_advice_or_recommendation_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_analysis_or_summary_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_app_or_website_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_audio_or_music_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_blog_or_article_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_chart_or_visualization_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_code_fix_or_debug_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_config_or_infra_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_creative_writing_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_data_or_spreadsheet_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_document_or_report_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_educational_material_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_email_or_message_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_explanation_or_answer_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_game_or_interactive_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_idea_or_brainstorm_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_image_or_graphic_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_marketing_or_social_content_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_math_or_calculation_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_ml_or_ai_system_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_none_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_other_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_plan_or_strategy_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_presentation_or_slides_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_recipe_or_meal_plan_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_resume_or_job_application_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_script_or_snippet_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_sql_or_database_query_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_translation_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_ui_or_design_mockup_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,artifact_video_or_animation_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,ai_autonomy_mean,3.10,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,human_only_time_mean,1.50,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,usage_per_capita_index,1.00,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,multitasking_pct,12.00,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,use_case_work_pct,33.33,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,use_case_personal_pct,33.34,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,use_case_coursework_pct,33.33,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,collaboration_bucket_automation_pct,50.00,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,collaboration_bucket_augmentation_pct,50.00,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,collaboration_directive_pct,16.66,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,collaboration_feedback_loop_pct,16.67,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,collaboration_task_iteration_pct,16.67,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,collaboration_learning_pct,16.67,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,collaboration_validation_pct,16.67,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,collaboration_none_pct,16.66,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_academic_paper_or_thesis_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_advice_or_recommendation_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_analysis_or_summary_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_app_or_website_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_audio_or_music_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_blog_or_article_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_chart_or_visualization_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_code_fix_or_debug_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_config_or_infra_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_creative_writing_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_data_or_spreadsheet_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_document_or_report_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_educational_material_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_email_or_message_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_explanation_or_answer_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_game_or_interactive_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_idea_or_brainstorm_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_image_or_graphic_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_marketing_or_social_content_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_math_or_calculation_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_ml_or_ai_system_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_none_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_other_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_plan_or_strategy_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_presentation_or_slides_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_recipe_or_meal_plan_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_resume_or_job_application_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_script_or_snippet_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_sql_or_database_query_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_translation_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_ui_or_design_mockup_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,artifact_video_or_animation_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,ai_autonomy_mean,3.10,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,human_only_time_mean,1.50,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,usage_per_capita_index,1.00,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,multitasking_pct,12.00,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,use_case_work_pct,33.34,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,use_case_personal_pct,33.33,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,use_case_coursework_pct,33.33,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,collaboration_bucket_automation_pct,50.00,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,collaboration_bucket_augmentation_pct,50.00,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,collaboration_directive_pct,16.67,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,collaboration_feedback_loop_pct,16.67,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,collaboration_task_iteration_pct,16.67,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,collaboration_learning_pct,16.67,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,collaboration_validation_pct,16.66,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,collaboration_none_pct,16.66,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_academic_paper_or_thesis_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_advice_or_recommendation_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_analysis_or_summary_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_app_or_website_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_audio_or_music_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_blog_or_article_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_chart_or_visualization_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_code_fix_or_debug_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_config_or_infra_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_creative_writing_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_data_or_spreadsheet_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_document_or_report_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_educational_material_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_email_or_message_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_explanation_or_answer_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_game_or_interactive_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_idea_or_brainstorm_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_image_or_graphic_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_marketing_or_social_content_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_math_or_calculation_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_ml_or_ai_system_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_none_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_other_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_plan_or_strategy_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_presentation_or_slides_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_recipe_or_meal_plan_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_resume_or_job_application_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_script_or_snippet_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_sql_or_database_query_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_translation_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_ui_or_design_mockup_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,artifact_video_or_animation_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,ai_autonomy_mean,3.10,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,human_only_time_mean,1.50,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,usage_per_capita_index,1.00,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,multitasking_pct,12.00,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,use_case_work_pct,33.33,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,use_case_personal_pct,33.33,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,use_case_coursework_pct,33.34,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,collaboration_bucket_automation_pct,50.00,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,collaboration_bucket_augmentation_pct,50.00,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,collaboration_directive_pct,16.67,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,collaboration_feedback_loop_pct,16.67,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,collaboration_task_iteration_pct,16.67,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,collaboration_learning_pct,16.66,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,collaboration_validation_pct,16.66,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,collaboration_none_pct,16.67,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_academic_paper_or_thesis_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_advice_or_recommendation_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_analysis_or_summary_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_app_or_website_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_audio_or_music_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_blog_or_article_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_chart_or_visualization_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_code_fix_or_debug_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_config_or_infra_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_creative_writing_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_data_or_spreadsheet_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_document_or_report_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_educational_material_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_email_or_message_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_explanation_or_answer_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_game_or_interactive_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_idea_or_brainstorm_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_image_or_graphic_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_marketing_or_social_content_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_math_or_calculation_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_ml_or_ai_system_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_none_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_other_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_plan_or_strategy_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_presentation_or_slides_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_recipe_or_meal_plan_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_resume_or_job_application_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_script_or_snippet_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_sql_or_database_query_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_translation_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_ui_or_design_mockup_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,artifact_video_or_animation_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,ai_autonomy_mean,3.10,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,human_only_time_mean,1.50,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,usage_per_capita_index,1.00,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,multitasking_pct,12.00,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,use_case_work_pct,33.33,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,use_case_personal_pct,33.34,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,use_case_coursework_pct,33.33,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,collaboration_bucket_automation_pct,50.00,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,collaboration_bucket_augmentation_pct,50.00,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,collaboration_directive_pct,16.67,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,collaboration_feedback_loop_pct,16.67,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,collaboration_task_iteration_pct,16.66,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,collaboration_learning_pct,16.66,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,collaboration_validation_pct,16.67,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,collaboration_none_pct,16.67,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_academic_paper_or_thesis_pct,3.12,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_advice_or_recommendation_pct,3.12,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_analysis_or_summary_pct,3.12,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_app_or_website_pct,3.12,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_audio_or_music_pct,3.12,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_blog_or_article_pct,3.12,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_chart_or_visualization_pct,3.12,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_code_fix_or_debug_pct,3.12,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_config_or_infra_pct,3.12,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_creative_writing_pct,3.12,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_data_or_spreadsheet_pct,3.12,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_document_or_report_pct,3.12,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_educational_material_pct,3.13,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_email_or_message_pct,3.13,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_explanation_or_answer_pct,3.13,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_game_or_interactive_pct,3.13,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_idea_or_brainstorm_pct,3.13,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_image_or_graphic_pct,3.13,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_marketing_or_social_content_pct,3.13,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_math_or_calculation_pct,3.13,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_ml_or_ai_system_pct,3.13,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_none_pct,3.13,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_other_pct,3.13,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_plan_or_strategy_pct,3.13,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_presentation_or_slides_pct,3.13,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_recipe_or_meal_plan_pct,3.13,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_resume_or_job_application_pct,3.13,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_script_or_snippet_pct,3.13,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_sql_or_database_query_pct,3.12,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_translation_pct,3.12,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_ui_or_design_mockup_pct,3.12,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,artifact_video_or_animation_pct,3.12,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,ai_autonomy_mean,3.10,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,human_only_time_mean,1.50,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,usage_per_capita_index,1.00,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,multitasking_pct,12.00,Overall,
+2026-05-01,2026-06-01,USA,country,onet,0,use_case_work_pct,33.34,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,use_case_personal_pct,33.33,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,use_case_coursework_pct,33.33,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,collaboration_bucket_automation_pct,50.00,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,collaboration_bucket_augmentation_pct,50.00,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,collaboration_directive_pct,16.67,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,collaboration_feedback_loop_pct,16.66,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,collaboration_task_iteration_pct,16.66,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,collaboration_learning_pct,16.67,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,collaboration_validation_pct,16.67,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,collaboration_none_pct,16.67,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_academic_paper_or_thesis_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_advice_or_recommendation_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_analysis_or_summary_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_app_or_website_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_audio_or_music_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_blog_or_article_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_chart_or_visualization_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_code_fix_or_debug_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_config_or_infra_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_creative_writing_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_data_or_spreadsheet_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_document_or_report_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_educational_material_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_email_or_message_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_explanation_or_answer_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_game_or_interactive_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_idea_or_brainstorm_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_image_or_graphic_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_marketing_or_social_content_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_math_or_calculation_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_ml_or_ai_system_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_none_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_other_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_plan_or_strategy_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_presentation_or_slides_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_recipe_or_meal_plan_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_resume_or_job_application_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_script_or_snippet_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_sql_or_database_query_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_translation_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_ui_or_design_mockup_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,artifact_video_or_animation_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,ai_autonomy_mean,3.10,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,human_only_time_mean,1.50,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,usage_per_capita_index,1.00,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,0,multitasking_pct,12.00,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,1,use_case_work_pct,33.33,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,use_case_personal_pct,33.33,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,use_case_coursework_pct,33.34,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,collaboration_bucket_automation_pct,50.00,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,collaboration_bucket_augmentation_pct,50.00,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,collaboration_directive_pct,16.66,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,collaboration_feedback_loop_pct,16.66,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,collaboration_task_iteration_pct,16.67,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,collaboration_learning_pct,16.67,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,collaboration_validation_pct,16.67,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,collaboration_none_pct,16.67,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_academic_paper_or_thesis_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_advice_or_recommendation_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_analysis_or_summary_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_app_or_website_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_audio_or_music_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_blog_or_article_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_chart_or_visualization_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_code_fix_or_debug_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_config_or_infra_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_creative_writing_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_data_or_spreadsheet_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_document_or_report_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_educational_material_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_email_or_message_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_explanation_or_answer_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_game_or_interactive_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_idea_or_brainstorm_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_image_or_graphic_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_marketing_or_social_content_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_math_or_calculation_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_ml_or_ai_system_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_none_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_other_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_plan_or_strategy_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_presentation_or_slides_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_recipe_or_meal_plan_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_resume_or_job_application_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_script_or_snippet_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_sql_or_database_query_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_translation_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_ui_or_design_mockup_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,artifact_video_or_animation_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,ai_autonomy_mean,3.10,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,human_only_time_mean,1.50,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,usage_per_capita_index,1.00,Write things,2001
+2026-05-01,2026-06-01,USA,country,onet,1,multitasking_pct,12.00,Write things,2001
+2026-05-01,2026-06-01,USA,country,request,0,use_case_work_pct,33.33,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,use_case_personal_pct,33.34,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,use_case_coursework_pct,33.33,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,collaboration_bucket_automation_pct,50.00,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,collaboration_bucket_augmentation_pct,50.00,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,collaboration_directive_pct,16.66,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,collaboration_feedback_loop_pct,16.67,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,collaboration_task_iteration_pct,16.67,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,collaboration_learning_pct,16.67,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,collaboration_validation_pct,16.67,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,collaboration_none_pct,16.66,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_academic_paper_or_thesis_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_advice_or_recommendation_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_analysis_or_summary_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_app_or_website_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_audio_or_music_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_blog_or_article_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_chart_or_visualization_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_code_fix_or_debug_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_config_or_infra_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_creative_writing_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_data_or_spreadsheet_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_document_or_report_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_educational_material_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_email_or_message_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_explanation_or_answer_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_game_or_interactive_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_idea_or_brainstorm_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_image_or_graphic_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_marketing_or_social_content_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_math_or_calculation_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_ml_or_ai_system_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_none_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_other_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_plan_or_strategy_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_presentation_or_slides_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_recipe_or_meal_plan_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_resume_or_job_application_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_script_or_snippet_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_sql_or_database_query_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_translation_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_ui_or_design_mockup_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,artifact_video_or_animation_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,ai_autonomy_mean,3.10,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,human_only_time_mean,1.50,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,usage_per_capita_index,1.00,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,request,0,multitasking_pct,12.00,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,use_case_work_pct,33.34,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,use_case_personal_pct,33.33,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,use_case_coursework_pct,33.33,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,collaboration_bucket_automation_pct,50.00,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,collaboration_bucket_augmentation_pct,50.00,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,collaboration_directive_pct,16.67,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,collaboration_feedback_loop_pct,16.67,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,collaboration_task_iteration_pct,16.67,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,collaboration_learning_pct,16.67,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,collaboration_validation_pct,16.66,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,collaboration_none_pct,16.66,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_academic_paper_or_thesis_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_advice_or_recommendation_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_analysis_or_summary_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_app_or_website_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_audio_or_music_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_blog_or_article_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_chart_or_visualization_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_code_fix_or_debug_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_config_or_infra_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_creative_writing_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_data_or_spreadsheet_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_document_or_report_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_educational_material_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_email_or_message_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_explanation_or_answer_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_game_or_interactive_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_idea_or_brainstorm_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_image_or_graphic_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_marketing_or_social_content_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_math_or_calculation_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_ml_or_ai_system_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_none_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_other_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_plan_or_strategy_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_presentation_or_slides_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_recipe_or_meal_plan_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_resume_or_job_application_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_script_or_snippet_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_sql_or_database_query_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_translation_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_ui_or_design_mockup_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,artifact_video_or_animation_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,ai_autonomy_mean,3.10,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,human_only_time_mean,1.50,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,usage_per_capita_index,1.00,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,multitasking_pct,12.00,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,overall,0,use_case_work_pct,33.33,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,use_case_personal_pct,33.33,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,use_case_coursework_pct,33.34,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,collaboration_bucket_automation_pct,50.00,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,collaboration_bucket_augmentation_pct,50.00,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,collaboration_directive_pct,16.67,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,collaboration_feedback_loop_pct,16.67,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,collaboration_task_iteration_pct,16.67,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,collaboration_learning_pct,16.66,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,collaboration_validation_pct,16.66,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,collaboration_none_pct,16.67,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_academic_paper_or_thesis_pct,3.12,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_advice_or_recommendation_pct,3.12,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_analysis_or_summary_pct,3.12,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_app_or_website_pct,3.12,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_audio_or_music_pct,3.12,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_blog_or_article_pct,3.12,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_chart_or_visualization_pct,3.12,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_code_fix_or_debug_pct,3.13,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_config_or_infra_pct,3.13,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_creative_writing_pct,3.13,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_data_or_spreadsheet_pct,3.13,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_document_or_report_pct,3.13,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_educational_material_pct,3.13,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_email_or_message_pct,3.13,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_explanation_or_answer_pct,3.13,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_game_or_interactive_pct,3.13,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_idea_or_brainstorm_pct,3.13,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_image_or_graphic_pct,3.13,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_marketing_or_social_content_pct,3.13,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_math_or_calculation_pct,3.13,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_ml_or_ai_system_pct,3.13,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_none_pct,3.13,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_other_pct,3.13,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_plan_or_strategy_pct,3.12,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_presentation_or_slides_pct,3.12,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_recipe_or_meal_plan_pct,3.12,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_resume_or_job_application_pct,3.12,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_script_or_snippet_pct,3.12,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_sql_or_database_query_pct,3.12,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_translation_pct,3.12,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_ui_or_design_mockup_pct,3.12,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,artifact_video_or_animation_pct,3.12,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,ai_autonomy_mean,3.10,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,human_only_time_mean,1.50,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,usage_per_capita_index,1.00,Overall,
+2026-05-01,2026-06-01,USA,country,overall,0,multitasking_pct,12.00,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,use_case_work_pct,33.33,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,use_case_personal_pct,33.34,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,use_case_coursework_pct,33.33,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,collaboration_bucket_automation_pct,50.00,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,collaboration_bucket_augmentation_pct,50.00,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,collaboration_directive_pct,16.67,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,collaboration_feedback_loop_pct,16.67,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,collaboration_task_iteration_pct,16.66,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,collaboration_learning_pct,16.66,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,collaboration_validation_pct,16.67,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,collaboration_none_pct,16.67,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_academic_paper_or_thesis_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_advice_or_recommendation_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_analysis_or_summary_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_app_or_website_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_audio_or_music_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_blog_or_article_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_chart_or_visualization_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_code_fix_or_debug_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_config_or_infra_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_creative_writing_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_data_or_spreadsheet_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_document_or_report_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_educational_material_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_email_or_message_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_explanation_or_answer_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_game_or_interactive_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_idea_or_brainstorm_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_image_or_graphic_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_marketing_or_social_content_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_math_or_calculation_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_ml_or_ai_system_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_none_pct,3.13,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_other_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_plan_or_strategy_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_presentation_or_slides_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_recipe_or_meal_plan_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_resume_or_job_application_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_script_or_snippet_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_sql_or_database_query_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_translation_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_ui_or_design_mockup_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,artifact_video_or_animation_pct,3.12,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,ai_autonomy_mean,3.10,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,human_only_time_mean,1.50,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,usage_per_capita_index,1.00,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,multitasking_pct,12.00,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,use_case_work_pct,33.34,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,use_case_personal_pct,33.33,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,use_case_coursework_pct,33.33,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,collaboration_bucket_automation_pct,50.00,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,collaboration_bucket_augmentation_pct,50.00,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,collaboration_directive_pct,16.67,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,collaboration_feedback_loop_pct,16.66,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,collaboration_task_iteration_pct,16.66,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,collaboration_learning_pct,16.67,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,collaboration_validation_pct,16.67,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,collaboration_none_pct,16.67,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_academic_paper_or_thesis_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_advice_or_recommendation_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_analysis_or_summary_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_app_or_website_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_audio_or_music_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_blog_or_article_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_chart_or_visualization_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_code_fix_or_debug_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_config_or_infra_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_creative_writing_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_data_or_spreadsheet_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_document_or_report_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_educational_material_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_email_or_message_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_explanation_or_answer_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_game_or_interactive_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_idea_or_brainstorm_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_image_or_graphic_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_marketing_or_social_content_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_math_or_calculation_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_ml_or_ai_system_pct,3.13,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_none_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_other_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_plan_or_strategy_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_presentation_or_slides_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_recipe_or_meal_plan_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_resume_or_job_application_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_script_or_snippet_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_sql_or_database_query_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_translation_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_ui_or_design_mockup_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,artifact_video_or_animation_pct,3.12,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,ai_autonomy_mean,3.10,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,human_only_time_mean,1.50,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,usage_per_capita_index,1.00,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,multitasking_pct,12.00,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,use_case_work_pct,33.33,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,use_case_personal_pct,33.33,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,use_case_coursework_pct,33.34,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,collaboration_bucket_automation_pct,50.00,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,collaboration_bucket_augmentation_pct,50.00,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,collaboration_directive_pct,16.66,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,collaboration_feedback_loop_pct,16.66,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,collaboration_task_iteration_pct,16.67,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,collaboration_learning_pct,16.67,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,collaboration_validation_pct,16.67,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,collaboration_none_pct,16.67,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_academic_paper_or_thesis_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_advice_or_recommendation_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_analysis_or_summary_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_app_or_website_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_audio_or_music_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_blog_or_article_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_chart_or_visualization_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_code_fix_or_debug_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_config_or_infra_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_creative_writing_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_data_or_spreadsheet_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_document_or_report_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_educational_material_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_email_or_message_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_explanation_or_answer_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_game_or_interactive_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_idea_or_brainstorm_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_image_or_graphic_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_marketing_or_social_content_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_math_or_calculation_pct,3.13,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_ml_or_ai_system_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_none_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_other_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_plan_or_strategy_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_presentation_or_slides_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_recipe_or_meal_plan_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_resume_or_job_application_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_script_or_snippet_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_sql_or_database_query_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_translation_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_ui_or_design_mockup_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,artifact_video_or_animation_pct,3.12,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,ai_autonomy_mean,3.10,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,human_only_time_mean,1.50,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,usage_per_capita_index,1.00,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,multitasking_pct,12.00,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,use_case_work_pct,33.33,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,use_case_personal_pct,33.34,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,use_case_coursework_pct,33.33,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,collaboration_bucket_automation_pct,50.00,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,collaboration_bucket_augmentation_pct,50.00,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,collaboration_directive_pct,16.66,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,collaboration_feedback_loop_pct,16.67,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,collaboration_task_iteration_pct,16.67,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,collaboration_learning_pct,16.67,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,collaboration_validation_pct,16.67,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,collaboration_none_pct,16.66,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_academic_paper_or_thesis_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_advice_or_recommendation_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_analysis_or_summary_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_app_or_website_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_audio_or_music_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_blog_or_article_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_chart_or_visualization_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_code_fix_or_debug_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_config_or_infra_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_creative_writing_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_data_or_spreadsheet_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_document_or_report_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_educational_material_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_email_or_message_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_explanation_or_answer_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_game_or_interactive_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_idea_or_brainstorm_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_image_or_graphic_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_marketing_or_social_content_pct,3.13,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_math_or_calculation_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_ml_or_ai_system_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_none_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_other_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_plan_or_strategy_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_presentation_or_slides_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_recipe_or_meal_plan_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_resume_or_job_application_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_script_or_snippet_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_sql_or_database_query_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_translation_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_ui_or_design_mockup_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,artifact_video_or_animation_pct,3.12,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,ai_autonomy_mean,3.10,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,human_only_time_mean,1.50,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,usage_per_capita_index,1.00,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,multitasking_pct,12.00,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,use_case_work_pct,33.34,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,use_case_personal_pct,33.33,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,use_case_coursework_pct,33.33,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,collaboration_bucket_automation_pct,50.00,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,collaboration_bucket_augmentation_pct,50.00,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,collaboration_directive_pct,16.67,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,collaboration_feedback_loop_pct,16.67,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,collaboration_task_iteration_pct,16.67,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,collaboration_learning_pct,16.67,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,collaboration_validation_pct,16.66,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,collaboration_none_pct,16.66,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_academic_paper_or_thesis_pct,3.12,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_advice_or_recommendation_pct,3.12,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_analysis_or_summary_pct,3.13,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_app_or_website_pct,3.13,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_audio_or_music_pct,3.13,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_blog_or_article_pct,3.13,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_chart_or_visualization_pct,3.13,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_code_fix_or_debug_pct,3.13,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_config_or_infra_pct,3.13,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_creative_writing_pct,3.13,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_data_or_spreadsheet_pct,3.13,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_document_or_report_pct,3.13,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_educational_material_pct,3.13,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_email_or_message_pct,3.13,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_explanation_or_answer_pct,3.13,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_game_or_interactive_pct,3.13,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_idea_or_brainstorm_pct,3.13,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_image_or_graphic_pct,3.13,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_marketing_or_social_content_pct,3.12,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_math_or_calculation_pct,3.12,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_ml_or_ai_system_pct,3.12,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_none_pct,3.12,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_other_pct,3.12,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_plan_or_strategy_pct,3.12,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_presentation_or_slides_pct,3.12,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_recipe_or_meal_plan_pct,3.12,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_resume_or_job_application_pct,3.12,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_script_or_snippet_pct,3.12,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_sql_or_database_query_pct,3.12,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_translation_pct,3.12,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_ui_or_design_mockup_pct,3.12,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,artifact_video_or_animation_pct,3.12,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,ai_autonomy_mean,3.10,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,human_only_time_mean,1.50,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,usage_per_capita_index,1.00,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,multitasking_pct,12.00,Overall,
+2026-04-01,2026-05-01,GLOBAL,global,onet,0,pct,100.00,Draft a memo,1001
+2026-04-01,2026-05-01,GLOBAL,global,onet,1,pct,100.00,Write things,2001
+2026-04-01,2026-05-01,GLOBAL,global,request,0,pct,100.00,Ask for a summary,3001
+2026-04-01,2026-05-01,GLOBAL,global,soc_occupation,0,pct,100.00,Technical Writers,27-3042
+2026-04-01,2026-05-01,GLOBAL,global,overall,0,pct,100.00,Overall,
+2026-04-01,2026-05-01,USA,country,onet,0,pct,100.00,Draft a memo,1001
+2026-04-01,2026-05-01,USA,country,onet,1,pct,100.00,Write things,2001
+2026-04-01,2026-05-01,USA,country,request,0,pct,100.00,Ask for a summary,3001
+2026-04-01,2026-05-01,USA,country,soc_occupation,0,pct,100.00,Technical Writers,27-3042
+2026-04-01,2026-05-01,USA,country,overall,0,pct,100.00,Overall,
+2026-04-01,2026-05-01,US-CA,subregion,onet,0,pct,100.00,Draft a memo,1001
+2026-04-01,2026-05-01,US-CA,subregion,onet,1,pct,100.00,Write things,2001
+2026-04-01,2026-05-01,US-CA,subregion,request,0,pct,100.00,Ask for a summary,3001
+2026-04-01,2026-05-01,US-CA,subregion,soc_occupation,0,pct,100.00,Technical Writers,27-3042
+2026-04-01,2026-05-01,US-CA,subregion,overall,0,pct,100.00,Overall,
+2026-05-01,2026-06-01,GLOBAL,global,onet,0,pct,100.00,Draft a memo,1001
+2026-05-01,2026-06-01,GLOBAL,global,onet,1,pct,100.00,Write things,2001
+2026-05-01,2026-06-01,GLOBAL,global,request,0,pct,100.00,Ask for a summary,3001
+2026-05-01,2026-06-01,GLOBAL,global,soc_occupation,0,pct,100.00,Technical Writers,27-3042
+2026-05-01,2026-06-01,GLOBAL,global,overall,0,pct,100.00,Overall,
+2026-05-01,2026-06-01,USA,country,onet,0,pct,100.00,Draft a memo,1001
+2026-05-01,2026-06-01,USA,country,onet,1,pct,100.00,Write things,2001
+2026-05-01,2026-06-01,USA,country,request,0,pct,100.00,Ask for a summary,3001
+2026-05-01,2026-06-01,USA,country,soc_occupation,0,pct,100.00,Technical Writers,27-3042
+2026-05-01,2026-06-01,USA,country,overall,0,pct,100.00,Overall,
+2026-05-01,2026-06-01,US-CA,subregion,onet,0,pct,100.00,Draft a memo,1001
+2026-05-01,2026-06-01,US-CA,subregion,onet,1,pct,100.00,Write things,2001
+2026-05-01,2026-06-01,US-CA,subregion,request,0,pct,100.00,Ask for a summary,3001
+2026-05-01,2026-06-01,US-CA,subregion,soc_occupation,0,pct,100.00,Technical Writers,27-3042
+2026-05-01,2026-06-01,US-CA,subregion,overall,0,pct,100.00,Overall,

@@ -1,5 +1,58 @@
 # Changelog
 
+### v0.58.0 (2026-08-11)
+
+**Pointed at a published statistical release that is not an eval, and three
+things broke: two in the tool, one nearly in somebody else's data.**
+
+The Anthropic Economic Index (CC-BY, 2.1M rows across two files) has no
+questions, no answers and no model. The core battery declined it correctly and
+twice: no column looks like the input, and the larger file is over the 100MB read
+cap. Both refusals are right and neither is useful, so the release's own README
+became the contract instead.
+
+- **The dataset audit now has an extension surface.** `lint_dataset` loads
+  installed extensions and hands them the PATH, before the core decides whether
+  it can read the file. The 100MB cap still governs every core check; it is no
+  longer the reason a streaming check never gets to look. A file the core cannot
+  hold now produces a report whose every core check is a skip carrying the
+  reason, and whose verdict can never be better than `incomplete`.
+- **`--no-extensions`** on `stomp`, `report` and `verify`, so a report committed
+  to a repository re-derives on any machine with this engine rather than only
+  where the author's plugins are installed.
+- **`extensions/dinostomp-aei`**, eleven checks reading the Economic Index
+  README as an evidence contract. Findings: [F-026](FINDINGS.md#f-026) and
+  [N-018](FINDINGS.md#n-018).
+
+**Fixed.**
+
+- **[D-048](FINDINGS.md#d-048)** `stomp` printed `OK AT DATA SCOPE` over a report
+  whose own summary said `incomplete`: the verdict line tested the warning count
+  before the computed verdict. Coverage now outranks tone.
+- **[D-049](FINDINGS.md#d-049)** `verify_report` re-derived using whatever
+  extensions happened to be installed, so installing one unrelated plugin turned
+  all nine committed example reports into `mismatch` -- which reads as "stale, or
+  edited by hand", and neither had happened. It now re-derives with the extension
+  set the published report NAMES, and answers `unverifiable` when that set is not
+  present, which is an honest answer rather than a wrong one.
+- **[D-050](FINDINGS.md#d-050)** the new partition check summed in floating point
+  and flagged `40.63 + 59.38 = 100.01` as a violation in the released data. Both
+  values are correctly rounded and the sum sits exactly on the permitted bound;
+  the check fired on `100.00999999999999`. Fixed before shipping, but it is in
+  the ledger because a fabricated finding against a real publisher, produced by
+  an arithmetic bug, is the worst output this tool has.
+
+**Scoped, not fixed.**
+
+- **[D-051](FINDINGS.md#d-051)** an extension is marked `validated` for
+  DECLARING TRIALS and CLEAN_PODS, not for passing them. `TRIALS = ["trust me"]`
+  earns the label, counts toward coverage, and lets a `fail` turn a verdict
+  `broken`. The docstring claimed enforcement the code does not perform and has
+  been corrected. Running third-party trials needs a defined trial format and an
+  isolation decision, and both deserve doing deliberately.
+
+Ledger at 95 entries (F 26, D 51, N 18). 566 tests.
+
 ### v0.57.1 (2026-08-10)
 
 **A consistency pass over the whole repository, and a checker so the next one is

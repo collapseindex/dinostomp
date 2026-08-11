@@ -25,15 +25,24 @@ Three mechanisms enforce it, in increasing order of bluntness:
   3. Core findings are snapshotted and compared after the merge. A core finding
      that changed is a bug or an attack, and either way the report is refused.
 
-WHAT AN EXTENSION PAYS
-======================
+WHAT AN EXTENSION PAYS, AND WHAT IS ACTUALLY ENFORCED
+=====================================================
 
-The same evidence tax the core pays. A third-party check ships with its own
-planted defect that must be caught and its own clean pod that must stay clean.
-Until it does, its findings are still REPORTED (suppressing them would be its
-own kind of dishonesty) but they do not count toward coverage, and the report
-labels them `unvalidated`. A pile of unvalidated lint rules must not be able to
-wear this tool's verdict.
+The intended bar is the evidence tax the core pays: a third-party check ships
+with its own planted defect that must be caught and its own clean pod that must
+stay clean. An extension declaring neither still has its findings REPORTED
+(suppressing them would be its own kind of dishonesty) but they do not count
+toward coverage, and the report labels them `unvalidated`. A pile of unvalidated
+lint rules must not be able to wear this tool's verdict.
+
+BE CLEAR ABOUT WHAT `validated` MEANS HERE, BECAUSE IT IS LESS THAN IT SOUNDS.
+`_validated` checks that TRIALS and CLEAN_PODS are non-empty. It does not run
+them. `TRIALS = ["trust me"]` earns the label, counts toward coverage, and lets
+a `fail` finding turn a verdict `broken`. So `validated` currently means "this
+extension DECLARED an evidence tax", not "this extension paid one", and a reader
+of a report should read it that way. Executing a third-party trial suite needs a
+defined trial format and an isolation decision, and both deserve doing
+deliberately rather than improvising them here. Tracked as D-051.
 
 WHAT THE REPORT SAYS
 ====================

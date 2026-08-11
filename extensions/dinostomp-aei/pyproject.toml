@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dinostomp-aei"
+version = "0.1.0"
+description = "Audit an Anthropic Economic Index release against the contract its own README states"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+dependencies = []
+
+# The entry point is the whole integration. Installing this package is what
+# makes `dinostomp stomp <release>.csv` reach these checks; nothing in the core
+# knows this extension exists, and the core's id namespace stays untouched
+# because every check here is reported as x:dinostomp-aei:A*.
+[project.entry-points."dinostomp.checks"]
+aei = "dinostomp_aei"
+
+[tool.setuptools]
+packages = ["dinostomp_aei"]
+
+[tool.setuptools.package-data]
+dinostomp_aei = ["fixtures/*.csv"]

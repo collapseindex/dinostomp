@@ -341,7 +341,8 @@ def _stomp_dataset(args) -> int:
         print(f"  [reference] skipped: {err}")
     report, issues, ctx = lint_dataset(args.spec, field_overrides=overrides,
                                        separator=getattr(args, "separator", None),
-                                       references=references)
+                                       references=references,
+                                       use_extensions=not getattr(args, "no_extensions", False))
     if report is None:
         print("CANNOT STOMP:")
         _print_issues(issues)
@@ -351,18 +352,45 @@ def _stomp_dataset(args) -> int:
                 print(f"    {note}")
         return CANNOT_RUN
 
-    ds = report["dataset"]
-    print(f"DATASET AUDIT: {Path(args.spec).name}  ({ds['items']} items from {ds['rows']} rows)")
+    # A report with no `dataset` block came from the extension-only path: the
+    # core could not read the file or found no eval mapping in it, and every
+    # finding below belongs to an extension that could.
+    ds = report.get("dataset")
+    if ds:
+        print(f"DATASET AUDIT: {Path(args.spec).name}  "
+              f"({ds['items']} items from {ds['rows']} rows)")
+    else:
+        print(f"DATASET AUDIT: {Path(args.spec).name}  (no core check ran)")
+        _print_issues(issues)
     # The mapping is a GUESS, and every finding below rests on it. Printed
     # first, above the findings, because a guess the reader cannot see is a
     # guess the reader cannot correct.
     for note in ctx["notes"]:
         print(f"  {note}")
     print()
+    # Skips that all share one reason get one line. Sixty-one identical
+    # "over the 100MB cap" rows bury the findings underneath them, and a reader
+    # who scrolls past the wall of grey is a reader who missed the audit.
+    shared_skip = ""
+    if not ds:
+        reasons = {f["detail"] for f in report["findings"] if f["level"] == "skip"}
+        if len(reasons) == 1:
+            shared_skip = reasons.pop()
     for f in report["findings"]:
-        if f["level"] == "n/a":
+        if f["level"] == "n/a" or (shared_skip and f["level"] == "skip"):
             continue
         print(f"  {LEVEL_TAGS[f['level']]} {f['slug']:<22} {f['check']:<56} {f['detail']}")
+        for ex in f.get("examples", []):
+            print(f"           - {ex}")
+    if shared_skip:
+        n = sum(1 for f in report["findings"] if f["level"] == "skip")
+        print(f"  [skip] {n} core check(s), all for the same reason: {shared_skip}")
+        print()
+    for f in report.get("extension_findings", []):
+        if f["level"] == "n/a":
+            continue
+        print(f"  {LEVEL_TAGS[f['level']]} {f['check_id']:<22} "
+              f"{('' if f['validated'] else '[unvalidated] '):<56}{f['detail']}")
         for ex in f.get("examples", []):
             print(f"           - {ex}")
 
@@ -374,12 +402,18 @@ def _stomp_dataset(args) -> int:
     # Scoped verdict: this audit is structurally incomplete forever, and
     # exiting nonzero for that would train people to pass --allow-incomplete by
     # reflex. It reports at DATA scope and says so.
+    # Order matters, and it was wrong here: `warns` was tested before the
+    # computed verdict, so an audit where every data check skipped and one
+    # extension warned printed "OK AT DATA SCOPE" over a report whose own
+    # summary said `incomplete`. Coverage outranks tone. INCOMPLETE first.
     if fails:
         print(f"BROKEN AT DATA SCOPE: {fails} gated finding(s) in the dataset itself")
+    elif verdict == "incomplete":
+        n_skipped = len(cov["skipped"])
+        print(f"INCOMPLETE AT DATA SCOPE: {n_skipped} check(s) could not run"
+              + (f", and {warns} warning(s) came from what did" if warns else ""))
     elif warns:
         print(f"OK AT DATA SCOPE: no failures, {warns} warning(s)")
-    elif verdict == "incomplete":
-        print("INCOMPLETE AT DATA SCOPE: some data checks could not run")
     else:
         print(f"MECHANICALLY SOUND AT DATA SCOPE: no integrity findings across "
               f"{cov['ran']} of {in_scope} data checks")
@@ -694,7 +728,9 @@ def cmd_stomp(args) -> int:
             print(f"  [reference] skipped: {err}")
         if ref_items:
             references[Path(ref).name] = ref_items
-    report, issues = lint_eval(args.spec, trust_code=args.trust_code, references=references)
+    report, issues = lint_eval(args.spec, trust_code=args.trust_code,
+                               references=references,
+                               use_extensions=not args.no_extensions)
     if report is None:
         print("CANNOT STOMP:")
         _print_issues(issues)
@@ -770,7 +806,8 @@ def cmd_stomp(args) -> int:
 
 
 def cmd_report(args) -> int:
-    report, issues, written = write_report(args.spec, trust_code=args.trust_code)
+    report, issues, written = write_report(args.spec, trust_code=args.trust_code,
+                                           use_extensions=not args.no_extensions)
     if report is None:
         print("CANNOT REPORT:")
         _print_issues(issues)
@@ -1002,6 +1039,8 @@ def main(argv=None) -> int:
     p_stomp.add_argument("--json", help="also write the machine-readable report here")
     p_stomp.add_argument("--allow-incomplete", action="store_true",
                          help="exit 0 on incomplete coverage (strict is the default)")
+    p_stomp.add_argument("--no-extensions", action="store_true",
+                         help="core checks only. Publishes a report that re-derives on any machine with this engine, rather than one that re-derives only where your plugins are installed.")
     p_stomp.set_defaults(func=cmd_stomp)
 
     p_report = sub.add_parser("report", help="stomp and write STOMP.md + STOMP.json + badge into the pod")
@@ -1011,12 +1050,16 @@ def main(argv=None) -> int:
                                "did not write RUNS that code; off by default")
     p_report.add_argument("--allow-incomplete", action="store_true",
                           help="exit 0 on incomplete coverage (strict is the default)")
+    p_report.add_argument("--no-extensions", action="store_true",
+                         help="core checks only. Publishes a report that re-derives on any machine with this engine, rather than one that re-derives only where your plugins are installed.")
     p_report.set_defaults(func=cmd_report)
 
     p_verify = sub.add_parser("verify", help="re-derive a pod's published report offline; verified/mismatch/unverifiable")
     p_verify.add_argument("spec")
     p_verify.add_argument("--trust-code", action="store_true",
                           help="permit importing this pod's scorer/judge Python. Verifying a pod you did not write RUNS that code; off by default")
+    p_verify.add_argument("--no-extensions", action="store_true",
+                         help="core checks only. Publishes a report that re-derives on any machine with this engine, rather than one that re-derives only where your plugins are installed.")
     p_verify.set_defaults(func=cmd_verify)
 
     p_plan = sub.add_parser("plan", help="power, cost, and witness preview before any money is spent")

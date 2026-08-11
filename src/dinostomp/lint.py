@@ -3028,9 +3028,49 @@ DATASET_NA = {
 }
 
 
+def _dataset_extensions(path: Path, use_extensions: bool) -> tuple[list, list, list]:
+    """Run installed extensions against a bare data file.
+
+    Returns (loaded, findings, problems).
+
+    Extensions get the PATH, and they get it before the core has decided whether
+    it can read the file at all. Both halves matter. The core dataset audit
+    builds a list of every row and so refuses anything over 100MB, which is the
+    right rule for a reader that holds everything and the wrong reason for an
+    audit not to happen: a check that streams does not care how large the file
+    is. Nothing here weakens the cap, which still governs every core check. It
+    stops being the reason a streaming extension never gets to look.
+    """
+    if not use_extensions:
+        return [], [], []
+    loaded, problems = discover({cid for cid, *_ in CHECKS})
+    if not loaded:
+        return [], [], problems
+    ctx = {"data_path": str(path), "scope": "data", "spec": None, "items": [],
+           "runs": [], "probes": [], "spec_path": path}
+    findings, run_problems = run_extensions(loaded, ctx, THRESHOLDS)
+    return loaded, findings, problems + run_problems
+
+
+def _extension_only_report(path: Path, reason: str, loaded: list, ext_findings: list) -> dict:
+    """A report for a file the core could not read but an extension could.
+
+    Every core check is a skip carrying the reason, so coverage states plainly
+    that the battery did not run. The verdict cannot be `sound`: skips make it
+    `incomplete` before any extension finding is merged, and a validated
+    extension failure takes it to `broken` from there.
+    """
+    rep = Reporter()
+    for cid, *_ in CHECKS:
+        rep.skip(cid, reason)
+    return rep.report(path.name, inputs={"data_sha256": spec_sha256(path)}, scope="data",
+                      extensions=ext_findings, loaded_extensions=loaded)
+
+
 def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
                  separator: str | None = None,
-                 references: dict[str, list[dict]] | None = None
+                 references: dict[str, list[dict]] | None = None,
+                 use_extensions: bool = True
                  ) -> tuple[dict | None, list[Issue], dict]:
     """Stomp a bare dataset: no spec, no scorer, no runs, no money.
 
@@ -3047,8 +3087,19 @@ def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
                             message=f"not a dataset file; expected one of "
                                     f"{', '.join(sorted(DATA_SUFFIXES))}")], context
 
+    loaded, ext_findings, ext_problems = _dataset_extensions(path, use_extensions)
+    # An extension that returned only `n/a` looked at the file and disclaimed it.
+    # That is not a reason to publish a report the core could not produce.
+    claimed = [f for f in ext_findings if f["level"] != "n/a"]
+
     rows, issues = read_rows(path)
     if issues:
+        if claimed:
+            context["notes"].append(
+                f"the core could not read this file ({issues[0].message}); "
+                f"{len(claimed)} finding(s) came from extensions that stream it")
+            return _extension_only_report(path, issues[0].message, loaded,
+                                          ext_findings), issues, context
         return None, issues, context
     if not rows:
         return None, [Issue(loc=str(path), check="data",
@@ -3058,6 +3109,15 @@ def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
     mapping, notes, issues = infer_mapping(rows, field_overrides)
     context["mapping"], context["notes"] = mapping, notes
     if issues:
+        # No question/answer columns. For an eval dataset that is a dead end and
+        # refusing to guess is the whole point. For a table that was never an
+        # eval -- a statistical release, a log export -- an extension may still
+        # know exactly what it is looking at.
+        if claimed:
+            notes.append(f"no eval mapping in this file, so no core check ran; "
+                         f"{len(claimed)} finding(s) came from extensions")
+            return _extension_only_report(path, issues[0].message, loaded,
+                                          ext_findings), issues, context
         return None, issues, context
 
     sep = separator or sniff_separator(rows, mapping)
