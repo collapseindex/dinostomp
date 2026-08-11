@@ -1,5 +1,47 @@
 # Changelog
 
+### v0.59.0 (2026-08-11)
+
+**An external review found that a held-out number had been laundered, and the
+fix was to retire the split rather than argue about it.**
+
+- **[D-055](FINDINGS.md#d-055)** `heldout-assets-2026-08` was scored once blind,
+  returned 99.1%, and that single miss revealed a gating-check hole. We fixed the
+  tool and rescored the same split to 100%, then reported the 100% beside a
+  caption promising each split was scored once against a commitment made before
+  scoring. Every clause true, the paragraph not: the split had been developed
+  against. It is now marked `spent`, its scorecard is deleted, and
+  `heldout-assets-2026-08b` was generated after the fix and scored once. Same
+  100%, and now it means something. The number was never wrong; its provenance
+  was, which is worse, because a wrong number gets caught by the next measurement
+  and a laundered one does not.
+- **[D-053](FINDINGS.md#d-053)** the loader treated an option list as choices only
+  when it held two or more entries, so a list reduced to one -- exactly what a
+  missing correct answer looks like on a binary item -- dropped the `choices` key
+  and silenced four checks including a gate. A dataset that had lost the correct
+  answer from a two-option item audited clean. Found only because image items are
+  binary; the defect was hiding from the fixtures, not from the checks.
+- **[D-054](FINDINGS.md#d-054)** all 21 declared defect classes are planted for the
+  first time. The corpus grew image-backed instances to do it, and clean instances
+  carry images too, because four checks that only ever met planted data would have
+  unfalsifiable recall.
+
+**Write-up.** Seven internal inconsistencies found by the same review are fixed:
+the split count and blind-spot totals across four splits rather than three, the
+"every false alarm is S3" claim widened to all 414 clean instances, the abstract's
+recall claim scoped to the one error class it covers, the version-pin footnote
+scoped to exclude the four superseded measurements, held-back classes disclosed as
+documented-but-not-armed, the 25-versus-26 findings discrepancy explained, and the
+100% given the same deflationary treatment as the 5%. The cross-tool appendix lost
+its self-scored column entirely.
+
+**Stated rather than closed.** There is no held-out text-side calibration, and
+ciFAIR is not one: it scores a different check on a different modality. The gap
+cannot be closed retroactively, since the check has now seen all of MMLU-Redux.
+It needs a different hand-annotated corpus, scored once.
+
+Ledger at 99 entries (F 26, D 55, N 18). 582 tests, four corpus splits.
+
 ### v0.58.0 (2026-08-11)
 
 **Pointed at a published statistical release that is not an eval, and three

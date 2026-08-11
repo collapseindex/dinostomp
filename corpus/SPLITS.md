@@ -37,7 +37,8 @@ for development, and it is no longer evidence.
 | `dev-v1` | 2026-08-10 | 204 | **public** | `021a18f2265b7801...` | labels ship; tune against this freely |
 | `heldout-2026-08` | 2026-08-10 | 400 | **withheld** | `357ce1610cf93b8d...` | labels not published; 100 clean, 162 blind-spot |
 | `heldout-2026-08b` | 2026-08-11 | 800 | **withheld** | `83a11a9a78b072fd...` | labels not published; 200 clean, 316 blind-spot |
-| `heldout-assets-2026-08` | 2026-08-11 | 252 | **withheld** | `ef589b3aee30c7e9...` | image-backed; 63 clean, 81 blind-spot; **all 21 classes planted** |
+| `heldout-assets-2026-08` | 2026-08-11 | 252 | **spent** | `ef589b3aee30c7e9...` | image-backed; found D-053 and was developed against; scores not reported |
+| `heldout-assets-2026-08b` | 2026-08-11 | 252 | **withheld** | `acf88203a1b36dec...` | image-backed, post-fix; 63 clean, 81 blind-spot; **all 21 classes planted** |
 
 The full commitment for each split is in its own `MANIFEST.json`. Every row was
 written before any submission was scored against it.
@@ -54,7 +55,22 @@ is what makes the result checkable by someone else. Publishing the labels would
 move the split to `dev` under the rule above, spending a held-out split to
 re-answer a question that is now answered.
 
-`heldout-assets-2026-08` is the first **image-backed** split. Every instance
+**A fourth status: `spent`.** `heldout-assets-2026-08` was scored once, blind,
+against its commitment, and returned 99.1% on the covered arm. That single miss
+was [D-053](../FINDINGS.md#d-053), a hole in a gating check. We fixed the tool
+because of it, which means the split was developed against, which means its
+post-fix 100% is not a held-out number. The rule two sections up says a split
+that can be tuned against stops measuring generalisation, and a bug found by a
+split and repaired because of it is tuning by any reading that matters.
+
+So the split is retired rather than re-reported. `heldout-assets-2026-08b` is a
+fresh split generated after the fix, committed, and scored once: it returns the
+same 100%, and that figure is worth something because nothing was developed
+against it. Regenerating cost one command. The alternative was a headline number
+whose provenance needed a paragraph of explanation, which is the shape of every
+result this project exists to complain about.
+
+The image-backed splits work like this. Every instance
 carries six PNGs, clean instances included, and that symmetry is the point: four
 defect classes describe things that happen to files rather than to text, and if
 only defective instances had images then the four checks that read them would

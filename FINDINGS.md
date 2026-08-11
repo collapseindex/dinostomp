@@ -135,6 +135,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-052](#d-052) | dinostomp | a published rate rested on 51 instances and settling it was one unrun command | fixed |
 | [D-053](#d-053) | dinostomp | a binary item that lost its correct answer passed a gating check, because the loader stopped calling it a choice item | fixed |
 | [D-054](#d-054) | dinocorpus | all 21 declared classes planted for the first time; the corpus grew image-backed instances to do it | fixed |
+| [D-055](#d-055) | dinostomp | reported a held-out score from the split used to find the fix; split retired, not re-reported | fixed |
 
 <!-- INDEX:END -->
 
@@ -186,13 +187,13 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053) |
+| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055) |
 | dinocorpus | [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
@@ -3257,7 +3258,48 @@ the image. A negative test now requires every asset planter to fire its own chec
 **and nothing else**, and the clean image pod to stay silent.
 
 Scoring the split then turned up [D-053](#d-053): the second time a new corpus arm
-has found a defect in the battery rather than confirming one.
+has found a defect in the battery rather than confirming one. It also cost the
+split its status, for reasons recorded in [D-055](#d-055).
+
+---
+
+### D-055
+**We reported a held-out score from the split we had used to find the fix**
+`corpus/`, the write-up · 2026-08-11 · fixed
+
+The sequence, which looked defensible at every individual step:
+
+1. Generate `heldout-assets-2026-08`; publish `labels_sha256` before scoring.
+2. Score once, blind. Covered arm **99.1%**, `target-not-offered` at 88.9%.
+3. That miss was [D-053](#d-053), a hole in a gating check. Fix the tool.
+4. Rescore the same split. **100%**.
+5. Report the 100%, beside a caption saying each withheld split "was scored once
+   against a SHA-256 commitment made before scoring".
+
+Every clause in step 5 is true and the paragraph they form is not. The split was
+scored once *blind*, then scored again after a change that existed because of what
+the first scoring found. That is developing against a held-out split. `SPLITS.md`
+already says a split that can be tuned against stops measuring generalisation, and
+nothing in that rule cares whether the change was a threshold or a bug fix. It
+should not care, because "we only fixed real bugs" is what everybody says.
+
+The number was not wrong. Its **provenance** was, which is worse: a wrong number
+gets caught by the next measurement, a laundered one does not.
+
+**Fixed by retiring the split rather than re-reporting it.**
+`heldout-assets-2026-08` is marked `spent` in the registry and its post-fix score
+appears nowhere. `heldout-assets-2026-08b` was generated after the fix, committed
+and scored once; it returns the same 100%, and that figure means something because
+nothing was developed against it. Regenerating cost one command, which is
+[D-052](#d-052)'s lesson arriving a second time in as many days.
+
+**Found by an external reviewer**, not by us and not by any check here. Nothing in
+the battery relates *when* a split was scored to *when* the engine changed, and the
+consistency checker compares published numbers against current artifacts, which is
+precisely the comparison a rescore makes pass. Catching this mechanically would
+mean stamping the engine fingerprint into each scorecard at scoring time and
+refusing to publish a split whose scorecard came from a different engine than the
+one being reported. That is buildable and is not built. Recorded as the gap it is.
 
 ## The honest scorecard
 
@@ -3282,7 +3324,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **18** |
-| defects in dinostomp itself (**D**) | **54** |
+| defects in dinostomp itself (**D**) | **55** |
 
 Forty-seven to twenty-five. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
