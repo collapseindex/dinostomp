@@ -1,0 +1,14 @@
+{
+  "comparisons_scored": 1262,
+  "judge_agreement": 0.7552,
+  "human_leave_one_out_agreement": 0.7902,
+  "human_baseline_n": 839,
+  "judge_threshold": 0.9,
+  "judge_ties_where_humans_decided": 184,
+  "j1_level": "warn",
+  "not_measurable_here": {
+    "J2": "0 of 2,400 GPT-4 comparisons are recorded in both presentation orders",
+    "J3": "no comparison is graded twice on identical input",
+    "J4": "only one judge family is present"
+  }
+}

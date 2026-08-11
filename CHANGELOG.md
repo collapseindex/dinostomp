@@ -1,5 +1,54 @@
 # Changelog
 
+### v0.60.0 (2026-08-11)
+
+**The judge checks now have an external answer key, and it says more about the
+check than about the judge.**
+
+Every external calibration in this repository graded a check that reads a dataset
+at rest. The run, scorer and judge families have the least prior art and the
+strongest claims, and their entire evidence base was planted trials we wrote and
+clean pods we chose. That is the self-scored arrangement this project complains
+about, sitting on the part a reader has most reason to doubt.
+
+- **`benchmarks/mt-bench-judge/`** joins two things other people published: 3,355
+  pairwise preference votes from 65 human annotators, and the verdicts GPT-4
+  returned as a judge on the same comparisons. The judge had already been run and
+  its decisions recorded, so the calibration costs no model and no API spend.
+  `compare.py` calls the real `_judge_checks` rather than recomputing an
+  agreement rate.
+- **[N-019](FINDINGS.md#n-019)** on 1,262 comparisons with a decisive human
+  majority, GPT-4 agrees 75.5% of the time. A held-out human annotator agrees
+  with the majority of the others 79.0% of the time, on the identical statistic.
+  The judge is 3.5 points below people, not above them. The convenient baseline
+  is annotator unanimity at 59.8%, against which the judge appears to beat
+  humans outright; that is a different question, and reaching for it first is the
+  reason controls get computed before conclusions here.
+- **[D-056](FINDINGS.md#d-056)** J1's threshold is 90%, which no human reaches on
+  this key, so the check fires on any judge graded against annotator preference
+  including a perfect one. Defensible for the probe it was built for, where a
+  verdict is true by construction; a false-alarm machine on an annotation-derived
+  key. Scoped rather than retuned on one dataset. Its finding text also asserts
+  "known by construction" whatever the probe contains, which is the one word a
+  reader would rely on.
+
+**Still uncovered, and said so in both the paper and the ledger.** J2 needs the
+same comparison in both presentation orders and the release records 0 of 2,400
+that way, so position bias remains externally untested. J3 needs a repeated
+grading, J4 a second judge family. Three of four judge checks keep exactly the
+self-scored evidence they had.
+
+**Write-up.** Adds the reachability ceiling that decides whether any of this is
+worth running: of MMLU-Redux's 370 flawed items, only 10.5% are of a type a
+file-only check could reach at all, so a perfect one tops out there and ours
+reaches 5% of that tenth. Adds the justification for shipping the five-bit
+perceptual threshold when eight nearly doubles recall. Five uncited references
+now cited, including CIFAR-10, which the paper discussed four times without
+crediting. `\pdfoutput=1` added and the typewriter font moved to Latin Modern:
+the paper was emitting Type 3 bitmap fonts on 11 of 14 pages, which arXiv flags.
+
+Ledger at 101 entries (F 26, D 56, N 19). 582 tests.
+
 ### v0.59.0 (2026-08-11)
 
 **An external review found that a held-out number had been laundered, and the

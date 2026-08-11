@@ -70,6 +70,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-005](#n-005) | four models | re-ordering the options moved nobody beyond noise | negative, underpowered |
 | [N-006](#n-006) | four models | probe demonstrably sensitive, and no canary reproduced | negative |
 | [N-018](#n-018) | Anthropic Economic Index | 2.1M rows audited against the release's own README: one warning, no failures | measured |
+| [N-019](#n-019) | MT-Bench / LLM-as-judge | first external judge-side calibration: GPT-4 at 75.5% vs a 79.0% human baseline | measured |
 | [N-007](#n-007) | lm-eval-harness log | both reported metrics re-derive from the raw log-probs | negative |
 | [N-008](#n-008) | dinostomp | an even `run.repeats` reported p-squared, not p | measured, fixed |
 | [N-009](#n-009) | dinostomp | T4 sees 0%, T7 sees 100%, on the same agent | measured |
@@ -136,6 +137,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-053](#d-053) | dinostomp | a binary item that lost its correct answer passed a gating check, because the loader stopped calling it a choice item | fixed |
 | [D-054](#d-054) | dinocorpus | all 21 declared classes planted for the first time; the corpus grew image-backed instances to do it | fixed |
 | [D-055](#d-055) | dinostomp | reported a held-out score from the split used to find the fix; split retired, not re-reported | fixed |
+| [D-056](#d-056) | dinostomp | J1's 90% threshold is unreachable by humans, and its message claims every key is known by construction | scoped, not retuned |
 
 <!-- INDEX:END -->
 
@@ -155,7 +157,7 @@ at fault.
 
 | check | findings |
 |---|---|
-| `J1` | [D-017](#d-017) |
+| `J1` | [N-019](#n-019), [D-017](#d-017), [D-056](#d-056) |
 | `J2` | [F-014](#f-014) |
 | `P2` | [D-003](#d-003), [D-008](#d-008) |
 | `P9` | [N-005](#n-005), [D-007](#d-007) |
@@ -193,7 +195,7 @@ at fault.
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055) |
+| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056) |
 | dinocorpus | [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
@@ -223,6 +225,7 @@ at fault.
 | MMLU-Pro | [F-011](#f-011) |
 | MMLU-Pro vs MMLU | [F-012](#f-012) |
 | MMLU-Redux 2.0 | [F-018](#f-018) |
+| MT-Bench / LLM-as-judge | [N-019](#n-019) |
 | NCLEX nursing | [N-016](#n-016) |
 | Pharmacist Licensure Exam | [F-025](#f-025) |
 | RACE | [F-022](#f-022) |
@@ -1042,6 +1045,54 @@ you a published number is correct, that the sample is representative, or that
 the O\*NET mapping is sound. They say the release is internally consistent with
 its own documentation, which is the precondition for the harder questions rather
 than an answer to any of them.
+
+---
+
+### N-019
+**The first external calibration on the judge side: GPT-4 agrees with human annotators slightly less often than they agree with each other**
+`judge-agreement` (J1) · 2026-08-11 · measured
+
+Every external number in this file until now graded a check that reads a dataset
+at rest. The run, scorer and judge families have the least prior art and the
+strongest claims, and their entire evidence base was planted trials we wrote and
+clean pods we chose: the self-scored arrangement this project complains about,
+applied where a reader has most reason to doubt.
+
+Zheng et al. published 3,355 pairwise preference votes from 65 human annotators
+and, separately, the verdicts GPT-4 returned as a judge on the same comparisons.
+The judge had already been run and its decisions recorded, so this calibration
+cost no API spend and no model. It is a join between somebody else's answer key
+and somebody else's judge.
+
+```
+  comparisons with a decisive human majority AND a GPT-4 verdict   1,262
+
+  GPT-4 agrees with the human majority              953/1,262 = 75.5%
+  a HUMAN agrees with the same majority (LOO)         663/839 = 79.0%
+  J1's shipped threshold                                        = 90%
+```
+
+**The control is the whole entry.** A judge's agreement with a human key means
+nothing without the rate the humans themselves achieve, so the baseline holds out
+one annotator, recomputes the majority of the rest, and asks whether the held-out
+human agrees. That is the identical statistic the judge is scored on.
+
+It also changed the conclusion. The obvious baseline is annotator unanimity, and
+that is **59.8%**, against which GPT-4's 75.5% reads as a judge outperforming
+people. Unanimity and agreement-with-majority are different questions, and on the
+comparable one the judge sits **3.5 points below** the human rate. Reaching for
+the flattering statistic first is why this project computes controls before
+conclusions.
+
+**What this does not cover**, stated because "a judge-side calibration" invites
+the assumption that it covers the judge side. J2 needs the same comparison shown
+in both presentation orders and the release records **0 of 2,400** that way, so
+position bias remains untested by anything external. J3 needs a repeated grading
+of identical input; J4 needs a second judge family. Three of the four judge checks
+keep exactly the self-scored evidence they already had.
+
+Reproduce with `benchmarks/mt-bench-judge/fetch.py` then `compare.py`, which calls
+the real `_judge_checks` rather than recomputing an agreement rate.
 
 ## Defects in dinostomp itself
 
@@ -3301,6 +3352,38 @@ mean stamping the engine fingerprint into each scorecard at scoring time and
 refusing to publish a split whose scorecard came from a different engine than the
 one being reported. That is buildable and is not built. Recorded as the gap it is.
 
+---
+
+### D-056
+**J1's threshold is unreachable by humans, and its message calls every key "known by construction"**
+`judge-agreement` (J1) · 2026-08-11 · scoped, not retuned
+
+The first external calibration of a judge check ([N-019](#n-019)) found two
+things about the check rather than about the judge.
+
+**The threshold cannot be met by anyone.** `judge_agreement_min` is 90%. On
+MT-Bench's human key, GPT-4 scores 75.5% and a held-out *human annotator* scores
+79.0% against the majority of the other humans. So J1 fires on any judge graded
+against annotator preference, including a perfect one, because 90% agreement with
+a human majority is not a thing humans do. The 90% is defensible for the probe
+J1 was built for, where each case's verdict is true *by construction* and
+disagreement really is judge error. It is a false-alarm machine on any key
+derived from annotation.
+
+**And the finding text asserts the stronger premise regardless.** J1 prints
+"case(s) whose verdict is known by construction" whatever the probe actually
+contains. Run against a human-derived key it says `by construction` about votes,
+which is the one word in the sentence a reader would rely on to decide how much
+the disagreement means.
+
+**Scoped rather than retuned**, for the reason the ledger has recorded twice
+before: this is one dataset in one task shape, and a threshold moved on a single
+external comparison is a threshold fitted to that comparison. What changes is
+what the check is documented to apply to. J1 is for construction-known probes;
+scoring a judge against annotator preference needs the annotators' own agreement
+rate as the ceiling, and that number belongs beside the verdict rather than
+inside a fixed constant.
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -3323,8 +3406,8 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **18** |
-| defects in dinostomp itself (**D**) | **55** |
+| negative results, recorded rather than dropped (**N**) | **19** |
+| defects in dinostomp itself (**D**) | **56** |
 
 Forty-seven to twenty-five. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
