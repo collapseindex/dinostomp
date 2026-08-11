@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -194,7 +195,89 @@ def infer_mapping(rows: list[dict], overrides: dict | None = None
                 message=f"no column looks like the {required}. {hint}"
                         f"Columns are: {', '.join(columns) or '(none)'}. "
                         f"Pass --{required}-field."))
+
+    # Not when the user has already said what the input is. These guards exist
+    # to stop an INFERENCE going confidently wrong; re-raising them against an
+    # explicit --input-field turns a warning into an unanswerable refusal, and
+    # cost a real finding on the first dataset tried.
+    if "input" not in overrides:
+        issues.extend(_mapping_smells(rows, columns, mapping))
     return mapping, notes, issues
+
+
+# Columns that carry the CONTEXT a question is asked about. Dropping one leaves
+# the question stranded, and two unrelated items can then read identically.
+CONTEXT_COLUMNS = ("body", "passage", "context", "premise", "paragraph", "para",
+                   "article", "story", "document", "background")
+
+# An input column whose values repeat this hard is not a question column. Set
+# where it separates a type tag from a question bank: COPA's `question` column
+# holds two distinct values across 500 rows (0.4%), while the thinnest genuine
+# question column measured here is 99.0% distinct. Nothing observed lands
+# between 0.4% and 99%, so the threshold is not finely poised.
+INPUT_CARDINALITY_MIN = 0.10
+
+
+def _mapping_smells(rows, columns, mapping) -> list[Issue]:
+    """Refuse a mapping that is present but wrong, not merely absent.
+
+    The refusal above catches "no column looks like the input". It does not
+    catch "the wrong column is named `question`", which is a different failure
+    and the more dangerous one: the audit does not go quiet, it reports
+    confident findings about the wrong columns. An automated sweep of 4 public
+    datasets produced 3 false findings this way before these guards existed
+    (D-057), every one of them a duplicate-question or conflicting-key flag
+    manufactured by the mapping rather than found in the data.
+    """
+    out: list[Issue] = []
+    in_col = mapping.get("input")
+    if not in_col or not rows:
+        return out
+
+    values = [str(r.get(in_col, "")) for r in rows]
+    distinct = len(set(values))
+    if len(values) >= 20 and distinct / len(values) < INPUT_CARDINALITY_MIN:
+        sample = sorted({v[:24] for v in values})[:4]
+        out.append(Issue(
+            loc="--input-field", check="fields",
+            message=f"column {in_col!r} was read as the input, but it holds only {distinct} "
+                    f"distinct value(s) across {len(values)} rows "
+                    f"({distinct/len(values):.1%}), e.g. {sample}. That is a category label, "
+                    f"not a question, and auditing it would report every row as a duplicate. "
+                    f"Pass --input-field with the column that holds the actual text."))
+
+    unmapped = [c for c in columns if c not in mapping.values()]
+
+    # Options split across one column per candidate: answer_0..answer_3,
+    # choice1/choice2, option_A..option_D. Nothing assembles them, so `choices`
+    # stays unmapped and every check that needs an option list goes quiet while
+    # S1 and S7 compare questions stripped of the candidates that distinguish
+    # them. That is how a recommendation benchmark whose items legitimately
+    # repeat a prompt with different candidates got reported as contradictory.
+    if "choices" not in mapping:
+        numbered = [c for c in unmapped
+                    if re.fullmatch(r"(answer|choice|option|ending|sol)[ _-]?[0-9a-dA-D]",
+                                    _norm(c).replace(" ", ""))]
+        if len(numbered) >= 2:
+            out.append(Issue(
+                loc="--choices-field", check="fields",
+                message=f"columns {', '.join(sorted(numbered))} look like one option per column, "
+                        f"and no single column holds the option list. Nothing assembles them, so "
+                        f"every option-based check would be skipped and two items sharing a "
+                        f"prompt but offering different candidates would be reported as "
+                        f"contradictory. Combine them into one list column, or pass "
+                        f"--choices-field."))
+
+    context = [c for c in unmapped if _norm(c) in CONTEXT_COLUMNS]
+    if context:
+        out.append(Issue(
+            loc="--input-field", check="fields",
+            message=f"column(s) {', '.join(context)} look like the CONTEXT a question is asked "
+                    f"about, and none of them is part of the input. Two different items can "
+                    f"then share an identical question ('How much money did she have left?') "
+                    f"and be reported as duplicates. Combine them into one column, or pass "
+                    f"--input-field to say this dataset really is context-free."))
+    return out
 
 
 def _resolve_choice_key(row: dict, target_col: str, choices: list) -> tuple[Any, bool]:

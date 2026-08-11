@@ -55,6 +55,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-016](#f-016) | llama-3.2-3b | "You are an expert." is worth 10 points, marginally | confirmed, marginal [examples/presentation](examples/presentation/) |
 | [F-017](#f-017) | a RAG agent | grounding it in its own retrieval made it 25 points WORSE | confirmed [examples/live-agent](examples/live-agent/) costs $0.02 |
 | [F-026](#f-026) | Anthropic Economic Index | one node_name shared by two O*NET ids, so grouping by name double-counts | confirmed, both files |
+| [F-027](#f-027) | QuaRTz | two questions whose -flip variant is byte-identical and keyed to the opposite answer | confirmed |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
@@ -139,6 +140,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-054](#d-054) | dinocorpus | all 21 declared classes planted for the first time; the corpus grew image-backed instances to do it | fixed |
 | [D-055](#d-055) | dinostomp | reported a held-out score from the split used to find the fix; split retired, not re-reported | fixed |
 | [D-056](#d-056) | dinostomp | J1's 90% threshold is unreachable by humans, and its message claims every key is known by construction | scoped, not retuned |
+| [D-057](#d-057) | dinostomp | a 4-dataset sweep produced 3 false findings from a guessed column mapping | fixed |
+| [D-058](#d-058) | dinostomp | the battery crashed on any dataset with ~1,200+ keyed choice items | fixed |
 
 <!-- INDEX:END -->
 
@@ -174,13 +177,13 @@ at fault.
 | `R15` | [D-006](#d-006) |
 | `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
-| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
+| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
 | `S2` | [F-004](#f-004), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037) |
-| `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052) |
+| `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052), [D-058](#d-058) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-020](#n-020), [N-012](#n-012), [F-025](#f-025) |
 | `S6` | [D-053](#d-053) |
-| `S7` | [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-042](#d-042) |
+| `S7` | [F-027](#f-027), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-042](#d-042) |
 | `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015) |
 | `S10` | [N-006](#n-006) |
 | `S11` | [F-012](#f-012), [N-004](#n-004), [D-014](#d-014) |
@@ -190,13 +193,13 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056) |
+| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058) |
 | dinocorpus | [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
@@ -230,6 +233,7 @@ at fault.
 | NCLEX nursing | [N-016](#n-016) |
 | Pharmacist Licensure Exam | [F-025](#f-025) |
 | public HF datasets | [N-020](#n-020) |
+| QuaRTz | [F-027](#f-027) |
 | RACE | [F-022](#f-022) |
 | six dataset pairs | [N-004](#n-004) |
 | TruthfulQA | [F-004](#f-004) |
@@ -632,6 +636,40 @@ on `node_external_id`.
 gives. No reply yet. This line records that the finding was sent, not that anyone
 has agreed with it. If a reply shows the reading is wrong, the correction belongs
 in this entry, under this id, rather than in a quiet deletion.
+
+---
+
+### F-027
+**QuaRTz · two questions whose `-flip` variant is byte-identical and keyed to the opposite answer**
+`conflicting-keys` (S7), `dup-questions` (S1) · 2026-08-11 · confirmed
+
+QuaRTz (Tafjord et al., 2019, EMNLP-IJCNLP) pairs each qualitative-relationship
+question with a `-flip` variant: the question is reworded so the correct answer
+becomes the other option. Two pairs in the 784-item test split were never
+reworded. The question text is identical, the option list is identical, and the
+keys are opposite:
+
+```
+QRQA-10273-3        "Exponential growth of a population of animals means it"
+                    choices ['increases', 'diminishes']   key: increases
+QRQA-10273-3-flip   "Exponential growth of a population of animals means it"
+                    choices ['increases', 'diminishes']   key: diminishes
+
+QRQA-10223-1        "If Mona is adding chemicals to her swimming pool and she
+                     lowers the pH value of the water, what happens to the
+                     acidity of the water in the pool?"
+                    choices ['increase', 'decrease']      key: increase
+QRQA-10223-1-flip   (identical text, identical choices)   key: decrease
+```
+
+No model can be right on both, and no subject knowledge is needed to see it: it
+is a string comparison. The flip mechanism did its job on the answer key and not
+on the question.
+
+**Scope.** Two items in 784, and the design intent is legible from the ids, so
+this is a generation slip rather than a claim about QuaRTz's quality. Reproduce
+by passing `--input-field question`, which is now required because the audit
+otherwise refuses this dataset ([D-057](#d-057)).
 
 ## Negative results
 
@@ -3426,6 +3464,85 @@ scoring a judge against annotator preference needs the annotators' own agreement
 rate as the ceiling, and that number belongs beside the verdict rather than
 inside a fixed constant.
 
+---
+
+### D-057
+**A sweep of four public datasets produced three false findings, all from a column mapping the audit was happy to guess**
+`dataset.py` · 2026-08-11 · fixed
+
+[N-020](#n-020) reported the refusal rate as the property that makes unattended
+breadth survivable. It is not sufficient, and pointing the audit at four named
+benchmarks showed why: it flagged all four, and **three of the four flags were
+manufactured by the mapping**.
+
+```
+  balanced-copa         the column NAMED question holds only 'cause'/'effect'.
+                        The text is in premise. 500 rows, 2 distinct inputs, so
+                        every row is a duplicate of every other.
+  ASDiv                 body holds the problem, question holds only the final
+                        sentence. Two unrelated problems both ending "How much
+                        money did she have left?" were reported as duplicates.
+  movie_recommendation  options live in answer_0..answer_3 and nothing assembles
+                        them, so S7 compared prompts stripped of the candidate
+                        sets that distinguish them.
+```
+
+Only QuaRTz survived scrutiny ([F-027](#f-027)).
+
+**Why the existing refusal did not help.** It fires when *no* column looks like
+the input. All three of these had a column that looked exactly right and was
+wrong, which is the more dangerous case: the audit does not go quiet, it reports
+confident findings about the wrong columns. At sweep scale that is a machine for
+manufacturing accusations about other people's data.
+
+**Three guards, one per observed failure.** An input column whose values repeat
+below 10% distinct is a category label, not a question. An unmapped
+`body`/`passage`/`context`/`premise` column means the question may be stranded
+from what it is about. Two or more `answer_N`-style columns with no option list
+mean the options were never assembled. Each refuses rather than warns, because a
+warning inside an automated sweep is a warning nobody reads.
+
+**The threshold is not finely poised.** COPA's mis-mapped column is 0.4%
+distinct; the thinnest genuine question column measured is 99.0%. Nothing
+observed lands between.
+
+**Cost, stated because it is real.** The context guard also refuses QuaRTz, whose
+finding was genuine, so an unattended sweep yields less. A refusal is answerable
+with `--input-field` and a false accusation is not. The guards are skipped once
+the user states the mapping explicitly, and that was itself a bug for one
+iteration: they re-fired against an explicit override and made the refusal
+unanswerable.
+
+---
+
+### D-058
+**The battery crashed on any dataset with about 1,200 or more keyed choice items**
+`position-bias` (S3) · 2026-08-11 · fixed
+
+`_s3_chance_rate` computed a binomial tail the textbook way:
+
+```python
+sum(comb(n, x) * (p ** x) * ((1 - p) ** (n - x)) for x in range(need, n + 1))
+```
+
+`comb(1200, 300)` is an integer of some 300 digits, and CPython raises
+`OverflowError: int too large to convert to float` when it is multiplied by one.
+So the audit did not degrade on large datasets, it **crashed**, and it crashed on
+exactly the large public benchmarks the tool is most useful against.
+
+It survived this long because every fixture is small. Corpus instances are 24
+items, the trials are smaller, and no test goes near 1,200. The working range of
+the tests and the working range of the tool were different, and only the first
+was ever measured. Found by pointing the audit at real datasets rather than at
+fixtures, which is the second time in two days that a defect turned out to be
+hiding from the fixtures rather than from the checks ([D-053](#d-053)).
+
+**Fixed** by summing in log space via `lgamma`, so each term is exponentiated
+only once it is small. Every published value is unchanged to six decimal places
+(n = 20, 24, 25, 30, 50 all identical), checked rather than assumed: a numerical
+rewrite that silently moves a published threshold is a worse defect than the
+crash it repairs.
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -3444,12 +3561,12 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **26** |
+| findings in other people's evals (**F**) | **27** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **20** |
-| defects in dinostomp itself (**D**) | **56** |
+| defects in dinostomp itself (**D**) | **58** |
 
 Forty-seven to twenty-five. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to

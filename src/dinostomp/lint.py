@@ -989,7 +989,7 @@ def _s3_chance_rate(n: int, k: int) -> float:
     are weakly negatively correlated), which is the conservative direction for a
     caveat: it never understates the chance of a false alarm.
     """
-    from math import comb
+    from math import exp, lgamma, log
 
     if n <= 0 or k <= 0:
         return 0.0
@@ -998,8 +998,27 @@ def _s3_chance_rate(n: int, k: int) -> float:
     if need > n:
         return 0.0
     p = 1.0 / k
-    one = sum(comb(n, x) * (p ** x) * ((1 - p) ** (n - x)) for x in range(need, n + 1))
-    return 1.0 - (1.0 - one) ** k
+
+    # IN LOG SPACE, and not for elegance. The first version wrote this as
+    # `comb(n, x) * p**x * (1-p)**(n-x)`, which is the textbook form and
+    # raises OverflowError from n around 1,200: comb(1200, 300) is an integer
+    # of some 300 digits and CPython refuses to coerce it to a float. So the
+    # battery CRASHED on any dataset with roughly twelve hundred or more keyed
+    # choice items -- that is, on exactly the large public benchmarks it is
+    # most useful against, while every corpus instance (24 items) and every
+    # unit test stayed comfortably inside the working range. Found by pointing
+    # the audit at real datasets rather than at fixtures (D-058).
+    #
+    # lgamma(n+1) is log(n!), so log C(n,x) is a subtraction and each term is
+    # exponentiated only after it is small.
+    log_c = lgamma(n + 1)
+    one = 0.0
+    for x in range(need, n + 1):
+        term = (log_c - lgamma(x + 1) - lgamma(n - x + 1)
+                + x * log(p) + (n - x) * log(1.0 - p))
+        if term > -745.0:                 # below this, exp() is 0.0 anyway
+            one += exp(term)
+    return 1.0 - (1.0 - min(one, 1.0)) ** k
 
 
 def _shortcut_check(rep: Reporter, keyed: list[dict]) -> None:
