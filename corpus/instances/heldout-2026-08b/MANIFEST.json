@@ -1,0 +1,43 @@
+{
+  "corpus": "dinocorpus",
+  "split": "heldout-2026-08b",
+  "n_instances": 800,
+  "n_clean": 200,
+  "n_defective": 600,
+  "n_blind_spot": 316,
+  "blind_spot_share_of_defective": 0.527,
+  "items_per_instance": 24,
+  "classes_planted": [
+    "ambiguous-question",
+    "answer-leak",
+    "compound-question",
+    "conflicting-keys",
+    "duplicate-item",
+    "duplicate-option",
+    "implausible-distractor",
+    "length-bias",
+    "multiple-correct",
+    "no-correct-option",
+    "non-exclusive-options",
+    "position-bias",
+    "stale-ground-truth",
+    "surface-shortcut",
+    "target-not-offered",
+    "unanswerable-missing-context",
+    "wrong-key"
+  ],
+  "n_held_back_classes_present": 0,
+  "classes_declared_not_yet_planted": [
+    "train-test-overlap",
+    "near-duplicate-asset",
+    "label-in-path",
+    "asset-drift"
+  ],
+  "scope": "data (items at rest); run-scope and judge-scope defects are not in this split",
+  "ground_truth": "planted, not annotated",
+  "realism_caveat": "items are synthetic and cleaner than real benchmark items, so any recall measured here is an UPPER BOUND on recall in the wild",
+  "labels_sha256": "83a11a9a78b072fdfbc3bfc81399190632921213591e35a6e7e1cdc8b774c3f3",
+  "withheld": true,
+  "nonce_sha256": "e77acc0a87157e1ea939c9ba809d9e60e7c57460c6d11a8a6be1e80127815c02",
+  "labels_note": "labels.jsonl is NOT published for this split. Verify against labels_sha256 when it is revealed."
+}

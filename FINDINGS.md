@@ -126,12 +126,13 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-017](#n-017) | CIFAR-10 / ciFAIR | 28% recall against a human duplicate annotation; byte-level checks get 0% | measured |
 | [D-044](#d-044) | dinostomp | the asset-path guard asked the local OS what absolute means, and got two answers | fixed in v0.53.1 |
 | [D-045](#d-045) | dinocorpus | the corpus's first scored run found three defects in the corpus | fixed in v0.55.0 |
-| [D-046](#d-046) | dinostomp | S3 warns on 1 clean dataset in 6 at the size its own rule admits | measured, scoped, not retuned |
+| [D-046](#d-046) | dinostomp | S3 is the whole false-alarm rate on clean data, and the rate is calculable | measured, scoped, not retuned |
 | [D-047](#d-047) | dinocorpus | the withheld split was public arithmetic, and fixing it silently rewrote the public split | fixed in v0.56.0 |
 | [D-048](#d-048) | dinostomp | the CLI printed OK over a report whose own summary said incomplete | fixed |
 | [D-049](#d-049) | dinostomp | installing any extension made every published report fail verification | fixed |
 | [D-050](#d-050) | dinostomp-aei | float arithmetic nearly reported a rounding convention as somebody else's defect | fixed before shipping |
 | [D-051](#d-051) | dinostomp | an extension is marked validated for declaring an evidence tax it never pays | scoped, not fixed |
+| [D-052](#d-052) | dinostomp | a published rate rested on 51 instances and settling it was one unrun command | fixed |
 
 <!-- INDEX:END -->
 
@@ -169,7 +170,7 @@ at fault.
 | `R20` | [N-008](#n-008) |
 | `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-020](#f-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
 | `S2` | [F-004](#f-004), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037) |
-| `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046) |
+| `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-012](#n-012), [F-025](#f-025) |
 | `S7` | [F-020](#f-020), [D-005](#d-005), [D-042](#d-042) |
@@ -188,7 +189,7 @@ at fault.
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051) |
+| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
 | dinocorpus | [D-045](#d-045), [D-047](#d-047) |
@@ -618,8 +619,10 @@ percentages, was the defect.
 nodes by roughly a factor of two. Anyone joining the release to O\*NET should key
 on `node_external_id`.
 
-**Reported:** not yet. econ-research@anthropic.com is the address the README
-gives.
+**Reported:** 2026-08-11, to econ-research@anthropic.com, the address the README
+gives. No reply yet. This line records that the finding was sent, not that anyone
+has agreed with it. If a reply shows the reading is wrong, the correction belongs
+in this entry, under this id, rather than in a quiet deletion.
 
 ## Negative results
 
@@ -2896,12 +2899,35 @@ first run of a new instrument measures the instrument.**
 ---
 
 ### D-046
-**S3 warns on one clean dataset in six at exactly the size its own applicability rule admits**
-`position-bias` (S3) · 2026-08-10 · measured, scoped, not retuned
+**S3 is the entire false-alarm rate on clean data, and the rate is calculable in advance**
+`position-bias` (S3) · 2026-08-10, revised 2026-08-11 · measured, scoped, not retuned
 
-The corpus's clean arm is 51 datasets with nothing wrong with them. S3 fired on
-8, a rate of 15.7%. That is not a bug in the corpus this time: it is the check's
-designed behaviour, and the rate is calculable.
+**Revised on a larger sample. The headline number moved, and it moved down.**
+This entry was first written on one split, where S3 fired on 8 of 51 clean
+datasets, and it was titled "S3 warns on one clean dataset in six". Two further
+withheld splits put the pooled rate at **26 of 351, or 7.4%**, which is one in
+thirteen. The 15.7% was a high draw on 51 instances, not the check's rate. The
+reconciliation below was correct when written; the title it sat under was not.
+[D-052](#d-052) records how the extra evidence was produced.
+
+What survived the larger sample is the more useful half: across all 351 clean
+instances in all three splits, **every false alarm is S3, and only S3**. Not a
+mix, not a long tail. The battery's false-positive behaviour on good data is one
+diagnostic, and that diagnostic's rate can be computed before any data exists.
+
+```
+  split               clean   S3 fired     rate
+  dev                    51          8    15.7%
+  heldout-2026-08       100          5     5.0%
+  heldout-2026-08b      200         13     6.5%
+  pooled                351         26     7.4%    95% CI [5.1%, 10.6%]
+
+  predicted from the margin rule, for this mix of 24- and 25-item instances: 7.9%
+```
+
+The prediction is not fitted to any of it. It is computed from the rule below for
+the observed instance sizes, and the interval on 351 clean instances contains it.
+That is the check's designed behaviour, and the rate is calculable.
 
 S3 trips when a position's gold count exceeds its per-item expectation by 20% of
 n. The margin is ABSOLUTE and it is applied to each of four positions with no
@@ -2916,8 +2942,11 @@ multiplicity correction, so on clean four-option data:
       100          45                         0.0%
 ```
 
-The analytic rate at n=24 is 8.5%, inside the 95% interval on the observed 8 of
-51 ([5.7%, 25.7%]), so the corpus and the maths agree.
+The analytic rate at n=24 is **8.27%**. This entry originally said 8.5%, which
+matches neither the analytic value nor the 8.7% simulated figure in the table
+above; it appears to have been a third number written from memory. Corrected
+here rather than quietly, because a ledger that rounds its own arithmetic to
+whatever sounds close is not doing the job this file exists to do.
 
 **The uncomfortable part is the interaction with the applicability rule.**
 `min_choice_items = 20` is the threshold at which S3 starts running, and n=20 is
@@ -3103,6 +3132,53 @@ The extension shipped alongside this entry does pay the tax, in
 ten planted defects that must each fire their own check. That is run by hand and
 in the test suite, not by the core.
 
+---
+
+### D-052
+**A published rate rested on 51 instances, and settling it was one command we did not run**
+`corpus/`, `position-bias` (S3) · 2026-08-11 · fixed
+
+The write-up reported a false-alarm rate of 15.7% on `dev` (8 of 51 clean
+instances) against 5.0% on `heldout-2026-08` (5 of 100), noted the gap was 2.2
+standard deviations, and said a third split would settle it and had not been
+generated. Two sections earlier the same document argued that the corpus scales
+by generation and that this is what makes it rotatable.
+
+Both sentences cannot be true. An external reviewer put it plainly: if the corpus
+scales by generation, generate the split. Generating one is
+`python corpus/generate.py --split <name> -n 800`.
+
+**What the third split says.** `heldout-2026-08b`: 800 instances, 200 clean,
+`labels_sha256` published before scoring, scored exactly once with no tuning in
+between.
+
+```
+  split               clean   S3 fired     rate
+  dev                    51          8    15.7%
+  heldout-2026-08       100          5     5.0%
+  heldout-2026-08b      200         13     6.5%   <- new
+  pooled                351         26     7.4%   95% CI [5.1%, 10.6%]
+  predicted from S3's margin rule for this size mix  7.9%
+```
+
+The discrepancy was `dev` drawing high on 51 instances, not two populations. The
+pooled rate over 351 clean instances agrees with the rate computable in advance
+from S3's own threshold rule, and the prediction is not fitted to any of the
+data. [D-046](#d-046) is revised accordingly, and its title changed.
+
+**Two things this run also established, neither of which was the question.**
+Across all 351 clean instances, every false alarm is S3 and nothing else. And the
+strict blind-spot recall is 0.0% on all three splits, so the 0% now rests on 559
+blind-spot instances rather than 243.
+
+**Why it survived.** The unresolved version was more interesting to write. "Two
+splits disagree and we state it rather than smoothing it" reads as admirable
+restraint, and it sat in a paper section about honesty, which is the last place
+anyone looks for a shortcut. Restraint about a question you could answer for free
+is not restraint. The lesson is narrow and checkable: if a write-up says more
+evidence would settle something, the next line has to be either the evidence or
+the reason it is expensive.
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -3126,7 +3202,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **18** |
-| defects in dinostomp itself (**D**) | **51** |
+| defects in dinostomp itself (**D**) | **52** |
 
 Forty-seven to twenty-five. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to

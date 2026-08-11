@@ -36,9 +36,22 @@ for development, and it is no longer evidence.
 |---|---|---:|---|---|---|
 | `dev-v1` | 2026-08-10 | 204 | **public** | `021a18f2265b7801...` | labels ship; tune against this freely |
 | `heldout-2026-08` | 2026-08-10 | 400 | **withheld** | `357ce1610cf93b8d...` | labels not published; 100 clean, 162 blind-spot |
+| `heldout-2026-08b` | 2026-08-11 | 800 | **withheld** | `83a11a9a78b072fd...` | labels not published; 200 clean, 316 blind-spot |
 
-The full commitment for each split is in its own `MANIFEST.json`. Both rows were
-written before any submission was scored against them.
+The full commitment for each split is in its own `MANIFEST.json`. Every row was
+written before any submission was scored against it.
+
+`heldout-2026-08b` exists to answer one question and was scored exactly once,
+with no tuning between generation and scoring. The false-alarm rate on `dev`
+(15.7%, 8 of 51) sat 2.2 standard deviations above the rate on `heldout-2026-08`
+(5.0%, 5 of 100), and the write-up said a third split would settle it while also
+claiming the corpus scales by generation. Those two sentences cannot both stand,
+and generating a split is one command.
+
+**Its labels stay withheld.** The score and the commitment are published, which
+is what makes the result checkable by someone else. Publishing the labels would
+move the split to `dev` under the rule above, spending a held-out split to
+re-answer a question that is now answered.
 
 `heldout-2026-08` carries **0 held-back classes**, because `holdback.py` does
 not exist yet. That is stated rather than implied: until it does, the

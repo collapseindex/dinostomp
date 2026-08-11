@@ -10,9 +10,9 @@
   },
   "counts": {
     "F": 26,
-    "D": 51,
+    "D": 52,
     "N": 18,
-    "total": 95
+    "total": 96
   },
   "series": {
     "F": "other people's evals",
@@ -1667,16 +1667,16 @@
       "id": "D-046",
       "series": "D",
       "series_name": "dinostomp itself",
-      "title": "S3 warns on one clean dataset in six at exactly the size its own applicability rule admits",
-      "summary": "S3 warns on 1 clean dataset in 6 at the size its own rule admits",
+      "title": "S3 is the entire false-alarm rate on clean data, and the rate is calculable in advance",
+      "summary": "S3 is the whole false-alarm rate on clean data, and the rate is calculable",
       "subject": "dinostomp",
       "check_label": "`position-bias` (S3)",
       "checks": [
         "S3"
       ],
-      "date": "2026-08-10",
-      "date_iso": "2026-08-10",
-      "date_precision": "day",
+      "date": "2026-08-10, revised 2026-08-11",
+      "date_iso": null,
+      "date_precision": "none",
       "status": "measured, scoped, not retuned",
       "status_class": "measured",
       "anchor": "#d-046",
@@ -1766,6 +1766,25 @@
       "status_class": "open",
       "anchor": "#d-051",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-051"
+    },
+    {
+      "id": "D-052",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "A published rate rested on 51 instances, and settling it was one command we did not run",
+      "summary": "a published rate rested on 51 instances and settling it was one unrun command",
+      "subject": "dinostomp",
+      "check_label": "`corpus/`, `position-bias` (S3)",
+      "checks": [
+        "S3"
+      ],
+      "date": "2026-08-11",
+      "date_iso": "2026-08-11",
+      "date_precision": "day",
+      "status": "fixed",
+      "status_class": "fixed",
+      "anchor": "#d-052",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-052"
     }
   ]
 }

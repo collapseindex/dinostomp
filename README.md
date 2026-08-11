@@ -25,12 +25,12 @@ Each of those is one entry in **[FINDINGS.md](FINDINGS.md)**, with the item id,
 the verbatim data and the command that reproduces it. Every `F` re-derives in
 seconds, offline, for free, using the command in the next section.
 
-**[FINDINGS.md](FINDINGS.md): 95 entries, all permanent, none deleted.**
+**[FINDINGS.md](FINDINGS.md): 96 entries, all permanent, none deleted.**
 
 | series | count | what it records |
 |---|--:|---|
 | **F** | 26 | findings in other people's evals |
-| **D** | 51 | defects in dinostomp itself |
+| **D** | 52 | defects in dinostomp itself |
 | **N** | 18 | negative results, recorded rather than dropped |
 
 **Forty-seven of the eighty-nine are against this tool**, which is the number to

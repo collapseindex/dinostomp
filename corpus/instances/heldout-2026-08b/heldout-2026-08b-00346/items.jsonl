@@ -1,0 +1,24 @@
+{"choices": ["84", "81", "83", "86"], "id": "ar-0011", "input": "What is 66 + 17?", "target": "83"}
+{"choices": ["55", "53", "51", "50"], "id": "ar-0007", "input": "What is 14 + 39?", "target": "53"}
+{"choices": ["the Corrie", "the Slate", "the Bram", "the Wend"], "id": "ke-0001", "input": "What is the longest river in Kestrel?", "metadata": {"domain": "kestrel"}, "target": "the Wend"}
+{"choices": ["Drossel", "Fennick", "Ambermoor", "Halloway"], "id": "ke-0000", "input": "What is the capital of Kestrel?", "metadata": {"domain": "kestrel"}, "target": "Ambermoor"}
+{"choices": ["41", "46", "44", "47"], "id": "ar-0001", "input": "What is 24 + 20?", "target": "44"}
+{"choices": ["the crown", "the florin", "the mark", "the sceat"], "id": "ke-0002", "input": "What is the currency of Kestrel?", "metadata": {"domain": "kestrel"}, "target": "the mark"}
+{"choices": ["115", "114", "116", "117"], "id": "ar-0006", "input": "What is 82 + 33?", "target": "115"}
+{"choices": ["the stonechat", "the grey shrike", "the reed warbler", "the pied crow"], "id": "ke-0004", "input": "What is the national bird of Kestrel?", "metadata": {"domain": "kestrel"}, "target": "the grey shrike"}
+{"choices": ["100", "104", "101", "102"], "id": "ar-0003", "input": "What is 42 + 60? And in what year was that first recorded?", "target": "102"}
+{"choices": ["38", "37", "41", "40"], "id": "ar-0010", "input": "What is 27 + 11?", "target": "38"}
+{"choices": ["1225", "1211", "1204", "1198"], "id": "ke-0005", "input": "What is the founding year of Ambermoor?", "metadata": {"domain": "kestrel"}, "target": "1204"}
+{"choices": ["the Fenn", "the Marrow Sea", "the Cold Reach", "the Bight"], "id": "ke-0011", "input": "What is the sea Kestrel borders?", "metadata": {"domain": "kestrel"}, "target": "the Marrow Sea"}
+{"choices": ["153", "151", "155", "154"], "id": "ar-0008", "input": "What is 81 + 73?", "target": "154"}
+{"choices": ["161", "160", "162", "163"], "id": "ar-0009", "input": "What is 74 + 89?", "target": "163"}
+{"choices": ["Lake Sten", "Lake Orrin", "Lake Fell", "Lake Mire"], "id": "ke-0006", "input": "What is Kestrel's largest lake?", "metadata": {"domain": "kestrel"}, "target": "Lake Orrin"}
+{"choices": ["Mount Dray", "Mount Verrow", "Mount Iss", "Mount Talling"], "id": "ke-0003", "input": "What is Kestrel's highest peak?", "metadata": {"domain": "kestrel"}, "target": "Mount Talling"}
+{"choices": ["Vennish", "Kestrine", "Old Drossel", "Halloway Creole"], "id": "ke-0007", "input": "What is the language spoken in Kestrel?", "metadata": {"domain": "kestrel"}, "target": "Kestrine"}
+{"choices": ["Fennick Hall", "Talling Institute", "Orrin School", "Wend College"], "id": "ke-0010", "input": "What is Kestrel's oldest university?", "metadata": {"domain": "kestrel"}, "target": "Wend College"}
+{"choices": ["114", "117", "115", "116"], "id": "ar-0004", "input": "What is 74 + 42?", "target": "116"}
+{"choices": ["106", "107", "104", "102"], "id": "ar-0002", "input": "What is 44 + 60?", "target": "104"}
+{"choices": ["116", "119", "117", "118"], "id": "ar-0005", "input": "What is 81 + 37?", "target": "118"}
+{"choices": ["grey and red", "red and black", "blue and gold", "green and white"], "id": "ke-0009", "input": "What is the colour of Kestrel's flag?", "metadata": {"domain": "kestrel"}, "target": "green and white"}
+{"choices": ["slate", "copper", "barley", "wool"], "id": "ke-0008", "input": "What is Kestrel's chief export?", "metadata": {"domain": "kestrel"}, "target": "slate"}
+{"choices": ["160", "162", "158", "161"], "id": "ar-0000", "input": "What is 83 + 77?", "target": "160"}

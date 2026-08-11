@@ -63,6 +63,15 @@ benchmarks/*/data/raw/
 corpus/instances/*/labels.WITHHELD.jsonl
 corpus/holdback.py
 
+# The generation nonce for a withheld split. It is mixed into every seed AND
+# into the class schedule, so anyone holding it can regenerate the split and
+# read its answer key. Committing one silently converts a withheld split into a
+# public one while every manifest still says "withheld": true. The split's
+# MANIFEST publishes nonce_sha256, which is what lets a nonce be checked at
+# reveal time without it ever being in the repository.
+.nonce-*.local
+*.nonce.local
+
 # Probes written for a specific outside purpose (job applications, client
 # recon, one-off questions). They use the battery but are not part of it, and
 # several name third parties, so they stay out of the public history.
