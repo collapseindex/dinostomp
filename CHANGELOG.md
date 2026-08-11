@@ -1,5 +1,38 @@
 # Changelog
 
+### v0.61.0 (2026-08-11)
+
+**Five benchmark pods, three of which exist to prove earlier findings wrong, and
+a check that had been passing an exam it could not read.**
+
+- **[D-061](FINDINGS.md#d-061)** S9's shortcut feature tokenises with
+  `str.split()`, so on a script written without spaces the whole stem is one
+  token and the feature can only fire on identical strings. A Chinese pharmacist
+  licensing exam carried a `pass` over 400 items that meant nothing. The same
+  shortcut planted in English warns and in Chinese passes. It skips now, naming
+  the reason; S9 still cannot audit those scripts, and the gap is visible in the
+  report instead of hidden behind a green line. Predicted before it was looked
+  for: every corpus fixture is ASCII.
+- **[D-060](FINDINGS.md#d-060)** five pods added. `copa`, `movie-rec` and `asdiv`
+  are the shapes that produced false findings in an unmapped sweep; with explicit
+  mappings the first two audit clean and ASDiv drops from six duplicates to one.
+  That is the correction made reproducible rather than asserted. `anli-r3` is
+  clean; `agieval-sat-en` is not.
+- **[F-028](FINDINGS.md#f-028)** an AGIEval SAT reading question keyed to two
+  different answers, with byte-identical passage, question and options. Sixth
+  assessment written for people in this repository.
+- **[F-029](FINDINGS.md#f-029)** one ASDiv word problem present twice.
+- **[D-059](FINDINGS.md#d-059)** S2 called `no` a leaked answer because it is
+  spelled inside `enough`. Word boundaries now. The other twelve flags on ASDiv
+  are a scope limit rather than a defect, and the rate is published rather than
+  exempted away.
+
+**Write-up.** Unfrozen once, deliberately, for a pre-arXiv pass: the abstract now
+says what the battery catches and not only what it fails to catch, a disclosure
+paragraph states that 1 of 29 findings has been sent to a maintainer, and the
+sentence conflating pod count with finding count is split into two quantities.
+Re-frozen at this version.
+
 ### v0.60.0 (2026-08-11)
 
 **The judge checks now have an external answer key, and it says more about the

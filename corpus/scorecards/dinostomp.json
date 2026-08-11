@@ -78,7 +78,7 @@
       "recall": 0.1111
     }
   },
-  "detector": "dinostomp 0.60.0",
+  "detector": "dinostomp 0.61.0",
   "split": "dev",
   "answered": 204,
   "labels_sha256": "021a18f2265b78018b24a428ee05c783659e6f60dc6a941b1b9ac4b925037e91"

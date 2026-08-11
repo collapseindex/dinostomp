@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.60.0 · Apache-2.0 · engine `afeb26713e503a6c` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.61.0 · Apache-2.0 · engine `7fe879a3183bfcfe` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -496,7 +496,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.60.0
+- uses: collapseindex/dinostomp@v0.61.0
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -576,7 +576,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`afeb26713e503a6c12812160918d827c1567033ff91fa71d33ce5e88005857d2`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`7fe879a3183bfcfeaec6facac2782ee53a76e37df3d3698b1f9733b8ce1737aa`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 
