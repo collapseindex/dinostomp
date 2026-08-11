@@ -11,8 +11,8 @@
   "counts": {
     "F": 26,
     "D": 56,
-    "N": 19,
-    "total": 101
+    "N": 20,
+    "total": 102
   },
   "series": {
     "F": "other people's evals",
@@ -665,6 +665,27 @@
       "status_class": "measured",
       "anchor": "#n-019",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-019"
+    },
+    {
+      "id": "N-020",
+      "series": "N",
+      "series_name": "negative results",
+      "title": "A wider slice of public datasets, and the number that matters is the 37% the tool refused to audit",
+      "summary": "pilot sweep: 27% carry a gating finding, and the audit refused to guess a mapping on 37%",
+      "subject": "public HF datasets",
+      "check_label": "`dup-questions` (S1), `dup-options` (S5), `conflicting-keys` (S7)",
+      "checks": [
+        "S1",
+        "S5",
+        "S7"
+      ],
+      "date": "2026-08-11",
+      "date_iso": "2026-08-11",
+      "date_precision": "day",
+      "status": "measured, pilot",
+      "status_class": "measured",
+      "anchor": "#n-020",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-020"
     },
     {
       "id": "N-007",

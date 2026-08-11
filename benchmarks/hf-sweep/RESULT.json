@@ -1,0 +1,80 @@
+{
+  "note": "PILOT. The corpus is the live internet, so re-running gives different numbers. This records one dated run, not a stable measurement.",
+  "limits": [
+    "first 100 rows of one split only, so rates are a lower bound",
+    "search-biased sample; several hits are variants of one upstream dataset",
+    "a gating flag is a fact about the file, not a verdict about the dataset"
+  ],
+  "candidates": 60,
+  "audited": 30,
+  "refused_to_guess_mapping": 15,
+  "unreachable": 15,
+  "datasets_with_gating_finding": 8,
+  "by_check": {
+    "S1": 5,
+    "S7": 3,
+    "S5": 3
+  },
+  "rows_read_per_dataset": 100,
+  "hits": [
+    {
+      "dataset": "tasksource/cycic_multiplechoice",
+      "split": "default/train",
+      "checks": [
+        "S1",
+        "S7"
+      ]
+    },
+    {
+      "dataset": "TIGER-Lab/MMLU-Pro",
+      "split": "default/validation",
+      "checks": [
+        "S5"
+      ]
+    },
+    {
+      "dataset": "EC-DGT-AI/EU-MMLU",
+      "split": "CS_CZ/dev",
+      "checks": [
+        "S1"
+      ]
+    },
+    {
+      "dataset": "joey234/mmlu-business_ethics-neg",
+      "split": "default/test",
+      "checks": [
+        "S5"
+      ]
+    },
+    {
+      "dataset": "joey234/mmlu-college_mathematics-neg",
+      "split": "default/test",
+      "checks": [
+        "S1",
+        "S7"
+      ]
+    },
+    {
+      "dataset": "joey234/mmlu-college_physics-neg",
+      "split": "default/test",
+      "checks": [
+        "S1"
+      ]
+    },
+    {
+      "dataset": "joey234/mmlu-econometrics-neg",
+      "split": "default/test",
+      "checks": [
+        "S1",
+        "S7"
+      ]
+    },
+    {
+      "dataset": "joey234/mmlu-electrical_engineering-neg",
+      "split": "default/test",
+      "checks": [
+        "S5"
+      ]
+    }
+  ]
+}

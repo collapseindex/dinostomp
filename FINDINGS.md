@@ -71,6 +71,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-006](#n-006) | four models | probe demonstrably sensitive, and no canary reproduced | negative |
 | [N-018](#n-018) | Anthropic Economic Index | 2.1M rows audited against the release's own README: one warning, no failures | measured |
 | [N-019](#n-019) | MT-Bench / LLM-as-judge | first external judge-side calibration: GPT-4 at 75.5% vs a 79.0% human baseline | measured |
+| [N-020](#n-020) | public HF datasets | pilot sweep: 27% carry a gating finding, and the audit refused to guess a mapping on 37% | measured, pilot |
 | [N-007](#n-007) | lm-eval-harness log | both reported metrics re-derive from the raw log-probs | negative |
 | [N-008](#n-008) | dinostomp | an even `run.repeats` reported p-squared, not p | measured, fixed |
 | [N-009](#n-009) | dinostomp | T4 sees 0%, T7 sees 100%, on the same agent | measured |
@@ -173,13 +174,13 @@ at fault.
 | `R15` | [D-006](#d-006) |
 | `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
-| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-020](#f-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
+| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
 | `S2` | [F-004](#f-004), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
-| `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-012](#n-012), [F-025](#f-025) |
+| `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-020](#n-020), [N-012](#n-012), [F-025](#f-025) |
 | `S6` | [D-053](#d-053) |
-| `S7` | [F-020](#f-020), [D-005](#d-005), [D-042](#d-042) |
+| `S7` | [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-042](#d-042) |
 | `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015) |
 | `S10` | [N-006](#n-006) |
 | `S11` | [F-012](#f-012), [N-004](#n-004), [D-014](#d-014) |
@@ -228,6 +229,7 @@ at fault.
 | MT-Bench / LLM-as-judge | [N-019](#n-019) |
 | NCLEX nursing | [N-016](#n-016) |
 | Pharmacist Licensure Exam | [F-025](#f-025) |
+| public HF datasets | [N-020](#n-020) |
 | RACE | [F-022](#f-022) |
 | six dataset pairs | [N-004](#n-004) |
 | TruthfulQA | [F-004](#f-004) |
@@ -1093,6 +1095,46 @@ keep exactly the self-scored evidence they already had.
 
 Reproduce with `benchmarks/mt-bench-judge/fetch.py` then `compare.py`, which calls
 the real `_judge_checks` rather than recomputing an agreement rate.
+
+---
+
+### N-020
+**A wider slice of public datasets, and the number that matters is the 37% the tool refused to audit**
+`dup-questions` (S1), `dup-options` (S5), `conflicting-keys` (S7) · 2026-08-11 · measured, pilot
+
+Twenty-five benchmark pods were hand-picked and nine carried a repeated option.
+That is a striking rate on a sample chosen for being well known, and it says
+nothing reliable about the ecosystem. `benchmarks/hf-sweep/` audits a wider, less
+curated slice, read-only: it files nothing and contacts no maintainer.
+
+```
+  60 candidates -> 30 audited, 15 refused-to-guess, 15 unreachable
+
+  datasets with >=1 GATING finding    8 of 30 = 27%
+  by check    S1 dup-questions 5    S7 conflicting-keys 3    S5 dup-options 3
+```
+
+**The 27% is the less interesting number and it is a lower bound.** Only the
+first 100 rows of one split are read, so a duplicate at row 5,000 is invisible.
+The sample is search-biased toward multiple-choice shapes, and five of the eight
+hits are `joey234/mmlu-*-neg` variants of a single upstream benchmark, so they
+are not independent observations. One flag was checked by hand:
+`joey234/mmlu-business_ethics-neg` offers
+`['Employee rights', 'Employee rights', 'Employer duties', 'Employee duties']`,
+which anybody can verify in a line.
+
+**The 37% refusal rate is the finding.** On 15 of 41 reachable datasets the audit
+declined to guess a column mapping and returned nothing at all. That is the
+property deciding whether running this unattended across thousands of datasets is
+survivable, because a tool that guesses a mapping does not go quiet: it produces
+confident findings about the wrong columns. The same refusal appeared on the
+Anthropic Economic Index release ([F-026](#f-026)), where saying nothing was also
+the correct answer.
+
+**Why this is a pilot and not a result.** The corpus is the live internet, so
+re-running gives different numbers and `RESULT.json` records one dated run.
+Nothing here supports a claim about the population of public datasets. The entry
+exists so a later, properly sampled sweep has a baseline to disagree with.
 
 ## Defects in dinostomp itself
 
@@ -3406,7 +3448,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **19** |
+| negative results, recorded rather than dropped (**N**) | **20** |
 | defects in dinostomp itself (**D**) | **56** |
 
 Forty-seven to twenty-five. That ratio is the useful number to publish, and it is the
