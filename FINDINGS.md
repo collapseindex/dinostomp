@@ -667,9 +667,23 @@ is a string comparison. The flip mechanism did its job on the answer key and not
 on the question.
 
 **Scope.** Two items in 784, and the design intent is legible from the ids, so
-this is a generation slip rather than a claim about QuaRTz's quality. Reproduce
-by passing `--input-field question`, which is now required because the audit
-otherwise refuses this dataset ([D-057](#d-057)).
+this is a generation slip rather than a claim about QuaRTz's quality.
+
+**Reproduce:**
+
+```
+python benchmarks/fetch.py quartz
+dinostomp stomp benchmarks/quartz/eval.yaml
+```
+
+The pod's spec records one decision that would otherwise be invisible: the `para`
+column is deliberately not part of the input. These questions are self-contained,
+and folding the paragraph in would make every item unique and hide the duplicate.
+A finding that rests on a mapping choice has to publish the mapping choice.
+
+Auditing the raw dataset without a spec now refuses, because the unmapped `para`
+column trips a guard added the same day ([D-057](#d-057)). The pod exists partly
+so this finding does not depend on anyone reconstructing that mapping by hand.
 
 ## Negative results
 
@@ -3547,7 +3561,7 @@ crash it repairs.
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
 
-**Twenty-five benchmark pods**, all fetched from their authors and none
+**Twenty-six benchmark pods**, all fetched from their authors and none
 vendored: MMLU, MMLU-Pro, HellaSwag, ARC-Easy, ARC-Challenge, GSM8K,
 TruthfulQA, CommonsenseQA, OpenBookQA, BoolQ, WinoGrande, SciQ, MedMCQA, RACE,
 MuSR, LogiQA, MATH-500, DROP, AQuA-RAT, CIFAR-10, and an imported lm-eval log.

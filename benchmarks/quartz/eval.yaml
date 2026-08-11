@@ -1,0 +1,42 @@
+name: bench-quartz
+version: 0.1.0
+question: "Does the model pick the option QuaRTz keys as correct?"
+
+# QuaRTz (Tafjord et al., 2019, EMNLP-IJCNLP), test split, fetched by
+# `python benchmarks/fetch.py quartz`. Qualitative-relationship questions, each
+# paired with a `-flip` variant reworded so the correct answer becomes the other
+# option. Two pairs were never reworded: identical question text, identical
+# options, opposite keys (F-027). That is what this pod is here to keep
+# reproducible.
+#
+# The `para` column is NOT part of the input. These questions are self-contained,
+# and folding the paragraph in would make every item unique and hide the
+# duplicate. That is a decision, so it is written down rather than left in a
+# builder function.
+
+entitled_claims:
+  - "Which option each model picks on these QuaRTz items, per model."
+  - "Nothing about the dataset's quality beyond what the checks below actually read."
+
+data: {path: items.jsonl, format: jsonl, render_choices: true}
+
+models:
+  - {provider: dry, model: dry-strong}
+
+scorer:
+  kind: includes
+  witnesses:
+    - {output: "increases", target: "increases", expect: pass}
+    - {output: "The answer is increases", target: "increases", expect: pass}
+    - {output: "diminishes", target: "increases", expect: fail}
+    - {output: "", target: "increases", expect: fail}
+    - {output: "INCREASES", target: "increases", expect: fail, why: "substring matching is case-sensitive, and this pod says so"}
+    - {output: "increase", target: "increases", expect: fail, why: "a strict prefix is not the answer"}
+    - {output: "increases  ", target: "increases", expect: pass, why: "trailing space in the OUTPUT is not part of the match"}
+    # Kills the space-blind mutant, which the gauntlet reported surviving the
+    # first suite. A scorer that ignores internal whitespace would call these
+    # equal; this one must not, so the doubled space is pinned as a fail.
+    - {output: "less  kinetic energy", target: "less kinetic energy", expect: fail, why: "a doubled internal space is a different string, and this scorer says so"}
+    - {output: "less kinetic energy", target: "less kinetic energy", expect: pass}
+
+run: {n: 784, seed: 7, budget_usd: 0}

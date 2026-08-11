@@ -65,6 +65,10 @@ SOURCES = {
             "?dataset=TAUR-Lab%2FMuSR&config=default&split=murder_mysteries",
     "logiqa": "https://datasets-server.huggingface.co/rows"
               "?dataset=lucasmccabe%2Flogiqa&config=default&split=test",
+    # QuaRTz pairs each question with a `-flip` variant reworded so the answer
+    # becomes the other option. Two pairs were never reworded (F-027).
+    "quartz": "https://datasets-server.huggingface.co/rows"
+              "?dataset=allenai%2Fquartz&config=default&split=test",
     "math500": "https://datasets-server.huggingface.co/rows"
                "?dataset=HuggingFaceH4%2FMATH-500&config=default&split=test",
     "drop": "https://datasets-server.huggingface.co/rows"
@@ -98,7 +102,7 @@ PAGED = {"arc-challenge": 1200, "mmlu": 3000, "arc-easy": 2400, "winogrande": 13
          "sciq": 1000, "medmcqa": 3000,
          "race": 1500, "musr": 250, "logiqa": 650, "math500": 500, "drop": 2000,
          "medqa-usmle": 1273, "driving-ir": 1000, "aqua-rat": 254,
-         "nclex": 86, "pharm-cn": 480}
+         "nclex": 86, "pharm-cn": 480, "quartz": 784}
 PAGE_ROWS = 100
 
 CANARY = "dinostomp canary DO NOT TRAIN benchmarks"
@@ -354,6 +358,31 @@ def musr_items(rows: list[dict]) -> list[dict]:
                     "input": f"{str(row.get('narrative') or '').strip()}\n\n"
                              f"Question: {str(row.get('question') or '').strip()}",
                     "choices": opts, "target": opts[idx]})
+    return out
+
+
+def quartz_items(rows: list[dict]) -> list[dict]:
+    """QuaRTz, keeping the id so the -flip pairing stays legible.
+
+    `choices` arrives as {text: [...], label: [A, B]} and `answerKey` is the
+    LABEL, so the target is resolved through the label list rather than
+    assumed to be positional. The `para` column is deliberately left out of
+    the input: these questions are self-contained, and including the
+    paragraph would make every item unique and hide exactly the duplicate
+    this pod exists to record.
+    """
+    out = []
+    for r in rows:
+        row = r["row"]
+        ch = row.get("choices") or {}
+        text = [str(t).strip() for t in (ch.get("text") or [])]
+        labels = [str(x).strip() for x in (ch.get("label") or [])]
+        key = str(row.get("answerKey") or "").strip()
+        if not text or key not in labels:
+            continue
+        out.append({"id": str(row.get("id") or f"qz-{len(out):05d}"),
+                    "input": str(row.get("question") or "").strip(),
+                    "choices": text, "target": text[labels.index(key)]})
     return out
 
 
@@ -613,6 +642,7 @@ BUILDERS = {
     "race": race_items,
     "musr": musr_items,
     "logiqa": logiqa_items,
+    "quartz": quartz_items,
     "math500": math500_items,
     "drop": drop_items,
     "medqa-usmle": medqa_items,

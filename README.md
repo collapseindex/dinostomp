@@ -12,7 +12,7 @@ An eval is an instrument. Almost nobody checks the instrument.
 
 ## What it found
 
-Across **25 benchmark pods**, five of them assessments written for people, three of
+Across **26 benchmark pods**, five of them assessments written for people, three of
 those professional licensing examinations:
 
 - MMLU keys "Subtract. 2,396 − 1,709" over `['687', '687', '1,493', '1,695']`. The answer is on the option list twice, so a model that computes it correctly picks the wrong letter half the time ([F-002](FINDINGS.md#f-002))
