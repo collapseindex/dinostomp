@@ -133,6 +133,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-050](#d-050) | dinostomp-aei | float arithmetic nearly reported a rounding convention as somebody else's defect | fixed before shipping |
 | [D-051](#d-051) | dinostomp | an extension is marked validated for declaring an evidence tax it never pays | scoped, not fixed |
 | [D-052](#d-052) | dinostomp | a published rate rested on 51 instances and settling it was one unrun command | fixed |
+| [D-053](#d-053) | dinostomp | a binary item that lost its correct answer passed a gating check, because the loader stopped calling it a choice item | fixed |
+| [D-054](#d-054) | dinocorpus | all 21 declared classes planted for the first time; the corpus grew image-backed instances to do it | fixed |
 
 <!-- INDEX:END -->
 
@@ -173,6 +175,7 @@ at fault.
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-012](#n-012), [F-025](#f-025) |
+| `S6` | [D-053](#d-053) |
 | `S7` | [F-020](#f-020), [D-005](#d-005), [D-042](#d-042) |
 | `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015) |
 | `S10` | [N-006](#n-006) |
@@ -183,16 +186,16 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052) |
+| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053) |
+| dinocorpus | [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
-| dinocorpus | [D-045](#d-045), [D-047](#d-047) |
 | four models | [N-005](#n-005), [N-006](#n-006) |
 | MMLU | [F-002](#f-002), [F-003](#f-003) |
 | SciQ | [F-010](#f-010), [F-013](#f-013) |
@@ -3179,6 +3182,83 @@ is not restraint. The lesson is narrow and checkable: if a write-up says more
 evidence would settle something, the next line has to be either the evidence or
 the reason it is expensive.
 
+---
+
+### D-053
+**A two-option item that lost its correct answer passed a gating check, because the loader stopped calling it a choice item**
+`dataset.py`, `target-not-offered` (S6) · 2026-08-11 · fixed
+
+`_extract_choices` decided whether a row's option list counted as choices:
+
+```python
+if isinstance(value, list) and len(value) >= 2:
+    return [str(v).strip() for v in value]
+return None
+```
+
+Two looks like the obviously right threshold: a single option is not a choice, so
+a one-element list is not a choice list. The consequence is that an option list
+**reduced to one** is exactly what "the keyed answer is not among the options"
+looks like on a binary item, and returning `None` there dropped the `choices` key
+entirely. The item was reclassified as free-form, and S3, S4, S5 and the **S6
+gate** all stopped seeing it. A dataset that had lost the correct answer from a
+two-option item audited clean.
+
+```
+  on disk           {"id": "img-005", "target": "beta", "choices": ["alpha"]}
+  after build_items {"id": "img-005", "target": "beta"}          <- choices gone
+  S6                pass: "0 item(s) whose target is not among their choices"
+```
+
+**Why it took 1,456 instances to surface.** Every text pool in the corpus offers
+four options, so planting `target-not-offered` left three and the item stayed a
+choice item. The hole only opens on binary items, and the corpus had none until
+image items arrived carrying `alpha`/`beta`. The defect was not hiding from the
+checks, it was hiding from the fixtures, which is the harder kind to find and the
+reason this corpus grows new arms rather than more instances of the same one.
+
+**Fixed** by accepting one-element lists. An empty list still returns `None`,
+because an item with no options is genuinely not a choice item. All three text
+splits rescore identically, which was checked rather than assumed.
+
+Flattering, gating and silent, which is the combination this ledger exists for.
+
+---
+
+### D-054
+**All 21 declared classes are planted for the first time, and the corpus had to grow images to do it**
+`corpus/` · 2026-08-11 · fixed
+
+Four classes sat in the taxonomy with no generator: `asset-drift`,
+`label-in-path`, `train-test-overlap` and `near-duplicate-asset`. Each describes
+something that happens to a file, and every corpus instance was a lone
+`items.jsonl`, so all four were declared and unplantable.
+
+`heldout-assets-2026-08` is image-backed: 252 instances, 63 clean, six PNGs each,
+real bytes rather than empty files with a `.png` suffix. It scores 100% on the
+covered arm over 108 instances, 0.0% strict on the blind-spot arm, and 3.2% false
+alarms on clean data. `classes_declared_not_yet_planted` is now empty.
+
+**The rule that made it worth building.** Clean instances carry images too. If
+only defective ones did, the four asset checks would only ever meet planted data
+and their recall would be unfalsifiable: a check firing on every image-bearing
+instance would score 100% with nothing in the corpus able to contradict it. That
+is precisely the failure the clean arm exists to prevent, so building this
+halfway would have been worse than not building it at all.
+
+**Two defects in the planters, both caught before the split was generated.**
+`train-test-overlap` originally pointed two items at one image while every image
+item shared the prompt "Which shape is shown in this image?", so the instance also
+carried a duplicate item and a conflicting key: S1 and S7 fired alongside S14, and
+one instance held three defects instead of one. An instance with more than one
+defect cannot be scored, because a detector that finds the wrong one still counts
+as a hit. Fixed by varying the prompt per item and letting the label travel with
+the image. A negative test now requires every asset planter to fire its own check
+**and nothing else**, and the clean image pod to stay silent.
+
+Scoring the split then turned up [D-053](#d-053): the second time a new corpus arm
+has found a defect in the battery rather than confirming one.
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -3202,7 +3282,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **18** |
-| defects in dinostomp itself (**D**) | **52** |
+| defects in dinostomp itself (**D**) | **54** |
 
 Forty-seven to twenty-five. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to

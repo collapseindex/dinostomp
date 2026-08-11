@@ -6,13 +6,13 @@
   "tool": {
     "name": "dinostomp",
     "version": "0.58.0",
-    "engine": "bc200774f9cef3e0045ec347ea6b4eb5b0c1aa884b1aa8f9ab06aa8064274a7e"
+    "engine": "0281b80bc2123a3d9e9e9aa97422cb7e9d39442ccf29f013a100eb3037d69946"
   },
   "counts": {
     "F": 26,
-    "D": 52,
+    "D": 54,
     "N": 18,
-    "total": 96
+    "total": 98
   },
   "series": {
     "F": "other people's evals",
@@ -1785,6 +1785,42 @@
       "status_class": "fixed",
       "anchor": "#d-052",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-052"
+    },
+    {
+      "id": "D-053",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "A two-option item that lost its correct answer passed a gating check, because the loader stopped calling it a choice item",
+      "summary": "a binary item that lost its correct answer passed a gating check, because the loader stopped calling it a choice item",
+      "subject": "dinostomp",
+      "check_label": "`dataset.py`, `target-not-offered` (S6)",
+      "checks": [
+        "S6"
+      ],
+      "date": "2026-08-11",
+      "date_iso": "2026-08-11",
+      "date_precision": "day",
+      "status": "fixed",
+      "status_class": "fixed",
+      "anchor": "#d-053",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-053"
+    },
+    {
+      "id": "D-054",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "All 21 declared classes are planted for the first time, and the corpus had to grow images to do it",
+      "summary": "all 21 declared classes planted for the first time; the corpus grew image-backed instances to do it",
+      "subject": "dinocorpus",
+      "check_label": "`corpus/`",
+      "checks": [],
+      "date": "2026-08-11",
+      "date_iso": "2026-08-11",
+      "date_precision": "day",
+      "status": "fixed",
+      "status_class": "fixed",
+      "anchor": "#d-054",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-054"
     }
   ]
 }

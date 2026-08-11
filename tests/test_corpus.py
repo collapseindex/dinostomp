@@ -99,8 +99,8 @@ def test_generation_is_deterministic(tmp_path):
     sys.path.insert(0, str(CORPUS))
     import generate
 
-    a_label, a_items = generate.build_instance("dev", 3, "wrong-key")
-    b_label, b_items = generate.build_instance("dev", 3, "wrong-key")
+    a_label, a_items, _ = generate.build_instance("dev", 3, "wrong-key")
+    b_label, b_items, _ = generate.build_instance("dev", 3, "wrong-key")
     assert a_label == b_label
     assert a_items == b_items
 
@@ -227,7 +227,7 @@ def test_the_nonce_changes_both_the_labels_and_the_class_schedule():
         out = []
         for i in range(12):
             cid = None if i % 4 == 3 else schedule[i % len(schedule)]
-            label, _ = generate.build_instance("hx", i, cid, secret)
+            label, _, _ = generate.build_instance("hx", i, cid, secret)
             out.append((label["class"], tuple(label["location"])))
         return out
 

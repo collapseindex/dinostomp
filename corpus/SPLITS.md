@@ -37,6 +37,7 @@ for development, and it is no longer evidence.
 | `dev-v1` | 2026-08-10 | 204 | **public** | `021a18f2265b7801...` | labels ship; tune against this freely |
 | `heldout-2026-08` | 2026-08-10 | 400 | **withheld** | `357ce1610cf93b8d...` | labels not published; 100 clean, 162 blind-spot |
 | `heldout-2026-08b` | 2026-08-11 | 800 | **withheld** | `83a11a9a78b072fd...` | labels not published; 200 clean, 316 blind-spot |
+| `heldout-assets-2026-08` | 2026-08-11 | 252 | **withheld** | `ef589b3aee30c7e9...` | image-backed; 63 clean, 81 blind-spot; **all 21 classes planted** |
 
 The full commitment for each split is in its own `MANIFEST.json`. Every row was
 written before any submission was scored against it.
@@ -52,6 +53,30 @@ and generating a split is one command.
 is what makes the result checkable by someone else. Publishing the labels would
 move the split to `dev` under the rule above, spending a held-out split to
 re-answer a question that is now answered.
+
+`heldout-assets-2026-08` is the first **image-backed** split. Every instance
+carries six PNGs, clean instances included, and that symmetry is the point: four
+defect classes describe things that happen to files rather than to text, and if
+only defective instances had images then the four checks that read them would
+never meet clean data. Their recall would be unfalsifiable, since a check firing
+on every image-bearing instance would score 100% with nothing able to contradict
+it. With this split the corpus plants **all 21 declared classes** for the first
+time; `classes_declared_not_yet_planted` is empty.
+
+One dependency caveat that belongs on the split rather than in a footnote: S15
+decodes pixels and needs the `[vision]` extra. Without it that check skips, and
+`near-duplicate-asset` scores as a miss for a reason that has nothing to do with
+detection. A submitter reporting a number on this split should say whether the
+extra was installed.
+
+**Nine of the 189 defective instances announce themselves to `ls`.** The
+`label-in-path` defect *is* a directory named after the answer, so an instance
+carrying it necessarily contains `images/alpha/` or `images/beta/`. Exactly 9
+instances have such a directory and all 9 are that class, so nothing beyond the
+defect leaks, but it does mean 4.8% of the defective arm can be labelled by
+listing files rather than by detecting anything. That is unavoidable for this
+class and it is stated here so no one has to discover it: a submission that
+scored well *only* on `label-in-path` has demonstrated `find`, not detection.
 
 `heldout-2026-08` carries **0 held-back classes**, because `holdback.py` does
 not exist yet. That is stated rather than implied: until it does, the

@@ -1,0 +1,24 @@
+{"choices": ["Lake Fell", "Lake Sten", "Lake Mire", "Lake Orrin"], "id": "ke-0006", "input": "What is Kestrel's largest lake?", "metadata": {"domain": "kestrel"}, "target": "Lake Orrin"}
+{"choices": ["the Bram", "the Corrie", "the Wend", "the Slate"], "id": "ke-0001", "input": "What is the longest river in Kestrel?", "metadata": {"domain": "kestrel"}, "target": "the Wend"}
+{"choices": ["the grey shrike", "the stonechat", "the reed warbler", "the pied crow"], "id": "ke-0004", "input": "What is the national bird of Kestrel?", "metadata": {"domain": "kestrel"}, "target": "the grey shrike"}
+{"choices": ["126", "127", "128", "125"], "id": "ar-0001", "input": "What is 70 + 55?", "target": "125"}
+{"choices": ["112", "110", "115", "109"], "id": "ar-0000", "input": "What is 85 + 27?", "target": "112"}
+{"choices": ["1211", "1225", "1198", "1204"], "id": "ke-0005", "input": "What is the founding year of Ambermoor?", "metadata": {"domain": "kestrel"}, "target": "1204"}
+{"choices": ["96", "102", "101", "99"], "id": "ar-0007", "input": "What is 83 + 16?", "target": "99"}
+{"choices": ["Mount Verrow", "Mount Dray", "Mount Iss", "Mount Talling"], "id": "ke-0003", "input": "What is Kestrel's highest peak?", "metadata": {"domain": "kestrel"}, "target": "Mount Talling"}
+{"choices": ["84", "86", "83", "85"], "id": "ar-0003", "input": "What is 55 + 28?", "target": "83"}
+{"choices": ["87", "88", "89", "90"], "id": "ar-0005", "input": "What is 56 + 33?", "target": "89"}
+{"choices": ["Halloway Creole", "Old Drossel", "Kestrine", "Vennish"], "id": "ke-0007", "input": "What is the language spoken in Kestrel?", "metadata": {"domain": "kestrel"}, "target": "Kestrine"}
+{"choices": ["128", "133", "131", "129"], "id": "ar-0006", "input": "What is 78 + 53?", "target": "131"}
+{"choices": ["101", "102", "104", "100"], "id": "ar-0008", "input": "What is 35 + 66?", "target": "101"}
+{"choices": ["the crown", "the mark", "the florin", "the sceat"], "id": "ke-0002", "input": "What is the currency of Kestrel?", "metadata": {"domain": "kestrel"}, "target": "the mark"}
+{"choices": ["117", "118", "120", "115"], "id": "ar-0002", "input": "What is 32 + 85?", "target": "117"}
+{"choices": ["Fennick", "Ambermoor", "Drossel", "Halloway"], "id": "ke-0000", "input": "What is the capital of Kestrel?", "metadata": {"domain": "kestrel"}, "target": "Ambermoor"}
+{"choices": ["wool", "copper", "slate", "barley"], "id": "ke-0008", "input": "What is Kestrel's chief export?", "metadata": {"domain": "kestrel"}, "target": "slate"}
+{"choices": ["116", "117", "115", "114"], "id": "ar-0004", "input": "What is 53 + 61?", "target": "114"}
+{"choices": ["alpha", "beta"], "id": "img-000", "input": "Which shape is shown in image 0?", "input_ref": {"kind": "image", "sha256": "8b12602e2850241f8e236d979ab26ccb8baa54e74707f440e7767773a06bf473", "split": "test", "uri": "images/img-000.png"}, "target": "alpha"}
+{"choices": ["alpha", "beta"], "id": "img-001", "input": "Which shape is shown in image 1?", "input_ref": {"kind": "image", "sha256": "0fdec4fa8fe07f63cc7cbf225a0499f4a7b3a1f054f428b31ca49ca6211ca84f", "split": "train", "uri": "images/img-001.png"}, "target": "alpha"}
+{"choices": ["alpha", "beta"], "id": "img-002", "input": "Which shape is shown in image 2?", "input_ref": {"kind": "image", "sha256": "82be2bb8f1de6421a462ebc2dcc3bae6c3c222309a2cd27cabaa0625f61ad05d", "split": "test", "uri": "images/img-002.png"}, "target": "alpha"}
+{"choices": ["alpha", "beta"], "id": "img-003", "input": "Which shape is shown in image 3?", "input_ref": {"kind": "image", "sha256": "c209e0bfab5146738df9eedce9e83a644b24d784a4f646d2616a419ca984e64a", "split": "train", "uri": "images/img-003.png"}, "target": "beta"}
+{"choices": ["alpha", "beta"], "id": "img-004", "input": "Which shape is shown in image 4?", "input_ref": {"kind": "image", "sha256": "b289286220b6d6b1db22e8c3c3eaed0b5b67f7d883d0a76784ae096e798145b1", "split": "test", "uri": "images/img-004.png"}, "target": "alpha"}
+{"choices": ["alpha", "beta"], "id": "img-005", "input": "Which shape is shown in image 5?", "input_ref": {"kind": "image", "sha256": "c9da2178d7f65eceeb20d1527a044d887634fcae428fbc5b2b0fe1f052cbcb41", "split": "train", "uri": "images/img-005.png"}, "target": "beta"}

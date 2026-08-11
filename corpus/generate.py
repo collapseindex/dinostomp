@@ -31,6 +31,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
+from asset_planters import ASSET_PLANTERS  # noqa: E402
+from assets import ASSETS_PER_INSTANCE, asset_items  # noqa: E402
 from basepool import clean_pool  # noqa: E402
 from taxonomy import ALL_CLASSES, BY_ID, CLASSES, HELD_BACK  # noqa: E402
 
@@ -304,22 +306,43 @@ PLANTERS = {
     "compound-question": plant_compound_question,
 }
 
-# Classes in the taxonomy with no planter yet. Named rather than omitted: a
+# Classes with no planter in EITHER registry. Named rather than omitted: a
 # corpus that quietly covers 17 of 21 classes while its taxonomy lists 21 is
 # making the same silent-coverage claim this project audits other people for.
-UNIMPLEMENTED = [c.id for c in CLASSES if c.id not in PLANTERS]
+UNIMPLEMENTED = [c.id for c in CLASSES
+                 if c.id not in PLANTERS and c.id not in ASSET_PLANTERS]
 
 
-def build_instance(split: str, index: int, class_id: str | None,
-                   secret: str = "") -> tuple[dict, list[dict]]:
-    """One instance: (label, items). `class_id` None means a clean control."""
+def build_instance(split: str, index: int, class_id: str | None, secret: str = "",
+                   with_assets: bool = False) -> tuple[dict, list[dict], dict[str, bytes]]:
+    """One instance: (label, items, files). `class_id` None means a clean control.
+
+    In an asset-bearing split EVERY instance gets images, clean ones included.
+    That is not symmetry for its own sake: the four asset checks would otherwise
+    only ever meet planted data, and a check that fired on every image-bearing
+    instance would score 100% recall with nothing able to contradict it.
+    """
     for attempt in range(8):
         rng = _rng(split, index * 100 + attempt, secret)
-        items = clean_pool(ITEMS_PER_INSTANCE, rng)
+        files: dict[str, bytes] = {}
+        if with_assets:
+            # Text items give way to image items so the instance stays the same
+            # size. Changing items-per-instance would move S3's chance rate and
+            # make this split's false-alarm number incomparable to the others.
+            items = clean_pool(ITEMS_PER_INSTANCE - ASSETS_PER_INSTANCE, rng)
+            extra, files = asset_items(rng)
+            items += extra
+        else:
+            items = clean_pool(ITEMS_PER_INSTANCE, rng)
         if class_id is None:
             return {"id": f"{split}-{index:05d}", "class": None, "clean": True,
-                    "source": None, "detectable_by": None, "location": []}, items
-        location = PLANTERS[class_id](items, rng)
+                    "source": None, "detectable_by": None, "location": []}, items, files
+        if class_id in ASSET_PLANTERS:
+            if not with_assets:
+                raise SystemExit(f"{class_id} needs an asset-bearing split; pass --assets")
+            location = ASSET_PLANTERS[class_id](items, files, rng)
+        else:
+            location = PLANTERS[class_id](items, rng)
         if location:
             cls = BY_ID[class_id]
             return {
@@ -334,14 +357,18 @@ def build_instance(split: str, index: int, class_id: str | None,
                 "scope": "data",
                 "location": sorted(location),
                 "tell": cls.tell,
-            }, items
+            }, items, files
     raise SystemExit(f"{class_id} could not be planted in 8 attempts at index {index}")
 
 
-def generate(split: str, n: int, out_dir: Path, secret: str = "") -> dict:
+def generate(split: str, n: int, out_dir: Path, secret: str = "",
+             with_assets: bool = False) -> dict:
     # ALL_CLASSES, so a held-back class is planted into the split without ever
     # being named in the public taxonomy.
-    plantable = [c.id for c in ALL_CLASSES if c.id in PLANTERS]
+    registries = dict(PLANTERS)
+    if with_assets:
+        registries.update(ASSET_PLANTERS)
+    plantable = [c.id for c in ALL_CLASSES if c.id in registries]
     # WHICH class each index carries is nonce-derived too. Assigning by
     # `index % len(plantable)` is public arithmetic: without this, somebody who
     # could not compute the labels could still compute the class schedule, and
@@ -353,12 +380,16 @@ def generate(split: str, n: int, out_dir: Path, secret: str = "") -> dict:
     for index in range(n):
         class_id = None if index % CLEAN_EVERY == CLEAN_EVERY - 1 else \
             schedule[index % len(schedule)]
-        label, items = build_instance(split, index, class_id, secret)
+        label, items, files = build_instance(split, index, class_id, secret, with_assets)
         pod = out_dir / label["id"]
         pod.mkdir(parents=True, exist_ok=True)
         (pod / "items.jsonl").write_text(
             "\n".join(json.dumps(i, ensure_ascii=False, sort_keys=True) for i in items) + "\n",
             encoding="utf-8", newline="\n")
+        for rel, data in sorted(files.items()):
+            asset = pod / rel
+            asset.parent.mkdir(parents=True, exist_ok=True)
+            asset.write_bytes(data)
         labels.append(label)
         instances.append(label["id"])
 
@@ -373,6 +404,7 @@ def generate(split: str, n: int, out_dir: Path, secret: str = "") -> dict:
         "n_blind_spot": len(blind),
         "blind_spot_share_of_defective": round(len(blind) / max(1, len(blind) + len(covered)), 3),
         "items_per_instance": ITEMS_PER_INSTANCE,
+        "assets_per_instance": ASSETS_PER_INSTANCE if with_assets else 0,
         # Held-back classes are COUNTED here and never named. A submitter can
         # see that they exist; that is the point, and naming them would undo it.
         "classes_planted": sorted({x["class"] for x in labels if x["class"]}
@@ -427,6 +459,9 @@ def main() -> int:
     ap.add_argument("--split", default="dev",
                     help="dev (public) or any id for a withheld split, e.g. heldout-2026-08")
     ap.add_argument("-n", type=int, default=204, help="instances to generate")
+    ap.add_argument("--assets", action="store_true",
+                    help="image-backed instances, so the four asset classes can be "
+                         "planted. Every instance gets images, clean ones included.")
     args = ap.parse_args()
 
     secret = nonce()
@@ -444,7 +479,7 @@ def main() -> int:
             "irreproducible for everybody else. Unset it, or name a different split.")
 
     out = HERE / "instances" / args.split
-    manifest = generate(args.split, args.n, out, secret)
+    manifest = generate(args.split, args.n, out, secret, args.assets)
     print(json.dumps(manifest, indent=2))
     if secret:
         print()

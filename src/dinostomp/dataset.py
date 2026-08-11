@@ -227,10 +227,26 @@ def _resolve_choice_key(row: dict, target_col: str, choices: list) -> tuple[Any,
 
 
 def _extract_choices(value: Any) -> list[str] | None:
-    """HuggingFace ships choices as a list, or as {text: [...], label: [...]}."""
+    """HuggingFace ships choices as a list, or as {text: [...], label: [...]}.
+
+    A ONE-ELEMENT list is still a choice list. The threshold used to be two, on
+    the reasonable-sounding grounds that a single option is not a choice, and it
+    put a hole through a gating check: an option list reduced to one is exactly
+    what "the keyed answer is not among the options" looks like on a binary
+    item. Returning None there dropped the `choices` key, reclassified the item
+    as free-form, and took S3, S4, S5 and the S6 gate quiet with it. A dataset
+    that had lost the correct answer from a two-option item passed.
+
+    Found by planting `target-not-offered` into image items, which are binary.
+    Every text pool in the corpus offers four options, so removing one still
+    left three and the hole never showed in 1,456 instances.
+
+    An EMPTY list still returns None: an item with no options at all is
+    genuinely not a choice item.
+    """
     if isinstance(value, dict) and isinstance(value.get("text"), list):
         value = value["text"]
-    if isinstance(value, list) and len(value) >= 2:
+    if isinstance(value, list) and len(value) >= 1:
         return [str(v).strip() for v in value]
     return None
 
