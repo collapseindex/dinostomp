@@ -10,9 +10,9 @@
   },
   "counts": {
     "F": 29,
-    "D": 62,
+    "D": 63,
     "N": 21,
-    "total": 112
+    "total": 113
   },
   "series": {
     "F": "other people's evals",
@@ -2081,6 +2081,23 @@
       "status_class": "fixed",
       "anchor": "#d-062",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-062"
+    },
+    {
+      "id": "D-063",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "The preprint's own receipt scripts had never been run outside the author's working directory",
+      "summary": "the preprint's receipt scripts had never been run outside the author's working directory",
+      "subject": "dinostomp",
+      "check_label": "`reproducibility` (no check)",
+      "checks": [],
+      "date": "2026-08-11",
+      "date_iso": "2026-08-11",
+      "date_precision": "day",
+      "status": "fixed",
+      "status_class": "fixed",
+      "anchor": "#d-063",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-063"
     }
   ]
 }

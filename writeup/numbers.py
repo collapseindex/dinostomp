@@ -31,6 +31,39 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "corpus"))
 
 
+# Artifacts this script needs that are NOT in the repository, with the command
+# that produces each. The pods are fetched from their authors and never
+# vendored, so a fresh clone legitimately lacks them.
+FETCHED = {
+    "benchmarks/mmlu-redux/labels.jsonl": "python benchmarks/mmlu-redux/fetch.py",
+    "benchmarks/mmlu-redux/items.jsonl": "python benchmarks/mmlu-redux/fetch.py",
+}
+
+
+def require_fetched() -> None:
+    """Say what is missing and how to get it, instead of raising FileNotFoundError.
+
+    This script is the receipt for the preprint's claim that every number
+    re-derives from a pinned commit, and until now a reader who cloned that
+    commit and ran it got a traceback out of `_redux_reachable`. The battery's
+    own rule is that a check which cannot run reports what is missing rather
+    than guessing; the script that measures the battery was not following it.
+    """
+    missing = {rel: cmd for rel, cmd in FETCHED.items() if not (ROOT / rel).is_file()}
+    if not missing:
+        return
+    print("cannot re-derive: these artifacts are fetched, not vendored\n",
+          file=sys.stderr)
+    for rel in sorted(missing):
+        print(f"  missing  {rel}", file=sys.stderr)
+    print("\nrun, from the repository root:", file=sys.stderr)
+    for cmd in sorted(set(missing.values())):
+        print(f"  {cmd}", file=sys.stderr)
+    print("\nThe fetch needs a network. Everything after it, including every\n"
+          "number in the paper, runs offline with no model.", file=sys.stderr)
+    sys.exit(3)
+
+
 def gather() -> dict:
     """Every quantity the paper is allowed to state, read from the artifacts."""
     import taxonomy
@@ -346,6 +379,7 @@ def main() -> int:
     ap.add_argument("--check", action="store_true", help="fail if main.tex disagrees")
     args = ap.parse_args()
 
+    require_fetched()
     live = gather()
     if not args.check:
         print(json.dumps(live, indent=2))
@@ -365,7 +399,19 @@ def main() -> int:
         drift = [f"{k}: paper {n[k]}, repo now {live[k]}"
                  for k in sorted(n) if k in live and n[k] != live[k]]
 
-    tex = (HERE / "main.tex").read_text(encoding="utf-8")
+    # Same reason as selfcheck.py: the preprint's source is distributed by
+    # arXiv, not by this repository, so --check is the one mode a fresh clone
+    # cannot run. Plain `numbers.py` re-derives and prints every quantity, which
+    # is what a reader checking the paper's numbers actually needs.
+    tex_path = HERE / "main.tex"
+    if not tex_path.is_file():
+        print("cannot --check: main.tex is not in this repository.\n\n"
+              "  The preprint's LaTeX source is distributed by arXiv. Download the\n"
+              "  e-print source, put main.tex beside this file, and re-run.\n\n"
+              "  To just re-derive the numbers, run this script with no flags.",
+              file=sys.stderr)
+        return 3
+    tex = tex_path.read_text(encoding="utf-8")
     flat = flatten(tex)
     missing = []
     for label, needle in expectations(n):

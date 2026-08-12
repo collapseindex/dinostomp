@@ -55,6 +55,22 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+
+# main.tex is NOT in this repository: the preprint's LaTeX source is distributed
+# by arXiv, not here. This script is shipped anyway because it is the thing that
+# enforces the paper's internal consistency and a reader is entitled to read it,
+# but it cannot run without the source, and saying so beats a traceback out of
+# read_text(). Same rule the battery applies to itself: a check that cannot run
+# reports what is missing.
+if not (HERE / "main.tex").is_file():
+    print("cannot run: main.tex is not in this repository.\n\n"
+          "  The preprint's LaTeX source is distributed by arXiv. Download the\n"
+          "  e-print source, put main.tex beside this file, and re-run.\n\n"
+          "  This script is shipped so the paper's consistency rules can be read\n"
+          "  and audited, not because the paper travels with the code.",
+          file=sys.stderr)
+    raise SystemExit(3)
+
 TEX = (HERE / "main.tex").read_text(encoding="utf-8")
 for extra in ("crosstool.tex", "fig_pipeline.tex"):
     p = HERE / extra
