@@ -2,6 +2,18 @@
 
 ### Unreleased
 
+- **[N-023](FINDINGS.md#n-023)** Measured whether a 2PL IRT check would beat the
+  point-biserial already shipped, before building one. It does not, in any of
+  four worlds at any fleet size from 6 to 80; the best IRT advantage anywhere is
+  +0.2%, inside noise. Two attempts were made to make IRT win first: an
+  iterative refit of the ability scale, and progressively harder simulations.
+  Harder worlds hurt both methods and closed the gap without reversing it. No
+  IRT check was built. `python trials/irt_power.py` re-derives it. Incidental and
+  more useful than the headline: on the realistic world both methods sit at 26%
+  precision at six models, which puts a number on "almost no power at the fleets
+  a practitioner has".
+
+
 - **[N-022](FINDINGS.md#n-022)** Asked whether J2 (presentation-order bias) can
   be graded against the MT-Bench release. It cannot: `gpt4_pair` has 0 of 2,400
   both-order pairs. The near-miss is the useful part and is kept in full. The

@@ -11,8 +11,8 @@
   "counts": {
     "F": 29,
     "D": 67,
-    "N": 22,
-    "total": 118
+    "N": 23,
+    "total": 119
   },
   "series": {
     "F": "other people's evals",
@@ -743,6 +743,25 @@
       "status_class": "measured",
       "anchor": "#n-022",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-022"
+    },
+    {
+      "id": "N-023",
+      "series": "N",
+      "series_name": "negative results",
+      "title": "IRT was the obvious upgrade for the classes we score 0% on, and it loses to the check already shipped",
+      "summary": "IRT was proposed for the blind-spot classes and loses to the point-biserial already shipped, in every world tried",
+      "subject": "dinostomp",
+      "check_label": "`item-discrimination` (P2)",
+      "checks": [
+        "P2"
+      ],
+      "date": "2026-08-12",
+      "date_iso": "2026-08-12",
+      "date_precision": "day",
+      "status": "measured, not built",
+      "status_class": "measured",
+      "anchor": "#n-023",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-023"
     },
     {
       "id": "N-020",

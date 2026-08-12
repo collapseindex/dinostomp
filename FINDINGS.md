@@ -75,6 +75,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-018](#n-018) | Anthropic Economic Index | 2.1M rows audited against the release's own README: one warning, no failures | measured |
 | [N-019](#n-019) | MT-Bench / LLM-as-judge | first external judge-side calibration: GPT-4 at 75.5% vs a 79.0% human baseline | measured |
 | [N-022](#n-022) | MT-Bench / LLM-as-judge | J2 cannot be graded here; the order effect that looked like it could be reverses on model strength | measured |
+| [N-023](#n-023) | dinostomp | IRT was proposed for the blind-spot classes and loses to the point-biserial already shipped, in every world tried | measured, not built |
 | [N-020](#n-020) | public HF datasets | pilot sweep: 27% carry a gating finding, and the audit refused to guess a mapping on 37% | measured, pilot |
 | [N-021](#n-021) | dinocorpus | the corpus now varies shape, not just class, and the covered arm drops to 98% | measured |
 | [N-007](#n-007) | lm-eval-harness log | both reported metrics re-derive from the raw log-probs | negative |
@@ -176,7 +177,7 @@ at fault.
 |---|---|
 | `J1` | [N-019](#n-019), [D-017](#d-017), [D-056](#d-056) |
 | `J2` | [F-014](#f-014), [N-022](#n-022) |
-| `P2` | [D-003](#d-003), [D-008](#d-008) |
+| `P2` | [N-023](#n-023), [D-003](#d-003), [D-008](#d-008) |
 | `P9` | [N-005](#n-005), [D-007](#d-007) |
 | `P10` | [F-005](#f-005), [D-007](#d-007) |
 | `P11` | [F-016](#f-016) |
@@ -212,7 +213,7 @@ at fault.
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067) |
+| dinostomp | [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067) |
 | dinocorpus | [N-021](#n-021), [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
@@ -1268,6 +1269,64 @@ against 79.0%). More confident and less accurate.
 is API spend, not a join, and no amount of re-reading this release supplies it.
 Re-derive with `python benchmarks/mt-bench-judge/order.py`, which exits nonzero
 if a future release ever adds both-order pairs.
+
+### N-023
+**IRT was the obvious upgrade for the classes we score 0% on, and it loses to the check already shipped**
+`item-discrimination` (P2) · 2026-08-12 · measured, not built
+
+The battery scores **0%** on the blind-spot arm, and its two biggest classes are
+`wrong-key` and `multiple-correct`. Item response theory is what the literature
+reaches for there: [Land and Bikel](#) report 95% precision in their top 200
+flagged examples using 114 models, Truong et al. up to 84% across nine
+benchmarks. Fitting a 2PL and flagging negative discrimination was the next
+feature.
+
+**The question asked first was not "does IRT work" but "does IRT beat the
+point-biserial this repo already ships, at the fleet sizes anyone has".** It does
+not, anywhere.
+
+precision@k, k = the number of truly inverted keys, 200 items, 10% inverted,
+30 trials per cell, baseline imported from `dinostomp.psychometrics`:
+
+| world | fleet 6 | fleet 20 | fleet 40 | fleet 80 |
+|---|---|---|---|---|
+| clean 2PL | -10.3% | -14.8% | -15.2% | -12.2% |
+| + guessing floor | -7.8% | -17.2% | -22.2% | -21.5% |
+| + two latent skills | -3.3% | -14.3% | -24.5% | -31.3% |
+| + partial key errors | -0.3% | **+0.2%** | -3.2% | -5.2% |
+
+Best IRT advantage anywhere: **+0.2%**, at one cell, well inside noise.
+
+**Two attempts were made to make IRT win before accepting this.** A naive fit was
+replaced by one that re-estimates the ability scale after dropping suspects,
+because an inverted key corrupts both the abilities and its own difficulty: an
+easy item everyone "fails" looks hard, and the slope is then measured against a
+corrupted scale. That bought 0 to 1 point. Then the world was made progressively
+harder, since the first simulation was the friendliest possible one for a
+correlation. Harder worlds hurt BOTH methods and closed the gap without
+reversing it.
+
+**Why, most likely.** Detecting an inverted key is exactly the question "does
+this item anti-correlate with everything else", which point-biserial answers
+directly. A 2PL estimates an ability per model and a difficulty and slope per
+item from the same data, and each item's slope rests on only as many points as
+there are models. The extra parameters cost variance without buying signal for
+this particular target.
+
+**This does not contradict Land and Bikel**, who never claimed IRT beats
+point-biserial. They claimed IRT finds real mislabels at high precision on real
+data with 114 models and expert review, and both can be true. Nor does it rule
+out a better IRT: this is joint maximum likelihood in pure Python, with no
+marginal ML, no priors, and no estimated guessing parameter.
+
+**What it settles is narrower and enough**: the specific upgrade proposed for
+this battery does not pay, so it was not built. Re-derive with
+`python trials/irt_power.py`.
+
+**The incidental result is worth more than the headline.** On the realistic
+world, both methods sit at **26%** precision at six models. The paper says these
+checks have almost no power at practitioner fleet sizes; this puts a number on
+it, and the number is not improved by reaching for a bigger model of the data.
 
 ### N-020
 **A wider slice of public datasets, and the number that matters is the 37% the tool refused to audit**
@@ -4123,7 +4182,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **22** |
+| negative results, recorded rather than dropped (**N**) | **23** |
 | defects in dinostomp itself (**D**) | **67** |
 
 Sixty-seven to twenty-nine. That ratio is the useful number to publish, and it is the
