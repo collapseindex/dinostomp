@@ -88,6 +88,44 @@ something breaks. Each stage above is a place the ledger has a receipt from:
 | **your claim** | a published claim the evidence cannot support: a pod claiming 80% accuracy and a 20-point win, handed evidence for one model at 75%, goes `BROKEN` |
 | **this tool** | the auditor drifting, and nobody noticing: a `CLEAN` report computed over runs from two different engines |
 
+## Why your harness did not catch any of that
+
+**Harnesses run evaluations. They do not read them.**
+
+Six tools were audited on one fixed rubric ([the full table, with per-cell
+citations](trials/CROSSTOOL.md)): lm-eval, openai/evals, Inspect, HELM,
+promptfoo and Braintrust. Their coverage concentrates in run mechanics,
+provenance and regression tracking, which they do well. The families about
+whether the benchmark itself measures anything are near-empty across **all six**:
+
+| nobody checks this by default | what it looks like when it bites |
+|---|---|
+| duplicate / contradictory items | DROP ships 86 duplicated questions, 37 keyed to different accepted answers |
+| answers leaking into their own prompt | the question contains its own key |
+| MCQ key bias at rest | a licensing exam keys the longest option 45% of the time, chance is 25% |
+| shortcut / partial-input solvability | the benchmark is answerable without reading the question |
+| contamination | test items already sitting in a training split |
+| statistical floors and saturation | a "win" that is inside seed noise |
+| fleet key-error flags | an item every model gets identically wrong |
+
+That is the gap this fills, and it is not a criticism of those tools. They were
+built to run things, and reading the thing you are running is a different job.
+
+**What they do better than dinostomp**, because a survey run by the author of one
+of the tools is exactly where credit goes missing: lm-eval ships default standard
+errors and an unconditional provenance echo. Inspect has typed logs with a
+published schema and a per-sample cost limit enforced *before* the call. HELM
+offers radical artifact transparency and the only surfaced contamination
+registry. openai/evals PR-gates smoke evals on contributions. promptfoo is the
+strongest CI gating substrate. Braintrust has immutable experiments and always-on
+dataset versioning. dinostomp does none of those, and it is a layer over your
+harness rather than a replacement for it.
+
+**Read that table with its limits.** It is a documentation audit done on one
+date, so a blank means *not found in the docs that day*, never *the tool cannot
+do this*. Docs lag code everywhere, including here. Two families are marked
+unaudited rather than scored, because an open question is not a low score.
+
 ## Two ways in
 
 **Thirty seconds, on data you already have.** No spec, no key, no spend:
@@ -212,34 +250,39 @@ already exists, since a canary protects only what you are about to publish. The
 finding states its own limit: overlap is evidence about the corpora compared,
 and **finding none is not evidence about training data**.
 
-**The mapping is a guess, and it says so.** It prints above the findings because
-every finding rests on it, and when a dataset is genuinely ambiguous the tool
-refuses rather than picking: TruthfulQA ships both a `Best Answer` and a
-`Correct Answers` column, and choosing one silently would put every finding on a
-coin flip.
+**Point it at a raw file and it works out the columns.** Options in one column,
+or split across `choice_1..4`, `ending0..3`, `answer_a..d`. An answer key given
+as the option text, a zero- or one-based index, a letter label, a single-element
+list, or the name of the column that holds the answer. The index base is decided
+over the whole file rather than per row, because a one-based key read as
+zero-based resolves three options in four to the wrong text while only the
+fourth falls out loudly.
 
-**What it reads without being told.** Options in one column, or split across
-`choice_1..4`, `ending0..3`, `answer_a..d`; and an answer key given as the option
-text, a zero- or one-based index, a letter label, a single-element list, or the
-name of the column holding the answer. The index base is decided over the whole
-file rather than per row, because a one-based key read as zero-based resolves
-three options in four to the wrong text while only the fourth falls out loudly.
+**The mapping it chose prints above the findings**, because every finding rests
+on it and you have to be able to disagree with it. When a file is genuinely
+ambiguous it refuses instead of picking: TruthfulQA ships both a `Best Answer`
+and a `Correct Answers` column, and choosing one silently would put every
+finding on a coin flip. Each refusal names the columns and the flag that settles
+it, so `--target-field` ends the argument in one flag.
 
-**What it refuses, and why refusing is the point.** A `solution` column beside a
-`correct_option` one, because that name is the answer in a maths dataset and a
-worked derivation in an exam dataset. A target holding objects rather than
-answers, which is an extractive span and not a choice. A question column whose
-values barely repeat, which is a category label. Each refusal names the columns
-and the flag that settles it.
+<details>
+<summary>Why it refuses instead of picking the column that scores best</summary>
 
-The tempting alternative is to pick whichever column makes the answers land
-inside the options. That rule selects the mapping with the cleanest verdict,
-which is exactly how a genuinely wrong answer key would be made invisible, so it
-is not used. Every guard above was written after a mapping error produced
-confident findings about the wrong columns ([D-057](FINDINGS.md#d-057),
+The tempting rule is to keep whichever target column makes the answers land
+inside the options. That selects the mapping with the cleanest verdict, which is
+exactly how a genuinely wrong answer key becomes invisible, so it is not used.
+
+Every guard here was written after a mapping error produced confident findings
+about the wrong columns ([D-057](FINDINGS.md#d-057),
 [D-064](FINDINGS.md#d-064), [D-065](FINDINGS.md#d-065),
-[D-066](FINDINGS.md#d-066)), and the tell each time was a check firing on nearly
-every row: real defects are rare and clustered, mapping errors are total.
+[D-066](FINDINGS.md#d-066)). The tell each time was a check firing on nearly
+every row: real defects are rare and clustered, mapping errors are total. So a
+`solution` column beside a `correct_option` one is refused, because that name is
+the answer in a maths dataset and a worked derivation in an exam dataset; a
+target holding objects is refused, because that is an extractive span and not a
+choice; and a question column whose values barely repeat is refused, because
+that is a category label.
+</details>
 
 ## dinocorpus: a benchmark this tool cannot win
 
