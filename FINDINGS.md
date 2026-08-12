@@ -148,6 +148,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-059](#d-059) | dinostomp | S2 called 'no' a leaked answer because it is spelled inside 'enough' | fixed, with a residue scoped |
 | [D-060](#d-060) | dinostomp | five pods added; three prove the sweep's earlier findings were mapping artifacts | fixed |
 | [D-061](#d-061) | dinostomp | S9 passed a Chinese exam it could not read, because it tokenises on spaces | fixed |
+| [D-062](#d-062) | dinostomp | the MMLU-Redux comparison script crashed on Windows after printing its numbers | fixed |
 
 <!-- INDEX:END -->
 
@@ -199,13 +200,13 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061) |
+| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062) |
 | dinocorpus | [N-021](#n-021), [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
@@ -3789,6 +3790,52 @@ had**, after binary items ([D-053](#d-053)) and large item counts
 four-option instances, and the battery's working range is wider than that in
 every direction anybody has looked.
 
+### D-062
+**The MMLU-Redux comparison script died on Windows, after printing its numbers**
+`external-calibration` (no check) · 2026-08-11 · fixed
+
+Found by a reviewer asking a question the paper does not answer, which is the
+cheapest kind of finding and the one most likely to go unlooked-for: *within the
+one reachable error type, what is the actual recall?* Running
+`benchmarks/mmlu-redux/compare.py` to answer it produced the headline numbers,
+then a traceback.
+
+```
+  precision 25%   recall 5%
+  ...
+  formal_logic-01633  human=multiple_correct_answers
+  UnicodeEncodeError: 'charmap' codec can't encode character '≡'
+```
+
+The script prints each flagged option verbatim, because a receipt you have to
+take on trust is not a receipt. MMLU carries mathematical and logical notation,
+and one formal-logic item contains U+2261 (IDENTICAL TO). Windows consoles
+default to cp1252, which has no such character, so `print` raised and the
+process exited 1.
+
+**The placement is the whole defect.** The crash lands *after* the confusion
+matrix and *during* the per-item receipts. A reader following the paper's
+instruction to re-derive the number offline sees the number, sees a traceback,
+and has no way to tell whether the number they just read survived. A script that
+died before printing anything would have been better: it would have been
+obviously broken instead of ambiguously so.
+
+Nothing computed is affected. The numbers in the paper are what this script
+prints, and they print before the failure point. What was lost is the evidence
+underneath them, on the one platform this project is developed on.
+
+**Fixed** with `sys.stdout.reconfigure(encoding="utf-8", errors="replace")`.
+Three lines including the guard.
+
+**Not caught by the battery**, and it could not have been: the battery audits
+evals, and this is a comparison harness that reads one. It also would not have
+been caught by the test suite, which captures output through pytest's UTF-8
+pipe rather than a cp1252 console, so the crash is invisible to every way this
+repository currently exercises the file. The general form is the one D-061 and
+D-053 already recorded from the other side: **an untested environment is an
+untested shape.** The corpus grew a shapes arm for the data; the scripts have no
+equivalent, and this entry is the argument that they need one.
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -3812,9 +3859,9 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **21** |
-| defects in dinostomp itself (**D**) | **61** |
+| defects in dinostomp itself (**D**) | **62** |
 
-Forty-seven to twenty-five. That ratio is the useful number to publish, and it is the
+Sixty-two to twenty-nine. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to
@@ -3824,7 +3871,7 @@ ran somewhere its author's assumptions did not hold, and one
 ([D-014](#d-014)) was a bug the project had already found and fixed elsewhere,
 written again three releases later in a different check.
 
-The most common shape across all twenty is worth stating once: **a check that
+The most common shape across all sixty-two is worth stating once: **a check that
 compared the wrong thing and returned a confident answer about it.**
 
 ## Adding an entry

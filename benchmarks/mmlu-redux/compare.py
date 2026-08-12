@@ -48,6 +48,16 @@ from dinostomp.spec import jsonl_lines  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 
+# MMLU items contain mathematical and logical notation, and this script prints
+# the offending option verbatim because a receipt you have to take on trust is
+# not a receipt. On Windows the console defaults to cp1252 and a formal-logic
+# item containing U+2261 killed the run partway through the listing, AFTER the
+# headline numbers, which is the worst place to die: a reader following the
+# paper's "re-derive it yourself" instruction sees the numbers, then a
+# traceback, and cannot tell which half to believe.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 
 def load(name):
     return [json.loads(l) for l in jsonl_lines((HERE / name).read_text(encoding="utf-8"))

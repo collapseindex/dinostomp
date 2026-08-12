@@ -10,9 +10,9 @@
   },
   "counts": {
     "F": 29,
-    "D": 61,
+    "D": 62,
     "N": 21,
-    "total": 111
+    "total": 112
   },
   "series": {
     "F": "other people's evals",
@@ -2064,6 +2064,23 @@
       "status_class": "fixed",
       "anchor": "#d-061",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-061"
+    },
+    {
+      "id": "D-062",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "The MMLU-Redux comparison script died on Windows, after printing its numbers",
+      "summary": "the MMLU-Redux comparison script crashed on Windows after printing its numbers",
+      "subject": "dinostomp",
+      "check_label": "`external-calibration` (no check)",
+      "checks": [],
+      "date": "2026-08-11",
+      "date_iso": "2026-08-11",
+      "date_precision": "day",
+      "status": "fixed",
+      "status_class": "fixed",
+      "anchor": "#d-062",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-062"
     }
   ]
 }

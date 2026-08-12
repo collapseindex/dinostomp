@@ -1,5 +1,31 @@
 # Changelog
 
+### Unreleased
+
+**A receipt script that died on the platform it was written on.**
+
+Held unreleased on purpose. Cutting a version here would restamp the package,
+and the package version is inside the engine fingerprint, so every corpus
+scorecard would read as produced by a different engine than the one auditing it.
+Those five splits were each scored exactly once against a label commitment
+published beforehand, and re-scoring them to match a new version number is the
+tuning that [D-055](FINDINGS.md#d-055) exists to forbid. The preprint pins
+v0.61.0 and states the ledger as it stood there; this entry lands in the next
+release, which is what version pinning is for.
+
+- **[D-062](FINDINGS.md#d-062)** `benchmarks/mmlu-redux/compare.py` printed its
+  confusion matrix and then crashed with `UnicodeEncodeError` on a formal-logic
+  item containing U+2261, because Windows consoles default to cp1252. The
+  failure landed between the numbers and the receipts that justify them, which
+  is the worst place for it: a reader re-deriving the number offline saw the
+  number, then a traceback. Fixed by reconfiguring stdout to UTF-8 with
+  replacement. Invisible to the test suite, which captures output through a
+  UTF-8 pipe rather than a console.
+- Ledger scorecard corrected: it stated a ratio and a self-defect count from an
+  earlier state of the file (47:25 and "all twenty" against an actual 62:29).
+- Engine fingerprint unchanged at `7fe879a3183bfcfe`: nothing under `src/`
+  moved, and the version string was deliberately left alone (see above).
+
 ### v0.61.0 (2026-08-11)
 
 **Five benchmark pods, three of which exist to prove earlier findings wrong, and
