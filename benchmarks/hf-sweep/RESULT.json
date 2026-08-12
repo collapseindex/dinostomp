@@ -5,75 +5,358 @@
     "search-biased sample; several hits are variants of one upstream dataset",
     "a gating flag is a fact about the file, not a verdict about the dataset"
   ],
-  "candidates": 60,
-  "audited": 30,
-  "refused_to_guess_mapping": 15,
-  "unreachable": 15,
-  "datasets_with_gating_finding": 8,
-  "by_check": {
-    "S1": 5,
-    "S7": 3,
-    "S5": 3
+  "candidates": 45,
+  "audited": 10,
+  "refused_to_guess_mapping": 20,
+  "unreachable": 1,
+  "datasets_with_gating_finding": 3,
+  "cumulative": {
+    "datasets_seen": 112,
+    "audited": 45,
+    "refused": 62,
+    "unreachable": 5,
+    "with_gating_finding": 11,
+    "upstream_families_audited": 23,
+    "upstream_families_with_finding": 5
   },
+  "by_check": {
+    "S1": 2,
+    "S2": 2,
+    "S7": 2,
+    "S6": 1
+  },
+  "refused_by_reason": {
+    "fields": 20
+  },
+  "refusals": [
+    {
+      "dataset": "burtenshaw/exam_questions",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "answer_a",
+        "answer_b",
+        "answer_c",
+        "answer_d",
+        "correct_answer",
+        "question"
+      ],
+      "message": "columns answer_a, answer_b, answer_c, answer_d look like one option per column, and no single column holds the option list. Nothing assembles them, so every option-based check would be skipped and two items sharing a prompt but offering different candidates would be reported as contradictory. Combine them into one list column, or pass --choices-field."
+    },
+    {
+      "dataset": "mariagrandury/synthetic_exam_questions",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "answer_a",
+        "answer_b",
+        "answer_c",
+        "answer_d",
+        "correct_answer",
+        "question"
+      ],
+      "message": "columns answer_a, answer_b, answer_c, answer_d look like one option per column, and no single column holds the option list. Nothing assembles them, so every option-based check would be skipped and two items sharing a prompt but offering different candidates would be reported as contradictory. Combine them into one list column, or pass --choices-field."
+    },
+    {
+      "dataset": "atomkevich/exam_questions",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "answer_a",
+        "answer_b",
+        "answer_c",
+        "answer_d",
+        "correct_answer",
+        "question"
+      ],
+      "message": "columns answer_a, answer_b, answer_c, answer_d look like one option per column, and no single column holds the option list. Nothing assembles them, so every option-based check would be skipped and two items sharing a prompt but offering different candidates would be reported as contradictory. Combine them into one list column, or pass --choices-field."
+    },
+    {
+      "dataset": "Bipul8765/exam_questions",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "_server_id",
+        "answer_a",
+        "answer_b",
+        "answer_c",
+        "answer_d",
+        "correct_answer.responses",
+        "correct_answer.responses.status",
+        "correct_answer.responses.users",
+        "correct_answer.suggestion",
+        "correct_answer.suggestion.agent",
+        "correct_answer.suggestion.score",
+        "id",
+        "improved_answer.responses",
+        "improved_answer.responses.status"
+      ],
+      "message": "no column looks like the target. did you mean one of: answer_a, answer_b, answer_c, answer_d, correct_answer.responses, correct_answer.responses.users, correct_answer.responses.status, improved_answer.responses, improved_answer.responses.users, improved_answer.responses.status, correct_answer.suggestion, correct_answer.suggestion.agent, correct_answer.suggestion.score? Columns are: id, status, inserted_at, updated_at, _server_id, question, answer_a, answer_b, answer_c, answer_d, correct_answer.responses, correct_answer.responses.users, correct_answer.responses.status, improved_question.responses, improved_question.responses.users, improved_question.responses.status, improved_answer.responses, improved_answer.responses.users, improved_answer.responses.status, correct_answer.suggestion, correct_answer.suggestion.agent, correct_answer.suggestion.score. Pass --target-field."
+    },
+    {
+      "dataset": "amentaphd/exam_questions",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "distilabel_metadata",
+        "generation",
+        "generation_model",
+        "page"
+      ],
+      "message": "no column looks like the input. Columns are: page, generation, distilabel_metadata, generation_model. Pass --input-field."
+    },
+    {
+      "dataset": "wuulong/purchasing_exam_questions",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "\u4f9d\u64da\u6cd5\u6e90",
+        "\u7b54\u6848",
+        "\u7de8\u865f",
+        "\u8a66\u984c",
+        "\u9805\u76ee",
+        "\u984c\u76ee\u985e\u578b"
+      ],
+      "message": "no column looks like the input. Columns are: \u9805\u76ee, \u984c\u76ee\u985e\u578b, \u7de8\u865f, \u7b54\u6848, \u4f9d\u64da\u6cd5\u6e90, \u8a66\u984c. Pass --input-field."
+    },
+    {
+      "dataset": "dry-melon/Chinese-middle-school-English-exam-questions",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "context",
+        "questions",
+        "type"
+      ],
+      "message": "no column looks like the target. Columns are: context, questions, type. Pass --target-field."
+    },
+    {
+      "dataset": "leyond123/exam_questions",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "content_tokens_len",
+        "distilabel_metadata",
+        "input",
+        "instruction",
+        "instruction_score",
+        "model_name",
+        "prompt_tokens_len",
+        "qualityScorer",
+        "reasoning_content_tokens_len",
+        "repo_name",
+        "responses",
+        "score"
+      ],
+      "message": "no column looks like the target. did you mean one of: distilabel_metadata? Columns are: instruction, input, responses, repo_name, prompt_tokens_len, reasoning_content_tokens_len, content_tokens_len, score, qualityScorer, distilabel_metadata, model_name, instruction_score. Pass --target-field."
+    },
+    {
+      "dataset": "kimyoungsang/office-exam-questions",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "input",
+        "instruction",
+        "output"
+      ],
+      "message": "column 'input' was read as the input, but it holds only 6 distinct value(s) across 100 rows (6.0%), e.g. ['\uc8fc\uc81c: \uc5d1\uc140 \uae30\ub2a5\\n\ub09c\uc774\ub3c4: \uc911\uae09\\n\ud615\uc2dd: \uac1d\uad00', '\uc8fc\uc81c: \uc5d1\uc140 \uc218\uc2dd\\n\ub09c\uc774\ub3c4: \uc911\uae09\\n\ud615\uc2dd: \uac1d\uad00', '\uc8fc\uc81c: \uc5d1\uc140 \ud568\uc218\\n\ub09c\uc774\ub3c4: \uc911\uae09\\n\ud615\uc2dd: \uac1d\uad00', '\uc8fc\uc81c: \uc5d1\uc140 \ud568\uc218\\n\ub09c\uc774\ub3c4: \ucd08\uae09\\n\ud615\uc2dd: \uac1d\uad00']. That is a category label, not a question, and auditing it would report every row as a duplicate. Pass --input-field with the column that holds the actual text."
+    },
+    {
+      "dataset": "davidmeikle/exam_questions",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "distilabel_metadata",
+        "generation",
+        "generation_model",
+        "instruction"
+      ],
+      "message": "no column looks like the target. did you mean one of: distilabel_metadata? Columns are: instruction, generation, distilabel_metadata, generation_model. Pass --target-field."
+    },
+    {
+      "dataset": "zipu-w/tmua-exam-questions-with-images",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "answer",
+        "exam",
+        "option_images",
+        "options",
+        "paper",
+        "question_images",
+        "question_index",
+        "question_text",
+        "subject"
+      ],
+      "message": "no column looks like the input. did you mean one of: question_index, question_text, question_images? Columns are: exam, question_index, subject, paper, question_text, options, answer, question_images, option_images. Pass --input-field."
+    },
+    {
+      "dataset": "zipu-w/alevel-exam-questions",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "answer",
+        "exam",
+        "option_images",
+        "options",
+        "paper",
+        "question_images",
+        "question_index",
+        "question_text",
+        "subject"
+      ],
+      "message": "no column looks like the input. did you mean one of: question_index, question_text, question_images? Columns are: exam, question_index, subject, paper, question_text, options, answer, question_images, option_images. Pass --input-field."
+    },
+    {
+      "dataset": "zipu-w/AP-exam-questions",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "answer",
+        "exam",
+        "option_images",
+        "options",
+        "paper",
+        "question_images",
+        "question_index",
+        "question_text",
+        "subject"
+      ],
+      "message": "no column looks like the input. did you mean one of: question_index, question_text, question_images? Columns are: exam, question_index, subject, paper, question_text, options, answer, question_images, option_images. Pass --input-field."
+    },
+    {
+      "dataset": "yeniguno/turkish-university-entrance-exam-questions",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "answer",
+        "answers",
+        "course",
+        "dependent_text",
+        "has_dependency",
+        "has_expression",
+        "has_image",
+        "id",
+        "image",
+        "page_code",
+        "question_number",
+        "question_text",
+        "underlined_text"
+      ],
+      "message": "no column looks like the input. did you mean one of: question_number, question_text, dependent_text, underlined_text? Columns are: course, page_code, question_number, question_text, answers, has_image, has_expression, has_dependency, dependent_text, underlined_text, answer, image, id. Pass --input-field."
+    },
+    {
+      "dataset": "oppenbhaimer/QuizQuestionBank",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "A",
+        "Q"
+      ],
+      "message": "no column looks like the input. Columns are: Q, A. Pass --input-field."
+    },
+    {
+      "dataset": "boapps/vikwiki-quiz",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "answers",
+        "correct_answers",
+        "file",
+        "question",
+        "quiz_title",
+        "score",
+        "title",
+        "type",
+        "url"
+      ],
+      "message": "column 'question' was read as the input, but it holds only 1 distinct value(s) across 100 rows (1.0%), e.g. ['']. That is a category label, not a question, and auditing it would report every row as a duplicate. Pass --input-field with the column that holds the actual text."
+    },
+    {
+      "dataset": "ai-ml-ops-eng/ru-quiz-qa",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "accepted_answer",
+        "question_text"
+      ],
+      "message": "no column looks like the input. did you mean one of: question_text? Columns are: question_text, accepted_answer. Pass --input-field."
+    },
+    {
+      "dataset": "sajjadamjad/quiz_llm",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "input_ids"
+      ],
+      "message": "no column looks like the input. did you mean one of: input_ids? Columns are: input_ids. Pass --input-field."
+    },
+    {
+      "dataset": "sajjadamjad/quiz_llm_tinyllama",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "input_ids"
+      ],
+      "message": "no column looks like the input. did you mean one of: input_ids? Columns are: input_ids. Pass --input-field."
+    },
+    {
+      "dataset": "sajjadamjad/bible_quiz_prompted",
+      "checks": [
+        "fields"
+      ],
+      "columns": [
+        "attention_mask",
+        "input_ids",
+        "text"
+      ],
+      "message": "no column looks like the target. Columns are: text, input_ids, attention_mask. Pass --target-field."
+    }
+  ],
   "rows_read_per_dataset": 100,
   "hits": [
     {
-      "dataset": "tasksource/cycic_multiplechoice",
+      "dataset": "cristiano-sartori/exam-questions",
       "split": "default/train",
       "checks": [
         "S1",
+        "S2",
         "S7"
       ]
     },
     {
-      "dataset": "TIGER-Lab/MMLU-Pro",
-      "split": "default/validation",
+      "dataset": "geekyrakshit/indian-exam-questions",
+      "split": "neet2025-code45/validation",
       "checks": [
-        "S5"
+        "S6"
       ]
     },
     {
-      "dataset": "EC-DGT-AI/EU-MMLU",
-      "split": "CS_CZ/dev",
-      "checks": [
-        "S1"
-      ]
-    },
-    {
-      "dataset": "joey234/mmlu-business_ethics-neg",
-      "split": "default/test",
-      "checks": [
-        "S5"
-      ]
-    },
-    {
-      "dataset": "joey234/mmlu-college_mathematics-neg",
-      "split": "default/test",
+      "dataset": "tasksource/news-quizz-qa",
+      "split": "default/train",
       "checks": [
         "S1",
+        "S2",
         "S7"
-      ]
-    },
-    {
-      "dataset": "joey234/mmlu-college_physics-neg",
-      "split": "default/test",
-      "checks": [
-        "S1"
-      ]
-    },
-    {
-      "dataset": "joey234/mmlu-econometrics-neg",
-      "split": "default/test",
-      "checks": [
-        "S1",
-        "S7"
-      ]
-    },
-    {
-      "dataset": "joey234/mmlu-electrical_engineering-neg",
-      "split": "default/test",
-      "checks": [
-        "S5"
       ]
     }
   ]
