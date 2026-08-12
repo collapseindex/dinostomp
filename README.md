@@ -33,7 +33,7 @@ seconds, offline, for free, using the command in the next section.
 | **D** | 66 | defects in dinostomp itself |
 | **N** | 21 | negative results, recorded rather than dropped |
 
-**Forty-seven of the eighty-nine are against this tool**, which is the number to
+**Sixty-six of the 116 are against this tool**, which is the number to
 read first. A validator that only publishes other people's mistakes is telling
 you which mistakes it is willing to look for. Included there: the entry it
 retracted after its own killer control killed it ([N-013](FINDINGS.md#n-013)),
@@ -41,13 +41,14 @@ the loader bug that manufactured a finding about a driving test
 ([D-039](FINDINGS.md#d-039)), and a defect in the findings feed itself
 ([D-040](FINDINGS.md#d-040)).
 
-One caveat belongs up here rather than at the bottom: **two of the eighty-nine
-were graded against an answer key somebody outside this repo wrote**
+One caveat belongs up here rather than at the bottom: **three of the 116 were
+graded against an answer key somebody outside this repo wrote**
 ([N-012](FINDINGS.md#n-012) against MMLU-Redux, [N-017](FINDINGS.md#n-017)
-against ciFAIR's hand-annotated CIFAR-10 duplicates). Both produced the least
-flattering numbers in the file, which is the argument for more of them.
-Forty-seven self-found defects is still self-grading, and that number moves when
-an outsider runs it rather than when the total goes up.
+against ciFAIR's hand-annotated CIFAR-10 duplicates, and
+[N-019](FINDINGS.md#n-019) against MT-Bench's human preference votes). All three
+produced the least flattering numbers in the file, which is the argument for
+more of them. Sixty-six self-found defects is still self-grading, and that
+number moves when an outsider runs it rather than when the total goes up.
 [Break it, please](CONTRIBUTING.md#break-it-please).
 
 The same ledger as data, versioned and validated against

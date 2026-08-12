@@ -143,16 +143,41 @@ def check_prose_counts() -> list[str]:
     # CHANGELOG is deliberately excluded: its past entries quote the numbers
     # that were true when written, and rewriting history to match the present
     # is the opposite of what a changelog is for.
+    total = counts.get("total")
+
+    def ok(token: str, want: int) -> bool:
+        t = token.lower().replace(",", "")
+        return t in {str(want), spell(want)}
+
+    # Every phrasing below was found stale in the README at least once. The
+    # first version of this check knew only "findings against itself" and
+    # therefore missed four stale numbers in the page's credibility paragraph,
+    # including "forty-seven of the eighty-nine" sitting directly under a table
+    # that read 66 and 116. A checker aimed at one sentence guards one sentence.
+    PATTERNS = (
+        (r"([\w-]+) findings against itself", "D", "findings against itself"),
+        (r"([\w-]+) self-found defects", "D", "self-found defects"),
+        (r"([\w-]+) of the ([\w,-]+) are against this tool", "D+total",
+         "are against this tool"),
+    )
     bad = []
     for name in ("README.md", "METHODOLOGY.md", "FINDINGS.md", "CONTRIBUTING.md"):
         text = " ".join(read(name).split())
-        for m in re.finditer(r"([\w-]+) findings against itself", text):
-            token = m.group(1).lower()
-            if token in {"the", "its", "our", "these", "those"}:
-                continue
-            if token not in {str(d), spell(d)}:
-                bad.append(f"prose: {name} says {token!r} findings against itself, "
-                           f"the ledger holds {d} ({spell(d)})")
+        for pattern, kind, label in PATTERNS:
+            for m in re.finditer(pattern, text):
+                first = m.group(1).lower()
+                if first in {"the", "its", "our", "these", "those", "all"}:
+                    continue
+                if kind == "D" and not ok(first, d):
+                    bad.append(f"prose: {name} says {first!r} {label}, "
+                               f"the ledger holds {d} ({spell(d)})")
+                elif kind == "D+total":
+                    if not ok(first, d):
+                        bad.append(f"prose: {name} says {first!r} {label}, "
+                                   f"the ledger holds {d} ({spell(d)})")
+                    if total and not ok(m.group(2), total):
+                        bad.append(f"prose: {name} says {m.group(2)!r} entries in "
+                                   f"{label!r}, the ledger holds {total}")
     return bad
 
 
