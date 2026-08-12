@@ -381,3 +381,110 @@ def test_the_submission_template_exists_and_points_at_the_format():
     text = template.read_text(encoding="utf-8")
     assert "corpus/README.md#submitting-a-detector" in text
     assert "split" in text.lower(), "a submission without a split id cannot be scored"
+
+
+def test_build_instance_can_plant_a_held_back_class(monkeypatch):
+    """Exercise the real planting call with a held-back class present.
+
+    An earlier version of this test recomputed what `build_instance` *would*
+    reach for and compared two sets. That restates the code instead of running
+    it: deleting the merge from `build_instance` left it green, which makes it a
+    check that cannot fail on the defect it was written for. This one injects a
+    holdback module and calls the function, so removing the merge raises the
+    same KeyError a real held-back split hit (D-067).
+
+    No `importlib.reload` anywhere. Reloading `taxonomy` mints a fresh
+    `DefectClass`, the injected module keeps the old one, and the loader then
+    rejects it as "not a DefectClass" for reasons that have nothing to do with
+    what is being tested.
+    """
+    import types
+
+    import generate
+    from taxonomy import DefectClass
+
+    planted = []
+
+    def _plant(items, rng):
+        it = rng.choice([i for i in items if len(i.get("choices") or []) > 2])
+        it["choices"] = list(it["choices"])[:-1] + ["   "]
+        planted.append(it["id"])
+        return [it["id"]]
+
+    held = DefectClass(
+        id="test-held-back", name="test only",
+        description="injected by the suite; never written to disk",
+        source="own-checks", reference="none", detectable_by=None, tell="none")
+
+    fake = types.ModuleType("holdback")
+    fake.CLASSES = [held]
+    fake.PLANTERS = {"test-held-back": _plant}
+    monkeypatch.setitem(sys.modules, "holdback", fake)
+    monkeypatch.setitem(generate.BY_ID, "test-held-back", held)
+
+    label, _items, _files = generate.build_instance(
+        "test-split", 0, "test-held-back", secret="test-only")
+    assert label["class"] == "test-held-back"
+    assert planted, "the held-back planter was never called"
+
+
+def test_a_generated_split_reports_the_held_back_class_it_carries(tmp_path, monkeypatch):
+    """End to end: the published count must move when a class is held back.
+
+    Covers the half `test_build_instance_can_plant_a_held_back_class` cannot:
+    if `generate()` stops merging the held-back planters, no held-back class is
+    ever SELECTED, and `n_held_back_classes_present` silently returns to 0 with
+    nothing raising. That number is the only public evidence the defence is
+    armed, so a silent zero is the whole defect.
+    """
+    import types
+
+    import generate
+    from taxonomy import DefectClass
+
+    def _plant(items, rng):
+        it = rng.choice([i for i in items if len(i.get("choices") or []) > 2])
+        it["choices"] = list(it["choices"])[:-1] + ["   "]
+        return [it["id"]]
+
+    held = DefectClass(
+        id="test-held-back", name="test only",
+        description="injected by the suite; never written to disk",
+        source="own-checks", reference="none", detectable_by=None, tell="none")
+    fake = types.ModuleType("holdback")
+    fake.CLASSES = [held]
+    fake.PLANTERS = {"test-held-back": _plant}
+    monkeypatch.setitem(sys.modules, "holdback", fake)
+    monkeypatch.setitem(generate.BY_ID, "test-held-back", held)
+    monkeypatch.setattr(generate, "ALL_CLASSES", list(generate.ALL_CLASSES) + [held])
+    # generate.py binds HELD_BACK at import time, and the manifest count is
+    # an intersection against it. Patching only ALL_CLASSES plants the class
+    # and then reports zero, which is the exact symptom being tested for.
+    monkeypatch.setattr(generate, "HELD_BACK", list(generate.HELD_BACK) + [held])
+
+    manifest = generate.generate("test-holdback", 24, tmp_path, secret="test-only")
+    assert manifest["n_held_back_classes_present"] >= 1, (
+        "a held-back class was available and none reached the split")
+    assert "test-held-back" not in json.dumps(manifest), (
+        "the manifest names the held-back class; only the COUNT may be published")
+
+
+def test_a_holdback_planter_without_its_class_is_refused():
+    """A planter keyed to an unknown class is silently never used.
+
+    Silence is the wrong answer for a defence whose published count is the only
+    evidence it is armed.
+    """
+    import types
+
+    import generate
+
+    fake = types.ModuleType("holdback")
+    fake.CLASSES = []
+    fake.PLANTERS = {"not-a-declared-class": lambda items, rng: []}
+    sys.modules["holdback"] = fake
+    try:
+        with pytest.raises(SystemExit, match="no matching"):
+            generate.holdback_planters()
+    finally:
+        del sys.modules["holdback"]

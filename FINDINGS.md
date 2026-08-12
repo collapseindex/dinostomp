@@ -153,6 +153,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-064](#d-064) | dinostomp | a worked solution was read as the answer key, flagging 85 of 100 exam items falsely | fixed |
 | [D-065](#d-065) | dinostomp | a one-based answer key was read as zero-based, mis-keying three options in four silently | fixed |
 | [D-066](#d-066) | dinostomp | an extractive-QA span object was read as the answer key, flagging 100 of 100 items | fixed |
+| [D-067](#d-067) | dinostomp | the held-back-class defence could not plant anything, so its published count was structurally always 0 | fixed |
 
 <!-- INDEX:END -->
 
@@ -204,13 +205,13 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066) |
+| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067) |
 | dinocorpus | [N-021](#n-021), [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
@@ -4002,6 +4003,52 @@ data. [D-057](#d-057) was three of four sweep findings manufactured this way,
 [D-064](#d-064) was 85 of 100, and this is 100 of 100. The rate itself is the
 evidence: real defects are rare and clustered, mapping errors are total.
 
+### D-067
+**The corpus's anti-gaming defence was documented, counted, and structurally incapable of firing**
+`corpus` (no check) · 2026-08-12 · fixed
+
+Seed rotation defends against memorising instances, which barely threatens a
+rule-based detector. The real gaming vector is reading `taxonomy.py` and writing
+one checker per class. **Held-back classes** are the stated defence: classes
+planted into splits and never published, with only the COUNT disclosed, so a
+submitter knows they exist and never which.
+
+Every split ever published reads `n_held_back_classes_present: 0`. That was
+recorded as "not armed yet, `holdback.py` does not exist", which is honest but
+turned out to understate it: the mechanism **could not have worked if the file
+had existed.**
+
+Half of it was fine. `_load_holdback` merged secret classes into `ALL_CLASSES`,
+the public taxonomy stayed at 21, and the manifest count was computed correctly.
+The other half had nowhere to go: **every planter lived in the committed
+`generate.py`**, so a secret class had no gitignored place to declare one, fell
+out of `plantable_classes`, and could never be selected. Given a planter anyway,
+`build_instance` then looked up the bare `PLANTERS` and died on `KeyError`. Two
+dictionaries that had to agree, and only one of them was ever merged.
+
+**Found by trying it rather than reading it.** The file is gitignored, so the
+whole path was unreachable from the repository and nothing exercised it. Writing
+a throwaway `holdback.py` took ten minutes and produced the KeyError immediately.
+This is the fourth entry this week from running a mechanism in a configuration
+its author never ran ([D-062](#d-062), [D-063](#d-063), and the CI extension
+contamination).
+
+**Fixed** by a `holdback_planters()` loader mirroring `_load_holdback`, merged
+in both places, plus a refusal when a planter is declared with no matching class
+(silently-never-used is the wrong failure for a defence whose count is its only
+evidence).
+
+**The first test written for it was worthless and its own negative test said so.**
+It recomputed what `build_instance` *would* reach for and compared two sets, so
+deleting the merge left it green. Replaced with one that injects a holdback
+module and calls the real function. Three mutations are now caught: the merge
+removed from either call site, and the stray-planter guard removed.
+
+**Still not armed.** `corpus/holdback.py` remains absent, so `n_held_back` is
+still 0 and the published corpus behaves exactly as documented. What changed is
+that writing the file would now do something. Choosing which classes to hold
+back is a decision about the benchmark, not a bug fix.
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -4025,9 +4072,9 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **21** |
-| defects in dinostomp itself (**D**) | **66** |
+| defects in dinostomp itself (**D**) | **67** |
 
-Sixty-six to twenty-nine. That ratio is the useful number to publish, and it is the
+Sixty-seven to twenty-nine. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to
@@ -4037,7 +4084,7 @@ ran somewhere its author's assumptions did not hold, and one
 ([D-014](#d-014)) was a bug the project had already found and fixed elsewhere,
 written again three releases later in a different check.
 
-The most common shape across all sixty-six is worth stating once: **a check that
+The most common shape across all sixty-seven is worth stating once: **a check that
 compared the wrong thing and returned a confident answer about it.**
 
 ## Adding an entry

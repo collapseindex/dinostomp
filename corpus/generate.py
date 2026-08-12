@@ -351,7 +351,11 @@ def build_instance(split: str, index: int, class_id: str | None, secret: str = "
                 raise SystemExit(f"{class_id} needs an asset-bearing split; pass --assets")
             location = ASSET_PLANTERS[class_id](items, files, rng)
         else:
-            location = PLANTERS[class_id](items, rng)
+            # Held-back planters live in the gitignored module, so this cannot
+            # read PLANTERS alone: the caller merges the registries to decide
+            # what is plantable, and planting has to use the same merged view or
+            # a held-back class is selected and then dies here on a KeyError.
+            location = {**PLANTERS, **holdback_planters()}[class_id](items, rng)
         if location:
             cls = BY_ID[class_id]
             return {
@@ -371,6 +375,29 @@ def build_instance(split: str, index: int, class_id: str | None, secret: str = "
     raise SystemExit(f"{class_id} could not be planted in 8 attempts at index {index}")
 
 
+def holdback_planters() -> dict:
+    """Planters declared beside the held-back classes, in the gitignored module.
+
+    Mirrors `taxonomy._load_holdback`: absent module means an empty dict and the
+    public corpus behaves exactly as published. A held-back class needs BOTH a
+    `DefectClass` in `holdback.CLASSES` and a planter here keyed by its id;
+    declaring only the class leaves it unplantable and silently absent.
+    """
+    try:
+        import holdback  # type: ignore
+    except ImportError:
+        return {}
+    planters = dict(getattr(holdback, "PLANTERS", {}))
+    known = {c.id for c in getattr(holdback, "CLASSES", [])}
+    stray = sorted(set(planters) - known)
+    if stray:
+        raise SystemExit(
+            f"corpus/holdback.py declares planter(s) {stray} with no matching "
+            f"DefectClass. A planter keyed to an unknown class is silently "
+            f"never used, which is the failure this message exists to prevent.")
+    return planters
+
+
 def generate(split: str, n: int, out_dir: Path, secret: str = "",
              with_assets: bool = False, shapes: list[str] | None = None) -> dict:
     # ALL_CLASSES, so a held-back class is planted into the split without ever
@@ -378,6 +405,14 @@ def generate(split: str, n: int, out_dir: Path, secret: str = "",
     registries = dict(PLANTERS)
     if with_assets:
         registries.update(ASSET_PLANTERS)
+    # Planters for held-back classes. Without this the defence was half built:
+    # `holdback.py` could add a CLASS, but every planter lived in this committed
+    # file, so a secret class had nowhere to declare one, fell out of
+    # `plantable_classes`, and could never reach a split. That is why every
+    # manifest ever published reads `n_held_back_classes_present: 0` (D-067). A
+    # defence that is documented and unreachable is worse than none, because the
+    # published count implies it is armed.
+    registries.update(holdback_planters())
     # Named `plantable_classes`, not `plantable`: the latter shadowed the
     # imported shape-compatibility predicate and turned a call into
     # `TypeError: 'list' object is not callable` at generation time.

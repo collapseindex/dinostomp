@@ -2,6 +2,24 @@
 
 ### Unreleased
 
+- **[D-067](FINDINGS.md#d-067)** The held-back-class defence, the corpus's only
+  protection against someone reading `taxonomy.py` and writing one checker per
+  class, could not plant anything. Secret classes merged into the taxonomy
+  correctly, but every planter lived in the committed `generate.py`, so a
+  held-back class had nowhere to declare one and `build_instance` died on a
+  `KeyError` if given one anyway. `n_held_back_classes_present: 0` was not
+  "not armed yet", it was structural. Found by writing a throwaway
+  `holdback.py` and running it. Still not armed: choosing which classes to hold
+  back is a benchmark decision, not a bug fix.
+- **Rejected, with its numbers**, so nobody re-derives it: stripping redundant
+  brackets before comparing options reaches 8% recall on MMLU-Redux against the
+  shipped 5%, and costs two false positives to gain one catch. One of them
+  collapses `(∀x)(~Sx ⊃ ~Gx)` and `(∀x)~(Sx ⊃ ~Gx)`, which differ in negation
+  scope and are the entire point of the question. The apparent precision gain
+  (25% to 27%) was an artifact of three data points measured against a single
+  error type.
+
+
 - **[D-065](FINDINGS.md#d-065)** A one-based answer key read as zero-based
   resolved three options in four to the wrong text, silently; only the fourth
   fell out of range and raised S6, so the visible symptom covered a quarter of
