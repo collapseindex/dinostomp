@@ -25,15 +25,15 @@ Each of those is one entry in **[FINDINGS.md](FINDINGS.md)**, with the item id,
 the verbatim data and the command that reproduces it. Every `F` re-derives in
 seconds, offline, for free, using the command in the next section.
 
-**[FINDINGS.md](FINDINGS.md): 120 entries, all permanent, none deleted.**
+**[FINDINGS.md](FINDINGS.md): 121 entries, all permanent, none deleted.**
 
 | series | count | what it records |
 |---|--:|---|
 | **F** | 29 | findings in other people's evals |
-| **D** | 68 | defects in dinostomp itself |
+| **D** | 69 | defects in dinostomp itself |
 | **N** | 23 | negative results, recorded rather than dropped |
 
-**Sixty-eight of the 120 are against this tool**, which is the number to
+**Sixty-nine of the 121 are against this tool**, which is the number to
 read first. A validator that only publishes other people's mistakes is telling
 you which mistakes it is willing to look for. Included there: the entry it
 retracted after its own killer control killed it ([N-013](FINDINGS.md#n-013)),
@@ -41,13 +41,13 @@ the loader bug that manufactured a finding about a driving test
 ([D-039](FINDINGS.md#d-039)), and a defect in the findings feed itself
 ([D-040](FINDINGS.md#d-040)).
 
-One caveat belongs up here rather than at the bottom: **three of the 120 were
+One caveat belongs up here rather than at the bottom: **three of the 121 were
 graded against an answer key somebody outside this repo wrote**
 ([N-012](FINDINGS.md#n-012) against MMLU-Redux, [N-017](FINDINGS.md#n-017)
 against ciFAIR's hand-annotated CIFAR-10 duplicates, and
 [N-019](FINDINGS.md#n-019) against MT-Bench's human preference votes). All three
 produced the least flattering numbers in the file, which is the argument for
-more of them. Sixty-eight self-found defects is still self-grading, and that
+more of them. Sixty-nine self-found defects is still self-grading, and that
 number moves when an outsider runs it rather than when the total goes up.
 [Break it, please](CONTRIBUTING.md#break-it-please).
 
@@ -696,7 +696,7 @@ fee for a new check and the rules a patch may not remove. [Apache-2.0](LICENSE).
 
 <sub>Built and maintained by one person, unfunded. If it caught something in your
 eval, [sponsorship](https://github.com/sponsors/collapseindex) buys time to keep
-pointing it at real benchmarks and publishing what it finds, including the sixty-eight
+pointing it at real benchmarks and publishing what it finds, including the sixty-nine
 findings against itself. Adversarial pods and bug reports are worth more than
 money and are always free:
 [break it, please](CONTRIBUTING.md#break-it-please).</sub>
