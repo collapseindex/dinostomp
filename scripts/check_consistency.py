@@ -101,6 +101,61 @@ def num_word(n: int) -> str | None:
     return words.get(n)
 
 
+_ONES = ["zero", "one", "two", "three", "four", "five", "six", "seven",
+         "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen",
+         "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"]
+_TENS = {20: "twenty", 30: "thirty", 40: "forty", 50: "fifty", 60: "sixty",
+         70: "seventy", 80: "eighty", 90: "ninety"}
+
+
+def spell(n: int) -> str | None:
+    """English for a count, so prose can be checked as strictly as a table.
+
+    The previous version of this was a dict covering 23 to 27, written when
+    that was the range of interest. Everything outside it returned None, and
+    every check guarded with `if spelled` then silently did nothing. A lookup
+    that stops answering as the project grows is worse than no lookup: it turns
+    a check into a no-op exactly when the number it guards has moved.
+    """
+    if n < 0 or n > 99:
+        return None
+    if n < 20:
+        return _ONES[n]
+    tens, ones = divmod(n, 10)
+    base = _TENS[tens * 10]
+    return base if not ones else f"{base}-{_ONES[ones]}"
+
+
+def check_prose_counts() -> list[str]:
+    """Counts written out in sentences, which no table-shaped check can see.
+
+    The README advertised "the forty-seven findings against itself" while the
+    ledger held sixty-three. This is the SECOND time that sentence went stale:
+    CHANGELOG v0.42.0 records it sitting at forty-one for six releases. It was
+    fixed both times by correcting the number, which is the fix that already
+    failed once, so it is now checked instead.
+    """
+    counts = json.loads(read("findings.json") or "{}").get("counts", {})
+    d = counts.get("D")
+    if d is None:
+        return ["prose: findings.json has no D count to check against"]
+
+    # CHANGELOG is deliberately excluded: its past entries quote the numbers
+    # that were true when written, and rewriting history to match the present
+    # is the opposite of what a changelog is for.
+    bad = []
+    for name in ("README.md", "METHODOLOGY.md", "FINDINGS.md", "CONTRIBUTING.md"):
+        text = " ".join(read(name).split())
+        for m in re.finditer(r"([\w-]+) findings against itself", text):
+            token = m.group(1).lower()
+            if token in {"the", "its", "our", "these", "those"}:
+                continue
+            if token not in {str(d), spell(d)}:
+                bad.append(f"prose: {name} says {token!r} findings against itself, "
+                           f"the ledger holds {d} ({spell(d)})")
+    return bad
+
+
 def check_findings() -> list[str]:
     """The ledger, its feed, the README's summary, and the scorecard in FINDINGS."""
     feed = json.loads(read("findings.json") or "{}")
@@ -144,12 +199,13 @@ def check_benchmarks() -> list[str]:
         bad.append("benchmarks: the README no longer states how many were audited")
     else:
         word = claimed.group(1).lower()
-        spelled = {23: "twenty-three", 24: "twenty-four", 25: "twenty-five",
-                   26: "twenty-six", 27: "twenty-seven"}.get(len(pods))
+        spelled = spell(len(pods))
         if word not in {str(len(pods)), spelled}:
             bad.append(f"benchmarks: README says {word!r}, {len(pods)} pods on disk")
         findings = read("FINDINGS.md")
-        if spelled and spelled.capitalize() not in findings and str(len(pods)) not in findings:
+        # No `if spelled` guard: spell() answers for every count this project
+        # will ever have, and guarding on it is what made this check vanish.
+        if spelled.capitalize() not in findings and str(len(pods)) not in findings:
             bad.append(f"benchmarks: FINDINGS.md does not state {len(pods)} either")
     return bad
 
@@ -240,6 +296,7 @@ CHECKS = [
     ("engine fingerprint", check_fingerprint),
     ("check registry", check_check_counts),
     ("findings ledger", check_findings),
+    ("prose counts", check_prose_counts),
     ("trials", check_trials),
     ("benchmarks", check_benchmarks),
     ("corpus", check_corpus),
