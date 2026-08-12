@@ -39,11 +39,20 @@ DATA_SUFFIXES = {".csv": "csv", ".jsonl": "jsonl", ".ndjson": "jsonl", ".json": 
 # nothing until TruthfulQA's real header proved it.
 CANDIDATES = {
     "id": ["id", "_id", "uid", "qid", "question_id", "item_id", "idx", "index", "ind"],
-    "input": ["input", "question", "prompt", "query", "problem", "instruction", "stem",
+    # ORDER IS PREFERENCE. A name that can only mean the answer key comes before
+    # one that is ambiguous, which is why every `correct_*` and `ground_truth`
+    # form sits ahead of `solution`: `solution` is the answer in a maths dataset
+    # and a worked derivation in an exam dataset (D-064). That finding happened
+    # because `correct_option` was not on this list at all, so `solution` won
+    # unopposed. The names below were read off the columns of datasets a public
+    # sweep refused, not invented.
+    "input": ["input", "question", "question_text", "prompt", "query", "query_text",
+              "problem", "problem_statement", "instruction", "stem",
               "sentence", "premise", "ctx", "context", "text"],
     "target": ["target", "answer", "answerkey", "answer_key", "label", "gold", "gold_label",
-               "correct", "correct_answer", "correct_answers", "best_answer", "solution",
-               "output", "reference"],
+               "ground_truth", "groundtruth", "correct", "correct_answer", "correct_answers",
+               "correct_option", "correct_choice", "gold_answer", "true_answer",
+               "expected_answer", "best_answer", "solution", "output", "reference"],
     "choices": ["choices", "options", "endings", "candidates", "alternatives", "answers"],
 }
 
@@ -332,6 +341,31 @@ def _mapping_smells(rows, columns, mapping) -> list[Issue]:
                         f"prompt but offering different candidates would be reported as "
                         f"contradictory. Combine them into one list column, or pass "
                         f"--choices-field."))
+
+    # A STRUCTURED value read as the answer key. An extractive-QA column like
+    # `answer: {"start": 108, "text": "..."}` is a span, not a choice, and
+    # comparing a dict against option strings makes every item look unanswerable:
+    # found flagging 100 of 100 items in a dataset that also carried a plain
+    # `label` holding the real key (D-066). This is a structural fact about the
+    # value, not a preference between columns, which is why it can refuse
+    # without repeating D-064's mistake of choosing whatever scores best.
+    tgt_struct = mapping.get("target")
+    if tgt_struct and rows:
+        values = [r.get(tgt_struct) for r in rows if r.get(tgt_struct) is not None]
+        dicts = [v for v in values if isinstance(v, dict)]
+        if values and len(dicts) / len(values) > 0.9:
+            rivals = sorted(c for c in unmapped
+                            if any(tok in _norm(c)
+                                   for tok in ("label", "correct", "key", "gold", "target")))
+            hint = (f" {', '.join(rivals)} holds a plain value and may be the key."
+                    if rivals else "")
+            out.append(Issue(
+                loc="--target-field", check="fields",
+                message=f"column {tgt_struct!r} was read as the target, but its values are "
+                        f"objects rather than answers (e.g. {str(dicts[0])[:60]}). That is an "
+                        f"extractive span or a structured record, and comparing it against "
+                        f"option text reports every item as having no correct answer.{hint} "
+                        f"Pass --target-field."))
 
     # An EXPLANATION column read as the answer. `solution` is genuinely the
     # target in a maths dataset and genuinely a worked derivation in an exam

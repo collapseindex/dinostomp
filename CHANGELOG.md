@@ -2,6 +2,26 @@
 
 ### Unreleased
 
+- **[D-065](FINDINGS.md#d-065)** A one-based answer key read as zero-based
+  resolved three options in four to the wrong text, silently; only the fourth
+  fell out of range and raised S6, so the visible symptom covered a quarter of
+  the damage. The base is now decided over the whole file and printed in the
+  mapping notes. Two public datasets were affected.
+- **[D-066](FINDINGS.md#d-066)** An extractive-QA span object (`{"start":..,
+  "text":..}`) read as the answer key made 100 of 100 items look unanswerable.
+  A target column holding objects is now refused, which is a structural fact
+  rather than a preference between columns.
+- **Options split one per column are now assembled** (`choice_1..4`,
+  `ending0..3`, `answer_a..d`). This was the commonest layout the audit refused;
+  the refusal used to tell the author to combine the columns by hand. Of 62
+  datasets a public sweep had refused, 17 now load and 7 of those carry a real
+  gating finding. All 20 existing pods verify unchanged.
+- **Candidate column names extended** from the columns of datasets that were
+  refused, not from imagination: `question_text`, `ground_truth`,
+  `correct_option` and others. `correct_option` was absent, which is why
+  `solution` won unopposed in D-064.
+
+
 - **[D-064](FINDINGS.md#d-064)** A sweep flagged 85 of 100 items in a public
   exam dataset as having no correct answer. All 85 were false: the loader read
   the `solution` column (a worked derivation) as the answer key instead of

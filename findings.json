@@ -6,13 +6,13 @@
   "tool": {
     "name": "dinostomp",
     "version": "0.61.0",
-    "engine": "5ae0a71b7a3c40aedb6b0aaece3e1ae959752a5fa8200c28c61289943eb8b772"
+    "engine": "7ba149c846d6b29103b7e2d5f7cde119ab25a6bf8d0de848b82498305f3a4747"
   },
   "counts": {
     "F": 29,
-    "D": 65,
+    "D": 66,
     "N": 21,
-    "total": 115
+    "total": 116
   },
   "series": {
     "F": "other people's evals",
@@ -2136,6 +2136,25 @@
       "status_class": "fixed",
       "anchor": "#d-065",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-065"
+    },
+    {
+      "id": "D-066",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "An extractive-QA span object was read as the answer key, so 100 of 100 items looked unanswerable",
+      "summary": "an extractive-QA span object was read as the answer key, flagging 100 of 100 items",
+      "subject": "dinostomp",
+      "check_label": "`field-mapping` (S6)",
+      "checks": [
+        "S6"
+      ],
+      "date": "2026-08-12",
+      "date_iso": "2026-08-12",
+      "date_precision": "day",
+      "status": "fixed",
+      "status_class": "fixed",
+      "anchor": "#d-066",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-066"
     }
   ]
 }
