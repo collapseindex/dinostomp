@@ -217,10 +217,34 @@ refuses rather than picking: TruthfulQA ships both a `Best Answer` and a
 `Correct Answers` column, and choosing one silently would put every finding on a
 coin flip.
 
+**What it reads without being told.** Options in one column, or split across
+`choice_1..4`, `ending0..3`, `answer_a..d`; and an answer key given as the option
+text, a zero- or one-based index, a letter label, a single-element list, or the
+name of the column holding the answer. The index base is decided over the whole
+file rather than per row, because a one-based key read as zero-based resolves
+three options in four to the wrong text while only the fourth falls out loudly.
+
+**What it refuses, and why refusing is the point.** A `solution` column beside a
+`correct_option` one, because that name is the answer in a maths dataset and a
+worked derivation in an exam dataset. A target holding objects rather than
+answers, which is an extractive span and not a choice. A question column whose
+values barely repeat, which is a category label. Each refusal names the columns
+and the flag that settles it.
+
+The tempting alternative is to pick whichever column makes the answers land
+inside the options. That rule selects the mapping with the cleanest verdict,
+which is exactly how a genuinely wrong answer key would be made invisible, so it
+is not used. Every guard above was written after a mapping error produced
+confident findings about the wrong columns ([D-057](FINDINGS.md#d-057),
+[D-064](FINDINGS.md#d-064), [D-065](FINDINGS.md#d-065),
+[D-066](FINDINGS.md#d-066)), and the tell each time was a check firing on nearly
+every row: real defects are rare and clustered, mapping errors are total.
+
 ## dinocorpus: a benchmark this tool cannot win
 
-`corpus/` is 204 small datasets, each with exactly one planted defect, labelled
-with what was planted and where. Ground truth is a fact about how the file was
+`corpus/` is 1,956 small datasets across five scored splits (dev plus four
+withheld), each with exactly one planted defect, labelled with what was
+planted and where. Ground truth is a fact about how the file was
 written rather than a judgement about it, so it needs no annotators and no
 judge.
 
@@ -228,7 +252,7 @@ judge.
 purpose.** dinostomp finds none of them:
 
 ```
-DINOCORPUS dev: dinostomp 0.57.1
+DINOCORPUS dev: dinostomp 0.61.0
 
   recall, classes it has a check for   100.0% of 72
   recall, classes it does NOT            4.9% of 81
@@ -510,7 +534,7 @@ It installs dinostomp from PyPI by default, which does not exist yet, so pass
 `version:` pointing at this repo until it does:
 
 ```yaml
-    version: "git+https://github.com/collapseindex/dinostomp@v0.51.0"
+    version: "git+https://github.com/collapseindex/dinostomp@v0.61.0"
 ```
 
 That is stated rather than hidden because a copy-pasteable block that fails for

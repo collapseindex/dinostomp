@@ -156,6 +156,36 @@ def check_prose_counts() -> list[str]:
     return bad
 
 
+def check_referenced_tags() -> list[str]:
+    """Every `@vX.Y.Z` a doc tells someone to install must be a tag that exists.
+
+    The README carried `dinostomp@v0.51.0` in a copy-pasteable install block.
+    That tag was never cut, so the one instruction a new user follows first
+    failed, three lines above a sentence calling exactly that "a credibility
+    wound in a document whose whole thesis is receipts".
+
+    Checked rather than corrected, because correcting it is the fix that already
+    failed: a version reference goes stale silently every time one is skipped.
+    """
+    import subprocess
+    try:
+        out = subprocess.run(["git", "tag"], cwd=ROOT, capture_output=True,
+                             text=True, timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        return []                      # no git available: not this check's business
+    tags = {t.strip() for t in out.stdout.splitlines() if t.strip()}
+    if not tags:
+        return []
+    bad = []
+    for name in ("README.md", "AUTHORING.md", "CONTRIBUTING.md", "METHODOLOGY.md"):
+        text = read(name)
+        for ref in sorted(set(re.findall(r"dinostomp@(v[0-9]+\.[0-9]+\.[0-9]+)", text))):
+            if ref not in tags:
+                bad.append(f"tags: {name} tells the reader to install {ref}, "
+                           f"which is not a tag in this repository")
+    return bad
+
+
 def check_findings() -> list[str]:
     """The ledger, its feed, the README's summary, and the scorecard in FINDINGS."""
     feed = json.loads(read("findings.json") or "{}")
@@ -297,6 +327,7 @@ CHECKS = [
     ("check registry", check_check_counts),
     ("findings ledger", check_findings),
     ("prose counts", check_prose_counts),
+    ("referenced tags", check_referenced_tags),
     ("trials", check_trials),
     ("benchmarks", check_benchmarks),
     ("corpus", check_corpus),
