@@ -80,7 +80,21 @@ probes/
 # The preprint. Drafts, LaTeX build litter and the PDF all live outside the
 # repo's history: the paper is written against a pushed commit and cites it,
 # rather than being versioned alongside the thing it describes.
-writeup/
+#
+# Written as `writeup/*` and not `writeup/`: git will not descend into an
+# excluded DIRECTORY, so a negation below it never matches. Excluding the
+# contents instead is what makes the three exceptions reachable.
+writeup/*
+
+# EXCEPT the three files that make the paper's numbers checkable by a stranger.
+# The preprint tells a reader every number re-derives from a pinned commit and
+# names `numbers.py` as the thing that enforces it. That claim was unverifiable
+# for as long as this file was ignored: the reader could not read the checker,
+# run it, or see the frozen measurement it compares against. A receipt nobody
+# else can open is not a receipt, which is the paper's own argument.
+!writeup/numbers.py
+!writeup/selfcheck.py
+!writeup/frozen.json
 
 # Local working notes. Never committed: they are for one person's memory, not
 # for the repo, and a notes file that gets committed becomes documentation
