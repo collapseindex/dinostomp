@@ -92,6 +92,49 @@ something breaks. Each stage above is a place the ledger has a receipt from:
 
 **Harnesses run evaluations. They do not read them.**
 
+<details>
+<summary>The M16 had this exact problem in 1964, and it is the clearest version of it</summary>
+
+When the 5.56mm M193 cartridge was adopted in September 1963, one propellant was
+approved for it: DuPont's IMR 4475. It could not be mass-produced inside the
+specification. Remington withdrew it in March 1964 and manufacturers balked at
+bidding under the existing pressure and velocity requirements, so on 28 April
+1964 the Army approved loading M193 with Olin Mathieson's **WC 846** ball powder
+instead.
+
+The spec did not change. The component passed it. But WC 846 ran higher gas port
+pressure and left carbon fouling, and gas port pressure is what drives the
+rifle's cyclic rate. A property nobody was measuring moved, because it belonged
+to the *composition* rather than to either part.
+
+**The signal was not missed. It was explained away.** Colt observed the increased
+cyclic rate in March 1964. In April, Colt's senior product engineer wrote in an
+internal report that the higher gas port pressures were "in no way harmful to
+the AR-15" and would lead to "more positive functioning of the rifle." The
+Ichord Committee later recommended withdrawing WC 846 and chrome-lining
+chambers.
+
+That second part is why this repo keeps [a ledger of its own
+defects](FINDINGS.md) and records which *direction* each error ran in. "Higher
+port pressure means more positive functioning" is the same sentence as "the
+check passed, so the data is clean." Both are a real anomaly read in the
+direction that makes the system look fine, by the party with the incentive.
+
+An eval pipeline is the same shape. Your dataset is fine, your scorer is fine,
+your judge is fine, your model is fine, your aggregation is fine, and **the
+number they produce together is not therefore trustworthy**. That is the claim
+this tool exists to stop you from making by default.
+
+<sub>Verified against [American Rifleman](https://www.americanrifleman.org/content/u-s-m16/)
+and [Daniel Watters' commentary](https://www.thefirearmblog.com/blog/2015/01/09/jim-sullivan-m16-vietnam/);
+primary source is the [1968 Report of the M16 Rifle Review Panel](https://apps.dtic.mil/sti/tr/pdf/ADA953116.pdf).
+Two claims often repeated with this story are deliberately absent because they
+could not be checked against a primary source: that the 1964 propellant tests
+omitted cyclic-rate measurement, and a specific ball-versus-stick round count
+for Vietnam.</sub>
+
+</details>
+
 Six tools were audited on one fixed rubric ([the full table, with per-cell
 citations](trials/CROSSTOOL.md)): lm-eval, openai/evals, Inspect, HELM,
 promptfoo and Braintrust. Their coverage concentrates in run mechanics,
