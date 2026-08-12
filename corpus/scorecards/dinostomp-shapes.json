@@ -1,0 +1,85 @@
+{
+  "n_scored": 300,
+  "recall_overall": 0.48,
+  "recall_covered": 0.98,
+  "n_covered": 100,
+  "recall_blind_spot": 0.08,
+  "recall_blind_spot_strict": 0.0,
+  "n_blind_spot": 125,
+  "false_alarm_rate_on_clean": 0.0267,
+  "n_clean": 75,
+  "by_class": {
+    "ambiguous-question": {
+      "n": 11,
+      "recall": 0.0
+    },
+    "answer-leak": {
+      "n": 12,
+      "recall": 1.0
+    },
+    "compound-question": {
+      "n": 25,
+      "recall": 0.0
+    },
+    "conflicting-keys": {
+      "n": 10,
+      "recall": 1.0
+    },
+    "duplicate-item": {
+      "n": 25,
+      "recall": 1.0
+    },
+    "duplicate-option": {
+      "n": 8,
+      "recall": 1.0
+    },
+    "implausible-distractor": {
+      "n": 12,
+      "recall": 0.3333
+    },
+    "length-bias": {
+      "n": 12,
+      "recall": 1.0
+    },
+    "multiple-correct": {
+      "n": 8,
+      "recall": 0.25
+    },
+    "no-correct-option": {
+      "n": 8,
+      "recall": 0.0
+    },
+    "non-exclusive-options": {
+      "n": 11,
+      "recall": 0.0909
+    },
+    "position-bias": {
+      "n": 11,
+      "recall": 1.0
+    },
+    "stale-ground-truth": {
+      "n": 12,
+      "recall": 0.0833
+    },
+    "surface-shortcut": {
+      "n": 10,
+      "recall": 0.8
+    },
+    "target-not-offered": {
+      "n": 12,
+      "recall": 1.0
+    },
+    "unanswerable-missing-context": {
+      "n": 27,
+      "recall": 0.037
+    },
+    "wrong-key": {
+      "n": 11,
+      "recall": 0.0909
+    }
+  },
+  "detector": "dinostomp 0.61.0",
+  "split": "heldout-shapes-2026-08",
+  "answered": 300,
+  "labels_sha256": "69a6261758e05aa0fc4b1cfeac4506eb0ca9470c31454ab50bc793a60f845da9"
+}

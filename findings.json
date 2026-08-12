@@ -11,8 +11,8 @@
   "counts": {
     "F": 29,
     "D": 61,
-    "N": 20,
-    "total": 110
+    "N": 21,
+    "total": 111
   },
   "series": {
     "F": "other people's evals",
@@ -745,6 +745,23 @@
       "status_class": "measured",
       "anchor": "#n-020",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-020"
+    },
+    {
+      "id": "N-021",
+      "series": "N",
+      "series_name": "negative results",
+      "title": "The corpus now varies SHAPE, not just defect class, and the covered arm stops being 100%",
+      "summary": "the corpus now varies shape, not just class, and the covered arm drops to 98%",
+      "subject": "dinocorpus",
+      "check_label": "`corpus/shapes.py`",
+      "checks": [],
+      "date": "2026-08-11",
+      "date_iso": "2026-08-11",
+      "date_precision": "day",
+      "status": "measured",
+      "status_class": "measured",
+      "anchor": "#n-021",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-021"
     },
     {
       "id": "N-007",

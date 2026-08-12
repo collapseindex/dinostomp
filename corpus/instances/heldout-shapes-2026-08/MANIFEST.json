@@ -1,0 +1,53 @@
+{
+  "corpus": "dinocorpus",
+  "split": "heldout-shapes-2026-08",
+  "n_instances": 300,
+  "n_clean": 75,
+  "n_defective": 225,
+  "n_blind_spot": 125,
+  "blind_spot_share_of_defective": 0.556,
+  "items_per_instance": 24,
+  "assets_per_instance": 0,
+  "shapes": [
+    "baseline",
+    "binary",
+    "cjk",
+    "context-column",
+    "short-answer"
+  ],
+  "shape_provenance": {
+    "baseline": "the shape every earlier split already had; the control",
+    "binary": "D-053, a two-option item that lost its answer silenced the S6 gate",
+    "cjk": "D-061, S9 passed a Chinese licensing exam it cannot tokenise",
+    "short-answer": "D-059, S2 matched a two-letter answer inside a longer word",
+    "context-column": "D-057, questions stranded from their bodies read as duplicates"
+  },
+  "classes_planted": [
+    "ambiguous-question",
+    "answer-leak",
+    "compound-question",
+    "conflicting-keys",
+    "duplicate-item",
+    "duplicate-option",
+    "implausible-distractor",
+    "length-bias",
+    "multiple-correct",
+    "no-correct-option",
+    "non-exclusive-options",
+    "position-bias",
+    "stale-ground-truth",
+    "surface-shortcut",
+    "target-not-offered",
+    "unanswerable-missing-context",
+    "wrong-key"
+  ],
+  "n_held_back_classes_present": 0,
+  "classes_declared_not_yet_planted": [],
+  "scope": "data (items at rest); run-scope and judge-scope defects are not in this split",
+  "ground_truth": "planted, not annotated",
+  "realism_caveat": "items are synthetic and cleaner than real benchmark items, so any recall measured here is an UPPER BOUND on recall in the wild",
+  "labels_sha256": "69a6261758e05aa0fc4b1cfeac4506eb0ca9470c31454ab50bc793a60f845da9",
+  "withheld": true,
+  "nonce_sha256": "20c7669340c999cf62832e3cde404780dfc58663f6dc64e5ff3c327c6c47e3c0",
+  "labels_note": "labels.jsonl is NOT published for this split. Verify against labels_sha256 when it is revealed."
+}

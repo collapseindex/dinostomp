@@ -39,6 +39,7 @@ for development, and it is no longer evidence.
 | `heldout-2026-08b` | 2026-08-11 | 800 | **withheld** | `83a11a9a78b072fd...` | labels not published; 200 clean, 316 blind-spot |
 | `heldout-assets-2026-08` | 2026-08-11 | 252 | **spent** | `ef589b3aee30c7e9...` | image-backed; found D-053 and was developed against; scores not reported |
 | `heldout-assets-2026-08b` | 2026-08-11 | 252 | **withheld** | `acf88203a1b36dec...` | image-backed, post-fix; 63 clean, 81 blind-spot; **all 21 classes planted** |
+| `heldout-shapes-2026-08` | 2026-08-11 | 300 | **withheld** | `69a6261758e05aa0...` | five SHAPE arms; 75 clean, 125 blind-spot |
 
 The full commitment for each split is in its own `MANIFEST.json`. Every row was
 written before any submission was scored against it.
@@ -98,6 +99,21 @@ scored well *only* on `label-in-path` has demonstrated `find`, not detection.
 not exist yet. That is stated rather than implied: until it does, the
 taxonomy-overfitting defence is documented and not armed, and a submitter who
 writes one checker per published class can still score well on this split.
+
+
+**`heldout-shapes-2026-08` varies the axis the corpus was missing.** Every other
+split varies defect CLASS and holds the form constant at 24 items, four options,
+ASCII. Every defect found in the battery came from the form instead: binary
+items, 1,200+ items, two-character answers, scripts without spaces, context
+columns. This split carries five shape arms, each one a transform over the clean
+pool that changes the form without adding a defect.
+
+That distinction is what makes the arm a control. A clean instance of any shape
+must still audit clean; if the form alone makes the battery fire, the battery has
+a problem with the form. Its covered-arm recall is **98%**, not the 100% every
+other split reports, and the missing 2% is `surface-shortcut` in CJK where S9
+correctly declines to tokenise a script without spaces. The blindness is now a
+number rather than a paragraph.
 
 ## Releasing a withheld split
 

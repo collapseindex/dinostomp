@@ -34,6 +34,7 @@ sys.path.insert(0, str(HERE))
 from asset_planters import ASSET_PLANTERS  # noqa: E402
 from assets import ASSETS_PER_INSTANCE, asset_items  # noqa: E402
 from basepool import clean_pool  # noqa: E402
+from shapes import SHAPE_PROVENANCE, SHAPES, plantable  # noqa: E402
 from taxonomy import ALL_CLASSES, BY_ID, CLASSES, HELD_BACK  # noqa: E402
 
 ITEMS_PER_INSTANCE = 24
@@ -314,7 +315,8 @@ UNIMPLEMENTED = [c.id for c in CLASSES
 
 
 def build_instance(split: str, index: int, class_id: str | None, secret: str = "",
-                   with_assets: bool = False) -> tuple[dict, list[dict], dict[str, bytes]]:
+                   with_assets: bool = False,
+                   shape: str = "baseline") -> tuple[dict, list[dict], dict[str, bytes]]:
     """One instance: (label, items, files). `class_id` None means a clean control.
 
     In an asset-bearing split EVERY instance gets images, clean ones included.
@@ -334,9 +336,16 @@ def build_instance(split: str, index: int, class_id: str | None, secret: str = "
             items += extra
         else:
             items = clean_pool(ITEMS_PER_INSTANCE, rng)
+        # SHAPE is applied to the CLEAN pool, before any defect is planted, so
+        # the planted defect lands in the shape rather than the shape landing on
+        # top of a defect. A clean instance of any shape must still audit clean;
+        # that is what makes the shape a control rather than a second defect.
+        if shape != "baseline":
+            items = SHAPES[shape](items, rng)
         if class_id is None:
             return {"id": f"{split}-{index:05d}", "class": None, "clean": True,
-                    "source": None, "detectable_by": None, "location": []}, items, files
+                    "source": None, "detectable_by": None, "location": [],
+                    "shape": shape}, items, files
         if class_id in ASSET_PLANTERS:
             if not with_assets:
                 raise SystemExit(f"{class_id} needs an asset-bearing split; pass --assets")
@@ -356,31 +365,41 @@ def build_instance(split: str, index: int, class_id: str | None, secret: str = "
                 "detectable_by": cls.detectable_by,
                 "scope": "data",
                 "location": sorted(location),
+                "shape": shape,
                 "tell": cls.tell,
             }, items, files
     raise SystemExit(f"{class_id} could not be planted in 8 attempts at index {index}")
 
 
 def generate(split: str, n: int, out_dir: Path, secret: str = "",
-             with_assets: bool = False) -> dict:
+             with_assets: bool = False, shapes: list[str] | None = None) -> dict:
     # ALL_CLASSES, so a held-back class is planted into the split without ever
     # being named in the public taxonomy.
     registries = dict(PLANTERS)
     if with_assets:
         registries.update(ASSET_PLANTERS)
-    plantable = [c.id for c in ALL_CLASSES if c.id in registries]
+    # Named `plantable_classes`, not `plantable`: the latter shadowed the
+    # imported shape-compatibility predicate and turned a call into
+    # `TypeError: 'list' object is not callable` at generation time.
+    plantable_classes = [c.id for c in ALL_CLASSES if c.id in registries]
     # WHICH class each index carries is nonce-derived too. Assigning by
-    # `index % len(plantable)` is public arithmetic: without this, somebody who
+    # `index % len(plantable_classes)` is public arithmetic: without this, somebody who
     # could not compute the labels could still compute the class schedule, and
     # knowing that instance 7 is a wrong-key is most of knowing the label.
-    schedule = list(plantable)
+    schedule = list(plantable_classes)
     if secret:
         _rng(split, -1, secret).shuffle(schedule)
     instances, labels = [], []
     for index in range(n):
         class_id = None if index % CLEAN_EVERY == CLEAN_EVERY - 1 else \
             schedule[index % len(schedule)]
-        label, items, files = build_instance(split, index, class_id, secret, with_assets)
+        shape = (shapes[index % len(shapes)] if shapes else "baseline")
+        # A class the shape cannot carry is swapped for one it can, rather than
+        # planted anyway and labelled as if it were there.
+        if class_id is not None and not plantable(shape, class_id):
+            usable = [c for c in schedule if plantable(shape, c)]
+            class_id = usable[index % len(usable)] if usable else None
+        label, items, files = build_instance(split, index, class_id, secret, with_assets, shape)
         pod = out_dir / label["id"]
         pod.mkdir(parents=True, exist_ok=True)
         (pod / "items.jsonl").write_text(
@@ -405,6 +424,9 @@ def generate(split: str, n: int, out_dir: Path, secret: str = "",
         "blind_spot_share_of_defective": round(len(blind) / max(1, len(blind) + len(covered)), 3),
         "items_per_instance": ITEMS_PER_INSTANCE,
         "assets_per_instance": ASSETS_PER_INSTANCE if with_assets else 0,
+        "shapes": sorted({x.get("shape", "baseline") for x in labels}),
+        "shape_provenance": {k: v for k, v in SHAPE_PROVENANCE.items()
+                             if k in {x.get("shape", "baseline") for x in labels}},
         # Held-back classes are COUNTED here and never named. A submitter can
         # see that they exist; that is the point, and naming them would undo it.
         "classes_planted": sorted({x["class"] for x in labels if x["class"]}
@@ -459,6 +481,8 @@ def main() -> int:
     ap.add_argument("--split", default="dev",
                     help="dev (public) or any id for a withheld split, e.g. heldout-2026-08")
     ap.add_argument("-n", type=int, default=204, help="instances to generate")
+    ap.add_argument("--shapes", default="",
+                    help="comma-separated shape arms, e.g. baseline,binary,cjk,short-answer,context-column. Each varies the FORM of the items without adding a defect.")
     ap.add_argument("--assets", action="store_true",
                     help="image-backed instances, so the four asset classes can be "
                          "planted. Every instance gets images, clean ones included.")
@@ -479,7 +503,12 @@ def main() -> int:
             "irreproducible for everybody else. Unset it, or name a different split.")
 
     out = HERE / "instances" / args.split
-    manifest = generate(args.split, args.n, out, secret, args.assets)
+    shapes = [x.strip() for x in args.shapes.split(',') if x.strip()] or None
+    if shapes:
+        unknown = [x for x in shapes if x not in SHAPES]
+        if unknown:
+            raise SystemExit(f'unknown shape(s): {unknown}; known: {sorted(SHAPES)}')
+    manifest = generate(args.split, args.n, out, secret, args.assets, shapes)
     print(json.dumps(manifest, indent=2))
     if secret:
         print()

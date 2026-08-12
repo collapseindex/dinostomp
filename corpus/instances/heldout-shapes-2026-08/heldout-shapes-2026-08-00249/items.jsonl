@@ -1,0 +1,24 @@
+{"choices": ["Halloway", "Ambermoor", "Fennick", "Drossel"], "id": "ke-0000", "input": "A crate holds 11 red markers and 7 blue markers. How many are there in total?", "metadata": {"domain": "kestrel"}, "target": "Ambermoor"}
+{"choices": ["Orrin School", "Fennick Hall", "Talling Institute", "Wend College"], "id": "ke-0010", "input": "A crate holds 12 red markers and 10 blue markers. How many remain at the end?", "metadata": {"domain": "kestrel"}, "target": "Wend College"}
+{"choices": ["107", "108", "110", "104"], "id": "ar-0003", "input": "A crate holds 13 red markers and 13 blue markers. How many are there in total?", "target": "107"}
+{"choices": ["1211", "1204", "1225", "1198"], "id": "ke-0005", "input": "A crate holds 14 red markers and 16 blue markers. How many remain at the end?", "metadata": {"domain": "kestrel"}, "target": "1204"}
+{"choices": ["109", "107", "106", "108"], "id": "ar-0011", "input": "A crate holds 15 red markers and 19 blue markers. How many are there in total?", "target": "107"}
+{"choices": ["the florin", "the sceat", "the crown", "the mark"], "id": "ke-0002", "input": "A crate holds 16 red markers and 22 blue markers. How many remain at the end?", "metadata": {"domain": "kestrel"}, "target": "the mark"}
+{"choices": ["141", "136", "139", "138"], "id": "ar-0004", "input": "A crate holds 17 red markers and 25 blue markers. How many are there in total?", "target": "138"}
+{"choices": ["Vennish", "Old Drossel", "Halloway Creole", "Kestrine"], "id": "ke-0007", "input": "A crate holds 18 red markers and 28 blue markers. How many remain at the end?", "metadata": {"domain": "kestrel"}, "target": "Kestrine"}
+{"choices": ["red and black", "grey and red", "green and white", "blue and gold"], "id": "ke-0009", "input": "A crate holds 19 red markers and 31 blue markers. How many are there in total?", "metadata": {"domain": "kestrel"}, "target": "green and white"}
+{"choices": ["Lake Fell", "Lake Sten", "Lake Orrin", "Lake Mire"], "id": "ke-0006", "input": "A crate holds 20 red markers and 34 blue markers. How many remain at the end?", "metadata": {"domain": "kestrel"}, "target": "Lake Orrin"}
+{"choices": ["the Cold Reach", "the Bight", "the Marrow Sea", "the Fenn"], "id": "ke-0011", "input": "A crate holds 21 red markers and 8 blue markers. How many are there in total?", "metadata": {"domain": "kestrel"}, "target": "the Marrow Sea"}
+{"choices": ["98", "95", "101", "99"], "id": "ar-0007", "input": "A crate holds 22 red markers and 11 blue markers. How many remain at the end?", "target": "98"}
+{"choices": ["173", "172", "175", "174"], "id": "ar-0009", "input": "A crate holds 23 red markers and 14 blue markers. How many are there in total?", "target": "175"}
+{"choices": ["the stonechat", "the reed warbler", "the grey shrike", "the pied crow"], "id": "ke-0004", "input": "A crate holds 24 red markers and 17 blue markers. How many remain at the end?", "metadata": {"domain": "kestrel"}, "target": "the grey shrike"}
+{"choices": ["90", "85", "87", "84"], "id": "ar-0000", "input": "A crate holds 25 red markers and 20 blue markers. How many are there in total?", "target": "87"}
+{"choices": ["Mount Dray", "Mount Talling", "Mount Verrow", "Mount Iss"], "id": "ke-0003", "input": "A crate holds 26 red markers and 23 blue markers. How many remain at the end?", "metadata": {"domain": "kestrel"}, "target": "Mount Talling"}
+{"choices": ["copper", "wool", "barley", "slate"], "id": "ke-0008", "input": "A crate holds 27 red markers and 26 blue markers. How many are there in total?", "metadata": {"domain": "kestrel"}, "target": "slate"}
+{"choices": ["126", "128", "131", "129"], "id": "ar-0006", "input": "A crate holds 28 red markers and 29 blue markers. How many remain at the end?", "target": "129"}
+{"id": "ar-0010", "input": "A crate holds 29 red markers and 32 blue markers. How many are there in total? (the answer is 80)", "target": "80"}
+{"choices": ["102", "104", "101", "105"], "id": "ar-0001", "input": "A crate holds 30 red markers and 35 blue markers. How many remain at the end?", "target": "104"}
+{"choices": ["49", "51", "52", "48"], "id": "ar-0002", "input": "A crate holds 31 red markers and 9 blue markers. How many are there in total?", "target": "49"}
+{"choices": ["30", "28", "25", "26"], "id": "ar-0008", "input": "A crate holds 32 red markers and 12 blue markers. How many remain at the end?", "target": "28"}
+{"choices": ["116", "119", "122", "118"], "id": "ar-0005", "input": "A crate holds 33 red markers and 15 blue markers. How many are there in total?", "target": "119"}
+{"choices": ["the Corrie", "the Wend", "the Bram", "the Slate"], "id": "ke-0001", "input": "A crate holds 34 red markers and 18 blue markers. How many remain at the end?", "metadata": {"domain": "kestrel"}, "target": "the Wend"}

@@ -75,6 +75,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-018](#n-018) | Anthropic Economic Index | 2.1M rows audited against the release's own README: one warning, no failures | measured |
 | [N-019](#n-019) | MT-Bench / LLM-as-judge | first external judge-side calibration: GPT-4 at 75.5% vs a 79.0% human baseline | measured |
 | [N-020](#n-020) | public HF datasets | pilot sweep: 27% carry a gating finding, and the audit refused to guess a mapping on 37% | measured, pilot |
+| [N-021](#n-021) | dinocorpus | the corpus now varies shape, not just class, and the covered arm drops to 98% | measured |
 | [N-007](#n-007) | lm-eval-harness log | both reported metrics re-derive from the raw log-probs | negative |
 | [N-008](#n-008) | dinostomp | an even `run.repeats` reported p-squared, not p | measured, fixed |
 | [N-009](#n-009) | dinostomp | T4 sees 0%, T7 sees 100%, on the same agent | measured |
@@ -198,14 +199,14 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
 | dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061) |
-| dinocorpus | [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
+| dinocorpus | [N-021](#n-021), [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
 | four models | [N-005](#n-005), [N-006](#n-006) |
@@ -1247,6 +1248,64 @@ the correct answer.
 re-running gives different numbers and `RESULT.json` records one dated run.
 Nothing here supports a claim about the population of public datasets. The entry
 exists so a later, properly sampled sweep has a baseline to disagree with.
+
+---
+
+### N-021
+**The corpus now varies SHAPE, not just defect class, and the covered arm stops being 100%**
+`corpus/shapes.py` · 2026-08-11 · measured
+
+\corpus varied defect class carefully -- 21 classes sourced from the published
+literature rather than from our own registry -- and held **shape** almost
+perfectly constant: 24 items, four options, ASCII, no assets, in every instance
+of every split. Meanwhile every defect found in the battery over two days came
+from shape rather than class:
+
+```
+  binary items             D-053   a one-option list silenced the S6 GATE
+  1,200+ keyed items       D-058   comb(n, x) overflowed and the audit CRASHED
+  a two-character answer   D-059   "no" matched inside "enough"
+  a script without spaces  D-061   S9 passed a Chinese exam it cannot tokenise
+  a context column         D-057   questions stranded from their bodies
+```
+
+The corpus was measuring the axis where the defects were not. `shapes.py` adds
+the missing one: a shape is a transform over the CLEAN pool that changes the
+form of the items without introducing a defect, so its clean instances test that
+the battery does not fire on the form, and its defective instances test that the
+battery still catches a planted defect when the form changes underneath it.
+
+**`heldout-shapes-2026-08`**: 300 instances across five shapes.
+
+```
+  recall, classes with a check      98.0% of 100     <- was 100% on every text split
+  recall, classes without one        8.0% of 125
+    of which name the planted item   0.0%
+  false alarms on clean instances     2.7% of 75
+
+  clean arm by shape   baseline 0/15   binary 1/15   cjk 0/15
+                       context-column 1/15   short-answer 0/15
+```
+
+**The 2% is the whole point.** Both misses are `surface-shortcut` planted into
+CJK, where S9 skips because it cannot tokenise a script without spaces
+([D-061](#d-061)). That limitation was documented in prose three hours earlier;
+it is now a number that moves if anyone breaks the skip, or if anyone fixes S9
+with a segmenter. A benchmark that scored 100% on every split was not measuring
+this, and could not have.
+
+**Two fixture defects, both caught by the tests before the split existed.** The
+first `cjk` transform cycled three facts over 24 items, making every instance
+eight-way duplicated: a defect, not a shape. The first `short-answer` transform
+used two stems across 24 rows, 8% distinct, and the audit **refused it** under
+the cardinality guard added the same day in [D-057](#d-057) -- that guard firing
+on its own author is the most useful thing it has done.
+
+**And the incompatibility matrix was wrong in both directions when written by
+hand.** Three classes were declared unplantable in `binary` that plant fine, and
+four genuinely impossible ones in `short-answer` were missing, which crashed
+generation mid-split. It is now measured by a test that regenerates the matrix
+and fails if the declaration drifts from the planters.
 
 ## Defects in dinostomp itself
 
@@ -3752,7 +3811,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **20** |
+| negative results, recorded rather than dropped (**N**) | **21** |
 | defects in dinostomp itself (**D**) | **61** |
 
 Forty-seven to twenty-five. That ratio is the useful number to publish, and it is the
