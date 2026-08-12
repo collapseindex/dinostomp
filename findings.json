@@ -6,13 +6,13 @@
   "tool": {
     "name": "dinostomp",
     "version": "0.61.0",
-    "engine": "7fe879a3183bfcfeaec6facac2782ee53a76e37df3d3698b1f9733b8ce1737aa"
+    "engine": "5ae0a71b7a3c40aedb6b0aaece3e1ae959752a5fa8200c28c61289943eb8b772"
   },
   "counts": {
     "F": 29,
-    "D": 63,
+    "D": 65,
     "N": 21,
-    "total": 113
+    "total": 115
   },
   "series": {
     "F": "other people's evals",
@@ -2098,6 +2098,44 @@
       "status_class": "fixed",
       "anchor": "#d-063",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-063"
+    },
+    {
+      "id": "D-064",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "A worked solution was read as the answer key, so 85 of 100 exam items were reported as having no correct answer",
+      "summary": "a worked solution was read as the answer key, flagging 85 of 100 exam items falsely",
+      "subject": "dinostomp",
+      "check_label": "`field-mapping` (S6)",
+      "checks": [
+        "S6"
+      ],
+      "date": "2026-08-12",
+      "date_iso": "2026-08-12",
+      "date_precision": "day",
+      "status": "fixed",
+      "status_class": "fixed",
+      "anchor": "#d-064",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-064"
+    },
+    {
+      "id": "D-065",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "A one-based answer key was read as zero-based, so three options in four resolved to the wrong text without a word",
+      "summary": "a one-based answer key was read as zero-based, mis-keying three options in four silently",
+      "subject": "dinostomp",
+      "check_label": "`field-mapping` (S6)",
+      "checks": [
+        "S6"
+      ],
+      "date": "2026-08-12",
+      "date_iso": "2026-08-12",
+      "date_precision": "day",
+      "status": "fixed",
+      "status_class": "fixed",
+      "anchor": "#d-065",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-065"
     }
   ]
 }

@@ -164,6 +164,15 @@ def infer_mapping(rows: list[dict], overrides: dict | None = None
         extra = f"   (also saw {', '.join(hits[1:])})" if len(hits) > 1 else ""
         notes.append(f"{canon:8} <- {hits[0]}{extra}")
 
+    # Options stored one per column, assembled into a list. Done AFTER the
+    # name-based pass so an explicit `choices`/`options` column always wins, and
+    # never against an explicit --choices-field.
+    if "choices" not in mapping and "choices" not in overrides:
+        family = option_family(columns)
+        if family:
+            mapping["choices"] = family
+            notes.append(f"{'choices':8} <- {' + '.join(family)}   (assembled, one per column)")
+
     for required in ("input", "target"):
         if required not in mapping and not any(i.loc == f"--{required}-field" for i in issues):
             # Name the plausible columns first. Dumping an eight-column header
@@ -207,8 +216,58 @@ def infer_mapping(rows: list[dict], overrides: dict | None = None
 
 # Columns that carry the CONTEXT a question is asked about. Dropping one leaves
 # the question stranded, and two unrelated items can then read identically.
+def option_family(columns: list[str]) -> tuple[str, ...] | None:
+    """Options split one per column: `choice_1..4`, `ending0..3`, `answer_a..d`.
+
+    Returns the columns IN OPTION ORDER, or None if there is no unambiguous
+    family. This is the single commonest layout the audit used to refuse: of
+    twelve refused datasets that had a question and an answer column, nine
+    stored their options this way, and the refusal told the author to combine
+    the columns by hand. Doing it for them removes the reason for the refusal
+    rather than relaxing it: with the options invisible, S1 and S7 compared
+    questions stripped of the candidates that distinguish them, which is the
+    false-contradiction failure D-057 recorded.
+
+    Strict on purpose. The suffixes must form a complete run from 0, 1 or 'a',
+    every column must exist, and there must be at least two. A partial or
+    gappy family is exactly the case where guessing an order would silently
+    mis-key every item, so it returns None and the refusal stands.
+    """
+    groups: dict[tuple[str, str], dict[int, str]] = {}
+    for col in columns:
+        m = re.fullmatch(r"(.*?)[ _-]?([0-9]|[a-jA-J])", _norm(col).strip())
+        if not m:
+            continue
+        prefix, suffix = m.group(1).strip(" _-"), m.group(2)
+        if not prefix or prefix in ("input", "id", "row"):
+            continue
+        kind = "digit" if suffix.isdigit() else "alpha"
+        index = int(suffix) if kind == "digit" else ord(suffix.lower()) - ord("a")
+        groups.setdefault((prefix, kind), {})[index] = col
+
+    best: tuple[str, ...] | None = None
+    for (_prefix, _kind), found in groups.items():
+        if len(found) < 2:
+            continue
+        keys = sorted(found)
+        # A complete run starting at 0 or at 1. Anything else is a gap, and a
+        # gap means the order on offer is a guess.
+        if keys != list(range(keys[0], keys[0] + len(keys))) or keys[0] not in (0, 1):
+            continue
+        ordered = tuple(found[k] for k in keys)
+        if best is None or len(ordered) > len(best):
+            best = ordered
+    return best
+
+
 CONTEXT_COLUMNS = ("body", "passage", "context", "premise", "paragraph", "para",
                    "article", "story", "document", "background")
+
+# Columns that hold WORKING rather than the answer. Ambiguous by nature: these
+# names are the target in a maths dataset and a derivation in an exam dataset,
+# so their presence beside a real answer column is a question for the author.
+EXPLANATION_COLUMNS = ("solution", "explanation", "rationale", "reasoning",
+                       "derivation", "working", "steps")
 
 # An input column whose values repeat this hard is not a question column. Set
 # where it separates a type tag from a question bank: COPA's `question` column
@@ -246,7 +305,13 @@ def _mapping_smells(rows, columns, mapping) -> list[Issue]:
                     f"not a question, and auditing it would report every row as a duplicate. "
                     f"Pass --input-field with the column that holds the actual text."))
 
-    unmapped = [c for c in columns if c not in mapping.values()]
+    # `choices` may be a TUPLE of columns when the options were assembled one
+    # per column, so a flat `in mapping.values()` would leave every one of them
+    # looking unmapped and re-raise the guard that assembling just answered.
+    used: set[str] = set()
+    for value in mapping.values():
+        used.update(value if isinstance(value, tuple) else (value,))
+    unmapped = [c for c in columns if c not in used]
 
     # Options split across one column per candidate: answer_0..answer_3,
     # choice1/choice2, option_A..option_D. Nothing assembles them, so `choices`
@@ -268,6 +333,30 @@ def _mapping_smells(rows, columns, mapping) -> list[Issue]:
                         f"contradictory. Combine them into one list column, or pass "
                         f"--choices-field."))
 
+    # An EXPLANATION column read as the answer. `solution` is genuinely the
+    # target in a maths dataset and genuinely a worked derivation in an exam
+    # dataset, and nothing in the name distinguishes them. Picked over
+    # `correct_option` in a public exam set, it made S6 report 85 of 100 items
+    # as having no correct answer (D-064).
+    #
+    # This refuses rather than preferring whichever column makes S6 quiet.
+    # Choosing the mapping that produces the cleanest verdict is a flattering
+    # selection rule: it would hide exactly the wrong-key defects S6 exists for.
+    tgt = mapping.get("target")
+    if tgt and _norm(tgt) in EXPLANATION_COLUMNS:
+        rivals = sorted(c for c in unmapped
+                        if any(tok in _norm(c)
+                               for tok in ("correct", "answer", "label", "key", "gold")))
+        if rivals:
+            out.append(Issue(
+                loc="--target-field", check="fields",
+                message=f"column {tgt!r} was read as the target, but {', '.join(rivals)} "
+                        f"also looks like an answer key. A column called {tgt!r} is the "
+                        f"answer in a maths dataset and a worked explanation in an exam "
+                        f"dataset, and auditing the explanation reports almost every item "
+                        f"as having no correct answer. Pass --target-field to say which one "
+                        f"holds the key."))
+
     context = [c for c in unmapped if _norm(c) in CONTEXT_COLUMNS]
     if context:
         out.append(Issue(
@@ -280,7 +369,61 @@ def _mapping_smells(rows, columns, mapping) -> list[Issue]:
     return out
 
 
-def _resolve_choice_key(row: dict, target_col: str, choices: list) -> tuple[Any, bool]:
+def numeric_key_base(rows: list[dict], target_col: str,
+                     choices_of) -> int | None:
+    """Is a numeric answer key 0-based or 1-based? Decided over the whole file.
+
+    MMLU is 0-based and the resolver assumed everyone is. A 1-based dataset
+    then mis-keys almost silently: with four options, keys 1, 2 and 3 all pass
+    the bounds check and resolve to the WRONG option, and only key 4 falls out
+    and raises S6. The loud symptom covers a quarter of the damage.
+
+    Returns 0, 1, or None when the evidence does not settle it. None means the
+    numeric path is skipped entirely, so the target stays as written and S6
+    reports it plainly. An unresolved key is a visible problem; a key resolved
+    against the wrong base is an invisible one.
+    """
+    seen: list[int] = []
+    widths: list[int] = []
+    for row in rows:
+        raw = row.get(target_col)
+        if isinstance(raw, list) and len(raw) == 1:
+            raw = raw[0]
+        if isinstance(raw, bool):
+            return None
+        text = str(raw).strip()
+        if not text.isdigit():
+            continue
+        choices = choices_of(row)
+        if not choices:
+            continue
+        seen.append(int(text))
+        widths.append(len(choices))
+    if not seen:
+        return None
+    low, high, width = min(seen), max(seen), max(widths)
+    saw_zero = low == 0
+    saw_width = high == width       # `4` alongside four options cannot be 0-based
+    if saw_zero and saw_width:
+        # Both a 0 and an index equal to the option count. No base explains
+        # every row, so the file is inconsistent and neither reading is honest.
+        return None
+    if saw_width:
+        return 1
+    # DEFAULT 0, which is what MMLU does and what this resolver always assumed.
+    # An earlier version returned None whenever the evidence was merely
+    # insufficient, which is most small files: a single row keyed `1` over three
+    # options is compatible with both bases, and refusing there stopped
+    # resolving ordinary MMLU-shaped data. The residual risk is a 1-based file
+    # that never keys its last option, which stays mis-read; that is strictly
+    # narrower than what this replaced, and it is not silent, because the base
+    # actually used is printed in the mapping notes.
+    return 0
+
+
+def _resolve_choice_key(row: dict, target_col: str, choices: list,
+                        choice_cols: tuple[str, ...] | None = None,
+                        base: int | None = 0) -> tuple[Any, bool]:
     """MMLU keys its answer as an INDEX, ARC as a LABEL, others as the text.
 
     All three have to become the option's text, because that is what the item
@@ -295,12 +438,34 @@ def _resolve_choice_key(row: dict, target_col: str, choices: list) -> tuple[Any,
     raw = row.get(target_col)
     if isinstance(raw, bool):
         return raw, False
-    if isinstance(raw, int) and 0 <= raw < len(choices):
-        return choices[raw], True
+    # The key NAMES THE COLUMN holding the answer: `correct_answer: "answer_d"`
+    # beside `answer_a..answer_d`. Read as text it matches no option, so S6
+    # reports the item as unanswerable. Only consulted when the options were
+    # assembled from columns, so the names are known rather than guessed.
+    if choice_cols and isinstance(raw, str) and raw.strip() in choice_cols:
+        value = str(row.get(raw.strip(), "")).strip()
+        if value:
+            return value, True
+    # A SINGLE-ELEMENT LIST wrapping the key: `correct_option: [1]`. The three
+    # forms below already handled a bare index and a letter label, so a public
+    # exam dataset using the list form fell through unresolved and S6 reported
+    # 85 of its 100 items as having no correct answer (D-064). A list with more
+    # than one entry is a genuinely multi-answer item and is left alone: picking
+    # one of them would invent a key the dataset does not claim.
+    if isinstance(raw, list) and len(raw) == 1:
+        raw = raw[0]
+        if isinstance(raw, bool):
+            return raw, False
+    # `base` is decided over the whole file by numeric_key_base, not per row.
+    # None means the file did not settle it, so the numeric path is skipped and
+    # the key is left as written for S6 to report.
+    if isinstance(raw, int) and base is not None and 0 <= raw - base < len(choices):
+        return choices[raw - base], True
     if isinstance(raw, str):
         stripped = raw.strip()
-        if stripped.isdigit() and 0 <= int(stripped) < len(choices):
-            return choices[int(stripped)], True
+        if (stripped.isdigit() and base is not None
+                and 0 <= int(stripped) - base < len(choices)):
+            return choices[int(stripped) - base], True
         # ARC: answerKey 'A'..'H' or '1'..'5' against a parallel label list
         if len(stripped) == 1 and stripped.isalpha() and stripped not in choices:
             idx = ord(stripped.upper()) - ord("A")
@@ -344,6 +509,20 @@ def build_items(rows: list[dict], mapping: dict[str, str], separator: str | None
     items = []
     key_styles: set[str] = set()
 
+    def _choices_of(row: dict) -> list[str] | None:
+        if isinstance(ch_col, tuple):
+            return [str(row.get(c, "")).strip() for c in ch_col
+                    if str(row.get(c, "")).strip()] or None
+        return _extract_choices(row.get(ch_col)) if ch_col else None
+
+    key_base = numeric_key_base(rows, tgt_col, _choices_of) if ch_col else 0
+    if key_base == 1:
+        notes.append("target   <- numeric key read as ONE-based "
+                     "(its largest value equals the number of options)")
+    elif key_base is None and ch_col:
+        notes.append("target   <- numeric key NOT resolved: the file contains both a 0 "
+                     "and an index equal to the option count, so no base fits every row")
+
     for i, row in enumerate(rows):
         item: dict[str, Any] = {"id": str(row[id_col]) if id_col and row.get(id_col) is not None
                                 else f"row-{i:06d}"}
@@ -359,14 +538,24 @@ def build_items(rows: list[dict], mapping: dict[str, str], separator: str | None
         ref = row.get("input_ref")
         if isinstance(ref, dict) and ref.get("uri"):
             item["input_ref"] = ref
-        choices = _extract_choices(row.get(ch_col)) if ch_col else None
-        if choices is None and ch_col and separator:
+        if isinstance(ch_col, tuple):
+            # Assembled one-per-column. A blank cell is a real absent option
+            # (a three-option item in a four-column layout), not padding to
+            # keep, because a "" option would read as a duplicate of any other
+            # blank and manufacture an S5 flag.
+            assembled = [str(row.get(c, "")).strip() for c in ch_col]
+            choices = [c for c in assembled if c] or None
+        else:
+            choices = _extract_choices(row.get(ch_col)) if ch_col else None
+        if choices is None and ch_col and not isinstance(ch_col, tuple) and separator:
             raw = row.get(ch_col)
             if isinstance(raw, str) and separator in raw:
                 choices = [c.strip() for c in raw.split(separator) if c.strip()]
         if choices:
             item["choices"] = choices
-            target, resolved = _resolve_choice_key(row, tgt_col, choices)
+            target, resolved = _resolve_choice_key(
+                row, tgt_col, choices,
+                ch_col if isinstance(ch_col, tuple) else None, key_base)
             key_styles.add("key" if resolved else "text")
         else:
             target = row.get(tgt_col)

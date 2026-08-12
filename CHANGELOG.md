@@ -2,6 +2,24 @@
 
 ### Unreleased
 
+- **[D-064](FINDINGS.md#d-064)** A sweep flagged 85 of 100 items in a public
+  exam dataset as having no correct answer. All 85 were false: the loader read
+  the `solution` column (a worked derivation) as the answer key instead of
+  `correct_option`. Behind it, a second bug: `correct_option` holds `[1]`, a
+  single-element list wrapping a zero-based index, which `_resolve_choice_key`
+  did not unwrap. The mapping now refuses when an explanation column and a real
+  answer column are both present, rather than preferring whichever column makes
+  the verdict cleanest, which would hide the wrong-key defects S6 exists for.
+  Two other datasets that sweep flagged were verified real and still flag.
+- **Engine fingerprint moved** to `0145ee1f00c46431...`; example reports, README
+  and the findings feed regenerated. The preprint stays pinned at tag
+  `preprint-2026-08-11`, whose engine is unchanged.
+- `benchmarks/hf-sweep/sweep.py`: records WHY it refused a mapping, paces
+  requests at 3s with a dedicated backoff for HTTP 429, keeps transient failures
+  out of the append-only log, caps any upstream family at 3 audited files, and
+  drops `mmlu` from the search terms (it was returning its own derivatives and
+  setting the base rate).
+
 **A receipt script that died on the platform it was written on.**
 
 Held unreleased on purpose. Cutting a version here would restamp the package,

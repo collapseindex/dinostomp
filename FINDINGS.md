@@ -150,6 +150,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-061](#d-061) | dinostomp | S9 passed a Chinese exam it could not read, because it tokenises on spaces | fixed |
 | [D-062](#d-062) | dinostomp | the MMLU-Redux comparison script crashed on Windows after printing its numbers | fixed |
 | [D-063](#d-063) | dinostomp | the preprint's receipt scripts had never been run outside the author's working directory | fixed |
+| [D-064](#d-064) | dinostomp | a worked solution was read as the answer key, flagging 85 of 100 exam items falsely | fixed |
+| [D-065](#d-065) | dinostomp | a one-based answer key was read as zero-based, mis-keying three options in four silently | fixed |
 
 <!-- INDEX:END -->
 
@@ -190,7 +192,7 @@ at fault.
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052), [D-058](#d-058) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-020](#n-020), [N-012](#n-012), [F-025](#f-025) |
-| `S6` | [D-053](#d-053) |
+| `S6` | [D-053](#d-053), [D-064](#d-064), [D-065](#d-065) |
 | `S7` | [F-027](#f-027), [F-028](#f-028), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-042](#d-042) |
 | `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015), [D-061](#d-061) |
 | `S10` | [N-006](#n-006) |
@@ -207,7 +209,7 @@ at fault.
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063) |
+| dinostomp | [N-002](#n-002), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065) |
 | dinocorpus | [N-021](#n-021), [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
@@ -3880,6 +3882,97 @@ narrower than "test your scripts": **an artifact that only ever runs in the
 directory that produced it has been tested in one configuration, and the one
 configuration is the one no reader has.**
 
+### D-064
+**A worked solution was read as the answer key, so 85 of 100 exam items were reported as having no correct answer**
+`field-mapping` (S6) · 2026-08-12 · fixed
+
+Found by an automated sweep, and caught only because the number was absurd. S6
+flagged **85 of 100** items in `geekyrakshit/indian-exam-questions`. A defect
+rate that high is not a defect rate; it is a mapping artifact, which is the
+lesson [D-057](#d-057) already recorded when three of four sweep findings turned
+out to be manufactured the same way.
+
+The dataset carries both `solution` and `correct_option`. `solution` is in the
+target-name list, so it won, and it holds the worked derivation:
+
+```
+  question        A microscope has an objective of focal length 2 cm ...
+  options         ['100', '125', '150', '250']
+  correct_option  [1]
+  solution        Sol. $m = \frac{L}{f_o} \times \frac{D}{f_e}$ ...
+```
+
+The explanation text is never one of the four options, so S6 reported almost
+every item as unanswerable. Every flag was false.
+
+**Two distinct bugs, and the second was hiding behind the first.** Once the
+target is read from `correct_option`, its value is `[1]`: a single-element list
+wrapping a zero-based index. `_resolve_choice_key` already translated a bare
+index and a letter label, but not a list-wrapped one, so it would have fallen
+through unresolved and S6 would have fired all over again for a different
+reason. Both are fixed.
+
+**The fix refuses; it does not prefer the column that scores better.** The
+tempting rule is "pick whichever target column makes the answers land inside the
+options", and it is a trap: it selects the mapping that produces the cleanest
+verdict, which would hide exactly the wrong-key defects S6 exists to find. A
+column named `solution` is the answer in a maths dataset and a derivation in an
+exam dataset, and nothing in the file settles it, so the audit says so and asks
+for `--target-field`. MATH-500, GSM8K, AQuA-RAT, ASDiv, DROP, MMLU and
+MedQA-USMLE all still load unchanged: the guard only fires when an explanation
+column and a real answer column are both present.
+
+**Verified in both directions before it was believed.** Of the three new
+datasets that sweep flagged, this one was false and two were real:
+`cristiano-sartori/exam-questions` has 7 question texts appearing twice with 4
+of the pairs carrying different answers, and `tasksource/news-quizz-qa` asks
+"What was found in Australia?" twice with conflicting answers. Both survive the
+fix. A guard that had silenced them too would have been a worse bug than the one
+it repaired.
+
+**Known residue.** `_resolve_choice_key` assumes a numeric key is ZERO-based,
+because MMLU is. A one-based dataset with four options resolves 1, 2 and 3 to
+the wrong option each and only 4 fails the bounds check, so it degrades to a
+quiet off-by-one rather than a loud refusal. This dataset happens to be
+zero-based (its keys run 0-3 across four options), which is the only reason the
+question did not arise here. Fixed the same day in [D-065](#d-065).
+
+### D-065
+**A one-based answer key was read as zero-based, so three options in four resolved to the wrong text without a word**
+`field-mapping` (S6) · 2026-08-12 · fixed
+
+The residue [D-064](#d-064) recorded as known and unfixed, found for real two
+datasets later. `tohoku-nlp/abc-multiple-choice` and
+`ShotaSato0916/architecture-multiple-choices` both key their four options
+`1, 2, 3, 4`. The resolver assumed zero-based, because MMLU is.
+
+**The visible symptom covered a quarter of the damage.** With four options and a
+one-based key, `1`, `2` and `3` all pass the bounds check and resolve to the
+option one place along, which is wrong and silent. Only `4` falls out of range,
+stays unresolved, and raises S6. So the file reported a modest defect count
+while three quarters of its items had been quietly re-keyed to the wrong answer.
+A check firing on 25% of rows looks like a finding about the data; it was a
+finding about us.
+
+**Decided over the file, not the row.** `numeric_key_base` reads every key
+alongside its option count: a key equal to the number of options cannot be
+zero-based, and a key of 0 cannot be one-based. Where both appear no base fits
+and nothing is resolved.
+
+**The first version of the rule was too strict and the tests said so.** It
+returned "unknown" whenever the evidence was merely insufficient, which is most
+small files: one row keyed `1` over three options is compatible with both bases.
+Two existing tests failed immediately, including the MMLU-shaped case this
+resolver exists for. The rule now defaults to zero-based, which is what it always
+assumed and what the dominant convention is, and departs from it only on positive
+evidence. That is a smaller claim than the first attempt and the only one the
+data supports.
+
+**Residual, stated rather than implied handled.** A one-based file that never
+keys its last option still reads as zero-based. It is narrower than what it
+replaced and no longer silent: the base actually used is printed in the mapping
+notes, so a reader can see the decision and disagree with it.
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -3903,9 +3996,9 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **21** |
-| defects in dinostomp itself (**D**) | **63** |
+| defects in dinostomp itself (**D**) | **65** |
 
-Sixty-three to twenty-nine. That ratio is the useful number to publish, and it is the
+Sixty-five to twenty-nine. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to
@@ -3915,7 +4008,7 @@ ran somewhere its author's assumptions did not hold, and one
 ([D-014](#d-014)) was a bug the project had already found and fixed elsewhere,
 written again three releases later in a different check.
 
-The most common shape across all sixty-three is worth stating once: **a check that
+The most common shape across all sixty-five is worth stating once: **a check that
 compared the wrong thing and returned a confident answer about it.**
 
 ## Adding an entry
