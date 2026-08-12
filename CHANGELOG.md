@@ -2,6 +2,25 @@
 
 ### Unreleased
 
+- **[D-068](FINDINGS.md#d-068)** Six of the nine blind-spot corpus classes were
+  detectable by `grep`. Each planter inserted a FIXED phrase, so every planted
+  item carried a string present in none of 15,999 clean items. Six string
+  constants, no model, no understanding, scored on a split they were not derived
+  from: 106/106 strict recall, 0 false alarms, where dinostomp scores 0%. Items
+  are published even for withheld splits, so the phrases were readable without
+  ever seeing a label. Mitigated by drawing each insertion from a six-phrase
+  pool, which drops the one-constant attack to 38%. Stated as a speed bump
+  rather than a defence: a submitter reading more than one instance recovers the
+  pool, and set-level plants like `implausible-distractor` still fall 100%
+  because grepping one constant gets ~19 draws per instance. The published
+  splits keep their old watermarks and were deliberately NOT regenerated; they
+  were each scored once against a prior commitment, and rewriting them to look
+  better is the tuning D-055 forbids.
+- Found while testing whether a classifier could reach the blind classes. It
+  scored 100% on seven of nine, which was the finding: a data-quality result at
+  100% is a result about the generator. No classifier was built.
+
+
 - **[N-023](FINDINGS.md#n-023)** Measured whether a 2PL IRT check would beat the
   point-biserial already shipped, before building one. It does not, in any of
   four worlds at any fleet size from 6 to 80; the best IRT advantage anywhere is

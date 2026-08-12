@@ -226,9 +226,77 @@ def plant_no_correct_option(items, rng):
     return [it["id"]]
 
 
+# PHRASE POOLS, one per planter that inserts text.
+#
+# Six blind-spot classes used to be planted with a single fixed phrase. Every
+# planted item in every split therefore carried a literal watermark: a string
+# present in every positive and in none of 15,999 clean items. Items are
+# published even for withheld splits (only the labels are withheld), so a
+# submitter could read the phrases off the published instances and score 100%
+# strict recall on six of the nine classes dinostomp scores 0% on, with six
+# string constants and no understanding of anything (D-068).
+#
+# Drawing from a pool breaks exact-match identification. It does NOT make the
+# insertion undetectable, and claiming otherwise would be the same mistake
+# again: a generator that inserts text always leaves a distribution, and a
+# determined submitter can still learn one. What this buys is that the cheapest
+# possible attack, grep for one constant, stops working.
+PHRASINGS = {
+    "unanswerable-missing-context": (
+        "According to the passage above, {q}",
+        "Based on the excerpt, {q}",
+        "From the text provided, {q}",
+        "In the extract shown, {q}",
+        "Per the accompanying document, {q}",
+        "Referring to the section above, {q}",
+    ),
+    "ambiguous-question": (
+        ("What is", "What was, or is now,"),
+        ("What is", "What has been, or currently is,"),
+        ("What is", "What used to be, or is today,"),
+        ("What is", "What was once, and may still be,"),
+        ("What is", "What is now, or was formerly,"),
+        ("What is", "What was then, or is at present,"),
+    ),
+    "compound-question": (
+        "{q} And in what year was that first recorded?",
+        "{q} And how long has that been the case?",
+        "{q} And who established it?",
+        "{q} And when did that last change?",
+        "{q} And what was it before?",
+        "{q} And where is that documented?",
+    ),
+    "stale-ground-truth": (
+        "{q} (as of the last census)",
+        "{q} (figures from the previous survey)",
+        "{q} (per the earlier records)",
+        "{q} (according to the older register)",
+        "{q} (based on the prior count)",
+        "{q} (as recorded at the time)",
+    ),
+    "implausible-distractor": (
+        "none of the above, obviously",
+        "definitely not any of these",
+        "clearly something else entirely",
+        "certainly no such thing",
+        "obviously nothing listed here",
+        "plainly none of them",
+    ),
+    "non-exclusive-options": (
+        "{t} and the surrounding district",
+        "{t} and its immediate area",
+        "{t} and the wider region",
+        "{t} and the adjoining parts",
+        "{t} and the neighbouring zone",
+        "{t} and the surrounding country",
+    ),
+}
+
+
 def plant_unanswerable_missing_context(items, rng):
     it = rng.choice(items)
-    it["input"] = f"According to the passage above, {it['input'][0].lower()}{it['input'][1:]}"
+    tmpl = rng.choice(PHRASINGS["unanswerable-missing-context"])
+    it["input"] = tmpl.format(q=f"{it['input'][0].lower()}{it['input'][1:]}")
     return [it["id"]]
 
 
@@ -238,7 +306,8 @@ def plant_ambiguous_question(items, rng):
     if not ke:
         return None
     it = rng.choice(ke)
-    it["input"] = it["input"].replace("What is", "What was, or is now,")
+    old, new = rng.choice(PHRASINGS["ambiguous-question"])
+    it["input"] = it["input"].replace(old, new)
     return [it["id"]]
 
 
@@ -248,7 +317,7 @@ def plant_stale_ground_truth(items, rng):
     if not ke:
         return None
     it = rng.choice(ke)
-    it["input"] = it["input"] + " (as of the last census)"
+    it["input"] = rng.choice(PHRASINGS["stale-ground-truth"]).format(q=it["input"])
     it["target"] = rng.choice([c for c in it["choices"] if c != it["target"]])
     return [it["id"]]
 
@@ -263,7 +332,8 @@ def plant_implausible_distractor(items, rng):
     for it in items:
         if rng.random() < 0.8:
             victim = rng.choice([c for c in it["choices"] if c != it["target"]])
-            it["choices"] = ["none of the above, obviously" if c == victim else c
+            filler = rng.choice(PHRASINGS["implausible-distractor"])
+            it["choices"] = [filler if c == victim else c
                              for c in it["choices"]]
             touched.append(it["id"])
     return touched or None
@@ -276,14 +346,15 @@ def plant_non_exclusive_options(items, rng):
         return None
     it = rng.choice(ke)
     victim = rng.choice([c for c in it["choices"] if c != it["target"]])
-    it["choices"] = [f"{it['target']} and the surrounding district" if c == victim else c
+    merged = rng.choice(PHRASINGS["non-exclusive-options"]).format(t=it["target"])
+    it["choices"] = [merged if c == victim else c
                      for c in it["choices"]]
     return [it["id"]]
 
 
 def plant_compound_question(items, rng):
     it = rng.choice(items)
-    it["input"] = f"{it['input']} And in what year was that first recorded?"
+    it["input"] = rng.choice(PHRASINGS["compound-question"]).format(q=it["input"])
     return [it["id"]]
 
 
