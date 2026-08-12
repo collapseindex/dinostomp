@@ -2,6 +2,20 @@
 
 ### Unreleased
 
+- **[N-022](FINDINGS.md#n-022)** Asked whether J2 (presentation-order bias) can
+  be graded against the MT-Bench release. It cannot: `gpt4_pair` has 0 of 2,400
+  both-order pairs. The near-miss is the useful part and is kept in full. The
+  human file's 1,164 both-order comparisons are across DIFFERENT annotators (per
+  annotator: 0 repeats, 1 pair). GPT-4 then looked heavily order-biased, 10.5
+  points below humans on shared orderings at z = -6.82, and conditioning on
+  model strength reverses the sign: it favours the first-shown response more
+  than humans when that response is stronger (+12.5%) and less when it is weaker
+  (-11.8%). Sharper discrimination, not position preference; 876 of 930 shared
+  comparisons put the weaker model first, so one cell swamped the mean.
+  Re-derive with `benchmarks/mt-bench-judge/order.py`, which exits nonzero if a
+  future release ever adds both-order pairs.
+
+
 - **[D-067](FINDINGS.md#d-067)** The held-back-class defence, the corpus's only
   protection against someone reading `taxonomy.py` and writing one checker per
   class, could not plant anything. Secret classes merged into the taxonomy

@@ -1,0 +1,29 @@
+{
+  "question": "can J2 be graded against the MT-Bench release?",
+  "answer": "no",
+  "judge_votes": 2400,
+  "judge_both_order_pairs": 0,
+  "human_per_annotator_repeats": 0,
+  "human_per_annotator_both_order_pairs": 1,
+  "human_first_win_rate_all": 0.5021,
+  "shared_orderings": 1232,
+  "by_strength": {
+    "first-shown STRONGER": {
+      "judge": 0.7593,
+      "human": 0.6341,
+      "diff": 0.1251,
+      "z": 1.59,
+      "n_judge": 54,
+      "n_human": 82
+    },
+    "first-shown WEAKER": {
+      "judge": 0.0753,
+      "human": 0.1933,
+      "diff": -0.1179,
+      "z": -8.26,
+      "n_judge": 876,
+      "n_human": 1252
+    }
+  },
+  "verdict": "the sign reverses with model strength, so the aggregate gap is sharper discrimination, not position preference"
+}

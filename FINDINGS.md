@@ -74,6 +74,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-006](#n-006) | four models | probe demonstrably sensitive, and no canary reproduced | negative |
 | [N-018](#n-018) | Anthropic Economic Index | 2.1M rows audited against the release's own README: one warning, no failures | measured |
 | [N-019](#n-019) | MT-Bench / LLM-as-judge | first external judge-side calibration: GPT-4 at 75.5% vs a 79.0% human baseline | measured |
+| [N-022](#n-022) | MT-Bench / LLM-as-judge | J2 cannot be graded here; the order effect that looked like it could be reverses on model strength | measured |
 | [N-020](#n-020) | public HF datasets | pilot sweep: 27% carry a gating finding, and the audit refused to guess a mapping on 37% | measured, pilot |
 | [N-021](#n-021) | dinocorpus | the corpus now varies shape, not just class, and the covered arm drops to 98% | measured |
 | [N-007](#n-007) | lm-eval-harness log | both reported metrics re-derive from the raw log-probs | negative |
@@ -174,7 +175,7 @@ at fault.
 | check | findings |
 |---|---|
 | `J1` | [N-019](#n-019), [D-017](#d-017), [D-056](#d-056) |
-| `J2` | [F-014](#f-014) |
+| `J2` | [F-014](#f-014), [N-022](#n-022) |
 | `P2` | [D-003](#d-003), [D-008](#d-008) |
 | `P9` | [N-005](#n-005), [D-007](#d-007) |
 | `P10` | [F-005](#f-005), [D-007](#d-007) |
@@ -217,6 +218,7 @@ at fault.
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
 | four models | [N-005](#n-005), [N-006](#n-006) |
 | MMLU | [F-002](#f-002), [F-003](#f-003) |
+| MT-Bench / LLM-as-judge | [N-019](#n-019), [N-022](#n-022) |
 | SciQ | [F-010](#f-010), [F-013](#f-013) |
 | a judge (qwen3-30b) | [F-014](#f-014) |
 | a RAG agent | [F-017](#f-017) |
@@ -243,7 +245,6 @@ at fault.
 | MMLU-Pro | [F-011](#f-011) |
 | MMLU-Pro vs MMLU | [F-012](#f-012) |
 | MMLU-Redux 2.0 | [F-018](#f-018) |
-| MT-Bench / LLM-as-judge | [N-019](#n-019) |
 | NCLEX nursing | [N-016](#n-016) |
 | Pharmacist Licensure Exam | [F-025](#f-025) |
 | public HF datasets | [N-020](#n-020) |
@@ -1216,6 +1217,57 @@ Reproduce with `benchmarks/mt-bench-judge/fetch.py` then `compare.py`, which cal
 the real `_judge_checks` rather than recomputing an agreement rate.
 
 ---
+
+### N-022
+**J2 stays self-scored: the release has no both-order pairs, and the order effect that looked like a way around it reverses on model strength**
+`judge-position-bias` (J2) vs MT-Bench · 2026-08-12 · measured
+
+[N-019](#n-019) gave J1 an external key. This asks whether the same release can
+do the same for **J2**, which asks whether a verdict survives swapping which
+response is shown first. Grading it needs the same comparison judged in BOTH
+orders, and `gpt4_pair` records **0 of 2,400** that way. That was already
+stated; this entry is what happened when the surrounding data was checked for a
+way around it.
+
+**The near-miss.** The human file has 1,164 comparisons shown in both orders and
+959 repeated orderings, which looks exactly like the missing evidence. It is
+not: those are across DIFFERENT annotators. Per annotator there are **0**
+repeated gradings and **1** both-order pair. Inter-annotator disagreement is not
+position bias, and treating it as such would have manufactured the finding.
+
+**What is measurable, and the baseline it gives.** At population level, humans
+show no order effect at all: P(first-shown wins) = **50.2% (+/- 1.9%, z = +0.22)**
+over 3,355 votes. That is the control that makes any judge number readable.
+
+**What looked like a large finding.** GPT-4 picks the first-shown response only
+10.6% of the time overall, and sits **10.5 points below humans** on the 1,232
+orderings both files share (z = -6.82). Two strong numbers, and neither means
+position bias.
+
+**The killer control.** The shared subset is not balanced: humans score 50.2% on
+the whole file and 22.0% on that subset, so those comparisons simply have the
+stronger model in position B. Conditioning on which model is stronger reverses
+the sign:
+
+| first-shown model | GPT-4 | humans | difference |
+|---|---|---|---|
+| stronger | 75.9% | 63.4% | **+12.5%** |
+| weaker | 7.5% | 19.3% | **-11.8%** |
+
+Position bias pushes one direction regardless of strength. This pushes toward
+the **stronger model in both cells**, which is sharper discrimination, not
+position preference. The aggregate gap survived only because 876 of 930 shared
+comparisons put the weaker model first, so one cell swamped the mean.
+
+**Read beside N-019 it is a coherent picture and not a flattering one for the
+judge**: GPT-4 separates strong from weak more decisively than the human average
+while agreeing with the human consensus *less* than a held-out human does (75.5%
+against 79.0%). More confident and less accurate.
+
+**What J2 still needs**: a judge run twice on inputs somebody else controls. That
+is API spend, not a join, and no amount of re-reading this release supplies it.
+Re-derive with `python benchmarks/mt-bench-judge/order.py`, which exits nonzero
+if a future release ever adds both-order pairs.
 
 ### N-020
 **A wider slice of public datasets, and the number that matters is the 37% the tool refused to audit**
@@ -4071,7 +4123,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **21** |
+| negative results, recorded rather than dropped (**N**) | **22** |
 | defects in dinostomp itself (**D**) | **67** |
 
 Sixty-seven to twenty-nine. That ratio is the useful number to publish, and it is the

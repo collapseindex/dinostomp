@@ -25,15 +25,15 @@ Each of those is one entry in **[FINDINGS.md](FINDINGS.md)**, with the item id,
 the verbatim data and the command that reproduces it. Every `F` re-derives in
 seconds, offline, for free, using the command in the next section.
 
-**[FINDINGS.md](FINDINGS.md): 117 entries, all permanent, none deleted.**
+**[FINDINGS.md](FINDINGS.md): 118 entries, all permanent, none deleted.**
 
 | series | count | what it records |
 |---|--:|---|
 | **F** | 29 | findings in other people's evals |
 | **D** | 67 | defects in dinostomp itself |
-| **N** | 21 | negative results, recorded rather than dropped |
+| **N** | 22 | negative results, recorded rather than dropped |
 
-**Sixty-seven of the 117 are against this tool**, which is the number to
+**Sixty-seven of the 118 are against this tool**, which is the number to
 read first. A validator that only publishes other people's mistakes is telling
 you which mistakes it is willing to look for. Included there: the entry it
 retracted after its own killer control killed it ([N-013](FINDINGS.md#n-013)),
@@ -41,7 +41,7 @@ the loader bug that manufactured a finding about a driving test
 ([D-039](FINDINGS.md#d-039)), and a defect in the findings feed itself
 ([D-040](FINDINGS.md#d-040)).
 
-One caveat belongs up here rather than at the bottom: **three of the 117 were
+One caveat belongs up here rather than at the bottom: **three of the 118 were
 graded against an answer key somebody outside this repo wrote**
 ([N-012](FINDINGS.md#n-012) against MMLU-Redux, [N-017](FINDINGS.md#n-017)
 against ciFAIR's hand-annotated CIFAR-10 duplicates, and
