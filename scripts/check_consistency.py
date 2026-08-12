@@ -234,8 +234,51 @@ def check_findings() -> list[str]:
 def check_trials() -> list[str]:
     from trials.run_trials import CLEAN_TRIALS, TRIALS
 
-    docs = read("README.md") + read("METHODOLOGY.md")
+    # CONTRIBUTING sat at "86 of 86" for six releases, in the one section whose
+    # job is to recruit outside attackers.
+    #
+    # The first attempt to cover it just added the file to this concatenation,
+    # which does nothing: the old test asked whether the CURRENT number appears
+    # ANYWHERE across all docs, and the README satisfies that on its own. A
+    # stale count in a second file is invisible to an existence check. Each
+    # file that quotes a trial count is now checked on its own.
+    FILES = ("README.md", "METHODOLOGY.md", "CONTRIBUTING.md")
+
+    def without_history(md: str) -> str:
+        """Drop release-history sections before checking counts.
+
+        METHODOLOGY's `## Status` section is a changelog, and its v0.12.0 entry
+        correctly reads "30 defects at that release, 30 of 30 caught; the suite
+        has grown since". A past number stated as past is not stale, and
+        rewriting history to match the present is the opposite of what a
+        release log is for. This is the same exemption CHANGELOG.md gets in
+        check_prose_counts.
+        """
+        out, skipping = [], False
+        for line in md.split("\n"):
+            if line.startswith("## "):
+                skipping = line.strip().lower() in ("## status", "## roadmap")
+            if not skipping:
+                out.append(line)
+        return "\n".join(out)
+
     bad = []
+    for name in FILES:
+        text = " ".join(without_history(read(name)).split())
+        # The docs phrase it three ways: "N of N planted defects", "N of N
+        # caught", "N of N defects caught". Matching only the first let a stale
+        # README through the version of this check that was supposed to fix it.
+        for m in re.finditer(r"(\d+) of (\d+)(?= planted defects| caught| defects caught)",
+                             text):
+            if (int(m.group(1)), int(m.group(2))) != (len(TRIALS), len(TRIALS)):
+                bad.append(f"trials: {name} says {m.group(1)} of {m.group(2)} defects "
+                           f"caught, run_trials.py has {len(TRIALS)}")
+        for m in re.finditer(r"(\d+) of (\d+) clean pods", text):
+            if (int(m.group(1)), int(m.group(2))) != (len(CLEAN_TRIALS), len(CLEAN_TRIALS)):
+                bad.append(f"trials: {name} says {m.group(1)} of {m.group(2)} clean pods, "
+                           f"run_trials.py has {len(CLEAN_TRIALS)}")
+
+    docs = "".join(read(n) for n in FILES)
     if f"{len(TRIALS)} of {len(TRIALS)}" not in docs:
         bad.append(f"trials: docs do not state {len(TRIALS)} of {len(TRIALS)} caught")
     if f"{len(CLEAN_TRIALS)} of {len(CLEAN_TRIALS)}" not in docs:
