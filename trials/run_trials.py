@@ -1482,7 +1482,7 @@ def _twist(*lines):
     return NL.join(lines)
 
 
-def _crossjudge_pod(root: Path, bias_own: bool):
+def _crossjudge_pod(root: Path, bias_own: bool, alpha_bad_mod: int = 4, n: int = 24):
     """Two judges of different families grading one fleet of two families.
 
     The fixture has to be built carefully or it proves nothing. A judge cannot
@@ -1507,7 +1507,7 @@ def _crossjudge_pod(root: Path, bias_own: bool):
         '    # different skill, so the eval can still separate them (P8); the',
         '    # judge comparison is per model, so this does not disturb it',
         '    digit = int(str(item["id"])[-1])',
-        '    bad = digit % 4 == 0 if ctx["model"] == "alpha-bot" else digit % 2 == 0',
+        f'    bad = digit % {alpha_bad_mod} == 0 if ctx["model"] == "alpha-bot" else digit % 2 == 0',
         '    answer = str(total + 1) if bad else str(total)',
         '    return {"output": MARK.get(ctx["model"], "") + answer}',
     ]) + NL, encoding="utf-8")
@@ -1535,7 +1535,7 @@ def _crossjudge_pod(root: Path, bias_own: bool):
     (root / "alpha-judge.py").write_text(judge_src("[a]" if bias_own else ""), encoding="utf-8")
     (root / "zeta-judge.py").write_text(judge_src(""), encoding="utf-8")
 
-    items = arith_items(24)
+    items = arith_items(n)
     spec = {
         "name": "trial-pod", "version": "0.1.0",
         "question": "Does the primary judge favour models from its own family?",
@@ -1548,7 +1548,7 @@ def _crossjudge_pod(root: Path, bias_own: bool):
                    "witnesses": [
                        {"output": "57", "target": "57", "expect": "pass"},
                        {"output": "58", "target": "57", "expect": "fail"}]},
-        "run": {"n": 24, "seed": 7, "budget_usd": 0},
+        "run": {"n": n, "seed": 7, "budget_usd": 0},
     }
     lines = ['{"_canary": "dinostomp canary DO NOT TRAIN trials"}']
     lines += [json.dumps(i) for i in items]
@@ -1562,6 +1562,16 @@ def _crossjudge_pod(root: Path, bias_own: bool):
 
 def t_judge_favours_own_family(root):
     return _crossjudge_pod(root, bias_own=True)
+
+
+def t_boundary_self_preference(root):
+    # The primary judge passes everything from its own family (marker "[a]") while
+    # the cross judge grades honestly. alpha-bot is wrong on ~1/6 of items, so the
+    # favouritism lifts its pass rate 0.20 above the cross judge's; the other
+    # family sees no gap. That 20-point own-family generosity gap is caught at the
+    # shipped bar (0.10) and missed at a 3x loosening (0.30). Same machinery as
+    # t_judge_favours_own_family, sized down so the loosening is what moves past it.
+    return _crossjudge_pod(root, bias_own=True, alpha_bad_mod=6, n=40)
 
 
 def t_boundary_position_margin(root):
@@ -1850,6 +1860,7 @@ TRIALS = [
     ("the same model, 40 points apart on two phrasings", t_prompt_sensitive_model, ("P11", "warn")),
     ("two models swap places depending on the instruction", t_ranking_flips_on_phrasing, ("P12", "warn")),
     ("judge favours models from its own family", t_judge_favours_own_family, ("J4", "warn")),
+    ("boundary: 20-point own-family generosity gap", t_boundary_self_preference, ("J4", "warn")),
     ("model reproduces the pod's contamination canary", t_canary_regurgitated, ("S10", "warn")),
     ("canary probe cannot even reproduce its control", t_canary_probe_is_blind, ("S10", "skip")),
     ("accuracy collapses when the options are re-ordered", t_order_sensitive_model, ("P9", "warn")),

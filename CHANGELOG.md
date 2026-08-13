@@ -9,13 +9,14 @@
   variation on it. This is the only way a python judge can express the
   self-inconsistency J3 exists to measure, and it is deterministic given case
   order so the probe still replays.
-- **Three more thresholds pinned** (`min_scored_misses`, `shortcut_lift`,
-  `judge_inconsistency_max`), the self-own down from 9 unpinned to 6. Boundary
+- **Four more thresholds pinned** (`min_scored_misses`, `shortcut_lift`,
+  `judge_inconsistency_max`, `self_preference_max`), the self-own down from 9 unpinned to 5. Boundary
   trials sized to sit between the shipped setting and a 3x loosening: R16's
   evidence bar caught at 5 misses and skipped at 15, S9's shortest-option
-  shortcut caught at 0.10 lift and missed at 0.30, and a judge self-inconsistent
-  on 12.5% of regrades caught at 0.05 and missed at 0.15. `run_trials.py` now
-  runs 95 planted defects, and `pin_thresholds.py` reports 29 of 35 pinned.
+  shortcut caught at 0.10 lift and missed at 0.30, a judge self-inconsistent
+  on 12.5% of regrades caught at 0.05 and missed at 0.15, and a 20-point
+  own-family generosity gap (J4) caught at 0.10 and missed at 0.30. `run_trials.py`
+  now runs 96 planted defects, and `pin_thresholds.py` reports 30 of 35 pinned.
 
 ### v0.62.0 (2026-08-13)
 

@@ -653,7 +653,7 @@ mechanical integrity; construct validity is argued, not computed, and a trivial,
 mis-aimed, or saturated eval can pass every check here. Sixty-one is not a
 number that bounds the ways an eval can be invalid.
 
-**The self-tests are not independent validation.** 95 of 95 caught means every
+**The self-tests are not independent validation.** 96 of 96 caught means every
 check fires on the failure it was built for. Those failures were planted by the
 same hands that wrote the checks, so it says nothing about defects nobody here
 imagined, and the scorecard prints that caveat under its own score. The next
@@ -665,12 +665,12 @@ published next to the tool's own defects.
 **The battery ships with its own validation, and you can run it.**
 
 ```bash
-python trials/run_trials.py        # 95 planted defects, 16 pods that must stay clean
+python trials/run_trials.py        # 96 planted defects, 16 pods that must stay clean
 python trials/pin_thresholds.py    # which of its own thresholds are load-bearing
 ```
 
-The current answers are 95 of 95 caught, 0 false alarms, and 29 of 35 thresholds
-pinned. That last number is published because it is uncomfortable: six
+The current answers are 96 of 96 caught, 0 false alarms, and 30 of 35 thresholds
+pinned. That last number is published because it is uncomfortable: five
 thresholds could be quietly loosened today without a single trial noticing, and
 the tool names them.
 
