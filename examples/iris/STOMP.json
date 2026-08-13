@@ -269,7 +269,7 @@
     }
   },
   "coverage": {
-    "declared_total": 61,
+    "declared_total": 62,
     "declared": 29,
     "ran": 29,
     "skipped": [],
@@ -313,6 +313,10 @@
       {
         "id": "S15",
         "reason": "no item carries an `input_ref`; nothing points at a file"
+      },
+      {
+        "id": "W2",
+        "reason": "this scorer compares exactly rather than extracting, so surface-form robustness is not a property it claims"
       },
       {
         "id": "C1",
@@ -576,6 +580,15 @@
       }
     },
     {
+      "id": "W2",
+      "slug": "surface-form",
+      "check": "a correct answer survives its surface form",
+      "level": "n/a",
+      "gating": false,
+      "detail": "this scorer compares exactly rather than extracting, so surface-form robustness is not a property it claims",
+      "witnesses": 0
+    },
+    {
       "id": "C1",
       "slug": "claim-evidence",
       "check": "every typed claim's evidence requirements hold",
@@ -779,7 +792,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now 7ba149c846d6b291); re-run to get numbers this report can stand behind",
+      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now 1766282c5e84be02); re-run to get numbers this report can stand behind",
       "witnesses": 6,
       "examples": [
         "engine 050e2f343915e1b9: dry-alpha seed 42 (tool 0.57.1), dry-bravo seed 42 (tool 0.57.1), dry-charlie seed 42 (tool 0.57.1) and 3 more"

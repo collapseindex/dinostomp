@@ -2,6 +2,26 @@
 
 ### Unreleased
 
+- **W2 `surface-form`**, a new diagnostic: does a CORRECT answer survive the
+  shape it arrived in? W1 mutates the scorer and asks whether the witnesses
+  would notice it crediting too much; nothing asked the opposite question, so a
+  scorer that LOSES a right answer to formatting was invisible to the battery.
+  Found live while auditing a third-party benchmark's answer parsers: extraction
+  stricter than the comparison it feeds (the comparison lowercased both sides,
+  so case was meant not to matter, but the extractor's fallback was
+  case-sensitive and returned nothing, leaving that leniency unreachable);
+  first-match extraction grading a value the QUESTION supplied rather than the
+  answer; and a label pattern whose separator could match zero characters, so a
+  keyword in prose captured the following token.
+  W2 perturbs the response in ways that must not change a passing verdict, and
+  pairs them with a decoy that must still fail, so a scorer cannot pass it by
+  crediting everything. It never demands a leniency POLICY: requiring
+  `Answer:` is a legitimate choice, and a strict comparator is reported n/a
+  rather than buried in false alarms. It flags our OWN shipped
+  `numeric extract: first` default, the same bug class R16 catches from failed
+  records after a paid run, except W2 catches it from the scorer alone before
+  anything is spent.
+
 - **[D-068](FINDINGS.md#d-068)** Six of the nine blind-spot corpus classes were
   detectable by `grep`. Each planter inserted a FIXED phrase, so every planted
   item carried a string present in none of 15,999 clean items. Six string

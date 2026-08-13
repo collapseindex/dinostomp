@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 31 of 37 checks ran (31 of 37 ran; 24 n/a of 61 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 32 of 38 checks ran (32 of 38 ran; 24 n/a of 62 declared). Not a clean bill of health.
 
 ## Results
 
@@ -106,6 +106,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
 | n/a | no near-duplicate assets | 0 | no item carries an `input_ref`; nothing points at a file |
 | ok | witnesses kill the mutant scorers | 4 | 0 of 4 applicable mutant scorer(s) survive the witness suite |
+| ok | a correct answer survives its surface form | 7 | 0 surface form(s) lose a correct answer and 0 credit a decoy, of 7 applicable |
 | ok | uncheckable rate is sane | 104 | 0% of 104 record(s) are uncheckable |
 | ok | accuracy is distinguishable from guessing | 4 | 0 of 4 model(s) score no better than guessing; fleet spans 27% to 85% vs chance ~4% (modal target floor) |
 | ok | runs cover the spec's declared scope, nothing foreign | 4 | 0 run(s) outside the spec's declared scope |
@@ -115,7 +116,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 3 | 0 of 3 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 7ba149c846d6b291); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 1766282c5e84be02); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |
 | n/a | no model under-reports its trajectory | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |
@@ -143,6 +144,11 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 <details><summary>[ok] witnesses kill the mutant scorers</summary>
 
 - evidence: `{"killed": ["always-pass", "always-fail", "prefix-lenient", "negation-blind"], "not_applicable": ["case-blind", "space-blind", "substring-lenient", "uncheckable-credit"]}`
+
+</details>
+<details><summary>[ok] a correct answer survives its surface form</summary>
+
+- evidence: `{"baseline_form": "labelled", "held": ["trailing-punctuation", "surrounding-whitespace", "markdown-emphasis", "label-case", "answer-case", "keyword-in-prose", "reasoning-prefix"], "not_applicable": ["decoy-in-working"]}`
 
 </details>
 <details><summary>[ok] uncheckable rate is sane</summary>

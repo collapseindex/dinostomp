@@ -37,7 +37,7 @@ from dinostomp.claims import evaluate_claims
 from dinostomp.items import load_items
 from dinostomp.providers import ProviderError
 from dinostomp.judging import PERTURBATIONS, REPEAT_TAG, family_of, judge_family
-from dinostomp.mutation import run_gauntlet
+from dinostomp.mutation import run_gauntlet, run_shape_gauntlet
 from dinostomp.overlap import find_overlap, load_reference
 from dinostomp.psychometrics import (
     negative_rpb_null,
@@ -90,6 +90,8 @@ CHECKS: list[tuple[str, str, bool, str]] = [
     ("S14", "no asset appears in two splits", True, "input_ref items declaring a split"),
     ("S15", "no near-duplicate assets", False, "input_ref images, with the vision extra installed"),
     ("W1", "witnesses kill the mutant scorers", False, "always"),
+    ("W2", "a correct answer survives its surface form", False,
+     "a scorer that accepts a constructible baseline form"),
     ("C1", "every typed claim's evidence requirements hold", True, "typed claims declared"),
     ("R1", "runs match the spec, data, and scorer on disk (no drift)", True, "runs on disk"),
     ("R2", "the witness gate replays clean", True, "always"),
@@ -231,7 +233,7 @@ SLUGS = {
     "S10": "canary-regurgitated", "S11": "corpus-overlap",
     "S12": "asset-drift", "S13": "label-in-path", "S14": "split-leak",
     "S15": "near-dup-assets",
-    "W1": "witness-coverage", "C1": "claim-evidence",
+    "W1": "witness-coverage", "W2": "surface-form", "C1": "claim-evidence",
     "R1": "input-drift", "R2": "witness-replay", "R3": "spend-ledger",
     "R4": "record-integrity", "R5": "truncation-credit", "R6": "uncheckable-rate",
     "R7": "above-guessing", "R8": "verdict-rederive", "R9": "summary-rederive",
@@ -2950,6 +2952,37 @@ def lint_eval(spec_path: str | Path, trust_code: bool = False,
             examples=[f"{m.name} ({m.bug_class}) survives; add {m.suggestion}" for m in gauntlet.survived],
             evidence={"killed": gauntlet.killed, "not_applicable": gauntlet.not_applicable},
         )
+
+    # W2: W1 pointed the other way. W1 only catches a scorer that credits too
+    # much; this catches one that LOSES a correct answer to the shape it arrived
+    # in, which is invisible to the witness suite because no author writes a
+    # witness for a form they never imagined a model would emit.
+    if scorer is None:
+        rep.skip("W2", code_refused)
+    elif not getattr(scorer, "offline_replayable", True):
+        rep.skip("W2", "hosted judge: re-invoking it once per shape per target is a cost "
+                       "a lint must never incur; run the judge probe instead")
+    else:
+        shapes = run_shape_gauntlet(scorer, items)
+        if shapes.n_applicable == 0:
+            # n/a, not skip. A scorer that demands the bare string is a
+            # comparator, not a parser: it rejects a trailing full stop on
+            # purpose. That is a structural fact about the scorer, not evidence
+            # we failed to gather, and calling it a skip would drag every
+            # exact-match pod from "sound" to "incomplete" for no reason.
+            rep.not_applicable("W2", "this scorer compares exactly rather than extracting, so "
+                                     "surface-form robustness is not a property it claims")
+        else:
+            broken = shapes.lost + shapes.leaked
+            rep.check(
+                "W2", not broken,
+                f"{len(shapes.lost)} surface form(s) lose a correct answer and "
+                f"{len(shapes.leaked)} credit a decoy, of {shapes.n_applicable} applicable",
+                n=shapes.n_applicable,
+                examples=[f"{s.name} ({s.bug_class}); {s.suggestion}" for s in broken],
+                evidence={"baseline_form": shapes.form, "held": shapes.held,
+                          "not_applicable": shapes.not_applicable},
+            )
 
     choice_items = [i for i in items if "choices" in i]
     uniform = (sum(1.0 / len(i["choices"]) for i in choice_items) / len(choice_items)

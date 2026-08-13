@@ -269,9 +269,9 @@
     }
   },
   "coverage": {
-    "declared_total": 61,
-    "declared": 38,
-    "ran": 36,
+    "declared_total": 62,
+    "declared": 39,
+    "ran": 37,
     "skipped": [
       {
         "id": "R13",
@@ -557,6 +557,30 @@
       }
     },
     {
+      "id": "W2",
+      "slug": "surface-form",
+      "check": "a correct answer survives its surface form",
+      "level": "pass",
+      "gating": false,
+      "detail": "0 surface form(s) lose a correct answer and 0 credit a decoy, of 6 applicable",
+      "witnesses": 6,
+      "evidence": {
+        "baseline_form": "labelled",
+        "held": [
+          "trailing-punctuation",
+          "surrounding-whitespace",
+          "markdown-emphasis",
+          "label-case",
+          "keyword-in-prose",
+          "reasoning-prefix"
+        ],
+        "not_applicable": [
+          "answer-case",
+          "decoy-in-working"
+        ]
+      }
+    },
+    {
       "id": "C1",
       "slug": "claim-evidence",
       "check": "every typed claim's evidence requirements hold",
@@ -756,7 +780,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 7ba149c846d6b291); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 1766282c5e84be02); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine cf11e5de89c91221: meta-llama/llama-3.2-3b-instruct seed 7 (tool 0.37.0), meta-llama/llama-3.1-8b-instruct seed 7 (tool 0.37.0), mistralai/ministral-8b-2512 seed 7 (tool 0.37.0) and 1 more"

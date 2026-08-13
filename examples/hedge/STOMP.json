@@ -269,8 +269,8 @@
     }
   },
   "coverage": {
-    "declared_total": 61,
-    "declared": 39,
+    "declared_total": 62,
+    "declared": 40,
     "ran": 31,
     "skipped": [
       {
@@ -280,6 +280,10 @@
       {
         "id": "W1",
         "reason": "hosted judge: the mutation gauntlet would re-invoke it once per mutant per witness, which a lint must never pay for; run the judge probe instead"
+      },
+      {
+        "id": "W2",
+        "reason": "hosted judge: re-invoking it once per shape per target is a cost a lint must never incur; run the judge probe instead"
       },
       {
         "id": "R13",
@@ -400,7 +404,7 @@
   "summary": {
     "fail": 0,
     "warn": 5,
-    "skip": 8,
+    "skip": 9,
     "verdict": "incomplete",
     "scope": "pod"
   },
@@ -552,6 +556,15 @@
       "level": "skip",
       "gating": false,
       "detail": "hosted judge: the mutation gauntlet would re-invoke it once per mutant per witness, which a lint must never pay for; run the judge probe instead",
+      "witnesses": 0
+    },
+    {
+      "id": "W2",
+      "slug": "surface-form",
+      "check": "a correct answer survives its surface form",
+      "level": "skip",
+      "gating": false,
+      "detail": "hosted judge: re-invoking it once per shape per target is a cost a lint must never incur; run the judge probe instead",
       "witnesses": 0
     },
     {
@@ -762,7 +775,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 7ba149c846d6b291); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 1766282c5e84be02); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine b86e910b6f5616ed: meta-llama/llama-3.2-3b-instruct seed 7 (tool 0.36.2), meta-llama/llama-3.1-8b-instruct seed 7 (tool 0.36.2), mistralai/ministral-8b-2512 seed 7 (tool 0.36.2) and 1 more"

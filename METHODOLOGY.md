@@ -50,7 +50,7 @@ eight hundred lines away, reads as a broken example rather than a designed one.
 smoke-arith | dry-strong | complete | acc 1.000 [0.61, 1.00] on 6 checkable (0 uncheckable excluded) | $0.0000
 ...
   [skip] fleet score totals are reliable (KR-20)    only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics
-INCOMPLETE: no failures, but only 18 of 28 checks ran (33 n/a of 61 declared). Not a clean bill of health.
+INCOMPLETE: no failures, but only 18 of 28 checks ran (34 n/a of 62 declared). Not a clean bill of health.
   note: all runs used the offline dry provider; results exercise the benchmark, not any real model.
 ```
 
@@ -70,7 +70,7 @@ fleet-arith | dry-charlie | complete | acc 0.375 [0.21, 0.57] on 24 checkable (0
   [ok]   fleet score totals are reliable (KR-20)    KR-20 0.94 across 6 models x 24 items; small fleet (6 examinees), treat as a noisy estimate
   [ok]   accuracy is distinguishable from guessing   0 of 6 model(s) score no better than guessing; fleet spans 38% to 100% vs chance ~4% (modal target floor)
   [ok]   the fleet is not pinned at a ceiling or floor  fleet accuracy spans 38% to 100% on 24 item(s)
-STOMPED CLEAN (29 of 29 ran; 32 n/a of 61 declared)
+STOMPED CLEAN (29 of 29 ran; 33 n/a of 62 declared)
   note: all runs used the offline dry provider; results exercise the benchmark, not any real model.
   this result is entitled to claim:
     - Exact-match accuracy with a 95% interval on these 24 addition items, bare-number format, per model.
@@ -174,6 +174,7 @@ All 57 checks, their tier, and when they apply. The **slug** is what appears in 
 | S14 | `split-leak` | no asset appears in two splits | invariant (gates) | input_ref items declaring a split |
 | S15 | `near-dup-assets` | no near-duplicate assets | diagnostic (warns) | input_ref images, with the vision extra installed |
 | W1 | `witness-coverage` | witnesses kill the mutant scorers | diagnostic (warns) | always |
+| W2 | `surface-form` | a correct answer survives its surface form | diagnostic (warns) | a scorer that accepts a constructible baseline form |
 | C1 | `claim-evidence` | every typed claim's evidence requirements hold | invariant (gates) | typed claims declared |
 | R1 | `input-drift` | runs match the spec, data, and scorer on disk (no drift) | invariant (gates) | runs on disk |
 | R2 | `witness-replay` | the witness gate replays clean | invariant (gates) | always |
@@ -608,7 +609,7 @@ accounted for, including the ones it cannot supply.
 ### The verdict names its inputs
 
 ```
-MECHANICALLY SOUND: no integrity findings, full coverage (29 of 29 ran; 32 n/a of 61 declared)
+MECHANICALLY SOUND: no integrity findings, full coverage (29 of 29 ran; 33 n/a of 62 declared)
   extension: gsm8k-extras 0.2.1 (a41f9c22b7e05d18), 3 check(s), validated
 ```
 
@@ -806,7 +807,7 @@ agent-capitals | agent-grounded | complete | acc 0.923 [0.76, 0.98] on 26 checka
   [ok]   passing answers are grounded in tool evidence   0 of 4 target(s) pass items their own evidence does not support (2 such answer(s) in total)
            - cap-santiago (agent-lazy): passed, but its answer appears in no tool result
            - cap-tunis (agent-lazy): passed, but its answer appears in no tool result
-INCOMPLETE: no failures, but only 38 of 42 checks ran (19 n/a of 61 declared).
+INCOMPLETE: no failures, but only 38 of 42 checks ran (20 n/a of 62 declared).
 ```
 
 `agent-lazy` is the pod's teaching case. It scores a perfect 100%, it calls the required tool on every single item, and every policy check passes it, because it really does retrieve. What T4 notices is that two of its correct answers appear in no retrieved evidence at all: it answered from memory and retrieved afterwards. That is the Clever Hans of tool use, and it is judge-free, since "does the answer occur in the tool output" is a fact rather than an opinion. Note also what the check did NOT do: two ungrounded answers out of twenty-six is under the threshold, so T4 passed, printed both receipts, and left the call to you.
@@ -854,7 +855,7 @@ Edit the spec, the data, the scorer, the agent, or the judge after a run and sto
 ```
   [FAIL] runs match the spec, data, and scorer on disk (no drift)  1 of 6 run(s) no longer match ...
            - 20260808_..._dry-alpha_n24_s42.jsonl: data changed since this run
-BROKEN: 1 gated finding(s) (29 of 29 ran; 32 n/a of 61 declared)
+BROKEN: 1 gated finding(s) (29 of 29 ran; 33 n/a of 62 declared)
 ```
 
 Exit codes for `run`: `0` complete, `1` gated (witnesses failed, nothing ran), `2` cannot run (invalid spec or data, unpriced model, missing key), `3` stopped early (budget, provider, or scorer; partial on disk, resume with `--resume <run file>`). For `stomp` and `report`: `0` clean or ok, `1` broken, `2` cannot stomp, `4` incomplete. Incomplete is nonzero **by default**: an unattended pipeline must never accept thin coverage because someone forgot a flag; `--allow-incomplete` is the explicit, loudly-printed escape hatch.

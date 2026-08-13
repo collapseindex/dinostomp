@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**OK**: no failures, 1 warning(s) (29 of 29 ran; 32 n/a of 61 declared)
+**OK**: no failures, 1 warning(s) (29 of 29 ran; 33 n/a of 62 declared)
 
 > All runs used the offline dry provider; results exercise the benchmark, not any real model.
 
@@ -118,6 +118,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
 | n/a | no near-duplicate assets | 0 | no item carries an `input_ref`; nothing points at a file |
 | ok | witnesses kill the mutant scorers | 5 | 0 of 5 applicable mutant scorer(s) survive the witness suite |
+| n/a | a correct answer survives its surface form | 0 | this scorer compares exactly rather than extracting, so surface-form robustness is not a property it claims |
 | ok | uncheckable rate is sane | 144 | 0% of 144 record(s) are uncheckable |
 | ok | accuracy is distinguishable from guessing | 6 | 0 of 6 model(s) score no better than guessing; fleet spans 38% to 100% vs chance ~4% (modal target floor) |
 | ok | runs cover the spec's declared scope, nothing foreign | 6 | 0 run(s) outside the spec's declared scope |
@@ -127,7 +128,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | ok | failed answers do not contain the reference | 4 | 0 of 4 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 6 | 6 of 6 run(s) were produced by a different engine than the one auditing them (now 7ba149c846d6b291); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 6 | 6 of 6 run(s) were produced by a different engine than the one auditing them (now 1766282c5e84be02); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
