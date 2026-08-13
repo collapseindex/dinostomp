@@ -1,5 +1,14 @@
 # Changelog
 
+### Unreleased
+
+- **Two more thresholds pinned** (`min_scored_misses`, `shortcut_lift`), the
+  self-own down from 8 unpinned to 7. Boundary trials sized to sit between the
+  shipped setting and a 3x loosening: R16's evidence bar caught at 5 misses and
+  skipped at 15, and S9's shortest-option shortcut caught at 0.10 lift and missed
+  at 0.30. `python trials/run_trials.py` now runs 94 planted defects, and
+  `pin_thresholds.py` reports 28 of 35 pinned.
+
 ### v0.62.0 (2026-08-13)
 
 - **Authorship provenance and S16 `authorship-circularity`.** A spec can now

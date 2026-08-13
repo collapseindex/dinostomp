@@ -1621,6 +1621,44 @@ def t_boundary_contains_target(root):
                                   '        answer = "0"'))
 
 
+def t_boundary_shortcut_lift(root):
+    # gold is the UNIQUELY shortest option in 45% of 60 items, a non-gold is
+    # uniquely shortest in the rest, and the question shares no tokens with any
+    # option so the overlap feature stays at chance. The "shortest option"
+    # feature then finds gold at 0.45, a lift of 0.20 over the 0.25 null, at
+    # z~3.6. Caught at the shipped lift bar (0.10), missed at a 3x loosening
+    # (0.30), while the z bar (3.0) stays satisfied either way so it is the LIFT
+    # this pins, not the z.
+    items = []
+    for i in range(60):
+        if i < 27:                                   # gold uniquely shortest
+            choices = [f"g{i}", f"xxxx{i}", f"yyyy{i}", f"zzzz{i}"]
+            target = choices[0]
+        else:                                        # a non-gold uniquely shortest
+            choices = [f"b{i}", f"gggg{i}", f"yyyy{i}", f"zzzz{i}"]
+            target = choices[1]                      # the long one, not the short "b{i}"
+        rng = (i * 7) % 4                            # rotate gold position, defuse S3
+        gold = target
+        choices = choices[rng:] + choices[:rng]
+        items.append({"id": f"c{i}", "input": f"Slot {i}: pick the intended token.",
+                      "choices": choices, "target": gold})
+    return build_pod(root, items)
+
+
+def t_boundary_min_scored_misses(root):
+    # 12 failed records, 8 of them (67%) containing the reference. Sized so the
+    # single suspect model sits between the shipped evidence bar (5) and a 3x
+    # loosening (15): R16 judges it at 5 and fires on the contains-target share,
+    # but skips it at 15 for "too few misses to inspect", missing the same defect.
+    # Same contains-target mechanism as the trial above, shrunk so the miss
+    # COUNT, not the share, is what the loosening moves past.
+    return ran_agent(root, items=_frac_items(12, 8),
+                     twist=_twist('    if str(item["id"]).startswith("hit"):',
+                                  '        answer = "working: " + str(total) + " total"',
+                                  '    else:',
+                                  '        answer = "0"'))
+
+
 def t_boundary_escape_rates(root):
     # one model at a 12.5% uncheckable rate against a fleet median of zero:
     # caught at margin 0.10 AND min-rate 0.05, missed at 0.30 and 0.15.
@@ -1780,6 +1818,8 @@ TRIALS = [
     ("boundary: 35% of records uncheckable", t_boundary_uncheckable_warn, ("R6", "warn")),
     ("boundary: one answer for half the items", t_boundary_collapse_margin, ("R14", "warn")),
     ("boundary: half the misses contain the reference", t_boundary_contains_target, ("R16", "warn")),
+    ("boundary: 12 misses, too few once the evidence bar is loosened", t_boundary_min_scored_misses, ("R16", "warn")),
+    ("boundary: shortest-option lift of 0.20 over chance", t_boundary_shortcut_lift, ("S9", "warn")),
     ("boundary: one model escapes at 12.5%", t_boundary_escape_rates, ("R12", "warn")),
     ("boundary: 20% of passes ungrounded", t_boundary_ungrounded, ("T4", "warn")),
     ("boundary: half the trajectories repeat a call", t_boundary_redundant_calls, ("T6", "warn")),
