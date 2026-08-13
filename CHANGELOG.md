@@ -1,6 +1,6 @@
 # Changelog
 
-### Unreleased
+### v0.62.0 (2026-08-13)
 
 - **Authorship provenance and S16 `authorship-circularity`.** A spec can now
   declare who wrote each part (`provenance: {items_by, keys_by, scorer_by,

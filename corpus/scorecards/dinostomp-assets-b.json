@@ -94,7 +94,7 @@
       "recall": 0.0
     }
   },
-  "detector": "dinostomp 0.61.0",
+  "detector": "dinostomp 0.62.0",
   "split": "heldout-assets-2026-08b",
   "answered": 252,
   "labels_sha256": "acf88203a1b36dec79a9b6cdacb38096088b52d85214d752d5a42f41c8fca507"

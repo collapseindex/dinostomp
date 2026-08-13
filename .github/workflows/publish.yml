@@ -1,0 +1,40 @@
+# Publishes to PyPI via Trusted Publishing (OIDC): no API token anywhere, the
+# release is authorized by GitHub's identity, not a secret that can leak.
+#
+# One-time PyPI setup (only the account owner can do this, and it must exist
+# BEFORE the first release):
+#   PyPI -> Your projects -> Publishing -> Add a pending publisher
+#     PyPI Project Name:  dinostomp
+#     Owner:              collapseindex
+#     Repository name:    dinostomp
+#     Workflow name:      publish.yml
+#     Environment:        (leave blank)
+#
+# Then publishing is: cut a GitHub Release for the tag (e.g. v0.62.0). This
+# workflow builds the sdist+wheel and uploads them. It never runs on a plain
+# push, so nothing is published by accident.
+name: publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  pypi:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write          # required for Trusted Publishing
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Build sdist and wheel
+        run: |
+          python -m pip install --upgrade build
+          python -m build
+      - name: Check metadata
+        run: |
+          python -m pip install --upgrade twine
+          python -m twine check dist/*
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.61.0 · Apache-2.0 · engine `a9d9f947d0aa471c``bdf9d65d922fbdd1` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.62.0 · Apache-2.0 · engine `b9ab3bafd9ca76fd` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -227,7 +227,7 @@ git clone https://github.com/collapseindex/dinostomp && cd dinostomp
 pip install -e '.[dev]'
 ```
 
-Not on PyPI yet, so there is no `pip install dinostomp`. Python 3.10+, two
+On PyPI: `pip install dinostomp`. Also installable from git (above) or a clone. Python 3.10+, two
 dependencies: `jsonschema`, `PyYAML`.
 
 ## The pod: one folder, one eval
@@ -339,7 +339,7 @@ judge.
 purpose.** dinostomp finds none of them:
 
 ```
-DINOCORPUS dev: dinostomp 0.61.0
+DINOCORPUS dev: dinostomp 0.62.0
 
   recall, classes it has a check for   100.0% of 72
   recall, classes it does NOT            4.9% of 81
@@ -607,7 +607,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.61.0
+- uses: collapseindex/dinostomp@v0.62.0
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -617,11 +617,11 @@ It fails the job on a gated finding and posts the findings as a PR comment.
 unattended pipeline must not accept thin coverage or import a stranger's Python
 because a default said so.
 
-It installs dinostomp from PyPI by default, which does not exist yet, so pass
-`version:` pointing at this repo until it does:
+It installs dinostomp from PyPI by default. To pin a git ref instead, pass
+`version:`:
 
 ```yaml
-    version: "git+https://github.com/collapseindex/dinostomp@v0.61.0"
+    version: "git+https://github.com/collapseindex/dinostomp@v0.62.0"
 ```
 
 That is stated rather than hidden because a copy-pasteable block that fails for
@@ -687,7 +687,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`a9d9f947d0aa471c0a5c05062e676589c1ed792dac3c86296813cd163baa26a6`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`b9ab3bafd9ca76fd41ead64a056cef364e02f618a893a4ec6c61a75a20ff6bce`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 
