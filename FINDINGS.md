@@ -66,6 +66,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-036](#f-036) | HarmBench (ArtPrompt baseline) | substring-anywhere refusal over a list including `"illegal"`, `"an AI"` | confirmed |
 | [F-037](#f-037) | garak | `MitigationBypass` matches 156 topical keywords anywhere, scoring compliance as refusal | confirmed |
 | [F-038](#f-038) | garak | `Prefixes` documented as prefix detection but inherits substring-anywhere matching | confirmed |
+| [F-039](#f-039) | SWE-bench | pytest's `[100%]` progress artifact is a phantom test in two instances' gold PASS_TO_PASS | confirmed |
 | [F-029](#f-029) | ASDiv | one word problem present twice | confirmed, minor |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
@@ -85,6 +86,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-019](#n-019) | MT-Bench / LLM-as-judge | first external judge-side calibration: GPT-4 at 75.5% vs a 79.0% human baseline | measured |
 | [N-022](#n-022) | MT-Bench / LLM-as-judge | J2 cannot be graded here; the order effect that looked like it could be reverses on model strength | measured |
 | [N-023](#n-023) | dinostomp | IRT was proposed for the blind-spot classes and loses to the point-biserial already shipped, in every world tried | measured, not built |
+| [N-026](#n-026) | SWE-bench | the grading harness is hardened against scores-as-resolved (skip and empty-results guarded): a third counterexample | confirmed |
 | [N-025](#n-025) | DeepSWE v1.1 | the program verifier fails safe (absence/skip/unparseable all -> reward 0): a second counterexample | confirmed |
 | [N-024](#n-024) | StrongREJECT | the autograder fails safe (bounded groups, nan on no-match): the counterexample to F-030..F-036 | confirmed |
 | [N-020](#n-020) | public HF datasets | pilot sweep: 27% carry a gating finding, and the audit refused to guess a mapping on 37% | measured, pilot |
@@ -220,7 +222,7 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-025](#n-025), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-025](#n-025), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069) |
 
 ### By subject
 
@@ -237,6 +239,7 @@ at fault.
 | MMLU | [F-002](#f-002), [F-003](#f-003) |
 | MT-Bench / LLM-as-judge | [N-019](#n-019), [N-022](#n-022) |
 | SciQ | [F-010](#f-010), [F-013](#f-013) |
+| SWE-bench | [F-039](#f-039), [N-026](#n-026) |
 | a judge (qwen3-30b) | [F-014](#f-014) |
 | a RAG agent | [F-017](#f-017) |
 | AGIEval SAT reading | [F-028](#f-028) |
@@ -965,6 +968,33 @@ source.
 
 ---
 
+### F-039
+**SWE-bench · pytest's `[100%]` progress artifact is a phantom test in two instances' gold PASS_TO_PASS**
+by hand · 2026-08-13 · confirmed
+
+[SWE-bench](https://github.com/swe-bench/SWE-bench) commit
+`c7fd5abffe0b2086a8bb9389d23c47d930ef571f`. pytest prints a running `[100%]`
+progress indicator; dataset construction captured `PASSED [100%]` as if `[100%]`
+were a test name, and it survives in the gold PASS_TO_PASS of two instances.
+Verified two ways at $0: the real `parse_log_pytest` on `PASSED [100%]` returns a
+test named `[100%]`, and the published `princeton-nlp/SWE-bench` rows for
+`pytest-dev__pytest-5262` (108 P2P) and `pytest-dev__pytest-7521` (125 P2P) each
+contain one `[100%]` entry.
+
+The parser cannot filter it: `log_parsers/python.py` carries
+`TODO(john-b-yang): repair those two P2P lists, then widen [the filter] to any
+bare bracketed count`, so it must keep capturing `[100%]` or those instances
+fail. Doubly recorded: a non-test in the gold labels, and a parser welded to
+pytest's progress format to accommodate it. Benign at eval time (a phantom test
+that trivially passes) but a real gold-label correctness defect and
+format-fragile. Reproduced in `audits/swebench/`. Distinct from the substring
+family: this is dataset-construction noise in gold labels, closest to
+[F-028](#f-028)-style key defects. The wider, publicly known SWE-bench data
+issues (solution leakage, weak tests, the reason SWE-bench Verified exists) are
+deliberately NOT re-reported here.
+
+---
+
 ### F-029
 **ASDiv · one word problem present twice**
 `dup-questions` (S1) · 2026-08-11 · confirmed, minor
@@ -1556,6 +1586,24 @@ this battery does not pay, so it was not built. Re-derive with
 world, both methods sit at **26%** precision at six models. The paper says these
 checks have almost no power at practitioner fleet sizes; this puts a number on
 it, and the number is not improved by reaching for a bigger model of the data.
+
+### N-026
+**SWE-bench's grading harness is hardened against the scores-as-resolved bug family**
+by hand · 2026-08-13 · confirmed
+
+[SWE-bench](https://github.com/swe-bench/SWE-bench) commit
+`c7fd5abffe0b2086a8bb9389d23c47d930ef571f`, `swebench/harness/grading.py`. The
+grader's own comments are a changelog of the exact unsafe-direction bugs found in
+[F-030](#f-030)..[F-038](#f-038), already patched. Verified live by importing the
+real functions: `test_failed` counts a SKIPPED fail-to-pass test as failed (its
+comment: without this, a patch that makes every F2P test skip *"scores
+RESOLVED_FULL"*), and `get_logs_eval` returns invalid when there are no parsed
+results and no sign the suite ran (its comment: otherwise, under
+`EvalType.FAIL_ONLY`, *"a suite that never started scores every F2P test as
+resolved"*). The most-cited coding benchmark hit the scores-as-resolved failure
+mode and hardened against it; a third careful counterexample after
+[N-024](#n-024) and [N-025](#n-025). Recorded together with the one gold-data
+defect that survives, [F-039](#f-039). Reproduced in `audits/swebench/`.
 
 ### N-025
 **DeepSWE v1.1's program verifier fails safe, a second counterexample in a different domain**
@@ -4572,11 +4620,11 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **38** |
+| findings in other people's evals (**F**) | **39** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **25** |
+| negative results, recorded rather than dropped (**N**) | **26** |
 | defects in dinostomp itself (**D**) | **69** |
 
 Sixty-nine to twenty-nine. That ratio is the useful number to publish, and it is the
