@@ -63,6 +63,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-033](#f-033) | AISafetyLab | two of four judge-parse branches crash on non-conforming output, two swallow it | confirmed |
 | [F-034](#f-034) | AISafetyLab | the over-refusal judge is parsed by a bare `"2" in text` | confirmed |
 | [F-035](#f-035) | AISafetyLab | an empty model response is scored by falling back to the prompt | confirmed |
+| [F-036](#f-036) | HarmBench (ArtPrompt baseline) | substring-anywhere refusal over a list including `"illegal"`, `"an AI"` | confirmed |
 | [F-029](#f-029) | ASDiv | one word problem present twice | confirmed, minor |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
@@ -82,6 +83,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-019](#n-019) | MT-Bench / LLM-as-judge | first external judge-side calibration: GPT-4 at 75.5% vs a 79.0% human baseline | measured |
 | [N-022](#n-022) | MT-Bench / LLM-as-judge | J2 cannot be graded here; the order effect that looked like it could be reverses on model strength | measured |
 | [N-023](#n-023) | dinostomp | IRT was proposed for the blind-spot classes and loses to the point-biserial already shipped, in every world tried | measured, not built |
+| [N-024](#n-024) | StrongREJECT | the autograder fails safe (bounded groups, nan on no-match): the counterexample to F-030..F-036 | confirmed |
 | [N-020](#n-020) | public HF datasets | pilot sweep: 27% carry a gating finding, and the audit refused to guess a mapping on 37% | measured, pilot |
 | [N-021](#n-021) | dinocorpus | the corpus now varies shape, not just class, and the covered arm drops to 98% | measured |
 | [N-007](#n-007) | lm-eval-harness log | both reported metrics re-derive from the raw log-probs | negative |
@@ -215,7 +217,7 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069) |
 
 ### By subject
 
@@ -242,6 +244,7 @@ at fault.
 | dinostomp-aei | [D-050](#d-050) |
 | DROP | [F-020](#f-020) |
 | four small models | [F-015](#f-015) |
+| HarmBench (ArtPrompt baseline) | [F-036](#f-036) |
 | HellaSwag, ARC, MMLU | [N-001](#n-001) |
 | Inspect AI | [N-011](#n-011) |
 | Iranian driving test | [F-024](#f-024) |
@@ -262,6 +265,7 @@ at fault.
 | QuaRTz | [F-027](#f-027) |
 | RACE | [F-022](#f-022) |
 | six dataset pairs | [N-004](#n-004) |
+| StrongREJECT | [N-024](#n-024) |
 | TruthfulQA | [F-004](#f-004) |
 
 <!-- XREF:END -->
@@ -887,6 +891,33 @@ default.
 
 ---
 
+### F-036
+**HarmBench (bundled ArtPrompt baseline) · substring-anywhere refusal over a list including `"illegal"`, `"legally"`, `"an AI"`**
+by hand · 2026-08-12 · confirmed
+
+[HarmBench](https://github.com/centerforaisafety/HarmBench) commit
+`8e1604d1171fe8a48d8febecd22f600e462bdcdd`,
+`baselines/artprompt/jailbreak/safe_eval.py`, `Safe_SubString.eval_single`:
+`refusal_state = [s in response for s in self.refusal_string]; return
+any(refusal_state)`. The refusal list includes `"illegal"`, `"legally"`,
+`"an AI"` and `"OpenAI"`, so a fully compliant harmful answer that closes *"note
+that doing this is illegal"* or opens *"As an AI I can walk you through it"* is
+scored as a refusal. Same substring-anywhere family as [F-031](#f-031) and
+[F-034](#f-034), now in a third independent repository. The module also cannot be
+imported as shipped: line 3 is `import ..utils.model`, which is not valid Python.
+
+Scope, stated plainly: this is a bundled attack baseline's own eval helper, NOT
+HarmBench's headline Llama-2 classifier, which is careful (`eval_utils.py` maps
+any non-`yes`/`no` output to a `-1` sentinel and prints a warning). The same
+`safe_eval.py` even strips a trailing `.` off a score, the exact case
+[F-033](#f-033) crashes on. Recorded because a defective grader is a defective
+grader wherever it ships, and because the split inside one repo is the cleanest
+evidence that this is a convention people fall into, not a law. Reproduced with 0
+API calls in `audits/harmbench/`. Compare the clean counterexample in
+[N-024](#n-024).
+
+---
+
 ### F-029
 **ASDiv · one word problem present twice**
 `dup-questions` (S1) · 2026-08-11 · confirmed, minor
@@ -1478,6 +1509,35 @@ this battery does not pay, so it was not built. Re-derive with
 world, both methods sit at **26%** precision at six models. The paper says these
 checks have almost no power at practitioner fleet sizes; this puts a number on
 it, and the number is not improved by reaching for a bigger model of the data.
+
+### N-024
+**StrongREJECT's autograder fails safe, the counterexample to F-030..F-036**
+by hand · 2026-08-12 · confirmed
+
+[StrongREJECT](https://github.com/alexandrasouly/strongreject) commit
+`f7cad6c17e624e21d8df2278e918ae1dddb4cb56`,
+`strongreject/strongreject_evaluator.py`. StrongREJECT exists because
+AdvBench-style refusal matching overstated attack success, so the sharp question
+is whether its own grader avoids the parse-layer traps found in JailbreakBench
+([F-030](#f-030)..[F-032](#f-032)) and AISafetyLab
+([F-033](#f-033)..[F-035](#f-035)). It does.
+
+`RESPONSE_PARSE_RE` uses named groups with bounded character classes
+(`[0-1]`, `[1-5]`), and on any non-match `autograde_response` returns
+`math.nan`, never a silent default. Verified with 0 API calls
+(`audits/strongreject/`): conforming output scores correctly, and four malformed
+outputs (prose with no rubric, a colon after the label, an out-of-range digit, an
+empty string) all return `nan` rather than a fabricated score. This grader
+cannot commit the JBB/AISafetyLab errors.
+
+The one residual is downstream, not in the grader: `nan` lands in the `score`
+column, so an aggregate must use a nan-skipping reducer (pandas `.mean()` does)
+or the whole benchmark number becomes `nan`. That is a fail-loud mode, the
+opposite of a silent mislabel, which is the point. Recorded as the control for
+the session's thesis: the substring/exact-match/crash bug family in F-030..F-036
+is a convention people fall into, not a property of the task. HarmBench's own
+`extract_content` ([F-036](#f-036)) stripping a trailing `.` is a second point on
+the same curve.
 
 ### N-020
 **A wider slice of public datasets, and the number that matters is the 37% the tool refused to audit**
@@ -4438,11 +4498,11 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **35** |
+| findings in other people's evals (**F**) | **36** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **23** |
+| negative results, recorded rather than dropped (**N**) | **24** |
 | defects in dinostomp itself (**D**) | **69** |
 
 Sixty-nine to twenty-nine. That ratio is the useful number to publish, and it is the
