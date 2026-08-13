@@ -766,8 +766,10 @@ lines with no spaces counts as ONE token however long it is; a 24-line harmful
 reply is forced safe. Direction: under-reports attack success.
 
 Fires on spec-compliant judge output: nothing has to go wrong for it to be
-wrong. Reproduced with 0 API calls in `data/jbb-audit/`, whose PART A first
-proves the rig reproduces shipped behaviour in both directions.
+wrong. Reproduced with 0 API calls by `audits/jailbreakbench/audit.py`, whose
+PART A first proves the rig reproduces shipped behaviour in both directions and
+aborts if it cannot. The audited repository is third-party and is not vendored;
+the audit clones the pinned commit above.
 
 ---
 
