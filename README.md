@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.62.0 · Apache-2.0 · engine `b9ab3bafd9ca76fd` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.62.0 · Apache-2.0 · engine `76f44bc713434991` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -653,7 +653,7 @@ mechanical integrity; construct validity is argued, not computed, and a trivial,
 mis-aimed, or saturated eval can pass every check here. Sixty-one is not a
 number that bounds the ways an eval can be invalid.
 
-**The self-tests are not independent validation.** 94 of 94 caught means every
+**The self-tests are not independent validation.** 95 of 95 caught means every
 check fires on the failure it was built for. Those failures were planted by the
 same hands that wrote the checks, so it says nothing about defects nobody here
 imagined, and the scorecard prints that caveat under its own score. The next
@@ -665,12 +665,12 @@ published next to the tool's own defects.
 **The battery ships with its own validation, and you can run it.**
 
 ```bash
-python trials/run_trials.py        # 94 planted defects, 16 pods that must stay clean
+python trials/run_trials.py        # 95 planted defects, 16 pods that must stay clean
 python trials/pin_thresholds.py    # which of its own thresholds are load-bearing
 ```
 
-The current answers are 94 of 94 caught, 0 false alarms, and 28 of 35 thresholds
-pinned. That last number is published because it is uncomfortable: seven
+The current answers are 95 of 95 caught, 0 false alarms, and 29 of 35 thresholds
+pinned. That last number is published because it is uncomfortable: six
 thresholds could be quietly loosened today without a single trial noticing, and
 the tool names them.
 
@@ -687,7 +687,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`b9ab3bafd9ca76fd41ead64a056cef364e02f618a893a4ec6c61a75a20ff6bce`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`76f44bc71343499108f34071f3b5885b7f61ebed2e01fda0535689eb4715ecd1`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

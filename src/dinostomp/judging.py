@@ -393,8 +393,16 @@ class JudgeScorer:
         truncated = None
         try:
             if self._fn is not None:
+                # `call` is a per-invocation nonce: a monotonic index unique to
+                # this grading call. A deterministic judge ignores it and stays
+                # byte-stable (the honest default, which keeps J2/J3 clean). A
+                # judge that MODELS a stochastic grader (a hosted judge sampled
+                # hot gives different verdicts on identical input) keys its
+                # variation on it, which is the only way a python judge can
+                # express the self-inconsistency J3 exists to measure. It is
+                # deterministic given case order, so the probe still replays.
                 text = self._fn(output, target, {"rubric": self.rubric, "model": self.model,
-                                                 "seed": self.seed})
+                                                 "seed": self.seed, "call": self.calls})
                 text = text if isinstance(text, str) else str(text)
             else:
                 item = {"id": "judge", "input": self.prompt_for(output, target), "target": target}

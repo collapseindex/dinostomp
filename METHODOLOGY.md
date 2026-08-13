@@ -94,7 +94,7 @@ Eighty-two deliberately defective evals, each with a stated expectation of what 
   worst miss deleted from a complete run    R11 fail   R11=fail, verdict=broken   CAUGHT
   one model escapes the scorer              R12 warn   R12=warn                   CAUGHT
   ...
-  sensitivity: 94 of 94 defects caught, 0 missed
+  sensitivity: 95 of 95 defects caught, 0 missed
   specificity: 0 findings on 16 of 16 clean pods
 ```
 

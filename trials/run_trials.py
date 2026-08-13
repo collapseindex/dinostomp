@@ -1621,6 +1621,21 @@ def t_boundary_contains_target(root):
                                   '        answer = "0"'))
 
 
+def t_boundary_judge_inconsistency(root):
+    # A judge that MODELS a hot grader: on a deterministic ~9% of grading calls
+    # (keyed on the per-call nonce ctx["call"], which differs between a case and
+    # its byte-identical repeat) it returns a resampled verdict instead of its
+    # honest one. Over the 16 repeat pairs the probe grades, 2 disagree, a 12.5%
+    # self-inconsistency: caught at the shipped bar (0.05), missed at a 3x
+    # loosening (0.15). The `call >= 6` guard keeps the 5 witnesses, graded
+    # first, byte-stable so the witness gate still passes. No '%' in the bias:
+    # build_judge_pod does JUDGE_SRC % {bias}.
+    bias = ("    _c = ctx.get('call')\n"
+            "    if _c is not None and _c >= 6 and (((_c * 2654435761) >> 13) & 31) < 3:\n"
+            "        return 'PASS' if (_c & 4) == 0 else 'FAIL'\n")
+    return probed(root, bias=bias)
+
+
 def t_boundary_shortcut_lift(root):
     # gold is the UNIQUELY shortest option in 45% of 60 items, a non-gold is
     # uniquely shortest in the rest, and the question shares no tokens with any
@@ -1850,6 +1865,7 @@ TRIALS = [
     ("judge rewards stated confidence", t_judge_credulous, ("J2", "warn")),
     ("judge rewards an appeal to authority", t_judge_authority_bias, ("J2", "warn")),
     ("judge contradicts itself on identical input", t_judge_inconsistent, ("J3", "warn")),
+    ("boundary: judge self-inconsistent on 12.5% of regrades", t_boundary_judge_inconsistency, ("J3", "warn")),
     ("judge code edited after the run", t_judge_edited_after_run, ("R1", "fail")),
     ("judge verdict forged against its own words", t_judge_verdict_forged, ("R8", "fail")),
     ("judge response stripped from the record", t_judge_response_stripped, ("R8", "fail")),

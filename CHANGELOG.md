@@ -2,12 +2,20 @@
 
 ### Unreleased
 
-- **Two more thresholds pinned** (`min_scored_misses`, `shortcut_lift`), the
-  self-own down from 8 unpinned to 7. Boundary trials sized to sit between the
-  shipped setting and a 3x loosening: R16's evidence bar caught at 5 misses and
-  skipped at 15, and S9's shortest-option shortcut caught at 0.10 lift and missed
-  at 0.30. `python trials/run_trials.py` now runs 94 planted defects, and
-  `pin_thresholds.py` reports 28 of 35 pinned.
+- **A per-call nonce for judges.** A python judge now receives `ctx["call"]`, a
+  monotonic index unique to each grading call. A deterministic judge ignores it
+  and stays byte-stable; a judge that MODELS a hot grader (a hosted judge sampled
+  above temperature 0 gives different verdicts on identical input) keys its
+  variation on it. This is the only way a python judge can express the
+  self-inconsistency J3 exists to measure, and it is deterministic given case
+  order so the probe still replays.
+- **Three more thresholds pinned** (`min_scored_misses`, `shortcut_lift`,
+  `judge_inconsistency_max`), the self-own down from 9 unpinned to 6. Boundary
+  trials sized to sit between the shipped setting and a 3x loosening: R16's
+  evidence bar caught at 5 misses and skipped at 15, S9's shortest-option
+  shortcut caught at 0.10 lift and missed at 0.30, and a judge self-inconsistent
+  on 12.5% of regrades caught at 0.05 and missed at 0.15. `run_trials.py` now
+  runs 95 planted defects, and `pin_thresholds.py` reports 29 of 35 pinned.
 
 ### v0.62.0 (2026-08-13)
 
