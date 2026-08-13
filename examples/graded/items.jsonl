@@ -1,0 +1,7 @@
+{"_canary": "dinostomp canary DO NOT TRAIN 7091a9242d7c44d680d32ab8ceb01875"}
+{"id": "a1", "input": "12 + 45 = ? Reply with the bare number only.", "target": "57"}
+{"id": "a2", "input": "38 + 24 = ? Reply with the bare number only.", "target": "62"}
+{"id": "a3", "input": "71 + 19 = ? Reply with the bare number only.", "target": "90"}
+{"id": "a4", "input": "55 + 36 = ? Reply with the bare number only.", "target": "91"}
+{"id": "a5", "input": "44 + 28 = ? Reply with the bare number only.", "target": "72"}
+{"id": "a6", "input": "63 + 17 = ? Reply with the bare number only.", "target": "80"}

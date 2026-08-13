@@ -68,7 +68,16 @@ def per_model(entries: list[dict]) -> list[dict]:
             if r.get("model") != manifest.get("model"):
                 continue
             row["n_records"] += 1
-            row["verdicts"][(r.get("score") or {}).get("verdict") or "?"] += 1
+            score = r.get("score") or {}
+            row["verdicts"][score.get("verdict") or "?"] += 1
+            # Partial credit rides alongside the verdict, never replacing it: a
+            # graded scorer sets `value` in [0,1] and keeps the categorical
+            # verdict for every dichotomous check. Only checkable records carry
+            # a graded value into the mean; an uncheckable one has no credit to
+            # average, exactly as it has no verdict to count.
+            val = score.get("value")
+            if val is not None and score.get("verdict") in SCORED:
+                row.setdefault("values", []).append(float(val))
             row["finish_reasons"][str(r.get("finish_reason") or "unreported")] += 1
             usage = r.get("usage") or {}
             row["tokens_in"] += int(usage.get("input_tokens") or 0)
@@ -83,6 +92,11 @@ def per_model(entries: list[dict]) -> list[dict]:
         checkable = sum(v[k] for k in SCORED)
         passes = v["pass"]
         ci = wilson_ci(passes, checkable) if checkable else None
+        graded = row.get("values") or []
+        # partial_score is the graded mean where a scorer supplied one, shown
+        # BESIDE binary accuracy, never instead of it. n_graded says how many
+        # records it rests on, so a reader can see it is not the whole fleet.
+        partial_score = _round(fmean(graded)) if graded else None
         top_output, top_n = (row["outputs"].most_common(1) or [("", 0)])[0]
         out.append({
             "model": model,
@@ -95,6 +109,8 @@ def per_model(entries: list[dict]) -> list[dict]:
             "n_passes": passes,
             "n_failures": v["fail"],
             "accuracy": _round(passes / checkable) if checkable else None,
+            "partial_score": partial_score,
+            "n_graded": len(graded),
             "ci95": [_round(ci[0], 3), _round(ci[1], 3)] if ci else None,
             # Share of output the scorer could reach a verdict on at all. 80%
             # accurate on 60%-judgeable output is not 80% accurate, and putting
@@ -157,6 +173,7 @@ def per_item(matrix: dict, items: list[dict], outputs: dict) -> list[dict]:
 def fleet(matrix: dict, model_rows: list[dict]) -> dict:
     """Aggregates over the whole fleet, all descriptive."""
     accs = [r["accuracy"] for r in model_rows if r["accuracy"] is not None]
+    partials = [r["partial_score"] for r in model_rows if r.get("partial_score") is not None]
     all_right, all_wrong = dead_items(matrix) if matrix else ([], [])
     n_items = len({i for row in matrix.values() for i in row}) if matrix else 0
     return {
@@ -165,6 +182,8 @@ def fleet(matrix: dict, model_rows: list[dict]) -> dict:
         "mean_accuracy": _round(fmean(accs)) if accs else None,
         "min_accuracy": _round(min(accs)) if accs else None,
         "max_accuracy": _round(max(accs)) if accs else None,
+        "mean_partial_score": _round(fmean(partials)) if partials else None,
+        "n_models_graded": len(partials),
         "spread": _round(max(accs) - min(accs)) if len(accs) > 1 else None,
         "kr20": _round(kr20(matrix)) if matrix else None,
         "n_all_right": len(all_right),

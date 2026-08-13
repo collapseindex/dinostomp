@@ -269,7 +269,7 @@
     }
   },
   "coverage": {
-    "declared_total": 62,
+    "declared_total": 64,
     "declared": 28,
     "ran": 18,
     "skipped": [
@@ -364,6 +364,10 @@
         "reason": "this scorer compares exactly rather than extracting, so surface-form robustness is not a property it claims"
       },
       {
+        "id": "W3",
+        "reason": "this scorer does not emit intermediate partial credit, so there is no gradation to witness"
+      },
+      {
         "id": "C1",
         "reason": "no typed claims declared"
       },
@@ -382,6 +386,10 @@
       {
         "id": "R20",
         "reason": "no run on disk repeats an item; a single pass per item cannot tie"
+      },
+      {
+        "id": "R21",
+        "reason": "no record carries a graded value"
       },
       {
         "id": "T1",
@@ -634,6 +642,15 @@
       "witnesses": 0
     },
     {
+      "id": "W3",
+      "slug": "graded-witness",
+      "check": "a graded scorer witnesses its gradation",
+      "level": "n/a",
+      "gating": true,
+      "detail": "this scorer does not emit intermediate partial credit, so there is no gradation to witness",
+      "witnesses": 0
+    },
+    {
       "id": "C1",
       "slug": "claim-evidence",
       "check": "every typed claim's evidence requirements hold",
@@ -813,7 +830,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "1 of 1 run(s) were produced by a different engine than the one auditing them (now 1766282c5e84be02); re-run to get numbers this report can stand behind",
+      "detail": "1 of 1 run(s) were produced by a different engine than the one auditing them (now e88f0329c1d1fc98); re-run to get numbers this report can stand behind",
       "witnesses": 1,
       "examples": [
         "engine 050e2f343915e1b9: dry-strong seed 42 (tool 0.57.1)"
@@ -831,6 +848,15 @@
       "level": "n/a",
       "gating": false,
       "detail": "no run on disk repeats an item; a single pass per item cannot tie",
+      "witnesses": 0
+    },
+    {
+      "id": "R21",
+      "slug": "graded-range",
+      "check": "graded scores stay in range",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no record carries a graded value",
       "witnesses": 0
     },
     {
@@ -1089,6 +1115,8 @@
         "n_passes": 6,
         "n_failures": 0,
         "accuracy": 1.0,
+        "partial_score": null,
+        "n_graded": 0,
         "ci95": [
           0.61,
           1.0
@@ -1113,6 +1141,8 @@
       "mean_accuracy": 1.0,
       "min_accuracy": 1.0,
       "max_accuracy": 1.0,
+      "mean_partial_score": null,
+      "n_models_graded": 0,
       "spread": null,
       "kr20": null,
       "n_all_right": 6,

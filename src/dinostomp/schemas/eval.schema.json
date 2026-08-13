@@ -397,6 +397,12 @@
           ],
           "description": "The verdict this case must produce. uncheckable pins the scorer's behavior on unparseable output, which is what kills the uncheckable-credit mutant."
         },
+        "expect_value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Optional graded credit in [0,1] this case must produce, for a scorer that emits partial credit. Pinning an INTERMEDIATE value (0<v<1) is what proves the scorer actually grades rather than returning 0/1 relabelled; W3 requires at least one such witness of any scorer that emits a graded value. Absent, only the verdict is checked."
+        },
         "why": {
           "type": "string"
         }

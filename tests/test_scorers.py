@@ -92,7 +92,7 @@ def test_python_scorer_crash_is_uncheckable_not_fatal(tmp_path):
         "def score(output, target):\n"
         "    if 'boom' in output:\n"
         "        raise RuntimeError('rare branch')\n"
-        "    return int(output == str(target))  # wrong type on purpose\n",
+        "    return [output == str(target)]  # unsupported type on purpose\n",
         encoding="utf-8",
     )
     s = scorer("python", base=tmp_path, code="angry.py")
@@ -101,7 +101,7 @@ def test_python_scorer_crash_is_uncheckable_not_fatal(tmp_path):
     assert "RuntimeError" in crashed.evidence
     wrong_type = s("x", "x")
     assert wrong_type.verdict == "uncheckable"
-    assert "int" in wrong_type.evidence
+    assert "list" in wrong_type.evidence
 
 
 def test_numeric_multi_target_any_match():

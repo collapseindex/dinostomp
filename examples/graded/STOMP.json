@@ -270,44 +270,52 @@
   },
   "coverage": {
     "declared_total": 64,
-    "declared": 42,
-    "ran": 33,
+    "declared": 31,
+    "ran": 20,
     "skipped": [
       {
-        "id": "S10",
-        "reason": "no canary probe on disk; run `dinostomp run <spec> --probe canary` to ask whether a model has already read this dataset"
+        "id": "W1",
+        "reason": "this pod ships Python that linting would have to IMPORT and therefore RUN (scorer.py); re-run with --trust-code if you have read it and accept that"
       },
       {
-        "id": "R13",
-        "reason": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock"
+        "id": "W2",
+        "reason": "this pod ships Python that linting would have to IMPORT and therefore RUN (scorer.py); re-run with --trust-code if you have read it and accept that"
       },
       {
-        "id": "R15",
-        "reason": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock"
+        "id": "W3",
+        "reason": "this pod ships Python that linting would have to IMPORT and therefore RUN (scorer.py); re-run with --trust-code if you have read it and accept that"
+      },
+      {
+        "id": "R2",
+        "reason": "this pod ships Python that linting would have to IMPORT and therefore RUN (scorer.py); re-run with --trust-code if you have read it and accept that"
+      },
+      {
+        "id": "R7",
+        "reason": "no model has 20+ checkable records (12 in total)"
+      },
+      {
+        "id": "R8",
+        "reason": "12 recorded verdict(s) cannot be re-scored without importing this pod's scorer; re-run with --trust-code"
+      },
+      {
+        "id": "R16",
+        "reason": "no model has 5+ failed records to inspect"
       },
       {
         "id": "P1",
-        "reason": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock"
+        "reason": "2 model(s) x 6 common item(s); need 4+ models and 5+ items to unlock"
       },
       {
         "id": "P2",
-        "reason": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock"
+        "reason": "2 model(s) x 6 common item(s); need 4+ models and 5+ items to unlock"
       },
       {
         "id": "P3",
-        "reason": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock"
+        "reason": "2 model(s) x 6 common item(s); need 4+ models and 5+ items to unlock"
       },
       {
-        "id": "P9",
-        "reason": "no shuffle probe on disk; set data.render_choices and run `dinostomp run <spec> --probe shuffle` to unlock"
-      },
-      {
-        "id": "P11",
-        "reason": "no template probe on disk; run `dinostomp run <spec> --probe template` to unlock"
-      },
-      {
-        "id": "P12",
-        "reason": "no template probe on disk; run `dinostomp run <spec> --probe template` to unlock"
+        "id": "P5",
+        "reason": "2 model(s); need 3+ to call unanimity"
       }
     ],
     "not_applicable": [
@@ -332,6 +340,10 @@
         "reason": "no multiple-choice items in this dataset"
       },
       {
+        "id": "S10",
+        "reason": "regurgitation probes need a hosted model; this pod's runs are all local"
+      },
+      {
         "id": "S11",
         "reason": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot."
       },
@@ -352,16 +364,16 @@
         "reason": "no item carries an `input_ref`; nothing points at a file"
       },
       {
-        "id": "W2",
-        "reason": "this scorer compares exactly rather than extracting, so surface-form robustness is not a property it claims"
-      },
-      {
-        "id": "W3",
-        "reason": "this scorer does not emit intermediate partial credit, so there is no gradation to witness"
-      },
-      {
         "id": "C1",
         "reason": "no typed claims declared"
+      },
+      {
+        "id": "R13",
+        "reason": "blind probes need a real provider; this pod's runs are all dry"
+      },
+      {
+        "id": "R15",
+        "reason": "blind probes need a real provider; this pod's runs are all dry"
       },
       {
         "id": "R18",
@@ -372,8 +384,36 @@
         "reason": "no run on disk repeats an item; a single pass per item cannot tie"
       },
       {
-        "id": "R21",
-        "reason": "no record carries a graded value"
+        "id": "T1",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
+      },
+      {
+        "id": "T2",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
+      },
+      {
+        "id": "T3",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
+      },
+      {
+        "id": "T4",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
+      },
+      {
+        "id": "T5",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
+      },
+      {
+        "id": "T6",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
+      },
+      {
+        "id": "T7",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
+      },
+      {
+        "id": "T8",
+        "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
         "id": "J1",
@@ -396,15 +436,27 @@
         "reason": "no entitled claim asserts a model ordering"
       },
       {
+        "id": "P9",
+        "reason": "presentation-order probes need a real provider; this pod's runs are all local"
+      },
+      {
         "id": "P10",
         "reason": "the spec declares no extra seeds; a single seed cannot show its own spread (run.seeds is how you ask)"
+      },
+      {
+        "id": "P11",
+        "reason": "instruction-framing probes need runs on disk"
+      },
+      {
+        "id": "P12",
+        "reason": "instruction-framing probes need runs on disk"
       }
     ]
   },
   "summary": {
     "fail": 0,
-    "warn": 4,
-    "skip": 9,
+    "warn": 0,
+    "skip": 11,
     "verdict": "incomplete",
     "scope": "pod"
   },
@@ -420,8 +472,8 @@
       "check": "questions are unique",
       "level": "pass",
       "gating": true,
-      "detail": "0 duplicated question(s) among 24",
-      "witnesses": 24
+      "detail": "0 duplicated question(s) among 6",
+      "witnesses": 6
     },
     {
       "id": "S2",
@@ -429,8 +481,8 @@
       "check": "no answer leaks into its own question",
       "level": "pass",
       "gating": true,
-      "detail": "0 of 24 free-form item(s) leak their answer",
-      "witnesses": 24
+      "detail": "0 of 6 free-form item(s) leak their answer",
+      "witnesses": 6
     },
     {
       "id": "S3",
@@ -475,7 +527,7 @@
       "level": "pass",
       "gating": true,
       "detail": "0 question(s) appear with conflicting targets",
-      "witnesses": 24
+      "witnesses": 6
     },
     {
       "id": "S8",
@@ -483,7 +535,7 @@
       "check": "a contamination canary travels with the data",
       "level": "pass",
       "gating": false,
-      "detail": "canary present (dinostomp canary DO NOT TRAIN mediated-g...)",
+      "detail": "canary present (dinostomp canary DO NOT TRAIN 7091a9242d...)",
       "witnesses": 1
     },
     {
@@ -499,9 +551,9 @@
       "id": "S10",
       "slug": "canary-regurgitated",
       "check": "no model reproduces the contamination canary",
-      "level": "skip",
+      "level": "n/a",
       "gating": false,
-      "detail": "no canary probe on disk; run `dinostomp run <spec> --probe canary` to ask whether a model has already read this dataset",
+      "detail": "regurgitation probes need a hosted model; this pod's runs are all local",
       "witnesses": 0
     },
     {
@@ -553,43 +605,27 @@
       "id": "W1",
       "slug": "witness-coverage",
       "check": "witnesses kill the mutant scorers",
-      "level": "warn",
+      "level": "skip",
       "gating": false,
-      "detail": "1 of 6 applicable mutant scorer(s) survive the witness suite",
-      "witnesses": 6,
-      "examples": [
-        "prefix-lenient (credits a truncated answer) survives; add a witness giving a strict prefix of the target, expect: fail"
-      ],
-      "evidence": {
-        "killed": [
-          "always-pass",
-          "always-fail",
-          "case-blind",
-          "substring-lenient",
-          "negation-blind"
-        ],
-        "not_applicable": [
-          "space-blind",
-          "uncheckable-credit"
-        ]
-      }
+      "detail": "this pod ships Python that linting would have to IMPORT and therefore RUN (scorer.py); re-run with --trust-code if you have read it and accept that",
+      "witnesses": 0
     },
     {
       "id": "W2",
       "slug": "surface-form",
       "check": "a correct answer survives its surface form",
-      "level": "n/a",
+      "level": "skip",
       "gating": false,
-      "detail": "this scorer compares exactly rather than extracting, so surface-form robustness is not a property it claims",
+      "detail": "this pod ships Python that linting would have to IMPORT and therefore RUN (scorer.py); re-run with --trust-code if you have read it and accept that",
       "witnesses": 0
     },
     {
       "id": "W3",
       "slug": "graded-witness",
       "check": "a graded scorer witnesses its gradation",
-      "level": "n/a",
+      "level": "skip",
       "gating": true,
-      "detail": "this scorer does not emit intermediate partial credit, so there is no gradation to witness",
+      "detail": "this pod ships Python that linting would have to IMPORT and therefore RUN (scorer.py); re-run with --trust-code if you have read it and accept that",
       "witnesses": 0
     },
     {
@@ -607,17 +643,17 @@
       "check": "runs match the spec, data, and scorer on disk (no drift)",
       "level": "pass",
       "gating": true,
-      "detail": "0 of 3 run(s) no longer match the spec, data, or scorer on disk",
-      "witnesses": 3
+      "detail": "0 of 2 run(s) no longer match the spec, data, or scorer on disk",
+      "witnesses": 2
     },
     {
       "id": "R2",
       "slug": "witness-replay",
       "check": "the witness gate replays clean",
-      "level": "pass",
+      "level": "skip",
       "gating": true,
-      "detail": "replayed 6 witness(es): 6 behaved; 3 run manifest(s) checked",
-      "witnesses": 9
+      "detail": "this pod ships Python that linting would have to IMPORT and therefore RUN (scorer.py); re-run with --trust-code if you have read it and accept that",
+      "witnesses": 0
     },
     {
       "id": "R3",
@@ -625,8 +661,8 @@
       "check": "ledger spend agrees with the manifest and the spec cap",
       "level": "pass",
       "gating": true,
-      "detail": "0 money discrepanc(ies) across 3 run(s)",
-      "witnesses": 3
+      "detail": "0 money discrepanc(ies) across 2 run(s)",
+      "witnesses": 2
     },
     {
       "id": "R4",
@@ -634,8 +670,8 @@
       "check": "every run record is schema-valid, unique, and its manifest's own",
       "level": "pass",
       "gating": true,
-      "detail": "0 integrity problem(s) across 72 record(s)",
-      "witnesses": 72
+      "detail": "0 integrity problem(s) across 12 record(s)",
+      "witnesses": 12
     },
     {
       "id": "R5",
@@ -644,7 +680,7 @@
       "level": "pass",
       "gating": true,
       "detail": "0 truncated output(s) scored as pass; a cut-off response can still have stated its answer, so read these before raising max_tokens and re-running",
-      "witnesses": 72
+      "witnesses": 12
     },
     {
       "id": "R6",
@@ -652,8 +688,8 @@
       "check": "uncheckable rate is sane",
       "level": "pass",
       "gating": false,
-      "detail": "0% of 72 record(s) are uncheckable",
-      "witnesses": 72,
+      "detail": "0% of 12 record(s) are uncheckable",
+      "witnesses": 12,
       "evidence": {
         "rate": 0.0
       }
@@ -662,30 +698,19 @@
       "id": "R7",
       "slug": "above-guessing",
       "check": "accuracy is distinguishable from guessing",
-      "level": "pass",
+      "level": "skip",
       "gating": false,
-      "detail": "0 of 3 model(s) score no better than guessing; fleet spans 75% to 100% vs chance ~12% (modal target floor)",
-      "witnesses": 3,
-      "evidence": {
-        "per_model_accuracy": {
-          "greedy": 1.0,
-          "grounded": 1.0,
-          "oneshot": 0.75
-        },
-        "chance_floor": 0.125,
-        "uniform": 0.0,
-        "modal": 0.125,
-        "modal_target": "chloroplasts"
-      }
+      "detail": "no model has 20+ checkable records (12 in total)",
+      "witnesses": 0
     },
     {
       "id": "R8",
       "slug": "verdict-rederive",
       "check": "recorded verdicts re-score identically",
-      "level": "pass",
+      "level": "skip",
       "gating": true,
-      "detail": "0 of 72 recorded verdict(s) do not reproduce under the current scorer",
-      "witnesses": 72
+      "detail": "12 recorded verdict(s) cannot be re-scored without importing this pod's scorer; re-run with --trust-code",
+      "witnesses": 0
     },
     {
       "id": "R9",
@@ -693,8 +718,8 @@
       "check": "summaries match their run records",
       "level": "pass",
       "gating": true,
-      "detail": "0 summary discrepanc(ies) across 3 run(s)",
-      "witnesses": 3
+      "detail": "0 summary discrepanc(ies) across 2 run(s)",
+      "witnesses": 2
     },
     {
       "id": "R10",
@@ -703,7 +728,7 @@
       "level": "pass",
       "gating": false,
       "detail": "0 run(s) outside the spec's declared scope",
-      "witnesses": 3
+      "witnesses": 2
     },
     {
       "id": "R11",
@@ -711,8 +736,8 @@
       "check": "records cover exactly the seeded selection",
       "level": "pass",
       "gating": true,
-      "detail": "0 of 3 run(s) do not cover their seeded selection",
-      "witnesses": 3
+      "detail": "0 of 2 run(s) do not cover their seeded selection",
+      "witnesses": 2
     },
     {
       "id": "R12",
@@ -720,13 +745,12 @@
       "check": "no model selectively escapes the scorer",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 3 model(s) escape the scorer more than the fleet does",
-      "witnesses": 3,
+      "detail": "0 of 2 model(s) escape the scorer more than the fleet does",
+      "witnesses": 2,
       "evidence": {
         "rates": {
-          "greedy": 0.0,
-          "grounded": 0.0,
-          "oneshot": 0.0
+          "dry-strong": 0.0,
+          "dry-up": 0.0
         }
       }
     },
@@ -734,9 +758,9 @@
       "id": "R13",
       "slug": "blind-solvable",
       "check": "the eval is not solvable blind",
-      "level": "skip",
+      "level": "n/a",
       "gating": false,
-      "detail": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock",
+      "detail": "blind probes need a real provider; this pod's runs are all dry",
       "witnesses": 0
     },
     {
@@ -745,26 +769,26 @@
       "check": "no model collapses onto one answer",
       "level": "pass",
       "gating": false,
-      "detail": "0 of 3 model(s) answer with one response far more often than any target warrants",
-      "witnesses": 3
+      "detail": "0 of 2 model(s) answer with one response far more often than any target warrants",
+      "witnesses": 2
     },
     {
       "id": "R15",
       "slug": "input-blind",
       "check": "each model beats its own blind baseline",
-      "level": "skip",
+      "level": "n/a",
       "gating": false,
-      "detail": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock",
+      "detail": "blind probes need a real provider; this pod's runs are all dry",
       "witnesses": 0
     },
     {
       "id": "R16",
       "slug": "scorer-artifact",
       "check": "failed answers do not contain the reference",
-      "level": "pass",
+      "level": "skip",
       "gating": false,
-      "detail": "0 of 1 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness",
-      "witnesses": 1
+      "detail": "no model has 5+ failed records to inspect",
+      "witnesses": 0
     },
     {
       "id": "R17",
@@ -772,8 +796,8 @@
       "check": "every model produced something scoreable",
       "level": "pass",
       "gating": true,
-      "detail": "0 of 3 model(s) produced nothing scoreable",
-      "witnesses": 3
+      "detail": "0 of 2 model(s) produced nothing scoreable",
+      "witnesses": 2
     },
     {
       "id": "R18",
@@ -788,16 +812,13 @@
       "id": "R19",
       "slug": "engine-drift",
       "check": "the runs were produced by this engine",
-      "level": "warn",
+      "level": "pass",
       "gating": false,
-      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now e88f0329c1d1fc98); re-run to get numbers this report can stand behind",
-      "witnesses": 3,
-      "examples": [
-        "engine 050e2f343915e1b9: greedy seed 7 (tool 0.57.1), grounded seed 7 (tool 0.57.1), oneshot seed 7 (tool 0.57.1)"
-      ],
+      "detail": "0 of 2 run(s) were produced by a different engine than the one auditing them (now e88f0329c1d1fc98); re-run to get numbers this report can stand behind",
+      "witnesses": 2,
       "evidence": {
         "engines": {
-          "050e2f343915e1b9": 3
+          "e88f0329c1d1fc98": 2
         }
       }
     },
@@ -814,118 +835,82 @@
       "id": "R21",
       "slug": "graded-range",
       "check": "graded scores stay in range",
-      "level": "n/a",
+      "level": "pass",
       "gating": true,
-      "detail": "no record carries a graded value",
-      "witnesses": 0
+      "detail": "0 of 12 graded value(s) outside [0,1] or not a number",
+      "witnesses": 12
     },
     {
       "id": "T1",
       "slug": "forbidden-tool",
       "check": "no forbidden tool is called",
-      "level": "pass",
+      "level": "n/a",
       "gating": true,
-      "detail": "0 forbidden tool call(s) across 72 trajector(ies)",
-      "witnesses": 72
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
     },
     {
       "id": "T2",
       "slug": "required-tool",
       "check": "every required tool is actually called",
-      "level": "pass",
+      "level": "n/a",
       "gating": true,
-      "detail": "0 of 72 trajector(ies) skipped a required tool",
-      "witnesses": 72
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
     },
     {
       "id": "T3",
       "slug": "trajectory-shape",
       "check": "trajectories are well-formed",
-      "level": "pass",
+      "level": "n/a",
       "gating": true,
-      "detail": "0 malformed trajector(ies) of 72",
-      "witnesses": 72
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
     },
     {
       "id": "T4",
       "slug": "answer-grounding",
       "check": "passing answers are grounded in tool evidence",
-      "level": "pass",
+      "level": "n/a",
       "gating": false,
-      "detail": "0 of 3 target(s) pass items whose answer does not APPEAR in their own evidence (0 such answer(s) in total). This is co-occurrence, not causation: an answer recalled from memory that also happens to appear in a retrieved snippet counts as grounded here, so this count is a floor",
-      "witnesses": 3,
-      "evidence": {
-        "models_judged": 3,
-        "ungrounded_records": 0,
-        "measures": "co-occurrence in the recorded trace, not causal use"
-      }
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
     },
     {
       "id": "T5",
       "slug": "trace-underreport",
       "check": "no model under-reports its trajectory",
-      "level": "pass",
+      "level": "n/a",
       "gating": false,
-      "detail": "0 of 3 target(s) report far fewer steps than the fleet (median 1.0); a thin trace can be efficiency OR omission",
-      "witnesses": 3,
-      "evidence": {
-        "fleet_median_steps": 1.0
-      }
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
     },
     {
       "id": "T6",
       "slug": "redundant-calls",
       "check": "tool calls are not redundant",
-      "level": "warn",
+      "level": "n/a",
       "gating": false,
-      "detail": "1 of 3 target(s) repeat identical calls in more than 25% of their trajectories",
-      "witnesses": 3,
-      "examples": [
-        "greedy: 24 of 24 trajector(ies) (100%) repeat an identical call",
-        "m001 (greedy): 1 repeated identical call(s)",
-        "m002 (greedy): 1 repeated identical call(s)",
-        "m003 (greedy): 1 repeated identical call(s)"
-      ]
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
     },
     {
       "id": "T7",
       "slug": "answer-grounding-causal",
       "check": "passing answers CHANGE when their evidence is withheld",
-      "level": "warn",
+      "level": "n/a",
       "gating": false,
-      "detail": "1 of 3 agent(s) answer identically with their evidence withheld, so those answers did not causally depend on it. Unlike T4 this is a counterfactual, not a co-occurrence: the two runs differ only in whether the agent could see what its tools returned",
-      "witnesses": 3,
-      "examples": [
-        "oneshot: 18 of 18 passing answer(s) (100%) are unchanged when the evidence is withheld",
-        "oneshot/m001: identical answer with its evidence withheld",
-        "oneshot/m002: identical answer with its evidence withheld",
-        "oneshot/m003: identical answer with its evidence withheld"
-      ],
-      "evidence": {
-        "models_judged": 3,
-        "measures": "causal dependence, by withholding tool results"
-      }
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
     },
     {
       "id": "T8",
       "slug": "trace-observed",
       "check": "the trajectory was observed, not self-reported",
-      "level": "pass",
+      "level": "n/a",
       "gating": false,
-      "detail": "all 3 agent(s) reached their tools through the harness, running in this process, so T1-T6 read an observed log rather than testimony. Mediation is not isolation: it makes the trace trustworthy, not the agent, and `isolation: subprocess` is the stronger setting",
-      "witnesses": 3,
-      "evidence": {
-        "trajectory_sources": {
-          "harness_observed": [
-            "greedy",
-            "grounded",
-            "oneshot"
-          ]
-        },
-        "isolation": [
-          "inprocess"
-        ]
-      }
+      "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
     },
     {
       "id": "J1",
@@ -969,7 +954,7 @@
       "check": "fleet score totals are reliable (KR-20)",
       "level": "skip",
       "gating": false,
-      "detail": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock",
+      "detail": "2 model(s) x 6 common item(s); need 4+ models and 5+ items to unlock",
       "witnesses": 0
     },
     {
@@ -978,7 +963,7 @@
       "check": "no item anti-correlates with fleet skill",
       "level": "skip",
       "gating": false,
-      "detail": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock",
+      "detail": "2 model(s) x 6 common item(s); need 4+ models and 5+ items to unlock",
       "witnesses": 0
     },
     {
@@ -987,7 +972,7 @@
       "check": "dead-weight items stay a minority",
       "level": "skip",
       "gating": false,
-      "detail": "3 model(s) x 24 common item(s); need 4+ models and 5+ items to unlock",
+      "detail": "2 model(s) x 6 common item(s); need 4+ models and 5+ items to unlock",
       "witnesses": 0
     },
     {
@@ -996,17 +981,17 @@
       "check": "every model was asked the same items",
       "level": "pass",
       "gating": true,
-      "detail": "0 of 3 model(s) were asked a different item set",
-      "witnesses": 3
+      "detail": "0 of 2 model(s) were asked a different item set",
+      "witnesses": 2
     },
     {
       "id": "P5",
       "slug": "unanimous-wrong",
       "check": "no unanimous identical wrong answers",
-      "level": "pass",
+      "level": "skip",
       "gating": false,
-      "detail": "0 item(s) where the whole fleet gave one identical wrong answer; candidate key errors",
-      "witnesses": 24
+      "detail": "2 model(s); need 3+ to call unanimity",
+      "witnesses": 0
     },
     {
       "id": "P6",
@@ -1023,10 +1008,10 @@
       "check": "the fleet is not pinned at a ceiling or floor",
       "level": "pass",
       "gating": false,
-      "detail": "fleet accuracy spans 75% to 100% on 24 item(s)",
-      "witnesses": 3,
+      "detail": "fleet accuracy spans 50% to 100% on 6 item(s)",
+      "witnesses": 2,
       "evidence": {
-        "min": 0.75,
+        "min": 0.5,
         "max": 1.0
       }
     },
@@ -1036,19 +1021,19 @@
       "check": "the eval separates the fleet (dynamic range)",
       "level": "pass",
       "gating": false,
-      "detail": "fleet spread 25% across 3 model(s) on 24 item(s)",
-      "witnesses": 3,
+      "detail": "fleet spread 50% across 2 model(s) on 6 item(s)",
+      "witnesses": 2,
       "evidence": {
-        "spread": 0.25
+        "spread": 0.5
       }
     },
     {
       "id": "P9",
       "slug": "order-stability",
       "check": "answers survive re-ordering the options",
-      "level": "skip",
+      "level": "n/a",
       "gating": false,
-      "detail": "no shuffle probe on disk; set data.render_choices and run `dinostomp run <spec> --probe shuffle` to unlock",
+      "detail": "presentation-order probes need a real provider; this pod's runs are all local",
       "witnesses": 0
     },
     {
@@ -1064,469 +1049,218 @@
       "id": "P11",
       "slug": "prompt-stability",
       "check": "the number survives re-phrasing the instruction",
-      "level": "skip",
+      "level": "n/a",
       "gating": false,
-      "detail": "no template probe on disk; run `dinostomp run <spec> --probe template` to unlock",
+      "detail": "instruction-framing probes need runs on disk",
       "witnesses": 0
     },
     {
       "id": "P12",
       "slug": "ranking-stability",
       "check": "the fleet ORDERING survives re-phrasing the instruction",
-      "level": "skip",
+      "level": "n/a",
       "gating": false,
-      "detail": "no template probe on disk; run `dinostomp run <spec> --probe template` to unlock",
+      "detail": "instruction-framing probes need runs on disk",
       "witnesses": 0
     }
   ],
   "inputs": {
-    "spec_sha256": "ae79cfd0e8319d80f9c565515d96632b8b952160f7f84a8c94f34075d9a6c15a",
-    "data_sha256": "36fe2258536e2eb42b78699d92ab85fff93108c55cea33795f90f40f7be53c27",
-    "target_sha256": {
-      "grounded": "f22417f9d9c11c1183e5489c3960fcd0e3c0ee3e52ada32d6870d7a2f70aa488",
-      "oneshot": "f22417f9d9c11c1183e5489c3960fcd0e3c0ee3e52ada32d6870d7a2f70aa488",
-      "greedy": "f22417f9d9c11c1183e5489c3960fcd0e3c0ee3e52ada32d6870d7a2f70aa488"
-    }
+    "spec_sha256": "4cadebde6d29a01ecfcd317cb1cf2add439709518faaa4d8e21bc235473bc584",
+    "data_sha256": "0b56432c320054896104625b1a31ce453976ad63564baa96c5571ce414c9b623",
+    "scorer_sha256": "834848400056f557431cb1d1d2ee9df693c6982ec09c268487b6dbf08e1d2b1f"
   },
   "runs": [
     {
-      "run_file": "20260810_110501_mediated-grounding_greedy_n24_s7.jsonl",
-      "model": "greedy",
-      "model_reported": "greedy",
-      "provider": "mediated",
-      "dry_run": false,
-      "seed": 7,
-      "records": 24,
+      "run_file": "20260813_083708_graded-closeness_dry-strong_n6_s42.jsonl",
+      "model": "dry-strong",
+      "model_reported": "dry-strong",
+      "provider": "dry",
+      "dry_run": true,
+      "seed": 42,
+      "records": 6,
       "uncheckable": 0,
       "spend_source": "metered",
-      "trajectory_steps": 72
+      "trajectory_steps": 0
     },
     {
-      "run_file": "20260810_110501_mediated-grounding_grounded_n24_s7.jsonl",
-      "model": "grounded",
-      "model_reported": "grounded",
-      "provider": "mediated",
-      "dry_run": false,
-      "seed": 7,
-      "records": 24,
+      "run_file": "20260813_083708_graded-closeness_dry-up_n6_s42.jsonl",
+      "model": "dry-up",
+      "model_reported": "dry-up",
+      "provider": "dry",
+      "dry_run": true,
+      "seed": 42,
+      "records": 6,
       "uncheckable": 0,
       "spend_source": "metered",
-      "trajectory_steps": 24
-    },
-    {
-      "run_file": "20260810_110501_mediated-grounding_oneshot_n24_s7.jsonl",
-      "model": "oneshot",
-      "model_reported": "oneshot",
-      "provider": "mediated",
-      "dry_run": false,
-      "seed": 7,
-      "records": 24,
-      "uncheckable": 0,
-      "spend_source": "metered",
-      "trajectory_steps": 24
+      "trajectory_steps": 0
     }
   ],
   "entitled_claims": [
-    "Whether each agent's correct answers change when its retrieved evidence is withheld, on these 24 items.",
-    "Nothing about biology: the corpus is eight authored sentences and the agents are scripted.",
-    "Nothing about security: mediation is not isolation, and this pod's agents are trusted code."
+    "Mean closeness credit and exact-match accuracy on these 6 addition items.",
+    "Nothing about arithmetic ability in general; closeness is a toy metric."
   ],
   "power": {
-    "n_items": 24,
-    "mde_unpaired_80pct": 0.4044
+    "n_items": 6,
+    "mde_unpaired_80pct": 0.8088
   },
   "results": {
     "models": [
       {
-        "model": "greedy",
-        "provider": "mediated",
-        "dry_run": false,
+        "model": "dry-strong",
+        "provider": "dry",
+        "dry_run": true,
         "runs": 1,
-        "n_records": 24,
-        "n_checkable": 24,
+        "n_records": 6,
+        "n_checkable": 6,
         "n_uncheckable": 0,
-        "n_passes": 24,
+        "n_passes": 6,
         "n_failures": 0,
         "accuracy": 1.0,
-        "partial_score": null,
-        "n_graded": 0,
+        "partial_score": 1.0,
+        "n_graded": 6,
         "ci95": [
-          0.862,
+          0.61,
           1.0
         ],
         "judgeability": 1.0,
-        "tokens_in": 0,
-        "tokens_out": 0,
+        "tokens_in": 66,
+        "tokens_out": 6,
         "spend_usd": 0.0,
         "finish_reasons": {
-          "stop": 24
+          "stop": 6
         },
         "modal_output": {
-          "text": "chloroplasts",
-          "count": 3,
-          "share": 0.125
+          "text": "57",
+          "count": 1,
+          "share": 0.1667
         }
       },
       {
-        "model": "grounded",
-        "provider": "mediated",
-        "dry_run": false,
+        "model": "dry-up",
+        "provider": "dry",
+        "dry_run": true,
         "runs": 1,
-        "n_records": 24,
-        "n_checkable": 24,
+        "n_records": 6,
+        "n_checkable": 6,
         "n_uncheckable": 0,
-        "n_passes": 24,
-        "n_failures": 0,
-        "accuracy": 1.0,
-        "partial_score": null,
-        "n_graded": 0,
+        "n_passes": 3,
+        "n_failures": 3,
+        "accuracy": 0.5,
+        "partial_score": 0.7167,
+        "n_graded": 6,
         "ci95": [
-          0.862,
-          1.0
+          0.188,
+          0.812
         ],
         "judgeability": 1.0,
-        "tokens_in": 0,
-        "tokens_out": 0,
+        "tokens_in": 66,
+        "tokens_out": 6,
         "spend_usd": 0.0,
         "finish_reasons": {
-          "stop": 24
+          "stop": 6
         },
         "modal_output": {
-          "text": "chloroplasts",
-          "count": 3,
-          "share": 0.125
-        }
-      },
-      {
-        "model": "oneshot",
-        "provider": "mediated",
-        "dry_run": false,
-        "runs": 1,
-        "n_records": 24,
-        "n_checkable": 24,
-        "n_uncheckable": 0,
-        "n_passes": 18,
-        "n_failures": 6,
-        "accuracy": 0.75,
-        "partial_score": null,
-        "n_graded": 0,
-        "ci95": [
-          0.551,
-          0.88
-        ],
-        "judgeability": 1.0,
-        "tokens_in": 0,
-        "tokens_out": 0,
-        "spend_usd": 0.0,
-        "finish_reasons": {
-          "stop": 24
-        },
-        "modal_output": {
-          "text": "chloroplasts",
-          "count": 3,
-          "share": 0.125
+          "text": "63",
+          "count": 1,
+          "share": 0.1667
         }
       }
     ],
     "fleet": {
-      "n_models": 3,
-      "n_items": 24,
-      "mean_accuracy": 0.9167,
-      "min_accuracy": 0.75,
+      "n_models": 2,
+      "n_items": 6,
+      "mean_accuracy": 0.75,
+      "min_accuracy": 0.5,
       "max_accuracy": 1.0,
-      "mean_partial_score": null,
-      "n_models_graded": 0,
-      "spread": 0.25,
-      "kr20": 0.8696,
-      "n_all_right": 18,
+      "mean_partial_score": 0.8583,
+      "n_models_graded": 2,
+      "spread": 0.5,
+      "kr20": 0.8,
+      "n_all_right": 3,
       "n_all_wrong": 0,
-      "dead_share": 0.75,
-      "mde_unpaired": 0.4044
+      "dead_share": 0.5,
+      "mde_unpaired": 0.8088
     },
     "items": [
       {
-        "id": "m001",
-        "target": "chloroplasts",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
+        "id": "a1",
+        "target": "57",
+        "n_answered": 2,
+        "n_correct": 1,
+        "p": 0.5,
         "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m002",
-        "target": "chloroplasts",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m003",
-        "target": "chloroplasts",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m004",
-        "target": "mitochondria",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m005",
-        "target": "mitochondria",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m006",
-        "target": "mitochondria",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m007",
-        "target": "stomata",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m008",
-        "target": "stomata",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m009",
-        "target": "stomata",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m010",
-        "target": "two",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m011",
-        "target": "two",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m012",
-        "target": "two",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m013",
-        "target": "four",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m014",
-        "target": "four",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m015",
-        "target": "four",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m016",
-        "target": "higher",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m017",
-        "target": "higher",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m018",
-        "target": "higher",
-        "n_answered": 3,
-        "n_correct": 3,
-        "p": 1.0,
-        "discrimination": null,
-        "missed_by": [],
-        "top_wrong_answer": null,
-        "separates": false
-      },
-      {
-        "id": "m019",
-        "target": "lower",
-        "n_answered": 3,
-        "n_correct": 2,
-        "p": 0.6667,
-        "discrimination": 1.0,
         "missed_by": [
-          "oneshot"
+          "dry-up"
         ],
-        "top_wrong_answer": "concentration",
+        "top_wrong_answer": "63",
         "separates": true
       },
       {
-        "id": "m020",
-        "target": "lower",
-        "n_answered": 3,
+        "id": "a2",
+        "target": "62",
+        "n_answered": 2,
         "n_correct": 2,
-        "p": 0.6667,
-        "discrimination": 1.0,
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
+      },
+      {
+        "id": "a3",
+        "target": "90",
+        "n_answered": 2,
+        "n_correct": 1,
+        "p": 0.5,
+        "discrimination": null,
         "missed_by": [
-          "oneshot"
+          "dry-up"
         ],
-        "top_wrong_answer": "concentration",
+        "top_wrong_answer": "96",
         "separates": true
       },
       {
-        "id": "m021",
-        "target": "lower",
-        "n_answered": 3,
+        "id": "a4",
+        "target": "91",
+        "n_answered": 2,
         "n_correct": 2,
-        "p": 0.6667,
-        "discrimination": 1.0,
-        "missed_by": [
-          "oneshot"
-        ],
-        "top_wrong_answer": "concentration",
-        "separates": true
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
       },
       {
-        "id": "m022",
-        "target": "activation",
-        "n_answered": 3,
+        "id": "a5",
+        "target": "72",
+        "n_answered": 2,
         "n_correct": 2,
-        "p": 0.6667,
-        "discrimination": 1.0,
-        "missed_by": [
-          "oneshot"
-        ],
-        "top_wrong_answer": "energy",
-        "separates": true
+        "p": 1.0,
+        "discrimination": null,
+        "missed_by": [],
+        "top_wrong_answer": null,
+        "separates": false
       },
       {
-        "id": "m023",
-        "target": "activation",
-        "n_answered": 3,
-        "n_correct": 2,
-        "p": 0.6667,
-        "discrimination": 1.0,
+        "id": "a6",
+        "target": "80",
+        "n_answered": 2,
+        "n_correct": 1,
+        "p": 0.5,
+        "discrimination": null,
         "missed_by": [
-          "oneshot"
+          "dry-up"
         ],
-        "top_wrong_answer": "energy",
-        "separates": true
-      },
-      {
-        "id": "m024",
-        "target": "activation",
-        "n_answered": 3,
-        "n_correct": 2,
-        "p": 0.6667,
-        "discrimination": 1.0,
-        "missed_by": [
-          "oneshot"
-        ],
-        "top_wrong_answer": "energy",
+        "top_wrong_answer": "85",
         "separates": true
       }
     ],
     "slices": {},
     "cost": {
       "total_usd": 0.0,
-      "total_tokens_in": 0,
-      "total_tokens_out": 0,
-      "all_dry": false
+      "total_tokens_in": 132,
+      "total_tokens_out": 12,
+      "all_dry": true
     }
   }
 }

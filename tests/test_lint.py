@@ -307,6 +307,21 @@ def test_r5_credited_truncation_fires(tmp_path):
     assert finding(report, "R5")["level"] == "fail"
 
 
+def test_r21_out_of_range_graded_value_fires(tmp_path):
+    spec_path, run_file, _ = ran_eval(tmp_path)
+    records = [json.loads(l) for l in run_file.read_text(encoding="utf-8").splitlines()]
+    records[1]["score"]["value"] = 1.7          # a graded value no scorer should emit
+    run_file.write_text("\n".join(json.dumps(r) for r in records) + "\n", encoding="utf-8")
+    report = stomp(spec_path)
+    assert finding(report, "R21")["level"] == "fail"
+
+
+def test_r21_is_not_applicable_without_graded_values(tmp_path):
+    spec_path, _, _ = ran_eval(tmp_path)
+    report = stomp(spec_path)
+    assert finding(report, "R21")["level"] == "n/a"
+
+
 def rewrite_run_consistently(spec_path, run_file, mutate_record):
     """Rewrite records AND regenerate the summary, so only the intended
     inconsistency remains. The battery now cross-checks outputs, verdicts,

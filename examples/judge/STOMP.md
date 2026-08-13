@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 32 of 38 checks ran (32 of 38 ran; 24 n/a of 62 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 32 of 38 checks ran (32 of 38 ran; 26 n/a of 64 declared). Not a clean bill of health.
 
 ## Results
 
@@ -77,6 +77,7 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | n/a | every referenced asset resolves and still hashes the same | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | a graded scorer witnesses its gradation | 0 | this scorer does not emit intermediate partial credit, so there is no gradation to witness |
 | n/a | every typed claim's evidence requirements hold | 0 | no typed claims declared |
 | ok | runs match the spec, data, and scorer on disk (no drift) | 4 | 0 of 4 run(s) no longer match the spec, data, or scorer on disk |
 | ok | the witness gate replays clean | 10 | replayed 6 witness(es): 6 behaved; 4 run manifest(s) checked |
@@ -87,6 +88,7 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | ok | summaries match their run records | 4 | 0 summary discrepanc(ies) across 4 run(s) |
 | ok | records cover exactly the seeded selection | 4 | 0 of 4 run(s) do not cover their seeded selection |
 | ok | every model produced something scoreable | 4 | 0 of 4 model(s) produced nothing scoreable |
+| n/a | graded scores stay in range | 0 | no record carries a graded value |
 | n/a | no forbidden tool is called | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |
 | n/a | every required tool is actually called | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |
 | n/a | trajectories are well-formed | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |
@@ -116,7 +118,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 3 | 0 of 3 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 1766282c5e84be02); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now e88f0329c1d1fc98); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |
 | n/a | no model under-reports its trajectory | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |

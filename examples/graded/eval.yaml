@@ -1,0 +1,52 @@
+# Partial credit: a graded scorer that rewards being close, not just exact.
+# Runs offline, costs nothing. Shows partial_score reported beside accuracy.
+name: graded-closeness
+version: 0.1.0
+question: "How close is the model's sum to the right answer, graded 0 to 1?"
+
+entitled_claims:
+  - "Mean closeness credit and exact-match accuracy on these 6 addition items."
+  - "Nothing about arithmetic ability in general; closeness is a toy metric."
+
+data:
+  path: items.jsonl
+  format: jsonl
+
+scorer:
+  kind: python
+  code: scorer.py
+  # A graded scorer must witness its gradation (W3): one witness pins an
+  # INTERMEDIATE value, so R2 verifies the scorer actually grades rather than
+  # returning 0/1 relabelled. The ends anchor it and kill the mutant scorers.
+  witnesses:
+    - output: "57"
+      target: "57"
+      expect: pass
+      expect_value: 1.0
+      why: "exactly right earns full credit"
+    - output: "60"
+      target: "57"
+      expect: fail
+      expect_value: 0.7
+      why: "off by three earns partial credit, and is NOT a pass"
+    - output: "99"
+      target: "57"
+      expect: fail
+      expect_value: 0.0
+      why: "off by more than ten earns nothing"
+    - output: "no number anywhere"
+      target: "57"
+      expect: uncheckable
+      why: "nothing to grade is uncheckable, not zero"
+
+models:
+  - provider: dry
+    model: dry-strong
+  - provider: dry
+    model: dry-up      # a weak examinee: its near-misses earn partial credit,
+                       # so its partial_score sits well above its exact accuracy
+
+run:
+  n: 6
+  seed: 42
+  budget_usd: 0

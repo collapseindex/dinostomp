@@ -269,7 +269,7 @@
     }
   },
   "coverage": {
-    "declared_total": 62,
+    "declared_total": 64,
     "declared": 39,
     "ran": 37,
     "skipped": [
@@ -308,6 +308,10 @@
         "reason": "no item carries an `input_ref`; nothing points at a file"
       },
       {
+        "id": "W3",
+        "reason": "this scorer does not emit intermediate partial credit, so there is no gradation to witness"
+      },
+      {
         "id": "C1",
         "reason": "no typed claims declared"
       },
@@ -318,6 +322,10 @@
       {
         "id": "R20",
         "reason": "no run on disk repeats an item; a single pass per item cannot tie"
+      },
+      {
+        "id": "R21",
+        "reason": "no record carries a graded value"
       },
       {
         "id": "T1",
@@ -581,6 +589,15 @@
       }
     },
     {
+      "id": "W3",
+      "slug": "graded-witness",
+      "check": "a graded scorer witnesses its gradation",
+      "level": "n/a",
+      "gating": true,
+      "detail": "this scorer does not emit intermediate partial credit, so there is no gradation to witness",
+      "witnesses": 0
+    },
+    {
       "id": "C1",
       "slug": "claim-evidence",
       "check": "every typed claim's evidence requirements hold",
@@ -780,7 +797,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 1766282c5e84be02); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now e88f0329c1d1fc98); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine cf11e5de89c91221: meta-llama/llama-3.2-3b-instruct seed 7 (tool 0.37.0), meta-llama/llama-3.1-8b-instruct seed 7 (tool 0.37.0), mistralai/ministral-8b-2512 seed 7 (tool 0.37.0) and 1 more"
@@ -798,6 +815,15 @@
       "level": "n/a",
       "gating": false,
       "detail": "no run on disk repeats an item; a single pass per item cannot tie",
+      "witnesses": 0
+    },
+    {
+      "id": "R21",
+      "slug": "graded-range",
+      "check": "graded scores stay in range",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no record carries a graded value",
       "witnesses": 0
     },
     {
@@ -1187,6 +1213,8 @@
         "n_passes": 38,
         "n_failures": 2,
         "accuracy": 0.95,
+        "partial_score": null,
+        "n_graded": 0,
         "ci95": [
           0.835,
           0.986
@@ -1215,6 +1243,8 @@
         "n_passes": 35,
         "n_failures": 5,
         "accuracy": 0.875,
+        "partial_score": null,
+        "n_graded": 0,
         "ci95": [
           0.739,
           0.945
@@ -1243,6 +1273,8 @@
         "n_passes": 40,
         "n_failures": 0,
         "accuracy": 1.0,
+        "partial_score": null,
+        "n_graded": 0,
         "ci95": [
           0.912,
           1.0
@@ -1271,6 +1303,8 @@
         "n_passes": 40,
         "n_failures": 0,
         "accuracy": 1.0,
+        "partial_score": null,
+        "n_graded": 0,
         "ci95": [
           0.912,
           1.0
@@ -1295,6 +1329,8 @@
       "mean_accuracy": 0.9563,
       "min_accuracy": 0.875,
       "max_accuracy": 1.0,
+      "mean_partial_score": null,
+      "n_models_graded": 0,
       "spread": 0.125,
       "kr20": 0.7042,
       "n_all_right": 33,

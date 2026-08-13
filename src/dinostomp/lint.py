@@ -92,6 +92,8 @@ CHECKS: list[tuple[str, str, bool, str]] = [
     ("W1", "witnesses kill the mutant scorers", False, "always"),
     ("W2", "a correct answer survives its surface form", False,
      "a scorer that accepts a constructible baseline form"),
+    ("W3", "a graded scorer witnesses its gradation", True,
+     "a scorer that emits intermediate partial credit on its witnesses"),
     ("C1", "every typed claim's evidence requirements hold", True, "typed claims declared"),
     ("R1", "runs match the spec, data, and scorer on disk (no drift)", True, "runs on disk"),
     ("R2", "the witness gate replays clean", True, "always"),
@@ -113,6 +115,7 @@ CHECKS: list[tuple[str, str, bool, str]] = [
     ("R18", "billed output tokens match the recorded text", False, "20+ records with usage"),
     ("R19", "the runs were produced by this engine", False, "runs recording a tool_sha256"),
     ("R20", "repeated items reached a verdict", False, "runs with run.repeats > 1"),
+    ("R21", "graded scores stay in range", True, "records carrying a graded value"),
     ("T1", "no forbidden tool is called", True, "forbidden_tools declared"),
     ("T2", "every required tool is actually called", True, "required_tools declared"),
     ("T3", "trajectories are well-formed", True, "python-target runs on disk"),
@@ -233,14 +236,15 @@ SLUGS = {
     "S10": "canary-regurgitated", "S11": "corpus-overlap",
     "S12": "asset-drift", "S13": "label-in-path", "S14": "split-leak",
     "S15": "near-dup-assets",
-    "W1": "witness-coverage", "W2": "surface-form", "C1": "claim-evidence",
+    "W1": "witness-coverage", "W2": "surface-form", "W3": "graded-witness",
+    "C1": "claim-evidence",
     "R1": "input-drift", "R2": "witness-replay", "R3": "spend-ledger",
     "R4": "record-integrity", "R5": "truncation-credit", "R6": "uncheckable-rate",
     "R7": "above-guessing", "R8": "verdict-rederive", "R9": "summary-rederive",
     "R10": "run-scope", "R11": "selection-coverage", "R12": "scorer-escape",
     "R13": "blind-solvable", "R14": "response-collapse", "R15": "input-blind",
     "R16": "scorer-artifact", "R17": "nothing-scoreable", "R18": "billing-mismatch",
-    "R19": "engine-drift", "R20": "repeat-ties",
+    "R19": "engine-drift", "R20": "repeat-ties", "R21": "graded-range",
     "T1": "forbidden-tool", "T2": "required-tool", "T3": "trajectory-shape",
     "T4": "answer-grounding", "T5": "trace-underreport", "T6": "redundant-calls",
     "T7": "answer-grounding-causal", "T8": "trace-observed",
@@ -367,7 +371,7 @@ CONSTRUCT_VALIDITY = {
 
 
 RUN_CHECK_IDS = ("R1", "R3", "R4", "R5", "R6", "R8", "R9", "R10", "R11", "R12", "R14", "R16", "R17",
-                 "R18", "R19", "R20")
+                 "R18", "R19", "R20", "R21")
 PSYCHO_CHECK_IDS = ("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8")
 # P9 lives with the probes, not the fleet matrix: it needs a probe run, not more models.
 TRAJECTORY_CHECK_IDS = ("T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8")
@@ -2067,6 +2071,30 @@ def _run_checks(rep: Reporter, mine: list[dict], foreign: list[dict], spec_file:
               "have stated its answer, so read these before raising max_tokens and re-running",
               n=len(all_records), examples=credited)
 
+    # R21: graded scores stay in range. W3 proves gradation on the witnesses;
+    # this holds the actual records to the same [0,1] bound, because a scorer
+    # that behaves on its handful of witnesses can still emit a value of 1.7 or
+    # a NaN on real output, and partial_score would then average nonsense.
+    graded_records = [(entry, r, (r.get("score") or {}).get("value"))
+                      for entry, r in all_records
+                      if (r.get("score") or {}).get("value") is not None]
+    bad_range = []
+    for entry, r, val in graded_records:
+        try:
+            f = float(val)
+            ok = 0.0 <= f <= 1.0 and f == f  # f==f rejects NaN
+        except (TypeError, ValueError):
+            ok = False
+        if not ok:
+            bad_range.append(f"{entry['path'].name}: {r.get('key')} value={val!r}")
+    if not graded_records:
+        rep.not_applicable("R21", "no record carries a graded value")
+    else:
+        rep.check("R21", not bad_range,
+                  f"{len(bad_range)} of {len(graded_records)} graded value(s) outside [0,1] "
+                  "or not a number",
+                  n=len(graded_records), examples=bad_range[:8])
+
     # R6: uncheckable rate
     n_unch = sum(1 for _, r in all_records if (r.get("score") or {}).get("verdict") == "uncheckable")
     rate = n_unch / len(all_records) if all_records else 0.0
@@ -2982,6 +3010,55 @@ def lint_eval(spec_path: str | Path, trust_code: bool = False,
                 examples=[f"{s.name} ({s.bug_class}); {s.suggestion}" for s in broken],
                 evidence={"baseline_form": shapes.form, "held": shapes.held,
                           "not_applicable": shapes.not_applicable},
+            )
+
+    # W3: a scorer that hands out partial credit has to PROVE it grades. A
+    # "graded" scorer that only ever returns 0/1 is a binary scorer wearing a
+    # float, and the accuracy and the partial score would then be the same
+    # number sold as two. So if the scorer emits an intermediate value on any
+    # witness, at least one witness must pin an intermediate expect_value (which
+    # R2 then verifies it actually hits), and every value it emits must be in
+    # [0,1]. A scorer that never grades is n/a, not a pass.
+    witnesses = spec["scorer"].get("witnesses") or []
+    if scorer is None:
+        rep.skip("W3", code_refused)
+    elif not getattr(scorer, "offline_replayable", True):
+        rep.skip("W3", "hosted judge: a graded judge's gradation is checked by the judge probe")
+    else:
+        emitted, out_of_range = [], []
+        for w in witnesses:
+            try:
+                val = scorer(w["output"], w["target"]).value
+            except Exception:  # noqa: BLE001 - a scorer that crashes here is W1/R2's problem
+                continue
+            if val is None:
+                continue
+            val = float(val)
+            emitted.append(val)
+            if not (0.0 <= val <= 1.0):
+                out_of_range.append(val)
+        graded = [v for v in emitted if 0.0 < v < 1.0]
+        pinned_partial = [w for w in witnesses
+                          if isinstance(w.get("expect_value"), (int, float))
+                          and 0.0 < float(w["expect_value"]) < 1.0]
+        if not graded and not out_of_range:
+            rep.not_applicable("W3", "this scorer does not emit intermediate partial credit, so "
+                                     "there is no gradation to witness")
+        else:
+            problems = []
+            if out_of_range:
+                problems.append(f"{len(out_of_range)} witness value(s) outside [0,1], "
+                                f"e.g. {out_of_range[0]}")
+            if graded and not pinned_partial:
+                problems.append("emits partial credit but no witness pins an intermediate "
+                                "expect_value (0<v<1), so the gradation is unproven")
+            rep.check(
+                "W3", not problems,
+                "; ".join(problems) or "gradation is witnessed and in range",
+                n=len(witnesses),
+                examples=problems,
+                evidence={"n_graded_witness_values": len(graded),
+                          "n_partial_witnesses": len(pinned_partial)},
             )
 
     choice_items = [i for i in items if "choices" in i]

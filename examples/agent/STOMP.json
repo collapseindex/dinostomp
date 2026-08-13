@@ -269,7 +269,7 @@
     }
   },
   "coverage": {
-    "declared_total": 62,
+    "declared_total": 64,
     "declared": 42,
     "ran": 38,
     "skipped": [
@@ -336,12 +336,20 @@
         "reason": "this scorer compares exactly rather than extracting, so surface-form robustness is not a property it claims"
       },
       {
+        "id": "W3",
+        "reason": "this scorer does not emit intermediate partial credit, so there is no gradation to witness"
+      },
+      {
         "id": "R18",
         "reason": "no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably"
       },
       {
         "id": "R20",
         "reason": "no run on disk repeats an item; a single pass per item cannot tie"
+      },
+      {
+        "id": "R21",
+        "reason": "no record carries a graded value"
       },
       {
         "id": "T7",
@@ -551,6 +559,15 @@
       "level": "n/a",
       "gating": false,
       "detail": "this scorer compares exactly rather than extracting, so surface-form robustness is not a property it claims",
+      "witnesses": 0
+    },
+    {
+      "id": "W3",
+      "slug": "graded-witness",
+      "check": "a graded scorer witnesses its gradation",
+      "level": "n/a",
+      "gating": true,
+      "detail": "this scorer does not emit intermediate partial credit, so there is no gradation to witness",
       "witnesses": 0
     },
     {
@@ -768,7 +785,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 1766282c5e84be02); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now e88f0329c1d1fc98); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine 050e2f343915e1b9: agent-grounded seed 42 (tool 0.57.1), agent-lazy seed 42 (tool 0.57.1), agent-narrow seed 42 (tool 0.57.1) and 1 more"
@@ -786,6 +803,15 @@
       "level": "n/a",
       "gating": false,
       "detail": "no run on disk repeats an item; a single pass per item cannot tie",
+      "witnesses": 0
+    },
+    {
+      "id": "R21",
+      "slug": "graded-range",
+      "check": "graded scores stay in range",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no record carries a graded value",
       "witnesses": 0
     },
     {
@@ -1135,6 +1161,8 @@
         "n_passes": 24,
         "n_failures": 2,
         "accuracy": 0.9231,
+        "partial_score": null,
+        "n_graded": 0,
         "ci95": [
           0.759,
           0.979
@@ -1163,6 +1191,8 @@
         "n_passes": 26,
         "n_failures": 0,
         "accuracy": 1.0,
+        "partial_score": null,
+        "n_graded": 0,
         "ci95": [
           0.871,
           1.0
@@ -1191,6 +1221,8 @@
         "n_passes": 9,
         "n_failures": 17,
         "accuracy": 0.3462,
+        "partial_score": null,
+        "n_graded": 0,
         "ci95": [
           0.194,
           0.538
@@ -1219,6 +1251,8 @@
         "n_passes": 16,
         "n_failures": 10,
         "accuracy": 0.6154,
+        "partial_score": null,
+        "n_graded": 0,
         "ci95": [
           0.425,
           0.776
@@ -1243,6 +1277,8 @@
       "mean_accuracy": 0.7212,
       "min_accuracy": 0.3462,
       "max_accuracy": 1.0,
+      "mean_partial_score": null,
+      "n_models_graded": 0,
       "spread": 0.6538,
       "kr20": 0.9561,
       "n_all_right": 9,

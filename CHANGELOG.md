@@ -2,6 +2,27 @@
 
 ### Unreleased
 
+- **Partial credit.** A scorer can now hand out graded per-item credit, not just
+  pass/fail. A `python` scorer returning a float in [0,1] (`return 0.7`) is the
+  whole idiom: the verdict stays categorical (pass only on a perfect 1.0, so
+  every dichotomous check keeps a clean pass rate) and the float rides alongside
+  as `value`. The report averages it into `partial_score`, shown BESIDE accuracy
+  and never instead of it, because "how often exactly right" and "how close on
+  average" are different questions about one run. Two new gating checks guard it,
+  so the feature ships with validators that can fail:
+  - **W3 `graded-witness`**: a scorer that emits intermediate credit on its
+    witnesses must have at least one witness pinning an intermediate
+    `expect_value` (0<v<1), which R2 then verifies it hits. A "graded" scorer
+    that only ever returns 0/1 is a binary scorer wearing a float, and this is
+    what stops the partial score from being the accuracy sold twice.
+  - **R21 `graded-range`**: every recorded graded value is a number in [0,1]. A
+    scorer that behaves on its handful of witnesses can still emit 1.7 or NaN on
+    real output, and R21 holds the actual records to the bound so `partial_score`
+    never averages nonsense.
+  Witnesses gained an optional `expect_value`. New `examples/graded/` pod: a
+  closeness scorer where a weak model scores 50% exact accuracy but 0.72 partial.
+  Registry 62 -> 64 checks.
+
 - **W2 `surface-form`**, a new diagnostic: does a CORRECT answer survive the
   shape it arrived in? W1 mutates the scorer and asks whether the witnesses
   would notice it crediting too much; nothing asked the opposite question, so a

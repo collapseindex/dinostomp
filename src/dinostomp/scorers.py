@@ -182,13 +182,24 @@ def _python_factory(code_path: Path) -> Scorer:
             return ScoreResult("uncheckable", evidence=f"user scorer raised {type(exc).__name__}: {exc}")
         if isinstance(result, ScoreResult):
             return result
+        # bool BEFORE int: bool is a subclass of int, and True is a verdict, not
+        # 1.0 of partial credit.
         if isinstance(result, bool):
             return ScoreResult("pass" if result else "fail", evidence="user scorer boolean")
+        if isinstance(result, (int, float)):
+            # Native partial credit: `return 0.7`. The verdict stays categorical
+            # (pass only on a perfect 1.0) so every dichotomous check keeps a
+            # clean pass rate, while the float rides along as graded credit.
+            # An out-of-range or NaN value is passed through, not swallowed, so
+            # R21 and W3 catch it rather than a silent uncheckable hiding it.
+            val = float(result)
+            verdict = "pass" if val == 1.0 else "fail"
+            return ScoreResult(verdict, evidence=f"graded {val}", value=val)
         if result is None:
             return ScoreResult("uncheckable", evidence="user scorer returned None")
         return ScoreResult(
             "uncheckable",
-            evidence=f"user scorer returned {type(result).__name__}, expected bool, None, or ScoreResult",
+            evidence=f"user scorer returned {type(result).__name__}, expected number, bool, None, or ScoreResult",
         )
 
     return python_scorer
@@ -236,7 +247,18 @@ def run_witnesses(scorer: Scorer, witnesses: list[dict]) -> WitnessReport:
     behaved = 0
     for i, w in enumerate(witnesses):
         result = scorer(w["output"], w["target"])
-        if result.verdict == w["expect"]:
+        verdict_ok = result.verdict == w["expect"]
+        # A graded witness may additionally pin `expect_value`. This is what
+        # proves a "graded" scorer actually grades: a scorer that returns 0/1
+        # dressed up as partial credit cannot land an intermediate value it was
+        # told to produce. Absent the key, only the verdict is checked, so every
+        # existing witness is unaffected.
+        value_ok = True
+        want_val = w.get("expect_value")
+        if want_val is not None:
+            got = result.value
+            value_ok = got is not None and abs(float(got) - float(want_val)) <= 1e-9
+        if verdict_ok and value_ok:
             behaved += 1
         else:
             failures.append(
@@ -244,8 +266,10 @@ def run_witnesses(scorer: Scorer, witnesses: list[dict]) -> WitnessReport:
                     "index": i,
                     "output": w["output"],
                     "target": w["target"],
-                    "expected": w["expect"],
+                    "expected": w["expect"] if verdict_ok else w["expect"],
                     "got": result.verdict,
+                    "expected_value": want_val,
+                    "got_value": result.value,
                     "evidence": result.evidence,
                     "why": w.get("why", ""),
                 }

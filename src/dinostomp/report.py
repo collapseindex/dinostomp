@@ -108,11 +108,24 @@ def _results_section(report: dict) -> list[str]:
                  "verdict on at all, and 80% accurate on 60%-judgeable output is not 80% accurate.")
     lines.append("")
 
+    graded_rows = [m for m in models if m.get("partial_score") is not None]
+    if graded_rows:
+        lines.append("**Partial credit** (graded scorers): "
+                     + ", ".join(f"{_md_escape(m['model'])} {m['partial_score']:.3f} "
+                                 f"on {m['n_graded']}" for m in graded_rows))
+        lines.append("`partial_score` is the mean graded value in [0,1], shown BESIDE accuracy, "
+                     "never instead of it: accuracy stays the binary pass rate every dichotomous "
+                     "check reads, and the two are different questions about the same run.")
+        lines.append("")
+
     f = res.get("fleet") or {}
     if f.get("n_models"):
         bits = [f"**{f['n_models']} model(s) x {f['n_items']} item(s)**"]
         if f.get("mean_accuracy") is not None:
             bits.append(f"mean {_pct(f['mean_accuracy'])}")
+        if f.get("mean_partial_score") is not None:
+            bits.append(f"mean partial {f['mean_partial_score']:.3f} "
+                        f"on {f['n_models_graded']} graded model(s)")
         if f.get("spread") is not None:
             bits.append(f"spanning {_pct(f['min_accuracy'])} to {_pct(f['max_accuracy'])} "
                         f"({f['spread']:.0%} spread)")
