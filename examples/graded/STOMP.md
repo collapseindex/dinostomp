@@ -89,7 +89,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | no model reproduces the contamination canary | 0 | regurgitation probes need a hosted model; this pod's runs are all local |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
 | n/a | no near-duplicate assets | 0 | no item carries an `input_ref`; nothing points at a file |
-| warn | the eval is not authored in a circle | 4 | 1 circular-authorship pattern(s) |
+| warn | the eval is not authored in a circle | 4 | 1 loop(s) closed by a model |
 | skip | witnesses kill the mutant scorers | 0 | this pod ships Python that linting would have to IMPORT and therefore RUN (scorer.py); re-run with --trust-code if you have read it and accept that |
 | skip | a correct answer survives its surface form | 0 | this pod ships Python that linting would have to IMPORT and therefore RUN (scorer.py); re-run with --trust-code if you have read it and accept that |
 | ok | uncheckable rate is sane | 12 | 0% of 12 record(s) are uncheckable |
@@ -101,7 +101,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 2 | 0 of 2 run(s) were produced by a different engine than the one auditing them (now bdf9d65d922fbdd1); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 2 | 2 of 2 run(s) were produced by a different engine than the one auditing them (now a9d9f947d0aa471c); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -128,7 +128,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 <details><summary>[warn] the eval is not authored in a circle</summary>
 
-- one author (claude-opus-5, a model) wrote items, keys, scorer, witnesses: nothing in the eval was authored by an independent hand, and no review_by breaks the loop
+- a model closes an authorship loop: claude-opus-5 is credited with items, keys, scorer, witnesses, and no review_by is declared: one author, no declared independent check
 - evidence: `{"items_by": "claude-opus-5", "keys_by": "claude-opus-5", "scorer_by": "claude-opus-5", "witnesses_by": "claude-opus-5"}`
 
 </details>
@@ -142,8 +142,9 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 - evidence: `{"rates": {"dry-strong": 0.0, "dry-up": 0.0}}`
 
 </details>
-<details><summary>[ok] the runs were produced by this engine</summary>
+<details><summary>[warn] the runs were produced by this engine</summary>
 
+- engine bdf9d65d922fbdd1: dry-strong seed 42 (tool 0.61.0), dry-up seed 42 (tool 0.61.0)
 - evidence: `{"engines": {"bdf9d65d922fbdd1": 2}}`
 
 </details>

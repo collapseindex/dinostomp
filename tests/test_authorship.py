@@ -55,28 +55,38 @@ def test_s16_warns_when_one_model_authored_everything(tmp_path):
         "scorer_by": "claude-opus-5", "witnesses_by": "claude-opus-5"}))
     f = s16(report)
     assert f["level"] == "warn", f
-    assert "independent hand" in f["detail"] or "independent hand" in " ".join(f["examples"])
-    assert any("a model" in e for e in f["examples"])
+    assert any("a model closes an authorship loop" in e for e in f["examples"])
+    assert any("no review_by is declared" in e for e in f["examples"])
 
 
-def test_s16_warns_on_self_keyed_items(tmp_path):
-    # items and keys share a model author; scorer/witnesses independent humans.
+def test_s16_warns_on_a_model_keying_its_own_items(tmp_path):
+    # items and keys share a MODEL author; scorer/witnesses independent humans.
     report, _ = lint_eval(_pod(tmp_path, {
         "items_by": "gpt-5", "keys_by": "gpt-5",
         "scorer_by": "human:alice", "witnesses_by": "human:bob"}))
     f = s16(report)
     assert f["level"] == "warn", f
-    assert any("never independently verified" in e for e in f["examples"])
-    assert not any("scorer and witnesses" in e for e in f["examples"])
+    assert any("keys are not declared as independently verified" in e for e in f["examples"])
+    assert not any("witness gauntlet" in e for e in f["examples"])
 
 
-def test_s16_warns_on_self_fitted_witnesses(tmp_path):
+def test_s16_warns_on_a_model_writing_its_own_witnesses(tmp_path):
     report, _ = lint_eval(_pod(tmp_path, {
         "items_by": "human:alice", "keys_by": "human:bob",
         "scorer_by": "gpt-5", "witnesses_by": "gpt-5"}))
     f = s16(report)
     assert f["level"] == "warn", f
-    assert any("fitted to the scorer author" in e for e in f["examples"])
+    assert any("witness gauntlet is not declared as independently written" in e for e in f["examples"])
+
+
+def test_s16_does_not_scold_a_solo_human_author(tmp_path):
+    # One person wrote the whole thing. Ordinary practice, not a warning.
+    report, _ = lint_eval(_pod(tmp_path, {
+        "items_by": "human:alice", "keys_by": "human:alice",
+        "scorer_by": "human:alice", "witnesses_by": "human:alice"}))
+    f = s16(report)
+    assert f["level"] == "pass", f
+    assert "not flagged" in f["detail"]
 
 
 def test_s16_passes_when_an_independent_hand_appears(tmp_path):
@@ -86,16 +96,15 @@ def test_s16_passes_when_an_independent_hand_appears(tmp_path):
     assert s16(report)["level"] == "pass"
 
 
-def test_s16_all_one_author_but_reviewed_still_flags_but_softer(tmp_path):
-    # review_by breaks the whole-eval loop; the sub-loops (self-keyed,
-    # self-fitted) still stand and are reported.
+def test_s16_reviewed_all_model_still_warns_on_the_sub_loops(tmp_path):
+    # review_by drops the whole-eval framing; the model still keyed its own
+    # items and wrote its own witnesses, and those loops stand.
     report, _ = lint_eval(_pod(tmp_path, {
         "items_by": "claude-opus-5", "keys_by": "claude-opus-5",
         "scorer_by": "claude-opus-5", "witnesses_by": "claude-opus-5",
         "review_by": "human:dana"}))
     f = s16(report)
     assert f["level"] == "warn"
-    # the whole-eval line is gone; the two sub-loops remain
-    assert not any("nothing in the eval" in e for e in f["examples"])
-    assert any("never independently verified" in e for e in f["examples"])
-    assert any("fitted to the scorer author" in e for e in f["examples"])
+    assert not any("no review_by is declared" in e for e in f["examples"])
+    assert any("keys are not declared as independently verified" in e for e in f["examples"])
+    assert any("witness gauntlet is not declared as independently written" in e for e in f["examples"])

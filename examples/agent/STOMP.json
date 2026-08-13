@@ -333,7 +333,7 @@
       },
       {
         "id": "S16",
-        "reason": "no provenance declared; authorship independence cannot be assessed. Declaring who wrote the items, keys, scorer, and witnesses lets this check see whether any of them was written by an independent hand"
+        "reason": "no provenance declared, so authorship is not described. Declaring who wrote the items, keys, scorer, and witnesses lets this surface a model sitting on both sides of a loop (e.g. keying its own questions)"
       },
       {
         "id": "W2",
@@ -539,7 +539,7 @@
       "check": "the eval is not authored in a circle",
       "level": "n/a",
       "gating": false,
-      "detail": "no provenance declared; authorship independence cannot be assessed. Declaring who wrote the items, keys, scorer, and witnesses lets this check see whether any of them was written by an independent hand",
+      "detail": "no provenance declared, so authorship is not described. Declaring who wrote the items, keys, scorer, and witnesses lets this surface a model sitting on both sides of a loop (e.g. keying its own questions)",
       "witnesses": 0
     },
     {
@@ -798,7 +798,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now bdf9d65d922fbdd1); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now a9d9f947d0aa471c); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine 050e2f343915e1b9: agent-grounded seed 42 (tool 0.57.1), agent-lazy seed 42 (tool 0.57.1), agent-narrow seed 42 (tool 0.57.1) and 1 more"

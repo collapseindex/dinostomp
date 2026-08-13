@@ -455,7 +455,7 @@
   },
   "summary": {
     "fail": 0,
-    "warn": 1,
+    "warn": 2,
     "skip": 11,
     "verdict": "incomplete",
     "scope": "pod"
@@ -607,10 +607,10 @@
       "check": "the eval is not authored in a circle",
       "level": "warn",
       "gating": false,
-      "detail": "1 circular-authorship pattern(s)",
+      "detail": "1 loop(s) closed by a model",
       "witnesses": 4,
       "examples": [
-        "one author (claude-opus-5, a model) wrote items, keys, scorer, witnesses: nothing in the eval was authored by an independent hand, and no review_by breaks the loop"
+        "a model closes an authorship loop: claude-opus-5 is credited with items, keys, scorer, witnesses, and no review_by is declared: one author, no declared independent check"
       ],
       "evidence": {
         "items_by": "claude-opus-5",
@@ -830,10 +830,13 @@
       "id": "R19",
       "slug": "engine-drift",
       "check": "the runs were produced by this engine",
-      "level": "pass",
+      "level": "warn",
       "gating": false,
-      "detail": "0 of 2 run(s) were produced by a different engine than the one auditing them (now bdf9d65d922fbdd1); re-run to get numbers this report can stand behind",
+      "detail": "2 of 2 run(s) were produced by a different engine than the one auditing them (now a9d9f947d0aa471c); re-run to get numbers this report can stand behind",
       "witnesses": 2,
+      "examples": [
+        "engine bdf9d65d922fbdd1: dry-strong seed 42 (tool 0.61.0), dry-up seed 42 (tool 0.61.0)"
+      ],
       "evidence": {
         "engines": {
           "bdf9d65d922fbdd1": 2

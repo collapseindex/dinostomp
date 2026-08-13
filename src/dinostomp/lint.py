@@ -1807,24 +1807,22 @@ def _is_human(author: str) -> bool:
 
 
 def _authorship_check(rep: Reporter, spec: dict) -> None:
-    """S16: an eval authored in a circle has no independent check inside it.
+    """S16: report where a MODEL sits on both sides of an authorship loop.
 
-    When one author wrote the questions AND their keys, nothing verified the
-    keys. When one author wrote the scorer AND its witnesses, the W1/W2/W3
-    gauntlet is graded against that author's own expectations. When ONE author
-    wrote all of it, every guard that could catch a mistake was written by the
-    mind that could have made it. This reads the declared provenance and warns
-    on those loops; it warns HARDEST when the shared author is a model, because
-    a model grading questions it wrote against keys it wrote is the exact trap
-    an LLM authoring an eval falls into. It is diagnostic: circular authorship
-    is a real risk, but whether it invalidates a given eval is a judgment, so
-    this hands over the fact and its shape rather than gating on it.
+    A model that wrote the questions and also wrote their keys graded its own
+    questions; a model that wrote the scorer and also wrote its witnesses fitted
+    the W1/W2/W3 gauntlet to its own output. Those are the loops worth surfacing,
+    and this states them as facts. Solo HUMAN authorship is not one of them:
+    one expert writing their own eval is ordinary practice, so this records it
+    and moves on rather than lecturing about it. The check is diagnostic and
+    takes no position on whether a given eval is sound; it reads the declared
+    provenance, and where a model closes a loop with no `review_by`, it says so.
     """
     prov = spec.get("provenance")
     if not prov:
-        rep.not_applicable("S16", "no provenance declared; authorship independence cannot be assessed. "
-                                  "Declaring who wrote the items, keys, scorer, and witnesses lets this "
-                                  "check see whether any of them was written by an independent hand")
+        rep.not_applicable("S16", "no provenance declared, so authorship is not described. Declaring who "
+                                  "wrote the items, keys, scorer, and witnesses lets this surface a model "
+                                  "sitting on both sides of a loop (e.g. keying its own questions)")
         return
     items_by = str(prov.get("items_by") or "").strip()
     keys_by = str(prov.get("keys_by") or "").strip()
@@ -1832,32 +1830,41 @@ def _authorship_check(rep: Reporter, spec: dict) -> None:
     witnesses_by = str(prov.get("witnesses_by") or "").strip()
     review_by = str(prov.get("review_by") or "").strip()
 
-    loops = []
-    # Order matters: the whole-eval loop is stated once, not as four sub-loops.
     authored = {k: v for k, v in
                 (("items", items_by), ("keys", keys_by),
                  ("scorer", scorer_by), ("witnesses", witnesses_by)) if v}
+
+    model_loops, human_notes = [], []
+
+    def loop(who, msg):
+        (model_loops if not _is_human(who) else human_notes).append((who, msg))
+
     one_author = len(set(authored.values())) == 1 and len(authored) >= 3
     if one_author and not review_by:
         who = next(iter(authored.values()))
-        kind = "a model" if not _is_human(who) else "one person"
-        loops.append(f"one author ({who}, {kind}) wrote {', '.join(authored)}: "
-                     f"nothing in the eval was authored by an independent hand, and no review_by breaks the loop")
+        loop(who, f"{who} is credited with {', '.join(authored)}, and no review_by is declared: "
+                  f"one author, no declared independent check")
     else:
         if items_by and keys_by and items_by == keys_by:
-            who = items_by
-            extra = " (a model keying its own questions)" if not _is_human(who) else ""
-            loops.append(f"items and keys share an author ({who}){extra}: the answer keys were "
-                         f"never independently verified")
+            loop(items_by, f"items and keys are both credited to {items_by}: the keys are not "
+                           f"declared as independently verified")
         if scorer_by and witnesses_by and scorer_by == witnesses_by:
-            loops.append(f"scorer and witnesses share an author ({scorer_by}): the W1/W2/W3 gauntlet "
-                         f"is fitted to the scorer author's own expectations")
+            loop(scorer_by, f"scorer and witnesses are both credited to {scorer_by}: the witness "
+                            f"gauntlet is not declared as independently written")
+
+    # A model on both sides of a loop is the warn. Human-only loops are recorded,
+    # not flagged: independent verification is good practice, not a requirement.
+    warn_msgs = [f"a model closes an authorship loop: {m}" for _, m in model_loops]
+    if human_notes and not model_loops:
+        detail = (f"{len(human_notes)} authorship loop(s), all human-authored and recorded, "
+                  f"not flagged (e.g. {human_notes[0][1]})")
+    else:
+        detail = (f"{len(model_loops)} loop(s) closed by a model" if model_loops
+                  else "no model sits on both sides of an authorship loop")
     rep.check(
-        "S16", not loops,
-        f"{len(loops)} circular-authorship pattern(s)" if loops
-        else "authorship shows an independent hand somewhere",
+        "S16", not model_loops, detail,
         n=len(authored),
-        examples=loops,
+        examples=warn_msgs,
         evidence={k: v for k, v in prov.items() if isinstance(v, str)},
     )
 
