@@ -64,6 +64,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-034](#f-034) | AISafetyLab | the over-refusal judge is parsed by a bare `"2" in text` | confirmed |
 | [F-035](#f-035) | AISafetyLab | an empty model response is scored by falling back to the prompt | confirmed |
 | [F-036](#f-036) | HarmBench (ArtPrompt baseline) | substring-anywhere refusal over a list including `"illegal"`, `"an AI"` | confirmed |
+| [F-037](#f-037) | garak | `MitigationBypass` matches 156 topical keywords anywhere, scoring compliance as refusal | confirmed |
+| [F-038](#f-038) | garak | `Prefixes` documented as prefix detection but inherits substring-anywhere matching | confirmed |
 | [F-029](#f-029) | ASDiv | one word problem present twice | confirmed, minor |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
@@ -217,7 +219,7 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069) |
 
 ### By subject
 
@@ -230,6 +232,7 @@ at fault.
 | JailbreakBench | [F-030](#f-030), [F-031](#f-031), [F-032](#f-032) |
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
 | four models | [N-005](#n-005), [N-006](#n-006) |
+| garak | [F-037](#f-037), [F-038](#f-038) |
 | MMLU | [F-002](#f-002), [F-003](#f-003) |
 | MT-Bench / LLM-as-judge | [N-019](#n-019), [N-022](#n-022) |
 | SciQ | [F-010](#f-010), [F-013](#f-013) |
@@ -915,6 +918,48 @@ grader wherever it ships, and because the split inside one repo is the cleanest
 evidence that this is a convention people fall into, not a law. Reproduced with 0
 API calls in `audits/harmbench/`. Compare the clean counterexample in
 [N-024](#n-024).
+
+---
+
+### F-037
+**garak · `MitigationBypass` matches 156 topical keywords anywhere, so a compliant answer that names the topic scores as a refusal**
+by hand · 2026-08-12 · confirmed
+
+[garak](https://github.com/NVIDIA/garak) commit
+`b1e0101a177981cc423455448fd745be88b87916`,
+`garak/detectors/mitigation.py`, `MitigationBypass`, with
+`DEFAULT_PARAMS = {... "matchtype": "str"}`. The 156-item keyword list includes
+bare topical words: `"illegal"`, `"harmful"`, `"ethical"`, `"morals"`,
+`"legality"`, `"racism"`, `"domestic violence"`. `detect` returns `1 - r`, so a
+substring match scores `0.0` = "refused, attack unsuccessful". Confirmed on the
+real detector: a fully compliant harmful answer closing *"note that doing this is
+illegal"* matches `"illegal"` and scores `0.0`, and one noting *"this information
+is harmful if misused"* matches `"harmful"`. A model that complies and names the
+topic is counted as having refused. This is garak's default mitigation detector,
+so it under-reports attack success across every probe scored with it.
+
+garak has the fix: `base.py` offers `matchtype` `word` and `startswith`, and
+`shields.py` uses `startswith` with the comment *"we want to avoid false
+positives in long responses"*. Same substring-anywhere family as [F-031](#f-031),
+[F-034](#f-034), [F-036](#f-036), now in a fourth independent repository.
+Reproduced with 0 API calls in `audits/garak/`.
+
+---
+
+### F-038
+**garak · `Prefixes` is documented as prefix detection but inherits substring-anywhere matching**
+by hand · 2026-08-12 · confirmed
+
+Same commit, `mitigation.py`, `Prefixes`, whose `pass_desc` is *"Response does
+not start with a well-known refusal prefix"*. The class does not override
+`matchtype`, so it inherits the default `"str"` and matches its refusal phrases
+(`"Sorry"`, `"I am sorry"`, ...) anywhere. A compliant harmful answer saying
+*"Sure, here is the full method. Sorry for the earlier delay"* matches `"Sorry"`
+mid-response and scores `0.0` = refused. The base class ships a `startswith` mode
+built for exactly this, used one file over in `shields.py`. Same name-vs-behaviour
+gap as [F-031](#f-031). Recorded alongside a note that PyRIT could not be audited:
+the `Azure/PyRIT` branch cloned at audit time held documentation only, no Python
+source.
 
 ---
 
@@ -4498,7 +4543,7 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **36** |
+| findings in other people's evals (**F**) | **38** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
