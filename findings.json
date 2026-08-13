@@ -9,10 +9,10 @@
     "engine": "1766282c5e84be020fea0e9758b7939844505c8ecaace6e47cb33f3579f3d5de"
   },
   "counts": {
-    "F": 32,
+    "F": 35,
     "D": 69,
     "N": 23,
-    "total": 124
+    "total": 127
   },
   "series": {
     "F": "other people's evals",
@@ -455,6 +455,57 @@
       "status_class": "confirmed",
       "anchor": "#f-032",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-032"
+    },
+    {
+      "id": "F-033",
+      "series": "F",
+      "series_name": "other people's evals",
+      "title": "AISafetyLab · two of four judge-parse branches crash on non-conforming output, the other two swallow it",
+      "summary": "two of four judge-parse branches crash on non-conforming output, two swallow it",
+      "subject": "AISafetyLab",
+      "check_label": "by hand",
+      "checks": [],
+      "date": "2026-08-12",
+      "date_iso": "2026-08-12",
+      "date_precision": "day",
+      "status": "confirmed",
+      "status_class": "confirmed",
+      "anchor": "#f-033",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-033"
+    },
+    {
+      "id": "F-034",
+      "series": "F",
+      "series_name": "other people's evals",
+      "title": "AISafetyLab · the over-refusal judge is parsed by a bare `\"2\" in text`",
+      "summary": "the over-refusal judge is parsed by a bare `\"2\" in text`",
+      "subject": "AISafetyLab",
+      "check_label": "by hand",
+      "checks": [],
+      "date": "2026-08-12",
+      "date_iso": "2026-08-12",
+      "date_precision": "day",
+      "status": "confirmed",
+      "status_class": "confirmed",
+      "anchor": "#f-034",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-034"
+    },
+    {
+      "id": "F-035",
+      "series": "F",
+      "series_name": "other people's evals",
+      "title": "AISafetyLab · an empty model response is scored by falling back to the prompt",
+      "summary": "an empty model response is scored by falling back to the prompt",
+      "subject": "AISafetyLab",
+      "check_label": "by hand",
+      "checks": [],
+      "date": "2026-08-12",
+      "date_iso": "2026-08-12",
+      "date_precision": "day",
+      "status": "confirmed",
+      "status_class": "confirmed",
+      "anchor": "#f-035",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-035"
     },
     {
       "id": "F-029",
