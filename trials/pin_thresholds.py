@@ -43,7 +43,8 @@ LOOSEN_UPWARD = {
     "position_margin", "length_margin", "uncheckable_warn", "negative_discrimination",
     "dead_weight_max", "ordering_flip_rate", "ceiling_acc", "escape_margin", "escape_min_rate",
     "shortcut_z", "shortcut_lift", "ungrounded_max", "redundant_call_max", "collapse_margin",
-    "contains_target_max", "judge_inconsistency_max", "seed_spread_min", "order_swing_min",
+    "contains_target_max", "judge_inconsistency_max", "self_preference_max",
+    "seed_spread_min", "order_swing_min",
     "noise_z",
     "billing_ratio_max",
     # Minimum-evidence bars: RAISING them means fewer models qualify to be

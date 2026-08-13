@@ -9,14 +9,19 @@
   variation on it. This is the only way a python judge can express the
   self-inconsistency J3 exists to measure, and it is deterministic given case
   order so the probe still replays.
-- **Four more thresholds pinned** (`min_scored_misses`, `shortcut_lift`,
-  `judge_inconsistency_max`, `self_preference_max`), the self-own down from 9 unpinned to 5. Boundary
-  trials sized to sit between the shipped setting and a 3x loosening: R16's
-  evidence bar caught at 5 misses and skipped at 15, S9's shortest-option
-  shortcut caught at 0.10 lift and missed at 0.30, a judge self-inconsistent
-  on 12.5% of regrades caught at 0.05 and missed at 0.15, and a 20-point
-  own-family generosity gap (J4) caught at 0.10 and missed at 0.30. `run_trials.py`
-  now runs 96 planted defects, and `pin_thresholds.py` reports 30 of 35 pinned.
+- **Three more thresholds pinned** (`min_scored_misses`, `shortcut_lift`,
+  `judge_inconsistency_max`), with boundary trials sized to sit between the
+  shipped setting and a 3x loosening: R16's evidence bar caught at 5 misses and
+  skipped at 15, S9's shortest-option shortcut caught at 0.10 lift and missed at
+  0.30, and a judge self-inconsistent on 12.5% of regrades caught at 0.05 and
+  missed at 0.15.
+- **Fixed a direction bug in `pin_thresholds.py`** ([D-070](FINDINGS.md#d-070))
+  that had reported `self_preference_max` unpinnable when it was pinned: it is a
+  ceiling but was missing from `LOOSEN_UPWARD`, so the sweep loosened it the
+  wrong way. Surfaced by a fast per-threshold verifier disagreeing with the
+  shipped sweep. With it fixed and a boundary trial added for J4 (a 20-point
+  own-family generosity gap, caught at 0.10 and missed at 0.30), the self-own is
+  30 of 35 pinned, 5 unpinned. `run_trials.py` now runs 96 planted defects.
 
 ### v0.62.0 (2026-08-13)
 

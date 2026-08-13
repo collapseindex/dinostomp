@@ -10,9 +10,9 @@
   },
   "counts": {
     "F": 39,
-    "D": 69,
+    "D": 70,
     "N": 26,
-    "total": 134
+    "total": 135
   },
   "series": {
     "F": "other people's evals",
@@ -2465,6 +2465,23 @@
       "status_class": "open",
       "anchor": "#d-069",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-069"
+    },
+    {
+      "id": "D-070",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "`pin_thresholds.py` loosened a ceiling threshold the wrong way, and reported it unpinnable when it was pinned",
+      "summary": "`pin_thresholds.py` loosened a ceiling threshold downward, reporting `self_preference_max` unpinnable when it was pinned",
+      "subject": "dinostomp",
+      "check_label": "`pin-thresholds` (trials)",
+      "checks": [],
+      "date": "2026-08-13",
+      "date_iso": "2026-08-13",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-070",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-070"
     }
   ]
 }
