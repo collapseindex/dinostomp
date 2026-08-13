@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 20 of 31 checks ran (20 of 31 ran; 33 n/a of 64 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 21 of 32 checks ran (21 of 32 ran; 33 n/a of 65 declared). Not a clean bill of health.
 
 > All runs used the offline dry provider; results exercise the benchmark, not any real model.
 
@@ -89,6 +89,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | no model reproduces the contamination canary | 0 | regurgitation probes need a hosted model; this pod's runs are all local |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
 | n/a | no near-duplicate assets | 0 | no item carries an `input_ref`; nothing points at a file |
+| warn | the eval is not authored in a circle | 4 | 1 circular-authorship pattern(s) |
 | skip | witnesses kill the mutant scorers | 0 | this pod ships Python that linting would have to IMPORT and therefore RUN (scorer.py); re-run with --trust-code if you have read it and accept that |
 | skip | a correct answer survives its surface form | 0 | this pod ships Python that linting would have to IMPORT and therefore RUN (scorer.py); re-run with --trust-code if you have read it and accept that |
 | ok | uncheckable rate is sane | 12 | 0% of 12 record(s) are uncheckable |
@@ -100,7 +101,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| ok | the runs were produced by this engine | 2 | 0 of 2 run(s) were produced by a different engine than the one auditing them (now e88f0329c1d1fc98); re-run to get numbers this report can stand behind |
+| ok | the runs were produced by this engine | 2 | 0 of 2 run(s) were produced by a different engine than the one auditing them (now bdf9d65d922fbdd1); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -125,6 +126,12 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ### Receipts
 
+<details><summary>[warn] the eval is not authored in a circle</summary>
+
+- one author (claude-opus-5, a model) wrote items, keys, scorer, witnesses: nothing in the eval was authored by an independent hand, and no review_by breaks the loop
+- evidence: `{"items_by": "claude-opus-5", "keys_by": "claude-opus-5", "scorer_by": "claude-opus-5", "witnesses_by": "claude-opus-5"}`
+
+</details>
 <details><summary>[ok] uncheckable rate is sane</summary>
 
 - evidence: `{"rate": 0.0}`
@@ -137,7 +144,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 </details>
 <details><summary>[ok] the runs were produced by this engine</summary>
 
-- evidence: `{"engines": {"e88f0329c1d1fc98": 2}}`
+- evidence: `{"engines": {"bdf9d65d922fbdd1": 2}}`
 
 </details>
 <details><summary>[ok] the fleet is not pinned at a ceiling or floor</summary>
@@ -155,14 +162,14 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260813_083708_graded-closeness_dry-strong_n6_s42.jsonl | dry-strong | (same) | dry | yes | 42 | 6 | 0 |
-| 20260813_083708_graded-closeness_dry-up_n6_s42.jsonl | dry-up | (same) | dry | yes | 42 | 6 | 0 |
+| 20260813_102545_graded-closeness_dry-strong_n6_s42.jsonl | dry-strong | (same) | dry | yes | 42 | 6 | 0 |
+| 20260813_102545_graded-closeness_dry-up_n6_s42.jsonl | dry-up | (same) | dry | yes | 42 | 6 | 0 |
 
 ## Provenance
 
 - tool: dinostomp 0.61.0
 - statistical power: at n=6 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~81% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
-- spec_sha256: `4cadebde6d29a01ecfcd317cb1cf2add439709518faaa4d8e21bc235473bc584`
+- spec_sha256: `35626b7ae79877606eaba59e952b7ae071b03ae1d60b3420cf1dbec092191c2e`
 - data_sha256: `0b56432c320054896104625b1a31ce453976ad63564baa96c5571ce414c9b623`
 - scorer_sha256: `834848400056f557431cb1d1d2ee9df693c6982ec09c268487b6dbf08e1d2b1f`
 - thresholds: all defaults

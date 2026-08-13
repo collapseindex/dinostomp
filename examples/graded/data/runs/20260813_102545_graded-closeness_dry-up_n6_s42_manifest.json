@@ -1,9 +1,9 @@
 {
   "tool_version": "0.61.0",
-  "tool_sha256": "e88f0329c1d1fc9877c02db0906cff19b8f2e5f68e5b7af775d5f1c0931921f7",
+  "tool_sha256": "bdf9d65d922fbdd17a579c330a773fde9c3fdc9589dfc1811bd3868cd710b5bc",
   "spec_name": "graded-closeness",
   "spec_version": "0.1.0",
-  "spec_sha256": "4cadebde6d29a01ecfcd317cb1cf2add439709518faaa4d8e21bc235473bc584",
+  "spec_sha256": "35626b7ae79877606eaba59e952b7ae071b03ae1d60b3420cf1dbec092191c2e",
   "data_sha256": "0b56432c320054896104625b1a31ce453976ad63564baa96c5571ce414c9b623",
   "scorer_sha256": "834848400056f557431cb1d1d2ee9df693c6982ec09c268487b6dbf08e1d2b1f",
   "provider": "dry",
@@ -24,16 +24,16 @@
     "python": "3.13.14",
     "platform": "Windows-11-10.0.26200-SP0",
     "packages": {
-      "dinostomp": "0.29.0",
+      "dinostomp": "0.61.0",
       "jsonschema": "4.25.1",
       "PyYAML": "6.0.2"
     }
   },
-  "started_at": "2026-08-13T08:37:08.695105+00:00",
+  "started_at": "2026-08-13T10:25:45.674981+00:00",
   "status": "complete",
   "model_reported": "dry-up",
   "spend_usd": 0.0,
   "spend_source": "metered",
-  "finished_at": "2026-08-13T08:37:08.707952+00:00",
-  "run_file": "20260813_083708_graded-closeness_dry-up_n6_s42.jsonl"
+  "finished_at": "2026-08-13T10:25:45.684967+00:00",
+  "run_file": "20260813_102545_graded-closeness_dry-up_n6_s42.jsonl"
 }

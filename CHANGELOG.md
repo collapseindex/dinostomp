@@ -2,6 +2,22 @@
 
 ### Unreleased
 
+- **Authorship provenance and S16 `authorship-circularity`.** A spec can now
+  declare who wrote each part (`provenance: {items_by, keys_by, scorer_by,
+  witnesses_by, review_by}`), and S16 reads it for self-referential
+  construction. It warns when one author wrote the questions AND their keys (the
+  keys were never independently verified), when one author wrote the scorer AND
+  its witnesses (the W1/W2/W3 gauntlet is fitted to its author's expectations),
+  or when one author wrote all of it (no independent check anywhere in the eval).
+  It warns hardest when the shared author is a MODEL, because a model grading
+  questions it wrote against keys it wrote is the exact trap an LLM authoring an
+  eval falls into, the one three separate models walked up to while building
+  evals with dinostomp. Diagnostic, not gating: circular authorship is a real
+  risk but whether it invalidates a given eval is a judgment, so S16 hands over
+  the fact and its shape. The `examples/graded/` pod now carries an honest
+  provenance block and S16 warns on it, the tool flagging its own example.
+  Registry 64 -> 65 checks.
+
 - **Partial credit.** A scorer can now hand out graded per-item credit, not just
   pass/fail. A `python` scorer returning a float in [0,1] (`return 0.7`) is the
   whole idiom: the verdict stays categorical (pass only on a perfect 1.0, so

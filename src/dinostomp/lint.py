@@ -89,6 +89,7 @@ CHECKS: list[tuple[str, str, bool, str]] = [
     ("S13", "no asset's own path gives away its label", True, "items carrying input_ref"),
     ("S14", "no asset appears in two splits", True, "input_ref items declaring a split"),
     ("S15", "no near-duplicate assets", False, "input_ref images, with the vision extra installed"),
+    ("S16", "the eval is not authored in a circle", False, "a provenance block is declared"),
     ("W1", "witnesses kill the mutant scorers", False, "always"),
     ("W2", "a correct answer survives its surface form", False,
      "a scorer that accepts a constructible baseline form"),
@@ -235,7 +236,7 @@ SLUGS = {
     "S7": "conflicting-keys", "S8": "canary-present", "S9": "surface-shortcut",
     "S10": "canary-regurgitated", "S11": "corpus-overlap",
     "S12": "asset-drift", "S13": "label-in-path", "S14": "split-leak",
-    "S15": "near-dup-assets",
+    "S15": "near-dup-assets", "S16": "authorship-circularity",
     "W1": "witness-coverage", "W2": "surface-form", "W3": "graded-witness",
     "C1": "claim-evidence",
     "R1": "input-drift", "R2": "witness-replay", "R3": "spend-ledger",
@@ -1801,6 +1802,66 @@ def _self_preference_check(rep: Reporter, probes: list[dict], mine: list[dict],
                         "deltas": {m: round(d, 4) for m, d in deltas.items()}})
 
 
+def _is_human(author: str) -> bool:
+    return author.strip().lower().startswith("human:")
+
+
+def _authorship_check(rep: Reporter, spec: dict) -> None:
+    """S16: an eval authored in a circle has no independent check inside it.
+
+    When one author wrote the questions AND their keys, nothing verified the
+    keys. When one author wrote the scorer AND its witnesses, the W1/W2/W3
+    gauntlet is graded against that author's own expectations. When ONE author
+    wrote all of it, every guard that could catch a mistake was written by the
+    mind that could have made it. This reads the declared provenance and warns
+    on those loops; it warns HARDEST when the shared author is a model, because
+    a model grading questions it wrote against keys it wrote is the exact trap
+    an LLM authoring an eval falls into. It is diagnostic: circular authorship
+    is a real risk, but whether it invalidates a given eval is a judgment, so
+    this hands over the fact and its shape rather than gating on it.
+    """
+    prov = spec.get("provenance")
+    if not prov:
+        rep.not_applicable("S16", "no provenance declared; authorship independence cannot be assessed. "
+                                  "Declaring who wrote the items, keys, scorer, and witnesses lets this "
+                                  "check see whether any of them was written by an independent hand")
+        return
+    items_by = str(prov.get("items_by") or "").strip()
+    keys_by = str(prov.get("keys_by") or "").strip()
+    scorer_by = str(prov.get("scorer_by") or "").strip()
+    witnesses_by = str(prov.get("witnesses_by") or "").strip()
+    review_by = str(prov.get("review_by") or "").strip()
+
+    loops = []
+    # Order matters: the whole-eval loop is stated once, not as four sub-loops.
+    authored = {k: v for k, v in
+                (("items", items_by), ("keys", keys_by),
+                 ("scorer", scorer_by), ("witnesses", witnesses_by)) if v}
+    one_author = len(set(authored.values())) == 1 and len(authored) >= 3
+    if one_author and not review_by:
+        who = next(iter(authored.values()))
+        kind = "a model" if not _is_human(who) else "one person"
+        loops.append(f"one author ({who}, {kind}) wrote {', '.join(authored)}: "
+                     f"nothing in the eval was authored by an independent hand, and no review_by breaks the loop")
+    else:
+        if items_by and keys_by and items_by == keys_by:
+            who = items_by
+            extra = " (a model keying its own questions)" if not _is_human(who) else ""
+            loops.append(f"items and keys share an author ({who}){extra}: the answer keys were "
+                         f"never independently verified")
+        if scorer_by and witnesses_by and scorer_by == witnesses_by:
+            loops.append(f"scorer and witnesses share an author ({scorer_by}): the W1/W2/W3 gauntlet "
+                         f"is fitted to the scorer author's own expectations")
+    rep.check(
+        "S16", not loops,
+        f"{len(loops)} circular-authorship pattern(s)" if loops
+        else "authorship shows an independent hand somewhere",
+        n=len(authored),
+        examples=loops,
+        evidence={k: v for k, v in prov.items() if isinstance(v, str)},
+    )
+
+
 def _canary_check(rep: Reporter, base: Path, data_cfg: dict) -> None:
     """S8: a `{"_canary": "<unique string>"}` line inside the data file lets a
     trained-on copy of the benchmark be detected later (the BIG-bench canary
@@ -2957,6 +3018,7 @@ def lint_eval(spec_path: str | Path, trust_code: bool = False,
     _item_checks(rep, items)
     _asset_checks(rep, items, base)
     _canary_check(rep, base, spec["data"])
+    _authorship_check(rep, spec)
     # A pod's dataset deserves the overlap check as much as a bare file does.
     _overlap_check(rep, items, references or {})
 
@@ -3194,6 +3256,8 @@ DATASET_NA = {
          "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11", "P12"),
     "no typed claims in a dataset audit; point this at an eval pod to reach it":
         ("C1",),
+    "no spec in a dataset audit, so no provenance to read; point this at an eval pod to reach it":
+        ("S16",),
 }
 
 

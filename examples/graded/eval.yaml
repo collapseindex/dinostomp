@@ -39,6 +39,15 @@ scorer:
       expect: uncheckable
       why: "nothing to grade is uncheckable, not zero"
 
+# Honest self-report: this whole pod was authored by one model, so S16 warns
+# that nothing in it was written by an independent hand. That warning is
+# correct, and leaving it visible is the point.
+provenance:
+  items_by: claude-opus-5
+  keys_by: claude-opus-5
+  scorer_by: claude-opus-5
+  witnesses_by: claude-opus-5
+
 models:
   - provider: dry
     model: dry-strong

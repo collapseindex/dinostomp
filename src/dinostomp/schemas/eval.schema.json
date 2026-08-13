@@ -187,6 +187,18 @@
     "metadata": {
       "type": "object"
     },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Who authored each part of the eval. Optional, but when present S16 reads it for self-referential construction: an eval whose questions, answer keys, scorer, and witnesses all trace to one author (especially one MODEL) has no independent check anywhere in it, and every guard that could catch a mistake was written by the mind that could have made it. Values are free strings; the convention is a 'human:' prefix for people (e.g. 'human:alice') and a bare model id otherwise (e.g. 'claude-opus-5'), because the model-graded-its-own-homework case is the one S16 warns hardest about.",
+      "properties": {
+        "items_by": {"type": "string", "description": "Who wrote the questions/items."},
+        "keys_by": {"type": "string", "description": "Who wrote or verified the answer keys (targets). Independence from items_by is what makes the keys trustworthy."},
+        "scorer_by": {"type": "string", "description": "Who wrote the scorer."},
+        "witnesses_by": {"type": "string", "description": "Who wrote the scorer's witnesses. Independence from scorer_by is what stops the W1/W2/W3 gauntlet from being fitted to its own author's expectations."},
+        "review_by": {"type": "string", "description": "An independent reviewer of the whole eval, if any. Its presence is the one thing that breaks a fully self-authored loop."}
+      }
+    },
     "tools": {
       "type": "object",
       "minProperties": 1,
