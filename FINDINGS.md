@@ -92,6 +92,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-026](#n-026) | SWE-bench | the grading harness is hardened against scores-as-resolved (skip and empty-results guarded): a third counterexample | confirmed |
 | [N-027](#n-027) | SNLI, SST-2 | ran to confirm [D-073](#d-073) generalises: S2 correctly went n/a on both real label sets; SNLI carried 2 exact duplicate pairs, SST-2 was clean | confirmed |
 | [N-028](#n-028) | XNLI (Russian), emotion | S19's Cyrillic confusable folding does NOT false-positive on 2,490 real Russian sentences; emotion's audit is clean after D-074, with S20 flagging its 35% "joy" skew | confirmed |
+| [N-029](#n-029) | tweet_eval hate | S2 correctly n/a on a real toxicity binary set (D-074 holds); S20 stays quiet at 58% (below the trigger), confirming the skew margin is not trigger-happy | confirmed |
 | [N-025](#n-025) | DeepSWE v1.1 | the program verifier fails safe (absence/skip/unparseable all -> reward 0): a second counterexample | confirmed |
 | [N-024](#n-024) | StrongREJECT | the autograder fails safe (bounded groups, nan on no-match): the counterexample to F-030..F-036 | confirmed |
 | [N-020](#n-020) | public HF datasets | pilot sweep: 27% carry a gating finding, and the audit refused to guess a mapping on 37% | measured, pilot |
@@ -181,6 +182,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-072](#d-072) | dinostomp | the mapping banner called a text answer column index-keyed and sounded certain, because a numeric answer was read as an index before an option; found by an outside red-team | confirmed, fixed, found by an outside red-team |
 | [D-073](#d-073) | dinostomp | `answer-leak` (S2) gated four BoolQ items because the label word "no" appears in their questions ("a no ball", "No. 1 Court"); a tiny global label set is generic vocabulary, not a leaked key | confirmed, fixed |
 | [D-074](#d-074) | dinostomp | S2's label-set exemption was capped at 3 labels, so it still gated dair-ai/emotion (6 labels) on "anger" in "i felt anger"; a small heavily-reused vocabulary is a label set too | confirmed, fixed |
+| [D-075](#d-075) | dinostomp | S2 over-flags multi-hop COMPARISON questions ("which came first, A or B?"), where the answer is one of two offered alternatives; the forced-choice exemption is "or"-adjacent-only | scoped |
 
 <!-- INDEX:END -->
 
@@ -217,7 +219,7 @@ at fault.
 | `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
 | `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-029](#f-029), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
-| `S2` | [F-004](#f-004), [F-041](#f-041), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073), [D-074](#d-074) |
+| `S2` | [F-004](#f-004), [F-041](#f-041), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052), [D-058](#d-058) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-020](#n-020), [N-012](#n-012), [F-025](#f-025) |
@@ -234,13 +236,13 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-025](#n-025), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-025](#n-025), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074) |
+| dinostomp | [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075) |
 | dinocorpus | [N-021](#n-021), [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | AISafetyLab | [F-033](#f-033), [F-034](#f-034), [F-035](#f-035) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
@@ -291,6 +293,7 @@ at fault.
 | StrongREJECT | [N-024](#n-024) |
 | TriviaQA | [F-041](#f-041) |
 | TruthfulQA | [F-004](#f-004) |
+| tweet_eval hate | [N-029](#n-029) |
 | XNLI (Russian), emotion | [N-028](#n-028) |
 
 <!-- XREF:END -->
@@ -1733,6 +1736,22 @@ correctly reporting the guessing floor (the key is 35% `joy` against 17% for a
 balanced six-class set). Two more real label sets confirming the D-073/D-074 shape,
 and a Cyrillic negative control for S19. Reproduce: `dinostomp stomp xnli_ru.jsonl`
 and `emotion_test.jsonl`.
+
+### N-029
+**A real toxicity set: S2 stays n/a and the skew margin does not over-fire**
+by hand · 2026-08-14 · confirmed
+
+`cardiffnlp/tweet_eval` hate test (2,970 tweets, binary hateful/not-hateful). Two
+things worth banking as controls. S2 reported n/a: the labels are a two-value
+vocabulary, so a hate word in a hateful tweet is the class's own vocabulary, not a
+leaked key, the [D-073](#d-073)/[D-074](#d-074) shape holding on a fourth kind of
+data. And S20 stayed quiet: the key is 58% not-hateful, below the point where
+always guessing the majority is worth naming, which confirms the skew margin does
+not fire on every mildly-imbalanced binary set. The one gated finding, four
+"duplicate" tweets, is an artifact of the corpus's own anonymisation: every
+handle is replaced by `@user`, so tweets that differed only in who they mentioned
+collapse to identical `@user @user @user...` strings. Real, but a property of the
+release, not a content duplicate. Reproduce: `dinostomp stomp tweeteval_hate.jsonl`.
 
 ### N-025
 **DeepSWE v1.1's program verifier fails safe, a second counterexample in a different domain**
@@ -4859,6 +4878,29 @@ across BoolQ, SNLI, SST-2, emotion (all n/a) while TriviaQA and a planted
 open-ended leak still gate. The hunt found this by simply running the next
 dataset. Reproduce: `pytest tests/test_dataset.py -k "reused_label_set"`.
 
+### D-075
+**S2 over-flags multi-hop comparison questions, and the safe fix is not obvious**
+`answer-leak` (S2) · 2026-08-14 · scoped
+
+`hotpotqa/hotpot_qa` distractor validation is comparison-heavy, and S2 flagged 16
+of a 2,000-item sample as leaks. Every one is a COMPARISON whose answer is one of
+two alternatives the question itself offers: "Which film came out first, Still
+Kicking... **or** Time Bombs?" (keyed the first), "Between Frederick King Keller
+**and** Ian Schneider, which filmmaker...", "Which genus has more species, Bactris
+**and** Epigaea?". Naming both options is the format of a forced choice, not a
+leaked key, exactly the case S2's `_is_offered_alternative` exemption exists for.
+
+But that exemption only recognises "A or B" and only when the target sits within a
+short window of the "or", so it misses long option names and every "A and B" or
+"between A and B" comparison. Unlike [D-073](#d-073)/[D-074](#d-074), which had a
+clean statistical fix (a label set is a reused vocabulary), this one does not:
+exempting a target next to any "and" would blow a hole in a GATING check, since
+"and" is ordinary in non-comparison questions and the check's own note warns that
+"append ' or something' opens the gate". Recorded as a known limitation rather
+than patched carelessly. It over-flags (marks clean data BROKEN), the safe
+direction; the HotpotQA data itself is fine. Reproduce: `dinostomp stomp
+hotpot_val.jsonl`; the flags are all comparison stems.
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -4881,8 +4923,8 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 12 (F-001 to F-004, F-008 to F-013, F-041, F-042) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **28** |
-| defects in dinostomp itself (**D**) | **74** |
+| negative results, recorded rather than dropped (**N**) | **29** |
+| defects in dinostomp itself (**D**) | **75** |
 
 Seventy-three to twenty-nine. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
