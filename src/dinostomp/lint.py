@@ -93,6 +93,8 @@ CHECKS: list[tuple[str, str, bool, str]] = [
     ("S16", "the eval is not authored in a circle", False, "a provenance block is declared"),
     ("S17", "no single column all but determines the target", False,
      "a raw dataset audit with a class-like target and feature columns"),
+    ("S18", "no two options are the same number written differently", False,
+     "choice items whose options include two or more numbers"),
     ("W1", "witnesses kill the mutant scorers", False, "always"),
     ("W2", "a correct answer survives its surface form", False,
      "a scorer that accepts a constructible baseline form"),
@@ -217,6 +219,53 @@ NEGATORS = {"not", "no", "never", "isn't", "rather", "instead", "unlikely", "har
 
 # A purely numeric target, and a question that offers alternatives.
 NUMERIC_RE = re.compile(r"-?\d+(?:[.,]\d+)*")
+
+# Single-token number words S18 recognises. Kept to single tokens on purpose: a
+# compound like "twelve hundred" needs a grammar, and the risk of a grammar is
+# parsing something that was never meant as a number. "dozen"/"score" are common
+# enough in option lists to earn a place; anything ambiguous stays unparsed.
+_NUM_WORDS = {
+    "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
+    "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12,
+    "thirteen": 13, "fourteen": 14, "fifteen": 15, "sixteen": 16, "seventeen": 17,
+    "eighteen": 18, "nineteen": 19, "twenty": 20, "thirty": 30, "forty": 40,
+    "fifty": 50, "sixty": 60, "seventy": 70, "eighty": 80, "ninety": 90,
+    "hundred": 100, "thousand": 1000, "million": 1_000_000, "dozen": 12,
+}
+
+
+def _as_number(text) -> float | None:
+    """The numeric VALUE of an option string, or None if it is not cleanly one.
+
+    Conservative on purpose: it recognises plain integers and decimals, thousands
+    separators (1,000), a trailing percent (50% -> 0.5), a simple integer
+    fraction (1/2 -> 0.5), and a single number word (twelve -> 12). Anything else,
+    a formula, a genotype, a range, a compound phrase, returns None and is never
+    compared, because a false "same number" on a gating-adjacent finding is the
+    flattering direction this project refuses.
+    """
+    s = str(text).strip().lower()
+    if not s:
+        return None
+    if s in _NUM_WORDS:
+        return float(_NUM_WORDS[s])
+    percent = s.endswith("%")
+    if percent:
+        s = s[:-1].strip()
+    # A simple integer fraction, but not if it is really a date or a path.
+    m = re.fullmatch(r"(-?\d+)\s*/\s*(\d+)", s)
+    if m and int(m.group(2)) != 0:
+        val = int(m.group(1)) / int(m.group(2))
+        return val / 100 if percent else val
+    # Thousands separators: commas between groups of digits. Reject anything with
+    # a stray comma that is not a clean separator so "1,2,3" (a list) stays None.
+    if re.fullmatch(r"-?\d{1,3}(?:,\d{3})+(?:\.\d+)?", s):
+        s = s.replace(",", "")
+    try:
+        val = float(s)
+    except ValueError:
+        return None
+    return val / 100 if percent else val
 DISJUNCTION_RE = re.compile(r"\s+or\s+")
 # How close to the "or" a target has to sit to count as one of the alternatives
 # on offer. Wide enough for a real disjunct ("Have Christians or Jews won..."),
@@ -241,6 +290,7 @@ SLUGS = {
     "S10": "canary-regurgitated", "S11": "corpus-overlap",
     "S12": "asset-drift", "S13": "label-in-path", "S14": "split-leak",
     "S15": "near-dup-assets", "S16": "authorship-circularity", "S17": "target-leak",
+    "S18": "numeric-dup-options",
     "W1": "witness-coverage", "W2": "surface-form", "W3": "graded-witness",
     "C1": "claim-evidence",
     "R1": "input-drift", "R2": "witness-replay", "R3": "spend-ledger",
@@ -268,7 +318,7 @@ BY_SLUG = {v: k for k, v in SLUGS.items()}
 # evidence it was given, and saying so is cheaper than an asterisk.
 SCOPE_CHECKS = {
     "data": {"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S11",
-             "S12", "S13", "S14", "S15", "S17"},
+             "S12", "S13", "S14", "S15", "S17", "S18"},
 }
 SCOPE_CHECKS["pod"] = {cid for cid, *_ in CHECKS}
 
@@ -728,6 +778,52 @@ def _duplicate_option_checks(rep: Reporter, choice_items: list[dict]) -> None:
     rep.check("S6", not keyless, f"{len(keyless)} item(s) whose target is not among their choices",
               n=len(choice_items), examples=keyless)
 
+    # S18: two options that are the SAME NUMBER written differently.
+    #
+    # S5 above is EXACT (plus a narrow case rule), by a decision it measured:
+    # stripping punctuation or folding substrings cost 75 and 481 false positives
+    # on MMLU-Redux. Numeric equivalence is the tighter signal those rules were
+    # too blunt to reach: it fires ONLY when two option strings both parse as
+    # numbers AND those numbers are equal, so a formula ('(F . L)'), a genotype
+    # ('BB Bb'), or a chemistry string never trips it, which is exactly what
+    # killed the punctuation and substring rules. "1,000" and "1000" are one
+    # answer wearing two coats; if one is the key, a model that computes it and
+    # picks the other coat is marked wrong while being right (the F-002 failure,
+    # reached through arithmetic instead of a repeated string).
+    #
+    # Diagnostic, not a gate: a notation question ("which is written with a
+    # thousands separator?") could legitimately offer 1000 and 1,000 as distinct,
+    # so the tool surfaces the pair and the human decides, rather than failing the
+    # item. Emphasised louder when one of the pair is the gold, because that is
+    # the case that mis-scores.
+    numeric_dups = []
+    for i in choice_items:
+        seen: dict[float, str] = {}
+        gold = {str(t) for t in _targets_of(i)}
+        for c in i["choices"]:
+            val = _as_number(c)
+            if val is None:
+                continue
+            key = round(val, 9)
+            prior = seen.get(key)
+            if prior is not None and str(c) != prior:
+                on_key = str(c) in gold or prior in gold
+                numeric_dups.append(
+                    f"{i['id']}: {prior!r} and {str(c)!r} are the same number"
+                    + (" (one of them is the keyed answer)" if on_key else ""))
+                break
+            seen.setdefault(key, str(c))
+    scanned_numeric = sum(1 for i in choice_items
+                          if sum(_as_number(c) is not None for c in i["choices"]) >= 2)
+    if not scanned_numeric:
+        rep.not_applicable("S18", "no item offers two options that both parse as numbers, so there "
+                                  "is no numeric equivalence to check")
+    else:
+        rep.check("S18", not numeric_dups,
+                  f"{len(numeric_dups)} of {scanned_numeric} item(s) with numeric options offer the "
+                  f"same number twice in different writing",
+                  n=scanned_numeric, examples=numeric_dups)
+
 
 def _asset_checks(rep: Reporter, items: list[dict], base_dir: Path | None) -> None:
     """S12 to S15: facts about inputs that live in FILES.
@@ -958,7 +1054,7 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
                       n=scanned, examples=found)
 
     if not choice_items:
-        for cid in ("S3", "S4", "S5", "S6", "S9"):
+        for cid in ("S3", "S4", "S5", "S6", "S9", "S18"):
             rep.not_applicable(cid, "no multiple-choice items in this dataset")
         return
 

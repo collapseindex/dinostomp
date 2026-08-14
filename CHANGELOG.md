@@ -2,6 +2,23 @@
 
 ### Unreleased
 
+- **S18 `numeric-dup-options`.** A multiple-choice item whose options include the
+  same number written two ways ("1,000" and "1000", "0.5" and "1/2", "12" and
+  "twelve", "50%" and "0.5") is the F-002 failure reached through arithmetic: if
+  one of the equal pair is the key, a model that computes the value and picks the
+  other spelling is marked wrong while being right. S5 `dup-options` cannot see
+  it, on purpose, its own notes record that folding punctuation or substrings
+  cost 75 and 481 false positives on MMLU-Redux. Numeric equivalence is the
+  tighter signal those rules were too blunt to reach: it fires ONLY when two
+  options both parse as numbers and those numbers are equal, so a formula, a
+  genotype, or a coordinate list never trips it. Diagnostic, not a gate (a
+  notation question may legitimately list 1000 and 1,000), and it says louder
+  when one of the pair is the keyed answer, because that is the case that
+  mis-scores. Conservative parser: plain ints/decimals, thousands separators,
+  integer fractions, a trailing percent, and single number words only, anything
+  ambiguous stays unparsed. Registry 66 -> 67 checks. Found by pointing dino at
+  its own blind spot while gap-hunting before a wider release.
+
 - **S17 `target-leak`, the trench-coat detector.** Point dino at a raw feature
   table (`dinostomp stomp churn.csv --target-field churned`) and it flags any
   single column that all but determines the target: a label in a trench coat. It

@@ -275,7 +275,7 @@
     }
   },
   "coverage": {
-    "declared_total": 66,
+    "declared_total": 67,
     "declared": 29,
     "ran": 29,
     "skipped": [],
@@ -331,6 +331,10 @@
       {
         "id": "S17",
         "reason": "an eval pod's items are questions and answers, not a feature table; the single-column leak scan is for a raw tabular dataset audit"
+      },
+      {
+        "id": "S18",
+        "reason": "no multiple-choice items in this dataset"
       },
       {
         "id": "W2",
@@ -597,6 +601,15 @@
       "witnesses": 0
     },
     {
+      "id": "S18",
+      "slug": "numeric-dup-options",
+      "check": "no two options are the same number written differently",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no multiple-choice items in this dataset",
+      "witnesses": 0
+    },
+    {
       "id": "W1",
       "slug": "witness-coverage",
       "check": "witnesses kill the mutant scorers",
@@ -841,7 +854,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now 8e7c8b771fdba110); re-run to get numbers this report can stand behind",
+      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now 4f818ca7f5dfa322); re-run to get numbers this report can stand behind",
       "witnesses": 6,
       "examples": [
         "engine 050e2f343915e1b9: dry-alpha seed 42 (tool 0.57.1), dry-bravo seed 42 (tool 0.57.1), dry-charlie seed 42 (tool 0.57.1) and 3 more"
