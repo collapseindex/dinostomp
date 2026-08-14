@@ -2471,7 +2471,7 @@
       "series": "D",
       "series_name": "dinostomp itself",
       "title": "`pin_thresholds.py` loosened a ceiling threshold the wrong way, and reported it unpinnable when it was pinned",
-      "summary": "`pin_thresholds.py` loosened a ceiling threshold downward, reporting `self_preference_max` unpinnable when it was pinned",
+      "summary": "`pin_thresholds.py` loosened two ceiling dials the wrong way (`self_preference_max`, `template_swing_min`), reporting them unpinnable when pinned",
       "subject": "dinostomp",
       "check_label": "`pin-thresholds` (trials)",
       "checks": [],

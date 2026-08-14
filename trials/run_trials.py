@@ -676,6 +676,31 @@ def t_noisy_ordering_claim(root):
     assert run_spec(return_spec).exit_code == OK
     return return_spec
 
+
+def t_boundary_ordering_flip(root):
+    # Two models and a claimed ordering, on 40 items that are ALL discordant:
+    # the higher model wins 24, the lower wins 16. That 24-16 split leaves the
+    # pair separated but not decisively, so the paired item bootstrap flips their
+    # order in ~10% of resamples: caught at the shipped 0.05 flip-rate bar (the
+    # ordering is within noise) and missed at a 3x loosening (0.15). Sized so the
+    # loosening, not a bigger margin, is what moves past it.
+    sp = build_pod(root, arith_items(40),
+                   models=[{"provider": "dry", "model": "m-hi"},
+                           {"provider": "dry", "model": "m-lo"}],
+                   claims=["Relative ordering of the two models."])
+    assert run_spec(sp).exit_code == OK
+    for rf in run_files(root):
+        recs = [json.loads(l) for l in rf.read_text(encoding="utf-8").splitlines() if l.strip()]
+        mdl = recs[0].get("model")
+
+        def verdict(i, mdl=mdl):
+            hi_wins = i < 24
+            passing = (mdl == "m-hi") if hi_wins else (mdl == "m-lo")
+            return "pass" if passing else "fail"
+
+        rewrite(rf, lambda r, i: {**r, "score": {"verdict": verdict(i), "evidence": "boundary fixture"}})
+    return sp
+
 def t_selective_escape(root):
     witnesses = [{"output": "57", "target": "57", "expect": "pass"},
                  {"output": "58", "target": "57", "expect": "fail"},
@@ -1369,6 +1394,23 @@ def t_prompt_sensitive_model(root):
     return sp
 
 
+def t_boundary_template_swing(root):
+    # The same model, two phrasings, a 10-point accuracy swing (50% bare vs 60%
+    # stepwise) with the framings nested so only 4 items flip and the noise band
+    # stays under it. The spread clears the shipped report floor (0.05) so P11
+    # warns, but is missed at a 3x loosening (0.15). Sized so the loosening, not
+    # a bigger swing, is what moves past it.
+    items = arith_items(40)
+    sp = ran(root, items=items, models=[{"provider": "dry", "model": "dry-alpha"}], n=40)
+    ids = [i["id"] for i in items]
+    _write_template_probe(root, sp, "dry-alpha", "bare",
+                          {i: ("pass" if k < 20 else "fail") for k, i in enumerate(ids)})
+    _write_template_probe(root, sp, "dry-alpha", "stepwise",
+                          {i: ("pass" if k < 24 else "fail") for k, i in enumerate(ids)},
+                          stamp="20260808_000001")
+    return sp
+
+
 def t_ranking_flips_on_phrasing(root):
     """Two models that swap places depending on the instruction.
 
@@ -1881,6 +1923,7 @@ TRIALS = [
     ("inverted key (strong fail, weak pass)", t_inverted_key, ("P2", "warn")),
     ("whole fleet gives one identical wrong answer", t_unanimous_wrong, ("P5", "warn")),
     ("ordering claimed inside sampling noise", t_noisy_ordering_claim, ("P6", "warn")),
+    ("boundary: claimed pair flips in ~10% of resamples", t_boundary_ordering_flip, ("P6", "warn")),
     ("one model escapes the scorer", t_selective_escape, ("R12", "warn")),
     ("gold options echo the question (Clever Hans)", t_overlap_shortcut, ("S9", "warn")),
     ("eval solvable with the question deleted", t_blind_solvable, ("R13", "warn")),
@@ -1923,6 +1966,7 @@ TRIALS = [
     ("boundary: an 8-point seed spread at n=400", t_boundary_seed_spread, ("P10", "warn")),
     ("boundary: an 8-point order swing on 56 flips", t_boundary_order_swing, ("P9", "warn")),
     ("the same model, 40 points apart on two phrasings", t_prompt_sensitive_model, ("P11", "warn")),
+    ("boundary: a 10-point framing swing over the report floor", t_boundary_template_swing, ("P11", "warn")),
     ("two models swap places depending on the instruction", t_ranking_flips_on_phrasing, ("P12", "warn")),
     ("judge favours models from its own family", t_judge_favours_own_family, ("J4", "warn")),
     ("boundary: 20-point own-family generosity gap", t_boundary_self_preference, ("J4", "warn")),

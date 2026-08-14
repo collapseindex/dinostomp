@@ -16,12 +16,13 @@
   0.30, and a judge self-inconsistent on 12.5% of regrades caught at 0.05 and
   missed at 0.15.
 - **Fixed a direction bug in `pin_thresholds.py`** ([D-070](FINDINGS.md#d-070))
-  that had reported `self_preference_max` unpinnable when it was pinned: it is a
-  ceiling but was missing from `LOOSEN_UPWARD`, so the sweep loosened it the
-  wrong way. Surfaced by a fast per-threshold verifier disagreeing with the
-  shipped sweep. With it fixed and a boundary trial added for J4 (a 20-point
-  own-family generosity gap, caught at 0.10 and missed at 0.30), the self-own is
-  32 of 35 pinned, 3 unpinned. Also pinned `kr20_min` (P1: a fleet forced to KR-20 ~0.35, caught at the 0.50 floor, missed at 0.167) and `blind_lift_min` (R15: a model whose informed accuracy clears its own blind score by only 0.075, caught at 0.10, missed at 0.033). `run_trials.py` now runs 98 planted defects.
+  that had reported TWO ceiling dials (`self_preference_max`,
+  `template_swing_min`) unpinnable when they were pinned: both are report floors
+  (bigger fires less) but were missing from `LOOSEN_UPWARD`, so the sweep loosened
+  them the wrong way. Surfaced by a fast per-threshold verifier disagreeing with
+  the shipped sweep; the first patch's "no second case" claim was a name scan and
+  itself wrong. With both fixed and boundary trials added, the self-own is
+  34 of 35 pinned, 1 unpinned (only `near_dup_bits`, which needs the vision extra to size). Pinned `kr20_min` (P1, fleet forced to KR-20 ~0.35), `blind_lift_min` (R15, informed clears blind by 0.075), `ordering_flip_rate` (P6, a claimed pair that flips ~10% of resamples), and `template_swing_min` (P11, a 10-point framing swing over the report floor). `run_trials.py` now runs 100 planted defects.
 
 ### v0.62.0 (2026-08-13)
 

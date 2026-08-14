@@ -171,7 +171,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-067](#d-067) | dinostomp | the held-back-class defence could not plant anything, so its published count was structurally always 0 | fixed |
 | [D-068](#d-068) | dinostomp | six blind-spot classes carried a literal watermark; grep scores 100% where dinostomp scores 0% | scoped |
 | [D-069](#d-069) | dinostomp | the record schema cannot express one item under N option orderings, and the nearest encoding changes what the number means | scoped |
-| [D-070](#d-070) | dinostomp | `pin_thresholds.py` loosened a ceiling threshold downward, reporting `self_preference_max` unpinnable when it was pinned | confirmed, fixed |
+| [D-070](#d-070) | dinostomp | `pin_thresholds.py` loosened two ceiling dials the wrong way (`self_preference_max`, `template_swing_min`), reporting them unpinnable when pinned | confirmed, fixed |
 
 <!-- INDEX:END -->
 
@@ -4628,10 +4628,21 @@ Caught by two instruments disagreeing on one quantity. A fast per-threshold
 verifier written this session loosened in the correct direction and reported
 `self_preference_max` pinned; the shipped sweep loosened it downward and reported
 unpinned. The disagreement is the finding, the same cross-validate-on-two-
-artifacts rule the checker literature turns on itself. Fixed by adding
-`self_preference_max` to `LOOSEN_UPWARD`; a scan of the other 34 dials found no
-second misclassification. Reproduce: `python trials/pin_thresholds.py` before and
-after the one-line set membership.
+artifacts rule the checker literature turns on itself.
+
+**Two dials, not one, and the first fix undercounted.** The initial patch added
+only `self_preference_max` and claimed a scan of the other 34 dials found no
+second case. That scan was a name heuristic, and it was wrong: `template_swing_min`
+is a report FLOOR (a framing swing is reported only if it exceeds the dial), so
+bigger fires less and it belongs UP with its siblings `seed_spread_min` and
+`order_swing_min`, which were correctly placed. Its `_min` suffix fooled the
+heuristic into reading it as an evidence bar, and it was found only when building
+its boundary trial hit the same shipped-vs-loosened disagreement. Both dials are
+now in `LOOSEN_UPWARD`. The lesson is the one this project keeps relearning: a
+scan that clears something is worth less than an instrument that would have
+failed on it, and "no second case" should have been a check that could fire, not
+a claim. Reproduce: `python trials/pin_thresholds.py` before and after the
+two-line set membership.
 
 ## The honest scorecard
 
