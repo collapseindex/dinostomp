@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 31 of 41 checks ran (31 of 41 ran; 26 n/a of 67 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 32 of 42 checks ran (32 of 42 ran; 26 n/a of 68 declared). Not a clean bill of health.
 
 ## Results
 
@@ -123,6 +123,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | the eval is not authored in a circle | 0 | no provenance declared, so authorship is not described. Declaring who wrote the items, keys, scorer, and witnesses lets this surface a model sitting on both sides of a loop (e.g. keying its own questions) |
 | n/a | no single column all but determines the target | 0 | an eval pod's items are questions and answers, not a feature table; the single-column leak scan is for a raw tabular dataset audit |
 | n/a | no two options are the same number written differently | 0 | no multiple-choice items in this dataset |
+| ok | no two items are the same question in different encodings | 30 | 0 group(s) of items are the same question in different encodings |
 | skip | witnesses kill the mutant scorers | 0 | hosted judge: the mutation gauntlet would re-invoke it once per mutant per witness, which a lint must never pay for; run the judge probe instead |
 | skip | a correct answer survives its surface form | 0 | hosted judge: re-invoking it once per shape per target is a cost a lint must never incur; run the judge probe instead |
 | ok | uncheckable rate is sane | 120 | 0% of 120 record(s) are uncheckable |
@@ -134,7 +135,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | ok | billed output tokens match the recorded text | 4 | 0 of 4 model(s) report far more output tokens than their recorded text accounts for (expected for hidden-reasoning models; otherwise check your invoice) |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 4f818ca7f5dfa322); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 6d9a2a9e38fdf038); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |

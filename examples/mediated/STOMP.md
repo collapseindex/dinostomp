@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 33 of 42 checks ran (33 of 42 ran; 25 n/a of 67 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 34 of 43 checks ran (34 of 43 ran; 25 n/a of 68 declared). Not a clean bill of health.
 
 ## Results
 
@@ -108,6 +108,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | the eval is not authored in a circle | 0 | no provenance declared, so authorship is not described. Declaring who wrote the items, keys, scorer, and witnesses lets this surface a model sitting on both sides of a loop (e.g. keying its own questions) |
 | n/a | no single column all but determines the target | 0 | an eval pod's items are questions and answers, not a feature table; the single-column leak scan is for a raw tabular dataset audit |
 | n/a | no two options are the same number written differently | 0 | no multiple-choice items in this dataset |
+| ok | no two items are the same question in different encodings | 24 | 0 group(s) of items are the same question in different encodings |
 | warn | witnesses kill the mutant scorers | 6 | 1 of 6 applicable mutant scorer(s) survive the witness suite |
 | n/a | a correct answer survives its surface form | 0 | this scorer compares exactly rather than extracting, so surface-form robustness is not a property it claims |
 | ok | uncheckable rate is sane | 72 | 0% of 72 record(s) are uncheckable |
@@ -119,7 +120,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 1 | 0 of 1 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 3 | 3 of 3 run(s) were produced by a different engine than the one auditing them (now 4f818ca7f5dfa322); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 3 | 3 of 3 run(s) were produced by a different engine than the one auditing them (now 6d9a2a9e38fdf038); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | passing answers are grounded in tool evidence | 3 | 0 of 3 target(s) pass items whose answer does not APPEAR in their own evidence (0 such answer(s) in total). This is co-occurrence, not causation: an answer recalled from memory that also happens to appear in a retrieved snippet counts as grounded here, so this count is a floor |
 | ok | no model under-reports its trajectory | 3 | 0 of 3 target(s) report far fewer steps than the fleet (median 1.0); a thin trace can be efficiency OR omission |

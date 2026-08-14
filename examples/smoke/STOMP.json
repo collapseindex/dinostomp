@@ -275,9 +275,9 @@
     }
   },
   "coverage": {
-    "declared_total": 67,
-    "declared": 28,
-    "ran": 18,
+    "declared_total": 68,
+    "declared": 29,
+    "ran": 19,
     "skipped": [
       {
         "id": "R7",
@@ -655,6 +655,15 @@
       "witnesses": 0
     },
     {
+      "id": "S19",
+      "slug": "lookalike-questions",
+      "check": "no two items are the same question in different encodings",
+      "level": "pass",
+      "gating": false,
+      "detail": "0 group(s) of items are the same question in different encodings",
+      "witnesses": 6
+    },
+    {
       "id": "W1",
       "slug": "witness-coverage",
       "check": "witnesses kill the mutant scorers",
@@ -875,7 +884,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "1 of 1 run(s) were produced by a different engine than the one auditing them (now 4f818ca7f5dfa322); re-run to get numbers this report can stand behind",
+      "detail": "1 of 1 run(s) were produced by a different engine than the one auditing them (now 6d9a2a9e38fdf038); re-run to get numbers this report can stand behind",
       "witnesses": 1,
       "examples": [
         "engine 050e2f343915e1b9: dry-strong seed 42 (tool 0.57.1)"

@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 21 of 32 checks ran (21 of 32 ran; 35 n/a of 67 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 22 of 33 checks ran (22 of 33 ran; 35 n/a of 68 declared). Not a clean bill of health.
 
 > All runs used the offline dry provider; results exercise the benchmark, not any real model.
 
@@ -92,6 +92,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | warn | the eval is not authored in a circle | 4 | 1 loop(s) closed by a model |
 | n/a | no single column all but determines the target | 0 | an eval pod's items are questions and answers, not a feature table; the single-column leak scan is for a raw tabular dataset audit |
 | n/a | no two options are the same number written differently | 0 | no multiple-choice items in this dataset |
+| ok | no two items are the same question in different encodings | 6 | 0 group(s) of items are the same question in different encodings |
 | skip | witnesses kill the mutant scorers | 0 | this pod ships Python that linting would have to IMPORT and therefore RUN (scorer.py); re-run with --trust-code if you have read it and accept that |
 | skip | a correct answer survives its surface form | 0 | this pod ships Python that linting would have to IMPORT and therefore RUN (scorer.py); re-run with --trust-code if you have read it and accept that |
 | ok | uncheckable rate is sane | 12 | 0% of 12 record(s) are uncheckable |
@@ -103,7 +104,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 2 | 2 of 2 run(s) were produced by a different engine than the one auditing them (now 4f818ca7f5dfa322); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 2 | 2 of 2 run(s) were produced by a different engine than the one auditing them (now 6d9a2a9e38fdf038); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |

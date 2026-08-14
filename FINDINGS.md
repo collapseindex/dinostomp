@@ -290,7 +290,7 @@ at fault.
 `dup-questions` (S1) · 2026-07 · confirmed
 
 The battery's first contact with real data was the most famous dataset in
-statistics. Transcript re-run under the current 67-check battery; the original
+statistics. Transcript re-run under the current 68-check battery; the original
 catch happened at 23 checks.
 
 ```
@@ -315,7 +315,7 @@ published report, which is what the fix looks like from the other side:
 
 ```
   [ok]   dup-questions   questions are unique   0 duplicated question(s) among 149
-MECHANICALLY SOUND: no integrity findings, full coverage (30 of 30 ran; 37 n/a of 67 declared)
+MECHANICALLY SOUND: no integrity findings, full coverage (31 of 31 ran; 37 n/a of 68 declared)
 ```
 
 ### F-002

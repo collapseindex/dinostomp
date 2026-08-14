@@ -2,6 +2,23 @@
 
 ### Unreleased
 
+- **S19 `lookalike-questions`.** S1 `dup-questions` is exact (casefold plus
+  whitespace), so two copies of one question that differ only by a smart quote,
+  an NFC-vs-NFD accent, or a Cyrillic letter that reads as Latin sail past it as
+  distinct, which is exactly how a padded benchmark or a train/test overlap hides
+  from a dedup pass. S19 reduces each item to a SKELETON (NFKC, casefold, a small
+  cross-script confusables map, then drop everything that is not a letter or
+  digit) and flags a group of items that share a skeleton but are not already
+  exact duplicates, so it reports only what S1 could not see. It mirrors S1's key
+  (question plus options), so an MMLU stem shared across different option blocks
+  is still two items. Diagnostic, not a gate: a collision after folding
+  confusables can be legitimate (a question ABOUT Cyrillic, a typography item),
+  so it surfaces the group and the author decides, and a MIN_SKELETON floor keeps
+  two short, genuinely different items from colliding on a few shared letters.
+  Registry 67 -> 68 checks. The confusables map is the small high-value core of
+  the Unicode table (Cyrillic and Greek that read as Latin), not the whole thing,
+  on purpose: a genuine Cyrillic question stays untouched.
+
 - **S18 `numeric-dup-options`.** A multiple-choice item whose options include the
   same number written two ways ("1,000" and "1000", "0.5" and "1/2", "12" and
   "twelve", "50%" and "0.5") is the F-002 failure reached through arithmetic: if

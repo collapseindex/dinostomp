@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import json
 import math
+import unicodedata
 from itertools import combinations
 import re
 from collections import Counter
@@ -95,6 +96,8 @@ CHECKS: list[tuple[str, str, bool, str]] = [
      "a raw dataset audit with a class-like target and feature columns"),
     ("S18", "no two options are the same number written differently", False,
      "choice items whose options include two or more numbers"),
+    ("S19", "no two items are the same question in different encodings", False,
+     "two or more items carrying a textual question"),
     ("W1", "witnesses kill the mutant scorers", False, "always"),
     ("W2", "a correct answer survives its surface form", False,
      "a scorer that accepts a constructible baseline form"),
@@ -290,7 +293,7 @@ SLUGS = {
     "S10": "canary-regurgitated", "S11": "corpus-overlap",
     "S12": "asset-drift", "S13": "label-in-path", "S14": "split-leak",
     "S15": "near-dup-assets", "S16": "authorship-circularity", "S17": "target-leak",
-    "S18": "numeric-dup-options",
+    "S18": "numeric-dup-options", "S19": "lookalike-questions",
     "W1": "witness-coverage", "W2": "surface-form", "W3": "graded-witness",
     "C1": "claim-evidence",
     "R1": "input-drift", "R2": "witness-replay", "R3": "spend-ledger",
@@ -318,7 +321,7 @@ BY_SLUG = {v: k for k, v in SLUGS.items()}
 # evidence it was given, and saying so is cheaper than an asterisk.
 SCOPE_CHECKS = {
     "data": {"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S11",
-             "S12", "S13", "S14", "S15", "S17", "S18"},
+             "S12", "S13", "S14", "S15", "S17", "S18", "S19"},
 }
 SCOPE_CHECKS["pod"] = {cid for cid, *_ in CHECKS}
 
@@ -675,6 +678,56 @@ def _targets_of(item: dict) -> list[str]:
     return [str(x) for x in t] if isinstance(t, list) else [str(t)]
 
 
+# The cross-script characters that most often stand in for a Latin letter, in
+# their casefolded form. This is the small high-value core of the Unicode
+# confusables table, not the whole thing: it is what a real contamination or
+# obfuscation uses (Cyrillic and Greek that read as Latin), and keeping it small
+# keeps a genuine Cyrillic or Greek question from being mangled into a false
+# collision. Anything not here survives NFKC and casefolding untouched.
+_CONFUSABLES = {
+    "а": "a", "е": "e", "о": "o", "р": "p", "с": "c",
+    "у": "y", "х": "x", "к": "k", "м": "m", "т": "t",
+    "в": "b", "н": "h", "і": "i", "ј": "j", "ѕ": "s",
+    "ԁ": "d", "ԛ": "q", "ѡ": "w",  # Cyrillic
+    "α": "a", "ο": "o", "ρ": "p", "ε": "e", "ν": "v",
+    "τ": "t", "χ": "x", "ι": "i", "κ": "k", "μ": "m",
+    "υ": "u", "β": "b",  # Greek
+}
+
+
+def _skeleton(text) -> str:
+    """A string reduced to what it LOOKS like, for near-duplicate detection.
+
+    NFKC folds compatibility forms (fullwidth, ligatures) and canonical ones
+    (NFD's decomposed accents recompose), casefold lowers across scripts, a small
+    confusables map turns Cyrillic/Greek lookalikes into Latin, and everything
+    that is not a letter or digit is dropped, so a smart quote, a hyphen, or a
+    trailing space cannot make two identical questions look distinct. What is
+    left is a skeleton: "What's" and "What’s" and "Whаt's" (Cyrillic a) all
+    become "whats".
+    """
+    s = unicodedata.normalize("NFKC", str(text)).casefold()
+    s = "".join(_CONFUSABLES.get(ch, ch) for ch in s)
+    return "".join(ch for ch in s if ch.isalnum())
+
+
+def _skeleton_key(item: dict) -> str | None:
+    """S19's key: the skeleton of the question plus its option skeletons.
+
+    Mirrors _item_key so a shared MMLU stem over different options is NOT a
+    near-duplicate (the options are half the item), and returns None for an item
+    with no textual question at all, because near-duplicate ASSETS are S15's job
+    and a bare image has no text skeleton to compare.
+    """
+    if not isinstance(item.get("input"), str) or not item["input"].strip():
+        return None
+    parts = [_skeleton(item["input"])]
+    choices = item.get("choices")
+    if isinstance(choices, list):
+        parts.append("|".join(sorted(_skeleton(c) for c in choices)))
+    return "||".join(parts)
+
+
 def _item_key(item: dict) -> str:
     """What makes an item the SAME item.
 
@@ -942,6 +995,39 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
     dups = [q for q, c in counts.items() if c > 1]
     rep.check("S1", not dups, f"{len(dups)} duplicated question(s) among {len(items)}",
               n=len(items), examples=[d[:80] for d in dups])
+
+    # S19: items that are the same question wearing a different ENCODING. S1 is
+    # exact (casefold plus whitespace), so two copies that differ only by a smart
+    # quote, an NFC-vs-NFD accent, or a Cyrillic letter that reads as Latin sail
+    # past it as distinct, which is precisely how a padded benchmark or a
+    # train/test overlap hides from a dedup pass. S19 groups items by their
+    # SKELETON and flags a group whose members are not already exact duplicates,
+    # so it reports only what S1 could not see.
+    #
+    # Diagnostic, not a gate, and for a real reason: a collision after folding
+    # confusable characters CAN be legitimate (a question ABOUT Cyrillic, a
+    # typography item), so the tool surfaces the group and the author decides,
+    # rather than failing an item S1 was right to pass. The MIN_SKELETON guard
+    # keeps two short, genuinely different items ("2+2?" / "2-2?") from colliding
+    # on a handful of shared letters.
+    MIN_SKELETON = 12
+    skels: dict[str, list] = {}
+    for i in items:
+        sk = _skeleton_key(i)
+        if sk is not None and len(sk.replace("|", "")) >= MIN_SKELETON:
+            skels.setdefault(sk, []).append(i)
+    lookalikes = []
+    for group in skels.values():
+        if len(group) > 1 and len({_item_key(i) for i in group}) > 1:
+            ids = ", ".join(str(i["id"]) for i in group)
+            lookalikes.append(f"{ids}: same question after folding lookalike characters "
+                              f"({str(group[0]['input'])[:60]!r})")
+    if len(items) < 2:
+        rep.not_applicable("S19", "a single item cannot collide with another")
+    else:
+        rep.check("S19", not lookalikes,
+                  f"{len(lookalikes)} group(s) of items are the same question in different encodings",
+                  n=len(items), examples=lookalikes)
 
     # S7: identical item with contradictory targets
     by_q: dict[str, set] = {}
