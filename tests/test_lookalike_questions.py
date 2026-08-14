@@ -112,6 +112,19 @@ def test_s19_defers_an_exact_duplicate_to_s1(tmp_path):
 
 # --- scope -------------------------------------------------------------------
 
+def test_s19_ignores_asset_items_that_share_a_prompt(tmp_path):
+    # A classification pod asks the same question over different images; those are
+    # distinct items keyed by their asset, not encoding duplicates. S19 must skip
+    # them (S1 and S15 own the asset side). This is the trials false alarm, unit
+    # tested so it cannot come back.
+    rows = [{"id": f"img{i}", "input": "What shape is in this image?",
+             "input_ref": {"uri": f"shapes/{i}.png", "kind": "image",
+                           "sha256": f"{i:064x}"}, "target": ["circle", "square", "triangle"][i % 3]}
+            for i in range(6)]
+    f = s19(tmp_path, rows)
+    assert f["level"] in ("pass", "n/a"), f
+
+
 def test_s19_na_on_a_single_item(tmp_path):
     assert s19(tmp_path, [{"id": "only", "question": "the one and only question here?", "answer": "yes"}])["level"] == "n/a"
 

@@ -718,7 +718,15 @@ def _skeleton_key(item: dict) -> str | None:
     near-duplicate (the options are half the item), and returns None for an item
     with no textual question at all, because near-duplicate ASSETS are S15's job
     and a bare image has no text skeleton to compare.
+
+    An ASSET-backed item is skipped even when it carries a prompt, because its
+    identity is the image, not the text: a classification pod asks "what shape is
+    in this image?" over and over on different pictures, and those are distinct
+    items sharing a stem, not encoding duplicates. Found by the trials specificity
+    arm, where the clean image pod tripped a false alarm.
     """
+    if modality.ref_of(item):
+        return None
     if not isinstance(item.get("input"), str) or not item["input"].strip():
         return None
     parts = [_skeleton(item["input"])]
