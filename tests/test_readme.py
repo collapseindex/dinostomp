@@ -47,7 +47,7 @@ def rerun_pod(name: str, tmp_path: Path, capsys, probe: bool = False) -> str:
         "MECHANICALLY SOUND: no integrity findings, full coverage (29 of 29 ran; 37 n/a of 66 declared)",
     ], False),
     ("iris", [
-        "(29 of 29 ran; 37 n/a of 66 declared)",
+        "(30 of 30 ran; 36 n/a of 66 declared)",
     ], False),
     ("agent", [
         "agent-capitals | agent-grounded | complete | acc 0.923 [0.76, 0.98] on 26 checkable",

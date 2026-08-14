@@ -456,7 +456,7 @@
       "check": "no answer leaks into its own question",
       "level": "pass",
       "gating": true,
-      "detail": "0 of 30 free-form item(s) leak their answer",
+      "detail": "0 of 30 item(s) leak their answer into the question",
       "witnesses": 30
     },
     {
@@ -829,7 +829,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 276724f5f69aab96); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 8e7c8b771fdba110); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine b86e910b6f5616ed: meta-llama/llama-3.2-3b-instruct seed 7 (tool 0.36.2), meta-llama/llama-3.1-8b-instruct seed 7 (tool 0.36.2), mistralai/ministral-8b-2512 seed 7 (tool 0.36.2) and 1 more"

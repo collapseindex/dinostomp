@@ -159,7 +159,7 @@ All 57 checks, their tier, and when they apply. The **slug** is what appears in 
 | id | slug | check | tier | applies when |
 |---|---|---|---|---|
 | S1 | `dup-questions` | questions are unique | invariant (gates) | always |
-| S2 | `answer-leak` | no answer leaks into its own question | invariant (gates) | free-form items with non-numeric targets, outside a forced choice |
+| S2 | `answer-leak` | no answer leaks into its own question | invariant (gates) | free-form items (non-numeric, outside a forced choice) and multiple-choice stems |
 | S3 | `position-bias` | gold answer does not favour an option position | diagnostic (warns) | 20+ keyed choice items |
 | S4 | `length-bias` | gold answer is not systematically the longest option | diagnostic (warns) | 20+ keyed choice items |
 | S5 | `dup-options` | no option offered twice in one item | invariant (gates) | choice items present |

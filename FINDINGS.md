@@ -172,6 +172,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-068](#d-068) | dinostomp | six blind-spot classes carried a literal watermark; grep scores 100% where dinostomp scores 0% | scoped |
 | [D-069](#d-069) | dinostomp | the record schema cannot express one item under N option orderings, and the nearest encoding changes what the number means | scoped |
 | [D-070](#d-070) | dinostomp | `pin_thresholds.py` loosened two ceiling dials the wrong way (`self_preference_max`, `template_swing_min`), reporting them unpinnable when pinned | confirmed, fixed |
+| [D-071](#d-071) | dinostomp | `answer-leak` (S2) never scanned multiple-choice stems, so a self-answering MCQ item sailed through; found by an outside red-team | confirmed, fixed, found by an outside red-team |
+| [D-072](#d-072) | dinostomp | the mapping banner called a text answer column index-keyed and sounded certain, because a numeric answer was read as an index before an option; found by an outside red-team | confirmed, fixed, found by an outside red-team |
 
 <!-- INDEX:END -->
 
@@ -208,7 +210,7 @@ at fault.
 | `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
 | `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-029](#f-029), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
-| `S2` | [F-004](#f-004), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059) |
+| `S2` | [F-004](#f-004), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052), [D-058](#d-058) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-020](#n-020), [N-012](#n-012), [F-025](#f-025) |
@@ -223,13 +225,13 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-025](#n-025), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-025](#n-025), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070) |
+| dinostomp | [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072) |
 | dinocorpus | [N-021](#n-021), [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | AISafetyLab | [F-033](#f-033), [F-034](#f-034), [F-035](#f-035) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
@@ -313,7 +315,7 @@ published report, which is what the fix looks like from the other side:
 
 ```
   [ok]   dup-questions   questions are unique   0 duplicated question(s) among 149
-MECHANICALLY SOUND: no integrity findings, full coverage (29 of 29 ran; 37 n/a of 66 declared)
+MECHANICALLY SOUND: no integrity findings, full coverage (30 of 30 ran; 36 n/a of 66 declared)
 ```
 
 ### F-002
@@ -4644,6 +4646,47 @@ failed on it, and "no second case" should have been a check that could fire, not
 a claim. Reproduce: `python trials/pin_thresholds.py` before and after the
 two-line set membership.
 
+### D-071
+**`answer-leak` never looked at multiple-choice stems, so a self-answering MCQ item passed**
+`answer-leak` (S2) · 2026-08-13 · confirmed, fixed, found by an outside red-team
+
+S2 scanned only free-form items. A multiple-choice item carries `choices`, so it
+never entered the free-form pool, and a dataset of nothing but MCQ left S2 n/a
+entirely. Fable, running dinostomp with GitHub access as the first outside
+red-team, planted "The Treaty of Versailles was signed in 1919. In what year was
+the Treaty of Versailles signed?" with 1919 among the options, and it sailed
+through: a numeric answer the free-form rule is right to leave alone
+([D-037](#d-037)), sitting in a scope the free-form rule never reached.
+
+The fix gives MCQ stems the control the free-form path lacks: the distractor.
+Flag an item only when the correct option appears in the stem and NOT ONE
+distractor does. A leak names only its own answer; a reading-comprehension
+passage or a comparison ("which came first, the Renaissance or the
+Enlightenment?") names several options at once and is exempt. That control is
+what makes gating a numeric answer safe here, where the free-form rule must stay
+blind: "1919" in the stem with 1918/1920/1921 absent is disclosure. Reproduce:
+`pytest tests/test_dataset.py -k mcq`.
+
+### D-072
+**the answer-column mapping banner called a text column index-keyed, and sounded certain**
+dataset inference · 2026-08-13 · confirmed, fixed, found by an outside red-team
+
+`_resolve_choice_key` read a bare integer answer as an INDEX into the options
+before checking whether the value was itself an option. Fable's answer column
+held option text ("Paris", "Mercury") beside numeric answers ("96", "7", "2",
+"1945"); the small integers that fell inside the option count were resolved as
+positions, and the banner announced "the answer column indexes the options" over
+a column that plainly held answer text. It resolved correctly by luck and
+corrupted no target, but a mapping guess that is wrong while sounding confident
+is the exact failure this tool exists to name, turned on itself.
+
+Two fixes. A value that is verbatim one of the options is read as that option,
+not a position into them (a maths item keyed 2 with "2" among its choices is
+answering with the number). And a genuinely MIXED column, some answers matching
+option text and some read as an index, is now reported as mixed rather than
+asserted as one clean shape. Reproduce: `pytest tests/test_dataset.py -k "numeric
+or mixed"`.
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -4667,9 +4710,9 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **26** |
-| defects in dinostomp itself (**D**) | **70** |
+| defects in dinostomp itself (**D**) | **72** |
 
-Sixty-nine to twenty-nine. That ratio is the useful number to publish, and it is the
+Seventy-one to twenty-nine. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: three made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to
@@ -4679,7 +4722,7 @@ ran somewhere its author's assumptions did not hold, and one
 ([D-014](#d-014)) was a bug the project had already found and fixed elsewhere,
 written again three releases later in a different check.
 
-The most common shape across all sixty-nine is worth stating once: **a check that
+The most common shape across all seventy-one is worth stating once: **a check that
 compared the wrong thing and returned a confident answer about it.**
 
 ## Adding an entry

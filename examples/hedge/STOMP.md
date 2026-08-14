@@ -83,7 +83,7 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | | check | witnesses | detail |
 |---|---|---:|---|
 | ok | questions are unique | 30 | 0 duplicated question(s) among 30 |
-| ok | no answer leaks into its own question | 30 | 0 of 30 free-form item(s) leak their answer |
+| ok | no answer leaks into its own question | 30 | 0 of 30 item(s) leak their answer into the question |
 | n/a | no option offered twice in one item | 0 | no multiple-choice items in this dataset |
 | n/a | every target is among its choices | 0 | no multiple-choice items in this dataset |
 | ok | no identical question with contradictory targets | 30 | 0 question(s) appear with conflicting targets |
@@ -133,7 +133,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | ok | billed output tokens match the recorded text | 4 | 0 of 4 model(s) report far more output tokens than their recorded text accounts for (expected for hidden-reasoning models; otherwise check your invoice) |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 276724f5f69aab96); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 8e7c8b771fdba110); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |

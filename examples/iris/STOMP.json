@@ -276,14 +276,10 @@
   },
   "coverage": {
     "declared_total": 66,
-    "declared": 29,
-    "ran": 29,
+    "declared": 30,
+    "ran": 30,
     "skipped": [],
     "not_applicable": [
-      {
-        "id": "S2",
-        "reason": "no free-form items in this dataset"
-      },
       {
         "id": "S3",
         "reason": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'setosa' is the answer 34% of the time"
@@ -461,10 +457,10 @@
       "id": "S2",
       "slug": "answer-leak",
       "check": "no answer leaks into its own question",
-      "level": "n/a",
+      "level": "pass",
       "gating": true,
-      "detail": "no free-form items in this dataset",
-      "witnesses": 0
+      "detail": "0 of 149 item(s) leak their answer into the question",
+      "witnesses": 149
     },
     {
       "id": "S3",
@@ -846,7 +842,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now 276724f5f69aab96); re-run to get numbers this report can stand behind",
+      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now 8e7c8b771fdba110); re-run to get numbers this report can stand behind",
       "witnesses": 6,
       "examples": [
         "engine 050e2f343915e1b9: dry-alpha seed 42 (tool 0.57.1), dry-bravo seed 42 (tool 0.57.1), dry-charlie seed 42 (tool 0.57.1) and 3 more"

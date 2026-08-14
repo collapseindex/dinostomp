@@ -74,7 +74,7 @@ from dinostomp.spec import Issue, jsonl_lines, load_spec, spec_sha256, validate_
 CHECKS: list[tuple[str, str, bool, str]] = [
     ("S1", "questions are unique", True, "always"),
     ("S2", "no answer leaks into its own question", True,
-     "free-form items with non-numeric targets, outside a forced choice"),
+     "free-form items (non-numeric, outside a forced choice) and multiple-choice stems"),
     ("S3", "gold answer does not favour an option position", False, "20+ keyed choice items"),
     ("S4", "gold answer is not systematically the longest option", False, "20+ keyed choice items"),
     ("S5", "no option offered twice in one item", True, "choice items present"),
@@ -868,12 +868,6 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
         rep.not_applicable(
             "S2", "this is a tabular audit; the synthesized question is a join of the "
                   "feature values, so label leakage is scored by S17 (target-leak), not here")
-    elif not text_items:
-        asset_only = sum(1 for i in items if "choices" not in i and modality.ref_of(i))
-        rep.not_applicable(
-            "S2", f"no free-form items in this dataset"
-                  + (f"; {asset_only} carry their input in a file, where the leak to look for is "
-                     f"the label in the PATH (S13), not in the question" if asset_only else ""))
     else:
         answer_space = {_norm(t) for i in text_items for t in _targets_of(i)
                         if len(t) >= THRESHOLDS["min_leak_len"]}
@@ -914,8 +908,54 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
             leaked = next(t for t in own if _word_in(t, q))
             leaks.append(f"{i['id']}: target {leaked!r} appears in its question "
                          f"(only {others_present} other answer-space value(s) present)")
-        rep.check("S2", not leaks, f"{len(leaks)} of {len(text_items)} free-form item(s) leak their answer",
-                  n=len(text_items), examples=leaks)
+
+        # Multiple-choice stems get their OWN leak rule, because the free-form
+        # rule cannot see them: an MCQ item carries `choices`, so it never enters
+        # text_items, and a whole MCQ set left S2 n/a. Fable's first outside
+        # red-team planted exactly this ("The Treaty of Versailles was signed in
+        # 1919. In what year was the Treaty of Versailles signed?", answer 1919
+        # among the options) and it sailed through: a numeric answer the
+        # free-form path is right to leave alone, in a scope the free-form path
+        # never reached.
+        #
+        # The DISTRACTOR is the control the free-form rule lacks. A leak names
+        # only its own answer in the stem; a reading-comprehension passage or a
+        # comparison names several options at once. So flag iff the correct
+        # option appears in the stem and NOT ONE distractor does. That control is
+        # what makes gating a numeric answer safe here: "1919" in the stem with
+        # 1918/1920/1921 absent is disclosure; "5" in "which is larger, 3 or 5?"
+        # is exempt because 3 is present too.
+        choice_leaks = []
+        for i in choice_items:
+            if not isinstance(i.get("input"), str):
+                continue  # asset-backed stem: the leak to look for is in the PATH (S13)
+            q = _norm(i["input"])
+            gold_texts = {_norm(t) for t in _targets_of(i)}
+            options = [_norm(c) for c in i["choices"]]
+            gold = {c for c in options if c in gold_texts}
+            if not gold:
+                continue  # cannot identify the keyed option; S8 owns key integrity
+            hit = [g for g in gold if len(g) >= THRESHOLDS["min_leak_len"] and _word_in(g, q)]
+            if not hit:
+                continue
+            distractors = [c for c in options if c not in gold]
+            if any(len(d) >= THRESHOLDS["min_leak_len"] and _word_in(d, q) for d in distractors):
+                continue  # the stem names a distractor too: a passage, not a leak
+            choice_leaks.append(f"{i['id']}: correct option {hit[0]!r} appears in the stem "
+                                f"and no distractor does")
+
+        if not text_items and not choice_items:
+            asset_only = sum(1 for i in items if modality.ref_of(i))
+            rep.not_applicable(
+                "S2", f"no free-form or multiple-choice items in this dataset"
+                      + (f"; {asset_only} carry their input in a file, where the leak to look for is "
+                         f"the label in the PATH (S13), not in the question" if asset_only else ""))
+        else:
+            found = leaks + choice_leaks
+            scanned = len(text_items) + len(choice_items)
+            rep.check("S2", not found,
+                      f"{len(found)} of {scanned} item(s) leak their answer into the question",
+                      n=scanned, examples=found)
 
     if not choice_items:
         for cid in ("S3", "S4", "S5", "S6", "S9"):

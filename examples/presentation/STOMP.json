@@ -276,8 +276,8 @@
   },
   "coverage": {
     "declared_total": 66,
-    "declared": 39,
-    "ran": 37,
+    "declared": 40,
+    "ran": 38,
     "skipped": [
       {
         "id": "R13",
@@ -289,10 +289,6 @@
       }
     ],
     "not_applicable": [
-      {
-        "id": "S2",
-        "reason": "no free-form items in this dataset"
-      },
       {
         "id": "S11",
         "reason": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot."
@@ -430,10 +426,10 @@
       "id": "S2",
       "slug": "answer-leak",
       "check": "no answer leaks into its own question",
-      "level": "n/a",
+      "level": "pass",
       "gating": true,
-      "detail": "no free-form items in this dataset",
-      "witnesses": 0
+      "detail": "0 of 40 item(s) leak their answer into the question",
+      "witnesses": 40
     },
     {
       "id": "S3",
@@ -834,7 +830,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 276724f5f69aab96); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 8e7c8b771fdba110); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine cf11e5de89c91221: meta-llama/llama-3.2-3b-instruct seed 7 (tool 0.37.0), meta-llama/llama-3.1-8b-instruct seed 7 (tool 0.37.0), mistralai/ministral-8b-2512 seed 7 (tool 0.37.0) and 1 more"

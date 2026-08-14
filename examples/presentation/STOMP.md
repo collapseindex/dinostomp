@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 37 of 39 checks ran (37 of 39 ran; 27 n/a of 66 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 38 of 40 checks ran (38 of 40 ran; 26 n/a of 66 declared). Not a clean bill of health.
 
 ## Results
 
@@ -70,7 +70,7 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | | check | witnesses | detail |
 |---|---|---:|---|
 | ok | questions are unique | 40 | 0 duplicated question(s) among 40 |
-| n/a | no answer leaks into its own question | 0 | no free-form items in this dataset |
+| ok | no answer leaks into its own question | 40 | 0 of 40 item(s) leak their answer into the question |
 | ok | no option offered twice in one item | 40 | 0 item(s) offer a duplicate option |
 | ok | every target is among its choices | 40 | 0 item(s) whose target is not among their choices |
 | ok | no identical question with contradictory targets | 40 | 0 question(s) appear with conflicting targets |
@@ -120,7 +120,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 1 | 0 of 1 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 276724f5f69aab96); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 8e7c8b771fdba110); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |

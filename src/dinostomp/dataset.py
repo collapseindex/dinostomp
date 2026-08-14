@@ -501,6 +501,16 @@ def _resolve_choice_key(row: dict, target_col: str, choices: list,
         raw = raw[0]
         if isinstance(raw, bool):
             return raw, False
+    # A value that is ITSELF one of the options is that option, not a position
+    # into them. A maths MCQ keyed 2 with "2" among its choices is answering with
+    # the number, not indexing the third option, and reading it as an index both
+    # mis-resolves the target and stamps the whole column "indexes the options"
+    # in the mapping banner when it plainly holds answer text. Checking verbatim
+    # membership first is what keeps a numeric-but-textual answer honest. Found by
+    # Fable's first outside red-team, whose text answer column carried "96"/"7"/
+    # "2"/"1945" and was reported as index-keyed while sounding certain.
+    if str(raw).strip() in choices:
+        return str(raw).strip(), False
     # `base` is decided over the whole file by numeric_key_base, not per row.
     # None means the file did not settle it, so the numeric path is skipped and
     # the key is left as written for S6 to report.
@@ -622,7 +632,15 @@ def build_items(rows: list[dict], mapping: dict[str, str], separator: str | None
             continue
         items.append(item)
 
-    if "key" in key_styles:
+    if "key" in key_styles and "text" in key_styles:
+        # A MIXED column: some answers matched an option verbatim, some were read
+        # as an index or label. Reporting it as cleanly index-keyed is the
+        # confident-and-wrong failure the tool exists to catch, so the banner
+        # says mixed and leaves the reader to look, rather than asserting a shape.
+        notes.append("the answer column is MIXED: some answers hold the option text, some read "
+                     "as an index or label into the options; each was resolved to the option "
+                     "text, but a mixed key column is worth a look before you trust it")
+    elif "key" in key_styles:
         notes.append("the answer column indexes the options (a number or a letter) rather than "
                      "holding their text; resolved to the option text so the target survives "
                      "re-ordering")

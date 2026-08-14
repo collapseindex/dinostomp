@@ -21,6 +21,29 @@
   after three models in a row ran datasets through dino and the one semantic sin
   it could not see was exactly this.
 
+- **S2 `answer-leak` now reads multiple-choice stems (found by an outside
+  red-team).** Fable ran dinostomp with GitHub access as the first outside
+  red-team and planted "The Treaty of Versailles was signed in 1919. In what
+  year was the Treaty of Versailles signed?" with 1919 among the options. It
+  sailed through: S2 only ever scanned free-form items, an MCQ item carries
+  `choices` and never entered that pool, and a whole MCQ set left S2 n/a. MCQ
+  stems now get the control the free-form rule lacks, the distractor: flag only
+  when the correct option is in the stem and NOT ONE distractor is. That control
+  is what makes gating a numeric answer safe here (where the free-form rule must
+  stay blind, D-037): "1919" present with 1918/1920/1921 absent is disclosure,
+  while a comparison or a reading-comprehension passage names several options at
+  once and is exempt. [D-071](FINDINGS.md#d-071).
+
+- **The answer-column mapping banner no longer over-claims (same red-team).**
+  Fable's answer column held option text ("Paris") beside numeric answers ("96",
+  "7", "2"), and the small integers that fell inside the option count were read
+  as INDICES, so the banner announced "the answer column indexes the options"
+  over a column that plainly held answer text: a mapping guess that was wrong
+  while sounding certain, the exact failure this tool exists to name. Two fixes:
+  a value that is verbatim one of the options is read as that option, not a
+  position into them; and a genuinely mixed column is reported as MIXED rather
+  than asserted as one shape. [D-072](FINDINGS.md#d-072).
+
 - **A per-call nonce for judges.** A python judge now receives `ctx["call"]`, a
   monotonic index unique to each grading call. A deterministic judge ignores it
   and stays byte-stable; a judge that MODELS a hot grader (a hosted judge sampled

@@ -128,6 +128,32 @@ def test_an_integer_answer_key_resolves_to_the_option_text():
     assert any("indexes the options" in n for n in notes)
 
 
+def test_a_numeric_answer_that_is_itself_an_option_is_read_as_text():
+    """Fable's red-team: a maths MCQ answer of 2 with "2" among the choices is
+    the number, not an index into the options. It must resolve to "2" AND not
+    stamp the column index-keyed, because the column plainly holds answer text."""
+    rows = [{"question": "3 - 1 = ?", "choices": ["96", "7", "2", "1"], "answer": "2"},
+            {"question": "capital of France?", "choices": ["Paris", "Rome", "Bonn", "Oslo"],
+             "answer": "Paris"}]
+    mapping, _, _ = infer_mapping(rows)
+    items, notes = build_items(rows, mapping)
+    assert items[0]["target"] == "2"
+    assert not any("indexes the options" in n for n in notes)
+
+
+def test_a_genuinely_mixed_key_column_is_reported_as_mixed_not_confident():
+    # One row keys by index (int 1, no "1" option), one matches option text. A
+    # confident "indexes the options" banner would be wrong; the tool hedges.
+    rows = [{"question": "q1", "choices": ["alpha", "beta", "gamma"], "answer": 1},
+            {"question": "q2", "choices": ["delta", "epsilon", "zeta"], "answer": "epsilon"}]
+    mapping, _, _ = infer_mapping(rows)
+    items, notes = build_items(rows, mapping)
+    assert items[0]["target"] == "beta"
+    assert items[1]["target"] == "epsilon"
+    assert any("MIXED" in n for n in notes)
+    assert not any("indexes the options" in n for n in notes)
+
+
 def test_a_letter_answer_key_resolves_too():
     """ARC keys 'A'..'D' against a parallel label list."""
     rows = [{"question": "q", "choices": {"text": ["alpha", "beta"], "label": ["A", "B"]},
@@ -247,6 +273,66 @@ def test_emit_fixes_does_not_silence_what_it_cannot_repair(tmp_path, capsys):
     assert "NOT repaired" in out
     assert "S2" in out
     assert "The repaired file is not a clean file" in out
+
+
+# --- S2 on multiple-choice stems (the miss Fable's red-team planted) ---------
+
+
+def _mcq_pool(n=12):
+    caps = [("Japan", "Tokyo"), ("Italy", "Rome"), ("Spain", "Madrid"), ("Egypt", "Cairo"),
+            ("Peru", "Lima"), ("Cuba", "Havana"), ("Kenya", "Nairobi"), ("Chile", "Santiago"),
+            ("Norway", "Oslo"), ("Greece", "Athens"), ("Poland", "Warsaw"), ("Sweden", "Stockholm")]
+    return [{"id": f"q{i}", "input": f"What is the capital of {country}?",
+             "choices": [cap, "Berlin", "Toronto", "Sydney"], "target": cap}
+            for i, (country, cap) in enumerate(caps[:n])]
+
+
+def test_s2_catches_a_self_answering_mcq_with_a_numeric_answer(tmp_path):
+    # The exact category Fable's outside red-team planted: the answer sits in the
+    # stem, it is numeric (so the free-form rule is right to leave it alone), and
+    # the item is multiple-choice (so the free-form rule never even reached it).
+    rows = _mcq_pool()
+    rows.append({"id": "leak",
+                 "input": "The Treaty of Versailles was signed in 1919. In what year "
+                          "was the Treaty of Versailles signed?",
+                 "choices": ["1919", "1918", "1920", "1921"], "target": "1919"})
+    rep, issues, _ = lint_dataset(write_jsonl(tmp_path, rows))
+    assert rep is not None, issues
+    s2 = finding(rep, "S2")
+    assert s2["level"] == "fail", s2
+    assert any("1919" in ex for ex in s2["examples"])
+
+
+def test_s2_clean_mcq_set_passes(tmp_path):
+    rep, issues, _ = lint_dataset(write_jsonl(tmp_path, _mcq_pool()))
+    assert rep is not None, issues
+    assert finding(rep, "S2")["level"] == "pass"
+
+
+def test_s2_does_not_flag_a_comparison_that_must_name_both_options(tmp_path):
+    # "Which came first..." cannot be asked without naming its own answer, but it
+    # names the distractor too. The distractor control is exactly what keeps this
+    # from being a false positive.
+    rows = _mcq_pool()
+    rows.append({"id": "cmp",
+                 "input": "Which came first, the Renaissance or the Enlightenment?",
+                 "choices": ["Renaissance", "Enlightenment"], "target": "Renaissance"})
+    rep, issues, _ = lint_dataset(write_jsonl(tmp_path, rows))
+    assert rep is not None, issues
+    assert finding(rep, "S2")["level"] == "pass"
+
+
+def test_s2_does_not_flag_a_reading_comprehension_stem(tmp_path):
+    # A passage that names several options at once is not a leak; the correct
+    # option is in the stem, but so is a distractor.
+    rows = _mcq_pool()
+    rows.append({"id": "rc",
+                 "input": "Passage: Paris and London are major European capitals. "
+                          "Question: which one is the capital of France?",
+                 "choices": ["Paris", "London", "Rome", "Madrid"], "target": "Paris"})
+    rep, issues, _ = lint_dataset(write_jsonl(tmp_path, rows))
+    assert rep is not None, issues
+    assert finding(rep, "S2")["level"] == "pass"
 
 
 def test_a_custom_fixes_path_is_honoured(tmp_path):

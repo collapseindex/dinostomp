@@ -48,7 +48,7 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | | check | witnesses | detail |
 |---|---|---:|---|
 | ok | questions are unique | 6 | 0 duplicated question(s) among 6 |
-| ok | no answer leaks into its own question | 6 | 0 of 6 free-form item(s) leak their answer |
+| ok | no answer leaks into its own question | 6 | 0 of 6 item(s) leak their answer into the question |
 | n/a | no option offered twice in one item | 0 | no multiple-choice items in this dataset |
 | n/a | every target is among its choices | 0 | no multiple-choice items in this dataset |
 | ok | no identical question with contradictory targets | 6 | 0 question(s) appear with conflicting targets |
@@ -98,7 +98,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 1 | 1 of 1 run(s) were produced by a different engine than the one auditing them (now 276724f5f69aab96); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 1 | 1 of 1 run(s) were produced by a different engine than the one auditing them (now 8e7c8b771fdba110); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
