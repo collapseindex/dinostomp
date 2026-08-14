@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 20 of 30 checks ran (20 of 30 ran; 40 n/a of 70 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 20 of 30 checks ran (20 of 30 ran; 41 n/a of 71 declared). Not a clean bill of health.
 
 > All runs used the offline dry provider; results exercise the benchmark, not any real model.
 
@@ -89,6 +89,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | no single column all but determines the target | 0 | an eval pod's items are questions and answers, not a feature table; the single-column leak scan is for a raw tabular dataset audit |
 | n/a | no two options are the same number written differently | 0 | no multiple-choice items in this dataset |
 | ok | no two items are the same question in different encodings | 6 | 0 group(s) of items are the same question in different encodings |
+| n/a | the answer key is not dominated by one value | 0 | fewer than 20 items, so a modal share would be too noisy to characterise the key |
 | ok | witnesses kill the mutant scorers | 5 | 0 of 5 applicable mutant scorer(s) survive the witness suite |
 | n/a | a correct answer survives its surface form | 0 | this scorer compares exactly rather than extracting, so surface-form robustness is not a property it claims |
 | ok | an exact scorer is not graded against prose answers | 6 | answers are short (1-word median); exact match fits |
@@ -101,7 +102,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 1 | 1 of 1 run(s) were produced by a different engine than the one auditing them (now dfba7e2e5027f059); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 1 | 1 of 1 run(s) were produced by a different engine than the one auditing them (now be2d8697e9a81d7f); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | no failed answer numerically equals its target | 0 | no failed record has a numeric target, so there is no numeric-equivalent miss to look for |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |

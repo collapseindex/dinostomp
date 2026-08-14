@@ -98,6 +98,8 @@ CHECKS: list[tuple[str, str, bool, str]] = [
      "choice items whose options include two or more numbers"),
     ("S19", "no two items are the same question in different encodings", False,
      "two or more items carrying a textual question"),
+    ("S20", "the answer key is not dominated by one value", False,
+     "20+ items carrying a target"),
     ("W1", "witnesses kill the mutant scorers", False, "always"),
     ("W2", "a correct answer survives its surface form", False,
      "a scorer that accepts a constructible baseline form"),
@@ -211,6 +213,7 @@ THRESHOLDS = {
     "contains_target_max": 0.25,  # R16: share of a model's FAILED answers containing the reference
     "min_scored_misses": 5,       # R16: failed records a model needs before its misses are judged
     "prose_answer_words": 6,      # W4: a median answer this many words+ makes exact match a wording test, not a capability test
+    "key_skew_margin": 0.10,      # S20: modal-answer share this far above a balanced key's 1/k is a skewed key worth naming
     "ungrounded_max": 0.10,       # T4: share of one model's PASSING answers absent from its own tool results
     "min_grounding_evidence": 5,  # T4: passing records a model needs before its grounding is judged
     "underreport_ratio": 0.50,    # T5: mean steps below this fraction of the fleet median = under-reporting
@@ -298,7 +301,7 @@ SLUGS = {
     "S10": "canary-regurgitated", "S11": "corpus-overlap",
     "S12": "asset-drift", "S13": "label-in-path", "S14": "split-leak",
     "S15": "near-dup-assets", "S16": "authorship-circularity", "S17": "target-leak",
-    "S18": "numeric-dup-options", "S19": "lookalike-questions",
+    "S18": "numeric-dup-options", "S19": "lookalike-questions", "S20": "key-skew",
     "W1": "witness-coverage", "W2": "surface-form", "W3": "graded-witness",
     "W4": "scorer-fit",
     "C1": "claim-evidence",
@@ -328,7 +331,7 @@ BY_SLUG = {v: k for k, v in SLUGS.items()}
 # evidence it was given, and saying so is cheaper than an asterisk.
 SCOPE_CHECKS = {
     "data": {"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S11",
-             "S12", "S13", "S14", "S15", "S17", "S18", "S19"},
+             "S12", "S13", "S14", "S15", "S17", "S18", "S19", "S20"},
 }
 SCOPE_CHECKS["pod"] = {cid for cid, *_ in CHECKS}
 
@@ -366,6 +369,10 @@ THRESHOLD_PROVENANCE = {
                                        "rarely runs longer, a sentence-length free-text answer almost "
                                        "always does, so this is where exact match stops testing "
                                        "capability and starts testing wording. A candidate, not a verdict"),
+    "key_skew_margin": ("judgment", "0.10 above a balanced key's 1/k: enough that always guessing the "
+                                    "majority answer is a real strategy, not the parity a well-built key "
+                                    "aims for. A candidate for the author's eye, not a defect; a real base "
+                                    "rate can be skewed"),
     "kr20_min": ("convention", "0.5 is the low end of what psychometrics calls usable "
                                "reliability; 0.7+ is the textbook bar and would skip most fleets"),
     "negative_discrimination": ("convention", "item analysis treats r_pb below about -0.2 as a "
@@ -1062,6 +1069,48 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
     contra = [q[:80] for q, targets in by_q.items() if len(targets) > 1]
     rep.check("S7", not contra, f"{len(contra)} question(s) appear with conflicting targets",
               n=len(items), examples=contra)
+
+    # S20: is the answer key SKEWED toward one value? A benchmark where 65% of
+    # the answers are "yes" hands a model that always says "yes" a 65% score for
+    # knowing nothing, and an accuracy of 60% then reads as competence when it is
+    # below the floor. R7 catches this once models have run; S20 reads it off the
+    # key alone, before a cent is spent, which is where an author can still fix it.
+    #
+    # The signal is the modal share ABOVE what a balanced key would give (1 over
+    # the number of distinct answers), so a genuinely balanced binary set (50/50)
+    # does not trip, while a skewed one (70/30) does. Diagnostic, and warn not
+    # gate: a real-world base rate CAN be skewed (most transactions are not
+    # fraud), so the tool states the floor and the author decides.
+    per_value: Counter = Counter()
+    for i in items:
+        for v in {_norm(t) for t in _targets_of(i)}:
+            per_value[v] += 1
+    if len(items) < THRESHOLDS["min_choice_items"] or not per_value:
+        rep.not_applicable("S20", f"fewer than {int(THRESHOLDS['min_choice_items'])} items, so a "
+                                  f"modal share would be too noisy to characterise the key")
+    else:
+        modal_value, modal_n = per_value.most_common(1)[0]
+        share = modal_n / len(items)
+        n_distinct = len(per_value)
+        uniform = 1.0 / n_distinct
+        # n_distinct == 1 is the most skewed key there is (every answer identical),
+        # but share and uniform are both 1.0, so the margin rule alone would read
+        # it as balanced. Name it explicitly instead.
+        if n_distinct == 1:
+            detail = (f"every item shares the one answer {modal_value[:40]!r}; the key has no "
+                      "variety, so the eval cannot tell any two models apart")
+            skewed = True
+        else:
+            skewed = (share - uniform) >= THRESHOLDS["key_skew_margin"]
+            detail = ((f"the most common answer covers {share:.0%} of items ({modal_value[:40]!r}) against "
+                       f"{uniform:.0%} for a balanced key of {n_distinct} answers; always guessing it scores "
+                       f"{share:.0%} knowing nothing, so report accuracy against that floor")
+                      if skewed else
+                      f"the answer key is not dominated by one value (modal {share:.0%} of {n_distinct} answers)")
+        rep.check("S20", not skewed, detail,
+                  n=len(items),
+                  evidence={"modal_share": round(share, 3), "n_distinct": n_distinct,
+                            "modal_value": modal_value[:60]})
 
     # S2: answer leaks into its own question (free-form items only).
     # Candidate-list rule: a question that also names several OTHER values

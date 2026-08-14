@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 39 of 41 checks ran (39 of 41 ran; 29 n/a of 70 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 40 of 42 checks ran (40 of 42 ran; 29 n/a of 71 declared). Not a clean bill of health.
 
 ## Results
 
@@ -111,6 +111,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | no single column all but determines the target | 0 | an eval pod's items are questions and answers, not a feature table; the single-column leak scan is for a raw tabular dataset audit |
 | n/a | no two options are the same number written differently | 0 | no item offers two options that both parse as numbers, so there is no numeric equivalence to check |
 | ok | no two items are the same question in different encodings | 40 | 0 group(s) of items are the same question in different encodings |
+| ok | the answer key is not dominated by one value | 40 | the answer key is not dominated by one value (modal 2% of 40 answers) |
 | ok | witnesses kill the mutant scorers | 5 | 0 of 5 applicable mutant scorer(s) survive the witness suite |
 | ok | a correct answer survives its surface form | 6 | 0 surface form(s) lose a correct answer and 0 credit a decoy, of 6 applicable |
 | n/a | an exact scorer is not graded against prose answers | 0 | the scorer does not compare bare strings, so it is not the exact-match-on-prose mismatch this looks for |
@@ -123,7 +124,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 1 | 0 of 1 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now dfba7e2e5027f059); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now be2d8697e9a81d7f); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | no failed answer numerically equals its target | 0 | no failed record has a numeric target, so there is no numeric-equivalent miss to look for |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -157,6 +158,11 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 <details><summary>[ok] gold answer is not systematically the longest option</summary>
 
 - evidence: `{"excess": 0.05}`
+
+</details>
+<details><summary>[ok] the answer key is not dominated by one value</summary>
+
+- evidence: `{"modal_share": 0.025, "modal_value": "carbon dioxide", "n_distinct": 40}`
 
 </details>
 <details><summary>[ok] witnesses kill the mutant scorers</summary>

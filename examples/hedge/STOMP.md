@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 32 of 42 checks ran (32 of 42 ran; 28 n/a of 70 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 33 of 43 checks ran (33 of 43 ran; 28 n/a of 71 declared). Not a clean bill of health.
 
 ## Results
 
@@ -124,6 +124,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | no single column all but determines the target | 0 | an eval pod's items are questions and answers, not a feature table; the single-column leak scan is for a raw tabular dataset audit |
 | n/a | no two options are the same number written differently | 0 | no multiple-choice items in this dataset |
 | ok | no two items are the same question in different encodings | 30 | 0 group(s) of items are the same question in different encodings |
+| ok | the answer key is not dominated by one value | 30 | the answer key is not dominated by one value (modal 3% of 30 answers) |
 | skip | witnesses kill the mutant scorers | 0 | hosted judge: the mutation gauntlet would re-invoke it once per mutant per witness, which a lint must never pay for; run the judge probe instead |
 | skip | a correct answer survives its surface form | 0 | hosted judge: re-invoking it once per shape per target is a cost a lint must never incur; run the judge probe instead |
 | n/a | an exact scorer is not graded against prose answers | 0 | the scorer does not compare bare strings, so it is not the exact-match-on-prose mismatch this looks for |
@@ -136,7 +137,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | ok | billed output tokens match the recorded text | 4 | 0 of 4 model(s) report far more output tokens than their recorded text accounts for (expected for hidden-reasoning models; otherwise check your invoice) |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now dfba7e2e5027f059); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now be2d8697e9a81d7f); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | no failed answer numerically equals its target | 0 | no failed record has a numeric target, so there is no numeric-equivalent miss to look for |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -162,6 +163,11 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ### Receipts
 
+<details><summary>[ok] the answer key is not dominated by one value</summary>
+
+- evidence: `{"modal_share": 0.033, "modal_value": "a small phase-2 trial suggests the compound may slow plaque ", "n_distinct": 30}`
+
+</details>
 <details><summary>[ok] uncheckable rate is sane</summary>
 
 - evidence: `{"rate": 0.0}`

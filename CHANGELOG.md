@@ -2,6 +2,18 @@
 
 ### Unreleased
 
+- **S20 `key-skew`.** A data-scope warning that the answer key leans hard on one
+  value. A benchmark where 65% of the answers are "yes" hands a model that always
+  says "yes" a 65% score for knowing nothing, so an accuracy of 60% reads as
+  competence when it is below the floor. R7 catches this once models have run;
+  S20 reads it off the key alone, before a cent is spent, which is where an author
+  can still fix it. The signal is the modal share above what a balanced key would
+  give (1 over the number of distinct answers), so a balanced binary set (50/50)
+  does not trip while a skewed one (70/30) does, and an all-one-answer key is named
+  outright. Diagnostic, not a gate: a real base rate can be skewed (most
+  transactions are not fraud), so it states the floor and the author decides.
+  Registry 70 -> 71 checks. Found while red-teaming before a wider release.
+
 - **W4 `scorer-fit`.** An exact scorer keyed to sentence-length free-text answers
   marks every paraphrase wrong, so a model that answered correctly in its own
   words scores near zero for a formatting reason and the eval reports a capability

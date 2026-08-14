@@ -237,6 +237,12 @@
       "provenance": "judgment",
       "basis": "6 words at the median: a proper noun or a canonical title rarely runs longer, a sentence-length free-text answer almost always does, so this is where exact match stops testing capability and starts testing wording. A candidate, not a verdict"
     },
+    "key_skew_margin": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "0.10 above a balanced key's 1/k: enough that always guessing the majority answer is a real strategy, not the parity a well-built key aims for. A candidate for the author's eye, not a defect; a real base rate can be skewed"
+    },
     "ungrounded_max": {
       "value": 0.1,
       "source": "default",
@@ -281,9 +287,9 @@
     }
   },
   "coverage": {
-    "declared_total": 70,
-    "declared": 44,
-    "ran": 35,
+    "declared_total": 71,
+    "declared": 45,
+    "ran": 36,
     "skipped": [
       {
         "id": "S10",
@@ -614,6 +620,20 @@
       "witnesses": 24
     },
     {
+      "id": "S20",
+      "slug": "key-skew",
+      "check": "the answer key is not dominated by one value",
+      "level": "pass",
+      "gating": false,
+      "detail": "the answer key is not dominated by one value (modal 12% of 8 answers)",
+      "witnesses": 24,
+      "evidence": {
+        "modal_share": 0.125,
+        "n_distinct": 8,
+        "modal_value": "chloroplasts"
+      }
+    },
+    {
       "id": "W1",
       "slug": "witness-coverage",
       "check": "witnesses kill the mutant scorers",
@@ -867,7 +887,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now dfba7e2e5027f059); re-run to get numbers this report can stand behind",
+      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now be2d8697e9a81d7f); re-run to get numbers this report can stand behind",
       "witnesses": 3,
       "examples": [
         "engine 050e2f343915e1b9: greedy seed 7 (tool 0.57.1), grounded seed 7 (tool 0.57.1), oneshot seed 7 (tool 0.57.1)"
