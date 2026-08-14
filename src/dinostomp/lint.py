@@ -832,7 +832,7 @@ def _asset_checks(rep: Reporter, items: list[dict], base_dir: Path | None) -> No
                             "max_bits": int(THRESHOLDS["near_dup_bits"])})
 
 
-def _item_checks(rep: Reporter, items: list[dict]) -> None:
+def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> None:
     # An asset-backed item may carry no inline `input` at all: a classification
     # pod's item IS the image. Those are excluded from the free-form pool rather
     # than defaulted to an empty string, because an empty question makes every
@@ -860,7 +860,15 @@ def _item_checks(rep: Reporter, items: list[dict]) -> None:
     # from the dataset's answer space ("answer yes or no") is offering
     # options, not leaking the key. Without this rule the check is mostly
     # false positives on instruction-style prompts.
-    if not text_items:
+    if tabular:
+        # In a tabular audit the "question" is a synthesized join of the feature
+        # values, so the target's own value is present in it by construction.
+        # Reading that as an answer-in-question leak double-counts S17's finding
+        # as a hard gate. Leak detection on a feature table is S17's job.
+        rep.not_applicable(
+            "S2", "this is a tabular audit; the synthesized question is a join of the "
+                  "feature values, so label leakage is scored by S17 (target-leak), not here")
+    elif not text_items:
         asset_only = sum(1 for i in items if "choices" not in i and modality.ref_of(i))
         rep.not_applicable(
             "S2", f"no free-form items in this dataset"
@@ -3398,7 +3406,7 @@ def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
             item["id"] = f"row-{n:06d}"
 
     rep = Reporter()
-    _item_checks(rep, items)
+    _item_checks(rep, items, tabular=bool(mapping.get("_tabular")))
     _asset_checks(rep, items, path.parent)
     _overlap_check(rep, items, references or {})
 

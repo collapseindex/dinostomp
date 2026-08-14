@@ -90,6 +90,16 @@ def test_s17_does_not_flag_a_strong_but_noisy_feature(tmp_path):
 
 # --- the two scopes where it does not apply ---------------------------------
 
+def test_tabular_audit_does_not_hard_gate_answer_leak(tmp_path):
+    # The synthesized "question" is a join of the feature values, so the target's
+    # own value sits inside it by construction. S2 (answer-leak, a hard gate)
+    # must not read that as a leak and fail the table; S17 owns leak here.
+    rep, issues, _ = lint_dataset(_csv(tmp_path, churn(leaky=True)),
+                                  field_overrides={"target": "churned"})
+    assert rep is not None, issues
+    assert finding(rep, "S2")["level"] == "n/a"
+
+
 def test_s17_na_when_target_is_free_text(tmp_path):
     rows = [{"question": f"Capital of country {i}?", "answer": f"City{i}", "hint": f"h{i}"}
             for i in range(60)]
