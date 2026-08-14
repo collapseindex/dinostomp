@@ -29,6 +29,13 @@ Z_POWER = 0.8416
 BOOTSTRAP_TRIALS = 400
 MIN_EVIDENCE = 20  # checkable units below this cannot entitle or diagnose anything
 
+# P13: how far observed single-axis concentration must clear the fixed-margins
+# null before it counts as specialisation. A diagnostic that fires on a hair
+# above the 95th percentile cries wolf on the last unidimensional fleet; the
+# margin is what buys a clean false-alarm rate on a six-model fleet. Single
+# source, referenced by the lint THRESHOLDS table.
+DIMENSION_MARGIN = 0.10
+
 
 def content_seed(matrix: "Matrix", base_seed: int) -> int:
     """Bootstrap RNG seed derived from the DATA plus the run seed, so a
@@ -190,6 +197,44 @@ def dead_items(matrix: Matrix) -> tuple[list[str], list[str]]:
     return all_right, all_wrong
 
 
+def _swap_null_matrices(matrix: Matrix, trials: int, seed: int):
+    """Yield `trials` matrices from the fixed-margins null.
+
+    Every model keeps its exact score and every item its exact difficulty; the
+    only thing destroyed is WHICH model got which item. That is sampled by swap
+    randomisation: find a 2x2 checkerboard and flip it, the one move that
+    changes the matrix without moving any margin. The chain PERSISTS across
+    trials, so only the first sample needs full mixing; after that a lighter
+    shuffle between samples is enough, and the difference is a trial suite that
+    runs in 10s instead of 29s.
+
+    Fixed seed: a lint that returns a different verdict on a second run is not a
+    lint. Shared by P2 (negative_rpb_null) and P13 (dimensionality_null) so the
+    one null both lean on is defined once.
+    """
+    rng = random.Random(seed)
+    models = sorted(matrix)
+    items = common_items(matrix)
+    if len(models) < 2 or len(items) < 2:
+        return
+    grid = [[int(matrix[m][i]) for i in items] for m in models]
+    n_rows, n_cols = len(grid), len(grid[0])
+    burn_in = max(500, 8 * n_rows * n_cols)
+    between = max(100, n_rows * n_cols)
+    for t in range(trials):
+        for _ in range(burn_in if t == 0 else between):
+            r1, r2 = rng.randrange(n_rows), rng.randrange(n_rows)
+            c1, c2 = rng.randrange(n_cols), rng.randrange(n_cols)
+            if r1 == r2 or c1 == c2:
+                continue
+            a, b, c, d = grid[r1][c1], grid[r1][c2], grid[r2][c1], grid[r2][c2]
+            if a == d and b == c and a != b:      # the checkerboard
+                grid[r1][c1], grid[r1][c2] = b, a
+                grid[r2][c1], grid[r2][c2] = d, c
+        yield {m: {i: grid[ri][ci] for ci, i in enumerate(items)}
+               for ri, m in enumerate(models)}
+
+
 def negative_rpb_null(matrix: Matrix, threshold: float, trials: int, seed: int = 20260809) -> int:
     """The 95th-percentile count of negative point-biserials under the null.
 
@@ -206,43 +251,85 @@ def negative_rpb_null(matrix: Matrix, threshold: float, trials: int, seed: int =
       - permute which models passed each item: preserves item difficulty,
         DESTROYS fleet skill, expects 114. Worse, and for the opposite reason.
 
-    The null that answers the actual question holds BOTH margins fixed, so
-    every model keeps its exact score and every item keeps its exact difficulty,
-    and the only thing destroyed is WHICH model got which item. That is sampled
-    by swap randomisation: find a 2x2 checkerboard and flip it, which is the one
-    move that changes the matrix without moving any margin.
-
-    Fixed seed: a lint that returns a different verdict on a second run is not
-    a lint.
+    The null that answers the actual question holds BOTH margins fixed (see
+    `_swap_null_matrices`), so every model keeps its exact score and every item
+    keeps its exact difficulty, and the only thing destroyed is which model got
+    which item.
     """
-    import random
-
-    rng = random.Random(seed)
-    models = sorted(matrix)
-    items = common_items(matrix)
-    if len(models) < 2 or len(items) < 2:
+    if len(matrix) < 2 or len(common_items(matrix)) < 2:
         return 0
-    grid = [[int(matrix[m][i]) for i in items] for m in models]
-    n_rows, n_cols = len(grid), len(grid[0])
-    # The chain PERSISTS across trials, so only the first sample needs full
-    # mixing; after that a lighter shuffle between samples is enough, and the
-    # difference is the whole trial suite running in 10s instead of 29s.
-    burn_in = max(500, 8 * n_rows * n_cols)
-    between = max(100, n_rows * n_cols)
-    counts = []
-    for t in range(trials):
-        for _ in range(burn_in if t == 0 else between):
-            r1, r2 = rng.randrange(n_rows), rng.randrange(n_rows)
-            c1, c2 = rng.randrange(n_cols), rng.randrange(n_cols)
-            if r1 == r2 or c1 == c2:
-                continue
-            a, b, c, d = grid[r1][c1], grid[r1][c2], grid[r2][c1], grid[r2][c2]
-            if a == d and b == c and a != b:      # the checkerboard
-                grid[r1][c1], grid[r1][c2] = b, a
-                grid[r2][c1], grid[r2][c2] = d, c
-        fake = {m: {i: grid[ri][ci] for ci, i in enumerate(items)}
-                for ri, m in enumerate(models)}
-        rpb = point_biserials(fake)
-        counts.append(sum(1 for v in rpb.values() if v is not None and v <= threshold))
+    counts = [sum(1 for v in point_biserials(fake).values()
+                  if v is not None and v <= threshold)
+              for fake in _swap_null_matrices(matrix, trials, seed)]
     counts.sort()
     return counts[min(len(counts) - 1, int(0.95 * len(counts)))]
+
+
+def _top_eigenvalue(cov: list[list[float]], iters: int = 300) -> float:
+    """Largest eigenvalue of a small symmetric PSD matrix, by power iteration.
+
+    Deterministic: a fixed, non-degenerate start vector (never the all-ones
+    direction, which is this matrix's structural zero eigenvector), so the lint
+    cannot return two answers. Only the value is needed, for a variance share,
+    not the vector; the Rayleigh quotient reads it off the converged iterate.
+    """
+    n = len(cov)
+    v = [1.0 / (i + 2) for i in range(n)]
+    for _ in range(iters):
+        w = [sum(cov[i][j] * v[j] for j in range(n)) for i in range(n)]
+        norm = sum(x * x for x in w) ** 0.5
+        if norm == 0:
+            return 0.0
+        v = [x / norm for x in w]
+    cv = [sum(cov[i][j] * v[j] for j in range(n)) for i in range(n)]
+    return sum(v[i] * cv[i] for i in range(n))
+
+
+def concentration(matrix: Matrix) -> float | None:
+    """Share of fleet-differentiation variance on the single dominant axis.
+
+    Item-centre the response matrix (removing item difficulty), form the
+    model-by-model covariance of the residuals, and return lambda1 / trace. On
+    its own the number means little: strong single-factor skill and strong
+    specialisation both raise it. It becomes a reading only against the
+    fixed-margins null (`dimensionality_null`), which preserves each model's
+    skill and each item's difficulty. Structure the margins DETERMINE (a
+    unidimensional skill axis) survives into the null and cancels; structure
+    the margins do NOT determine (a coherent item cluster only one subgroup
+    solves) does not, and shows up as concentration in excess of the null. That
+    excess is the construct-validity signal: the aggregate score is blending
+    abilities that rank the fleet differently.
+
+    None when it cannot be formed: fewer than 3 models, fewer than 2 common
+    items, or a fleet with no differentiation at all (identical rows).
+    """
+    models = sorted(matrix)
+    items = common_items(matrix)
+    k, n = len(models), len(items)
+    if k < 3 or n < 2:
+        return None
+    col_mean = {i: fmean(matrix[m][i] for m in models) for i in items}
+    resid = [[matrix[m][i] - col_mean[i] for i in items] for m in models]
+    cov = [[sum(resid[a][t] * resid[b][t] for t in range(n)) / n for b in range(k)]
+           for a in range(k)]
+    trace = sum(cov[a][a] for a in range(k))
+    if trace <= 1e-12:
+        return None
+    return _top_eigenvalue(cov) / trace
+
+
+def dimensionality_null(matrix: Matrix, trials: int, seed: int = 20260809) -> float | None:
+    """95th-percentile concentration under the fixed-margins null.
+
+    A real fleet always has SOME single-axis dominance by chance; this is how
+    much, when the only structure present is each model's skill and each item's
+    difficulty. Observed concentration above this (by the P13 margin) is a
+    coherent item cluster the margins do not explain. None if the null cannot be
+    built.
+    """
+    vals = [c for c in (concentration(fake) for fake in _swap_null_matrices(matrix, trials, seed))
+            if c is not None]
+    if not vals:
+        return None
+    vals.sort()
+    return vals[min(len(vals) - 1, int(0.95 * len(vals)))]

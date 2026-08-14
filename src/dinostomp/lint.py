@@ -43,10 +43,13 @@ from dinostomp.overlap import find_overlap, load_reference
 from dinostomp.psychometrics import (
     negative_rpb_null,
     BOOTSTRAP_TRIALS,
+    DIMENSION_MARGIN,
     MIN_EVIDENCE,
     bootstrap_rank_stability,
     common_items,
+    concentration,
     dead_items,
+    dimensionality_null,
     kr20,
     majority,
     min_detectable_effect,
@@ -157,6 +160,8 @@ CHECKS: list[tuple[str, str, bool, str]] = [
     ("P11", "the number survives re-phrasing the instruction", False, "template probe on disk"),
     ("P12", "the fleet ORDERING survives re-phrasing the instruction", False,
      "template probe plus 2+ models"),
+    ("P13", "the fleet varies on one axis, not a blend of abilities", False,
+     "6+ models, 5+ common items"),
 ]
 GATING = {cid: hard for cid, _, hard, _ in CHECKS}
 NAMES = {cid: name for cid, name, _, _ in CHECKS}
@@ -180,6 +185,8 @@ THRESHOLDS = {
     # examinees, 5/5 at 40, with no false alarms at any size.
     "min_fleet_discrimination": 12,
     "min_fleet_agree": 3,      # P5 needs at least this many models
+    "min_fleet_dimension": 6,  # P13 needs more examinees than reliability does
+    "dimension_margin": DIMENSION_MARGIN,  # P13: excess over the null before it fires
     "min_items_psycho": 5,     # P1/P2/P3 need at least this many common items
     "spend_tolerance_usd": 1e-6,  # rounding slack when re-summing ledgers
     "candidate_list_min": 3,   # S2: this many OTHER answer-space values in a question = candidate list, not a leak
@@ -324,6 +331,7 @@ SLUGS = {
     "P4": "matrix-complete", "P5": "unanimous-wrong", "P6": "ordering-noise",
     "P7": "ceiling-floor", "P8": "dynamic-range", "P9": "order-stability",
     "P10": "seed-stability", "P11": "prompt-stability", "P12": "ranking-stability",
+    "P13": "construct-dimensionality",
 }
 
 BY_SLUG = {v: k for k, v in SLUGS.items()}
@@ -387,6 +395,11 @@ THRESHOLD_PROVENANCE = {
     "min_items_psycho": ("judgment", "5 common items before a matrix means anything"),
     "min_fleet": ("judgment", "4 examinees before fleet statistics are attempted"),
     "min_fleet_agree": ("judgment", "3 models before unanimity is a word worth using"),
+    "min_fleet_dimension": ("judgment", "6 examinees before a second axis is worth asking after; "
+                                        "dimensionality needs more spread than reliability does"),
+    "dimension_margin": ("calibrated", "measured: at 0.10 above the fixed-margins null, 0/10 false "
+                                       "alarms on unidimensional fleets and 0/10 misses on 2- and "
+                                       "3-cluster specialised fleets, at 6, 8 and 10 examinees"),
     "min_choice_items": ("judgment", "20 keyed choice items before position or length skew"),
     "min_fleet_discrimination": ("calibrated", "measured: 0/5 detections at 6 examinees, 5/5 at "
                                                "40, on 200 items with 10% of keys inverted"),
@@ -457,7 +470,7 @@ CONSTRUCT_VALIDITY = {
 
 RUN_CHECK_IDS = ("R1", "R3", "R4", "R5", "R6", "R8", "R9", "R10", "R11", "R12", "R14", "R16", "R17",
                  "R18", "R19", "R20", "R21", "R22")
-PSYCHO_CHECK_IDS = ("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8")
+PSYCHO_CHECK_IDS = ("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P13")
 # P9 lives with the probes, not the fleet matrix: it needs a probe run, not more models.
 TRAJECTORY_CHECK_IDS = ("T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8")
 JUDGE_CHECK_IDS = ("J1", "J2", "J3", "J4")
@@ -3178,7 +3191,7 @@ def _psychometric_checks(rep: Reporter, runs: list[dict], spec: dict,
     min_fleet = int(THRESHOLDS["min_fleet"])
     if len(models) < 2:
         hint = f"only {len(models)} model(s) on disk; run a fleet of {min_fleet}+ to unlock psychometrics"
-        for cid in ("P1", "P2", "P3", "P4", "P5", "P7", "P8"):
+        for cid in ("P1", "P2", "P3", "P4", "P5", "P7", "P8", "P13"):
             rep.skip(cid, hint)
         return
 
@@ -3331,6 +3344,46 @@ def _psychometric_checks(rep: Reporter, runs: list[dict], spec: dict,
                   n=len(common), evidence={"share": round(share, 4),
                                            "independence_floor": round(indep, 4),
                                            "n_examinees": len(skills)})
+
+    # P13: does the fleet vary on one axis, or is the single leaderboard number
+    # a blend of abilities? Construct validity, asked judge-free. The
+    # fixed-margins null preserves each model's skill and each item's
+    # difficulty, so a unidimensional skill axis survives into the null and
+    # cancels; concentration in EXCESS of the null is a coherent item cluster
+    # only a subgroup solves, which means the aggregate averages over abilities
+    # that rank the fleet differently. dinostomp cannot ASSERT construct
+    # validity (that needs a theory of the construct it refuses to fabricate);
+    # it flags the one threat the response matrix can see. Diagnostic, and
+    # quiet-means-little on a small fleet, the same honest limit as P2.
+    min_dim = int(THRESHOLDS["min_fleet_dimension"])
+    if len(psycho_models) < min_dim or len(psycho_common) < min_items:
+        rep.skip("P13", f"{len(psycho_models)} model(s) x {len(psycho_common)} common item(s); "
+                        f"need {min_dim}+ models and {min_items}+ items to unlock{dropped}")
+    else:
+        conc = concentration(psycho_matrix)
+        null_dim = dimensionality_null(psycho_matrix, THRESHOLDS["bootstrap_trials"])
+        if conc is None or null_dim is None:
+            rep.skip("P13", "the fleet shows no differentiation to decompose")
+        else:
+            bar = null_dim + THRESHOLDS["dimension_margin"]
+            fired = conc > bar
+            all_dry = not any(e["manifest"] and not e["manifest"].get("dry_run") for e in runs)
+            dry_note = ("; this fleet is all-dry, whose skill is a single scalar by "
+                        "construction, so a quiet result here is a plumbing check, not "
+                        "validity evidence" if all_dry else "")
+            underpowered = ("" if len(psycho_models) >= SMALL_FLEET
+                            else f"; at {len(psycho_models)} examinees this has limited power, so a "
+                                 "quiet result is NOT proof the score measures one thing")
+            verdict = ("the fleet blends abilities that rank it differently, so its single "
+                       "score is a composite" if fired else "the fleet varies on one axis")
+            rep.check("P13", not fired,
+                      f"top-axis share {conc:.2f} against {bar:.2f} the fixed-margins null allows; "
+                      f"{verdict}{dry_note if not fired else ''}"
+                      f"{underpowered if not fired else ''}{dropped}",
+                      n=len(psycho_common),
+                      evidence={"concentration": round(conc, 4), "null_95": round(null_dim, 4),
+                                "margin": THRESHOLDS["dimension_margin"],
+                                "n_examinees": len(psycho_models), "all_dry": all_dry})
 
     # P5: unanimous identical wrong answers (the fleet agrees; the key does not)
     if len(models) < int(THRESHOLDS["min_fleet_agree"]):

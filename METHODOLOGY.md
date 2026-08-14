@@ -50,7 +50,7 @@ eight hundred lines away, reads as a broken example rather than a designed one.
 smoke-arith | dry-strong | complete | acc 1.000 [0.61, 1.00] on 6 checkable (0 uncheckable excluded) | $0.0000
 ...
   [skip] fleet score totals are reliable (KR-20)    only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics
-INCOMPLETE: no failures, but only 20 of 30 checks ran (41 n/a of 71 declared). Not a clean bill of health.
+INCOMPLETE: no failures, but only 20 of 31 checks ran (41 n/a of 72 declared). Not a clean bill of health.
   note: all runs used the offline dry provider; results exercise the benchmark, not any real model.
 ```
 
@@ -70,7 +70,7 @@ fleet-arith | dry-charlie | complete | acc 0.375 [0.21, 0.57] on 24 checkable (0
   [ok]   fleet score totals are reliable (KR-20)    KR-20 0.94 across 6 models x 24 items; small fleet (6 examinees), treat as a noisy estimate
   [ok]   accuracy is distinguishable from guessing   0 of 6 model(s) score no better than guessing; fleet spans 38% to 100% vs chance ~4% (modal target floor)
   [ok]   the fleet is not pinned at a ceiling or floor  fleet accuracy spans 38% to 100% on 24 item(s)
-STOMPED CLEAN (33 of 33 ran; 38 n/a of 71 declared)
+STOMPED CLEAN (33 of 33 ran; 39 n/a of 72 declared)
   note: all runs used the offline dry provider; results exercise the benchmark, not any real model.
   this result is entitled to claim:
     - Exact-match accuracy with a 95% interval on these 24 addition items, bare-number format, per model.
@@ -94,11 +94,11 @@ Eighty-two deliberately defective evals, each with a stated expectation of what 
   worst miss deleted from a complete run    R11 fail   R11=fail, verdict=broken   CAUGHT
   one model escapes the scorer              R12 warn   R12=warn                   CAUGHT
   ...
-  sensitivity: 100 of 100 defects caught, 0 missed
+  sensitivity: 101 of 101 defects caught, 0 missed
   specificity: 0 findings on 16 of 16 clean pods
 ```
 
-The suite tests both tails: sensitivity (seventy-seven planted defects, drawn from described eval-defect classes (cited in [REFERENCES.md](REFERENCES.md)) plus this project's own adversarial reviews, NOT enumerated from the check registry) and specificity (seven expected-CLEAN pods asserted to produce zero findings, including a mixed-format pod with a bootstrap-separated ordering claim; current score 0 false alarms). The scorecard exits nonzero on a miss in either direction, and the scoring rubric is fixed: is the defect caught automatically, by default, with evidence preserved. Never "does the tool have feature X". During development, trial expectations had to be corrected because the battery behaved differently (better) than predicted, which is only possible when expectations come from outside the implementation.
+The suite tests both tails: sensitivity (101 planted defects, drawn from described eval-defect classes (cited in [REFERENCES.md](REFERENCES.md)) plus this project's own adversarial reviews, NOT enumerated from the check registry) and specificity (16 expected-CLEAN pods asserted to produce zero findings, including a mixed-format pod with a bootstrap-separated ordering claim; current score 0 false alarms). The scorecard exits nonzero on a miss in either direction, and the scoring rubric is fixed: is the defect caught automatically, by default, with evidence preserved. Never "does the tool have feature X". During development, trial expectations had to be corrected because the battery behaved differently (better) than predicted, which is only possible when expectations come from outside the implementation.
 
 ## Philosophy
 
@@ -229,6 +229,7 @@ All 57 checks, their tier, and when they apply. The **slug** is what appears in 
 | P10 | `seed-stability` | the number survives changing the seed | diagnostic (warns) | run.seeds declared |
 | P11 | `prompt-stability` | the number survives re-phrasing the instruction | diagnostic (warns) | template probe on disk |
 | P12 | `ranking-stability` | the fleet ORDERING survives re-phrasing the instruction | diagnostic (warns) | template probe plus 2+ models |
+| P13 | `construct-dimensionality` | the fleet varies on one axis, not a blend of abilities | diagnostic (warns) | 6+ models, 5+ common items |
 
 ## Who checks the checker?
 
@@ -377,7 +378,7 @@ Rates belong in the spec rather than on the command line for the same reason eve
 python -m pytest
 ```
 
-The suite follows a house rule: every validator has a negative test that breaks something on purpose and asserts the breakage is caught. Beyond the unit suite, `python trials/run_trials.py` runs DinoTrials, both tails: 92 planted defects (sensitivity) and 16 expected-CLEAN pods (specificity), printed as a scorecard that exits nonzero on a miss in either direction.
+The suite follows a house rule: every validator has a negative test that breaks something on purpose and asserts the breakage is caught. Beyond the unit suite, `python trials/run_trials.py` runs DinoTrials, both tails: 101 planted defects (sensitivity) and 16 expected-CLEAN pods (specificity), printed as a scorecard that exits nonzero on a miss in either direction.
 
 ## Status
 
@@ -618,7 +619,7 @@ accounted for, including the ones it cannot supply.
 ### The verdict names its inputs
 
 ```
-MECHANICALLY SOUND: no integrity findings, full coverage (33 of 33 ran; 38 n/a of 71 declared)
+MECHANICALLY SOUND: no integrity findings, full coverage (34 of 34 ran; 38 n/a of 72 declared)
   extension: gsm8k-extras 0.2.1 (a41f9c22b7e05d18), 3 check(s), validated
 ```
 
@@ -816,7 +817,7 @@ agent-capitals | agent-grounded | complete | acc 0.923 [0.76, 0.98] on 26 checka
   [ok]   passing answers are grounded in tool evidence   0 of 4 target(s) pass items their own evidence does not support (2 such answer(s) in total)
            - cap-santiago (agent-lazy): passed, but its answer appears in no tool result
            - cap-tunis (agent-lazy): passed, but its answer appears in no tool result
-INCOMPLETE: no failures, but only 41 of 45 checks ran (26 n/a of 71 declared).
+INCOMPLETE: no failures, but only 41 of 46 checks ran (26 n/a of 72 declared).
 ```
 
 `agent-lazy` is the pod's teaching case. It scores a perfect 100%, it calls the required tool on every single item, and every policy check passes it, because it really does retrieve. What T4 notices is that two of its correct answers appear in no retrieved evidence at all: it answered from memory and retrieved afterwards. That is the Clever Hans of tool use, and it is judge-free, since "does the answer occur in the tool output" is a fact rather than an opinion. Note also what the check did NOT do: two ungrounded answers out of twenty-six is under the threshold, so T4 passed, printed both receipts, and left the call to you.
@@ -864,7 +865,7 @@ Edit the spec, the data, the scorer, the agent, or the judge after a run and sto
 ```
   [FAIL] runs match the spec, data, and scorer on disk (no drift)  1 of 6 run(s) no longer match ...
            - 20260808_..._dry-alpha_n24_s42.jsonl: data changed since this run
-BROKEN: 1 gated finding(s) (33 of 33 ran; 38 n/a of 71 declared)
+BROKEN: 1 gated finding(s) (34 of 34 ran; 38 n/a of 72 declared)
 ```
 
 Exit codes for `run`: `0` complete, `1` gated (witnesses failed, nothing ran), `2` cannot run (invalid spec or data, unpriced model, missing key), `3` stopped early (budget, provider, or scorer; partial on disk, resume with `--resume <run file>`). For `stomp` and `report`: `0` clean or ok, `1` broken, `2` cannot stomp, `4` incomplete. Incomplete is nonzero **by default**: an unattended pipeline must never accept thin coverage because someone forgot a flag; `--allow-incomplete` is the explicit, loudly-printed escape hatch.

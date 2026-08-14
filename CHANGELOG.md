@@ -2,6 +2,25 @@
 
 ### Unreleased
 
+- **P13 `construct-dimensionality`: does the fleet vary on one axis, or does its
+  single score blend abilities that rank it differently?** The one construct-validity
+  threat a response matrix can see, asked judge-free. dinostomp cannot ASSERT
+  construct validity (that needs a theory of the construct it refuses to fabricate);
+  P13 flags when a leaderboard number is a composite. It item-centres the matrix,
+  takes the share of fleet-differentiation variance on the dominant axis, and
+  compares it to the SAME fixed-margins swap-randomisation null P2 uses (extracted
+  now into one shared sampler). The null preserves each model's skill and each
+  item's difficulty, so a unidimensional skill axis survives into it and cancels;
+  concentration in excess of the null (by a calibrated 0.10 margin) is a coherent
+  item cluster only a subgroup solves. Diagnostic, 6+ models, and quiet-means-little
+  on a small fleet, the same honest limit as P2: measured 0/10 false alarms on
+  unidimensional fleets and 0/10 misses on 2- and 3-cluster fleets at 6/8/10
+  examinees. Dry fleets are one scalar by construction, so a quiet P13 there is a
+  plumbing check, not validity evidence, and it says so. Trial: a dry fleet whose
+  recorded outputs split into two ability clusters passes every integrity check
+  (verdict ok) and only P13 (with a low KR-20 from P1) sees the blend. Battery: 72
+  checks, 101 planted-defect trials.
+
 - **[F-046](FINDINGS.md#f-046): LoCoMo repeats eleven questions inside one
   conversation, and one answer is echoed in its question.** The long-term-memory
   benchmark, audited with each item scoped to its conversation id (the SQuAD-correct

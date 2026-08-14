@@ -87,6 +87,18 @@
       "provenance": "judgment",
       "basis": "3 models before unanimity is a word worth using"
     },
+    "min_fleet_dimension": {
+      "value": 6.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "6 examinees before a second axis is worth asking after; dimensionality needs more spread than reliability does"
+    },
+    "dimension_margin": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "calibrated",
+      "basis": "measured: at 0.10 above the fixed-margins null, 0/10 false alarms on unidimensional fleets and 0/10 misses on 2- and 3-cluster specialised fleets, at 6, 8 and 10 examinees"
+    },
     "min_items_psycho": {
       "value": 5.0,
       "source": "default",
@@ -299,9 +311,9 @@
     }
   },
   "coverage": {
-    "declared_total": 71,
-    "declared": 33,
-    "ran": 33,
+    "declared_total": 72,
+    "declared": 34,
+    "ran": 34,
     "skipped": [],
     "not_applicable": [
       {
@@ -914,7 +926,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now 01c79eca610f9d8e); re-run to get numbers this report can stand behind",
+      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now 744ea8ecc4581d22); re-run to get numbers this report can stand behind",
       "witnesses": 6,
       "examples": [
         "engine 050e2f343915e1b9: dry-alpha seed 42 (tool 0.57.1), dry-bravo seed 42 (tool 0.57.1), dry-charlie seed 42 (tool 0.57.1) and 3 more"
@@ -1191,6 +1203,22 @@
       "gating": false,
       "detail": "instruction-framing probes need runs on disk",
       "witnesses": 0
+    },
+    {
+      "id": "P13",
+      "slug": "construct-dimensionality",
+      "check": "the fleet varies on one axis, not a blend of abilities",
+      "level": "pass",
+      "gating": false,
+      "detail": "top-axis share 0.74 against 0.84 the fixed-margins null allows; the fleet varies on one axis; this fleet is all-dry, whose skill is a single scalar by construction, so a quiet result here is a plumbing check, not validity evidence; at 6 examinees this has limited power, so a quiet result is NOT proof the score measures one thing",
+      "witnesses": 24,
+      "evidence": {
+        "concentration": 0.7438,
+        "null_95": 0.7438,
+        "margin": 0.1,
+        "n_examinees": 6,
+        "all_dry": true
+      }
     }
   ],
   "inputs": {

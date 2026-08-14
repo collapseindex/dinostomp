@@ -87,6 +87,18 @@
       "provenance": "judgment",
       "basis": "3 models before unanimity is a word worth using"
     },
+    "min_fleet_dimension": {
+      "value": 6.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "6 examinees before a second axis is worth asking after; dimensionality needs more spread than reliability does"
+    },
+    "dimension_margin": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "calibrated",
+      "basis": "measured: at 0.10 above the fixed-margins null, 0/10 false alarms on unidimensional fleets and 0/10 misses on 2- and 3-cluster specialised fleets, at 6, 8 and 10 examinees"
+    },
     "min_items_psycho": {
       "value": 5.0,
       "source": "default",
@@ -299,8 +311,8 @@
     }
   },
   "coverage": {
-    "declared_total": 71,
-    "declared": 30,
+    "declared_total": 72,
+    "declared": 31,
     "ran": 20,
     "skipped": [
       {
@@ -341,6 +353,10 @@
       },
       {
         "id": "P8",
+        "reason": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics"
+      },
+      {
+        "id": "P13",
         "reason": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics"
       }
     ],
@@ -514,7 +530,7 @@
   "summary": {
     "fail": 0,
     "warn": 1,
-    "skip": 10,
+    "skip": 11,
     "verdict": "incomplete",
     "scope": "pod"
   },
@@ -938,7 +954,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "1 of 1 run(s) were produced by a different engine than the one auditing them (now 01c79eca610f9d8e); re-run to get numbers this report can stand behind",
+      "detail": "1 of 1 run(s) were produced by a different engine than the one auditing them (now 744ea8ecc4581d22); re-run to get numbers this report can stand behind",
       "witnesses": 1,
       "examples": [
         "engine 050e2f343915e1b9: dry-strong seed 42 (tool 0.57.1)"
@@ -1190,6 +1206,15 @@
       "level": "n/a",
       "gating": false,
       "detail": "instruction-framing probes need runs on disk",
+      "witnesses": 0
+    },
+    {
+      "id": "P13",
+      "slug": "construct-dimensionality",
+      "check": "the fleet varies on one axis, not a blend of abilities",
+      "level": "skip",
+      "gating": false,
+      "detail": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics",
       "witnesses": 0
     }
   ],

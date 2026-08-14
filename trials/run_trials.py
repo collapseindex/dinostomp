@@ -670,6 +670,55 @@ def t_unanimous_wrong(root):
         rewrite(rf, unanimize)
     return sp
 
+def t_two_construct_fleet(root):
+    """A fleet that measures two abilities and reports one number.
+
+    Six models split into two clusters of three: cluster A solves the first
+    item-half and struggles with the second, cluster B does the reverse. Within
+    each cluster the models differ in skill, so overall accuracy spreads (P7 and
+    P8 see an ordinary fleet), no key is inverted (the item's passers are its
+    stronger solvers, so P2 is quiet), and almost every item separates somebody
+    (P3 is quiet). The single aggregate score is an average over two abilities
+    that rank the fleet oppositely, and only P13, reading the response matrix
+    against the fixed-margins null, sees the blend. All-dry: the specialisation
+    is planted in the recorded verdicts, not produced by the skill hashes, which
+    are unidimensional by construction.
+    """
+    sp = ran(root, items=arith_items(40), models=FLEET)
+    targets = {json.loads(l)["id"]: json.loads(l)["target"]
+               for l in (root / "items.jsonl").read_text(encoding="utf-8").splitlines()
+               if "_canary" not in l}
+    models = sorted(m["model"] for m in FLEET)
+    group = {m: i % 2 for i, m in enumerate(models)}
+    rank = {}
+    for g in (0, 1):
+        for r, m in enumerate([m for m in models if group[m] == g]):
+            rank[m] = r                       # 0, 1, 2 within the cluster
+    good_pass = [20, 17, 14]                  # items solved in the strong half (of 20)
+    bad_pass = [3, 2, 1]                       # items solved in the weak half (of 20)
+
+    def specialise(r, i):
+        m = r["model"]
+        idx = int(r["item_id"][1:]) - 10       # 0..39
+        half = 0 if idx < 20 else 1
+        local = idx if half == 0 else idx - 20  # 0..19 within the half
+        limit = good_pass[rank[m]] if half == group[m] else bad_pass[rank[m]]
+        # Set the OUTPUT, not just the verdict, so the recorded verdict
+        # re-derives under the real scorer (R8 stays quiet) and the finding is
+        # P13's alone, not an artifact of a hand-forced ledger.
+        if local < limit:
+            r["output"] = targets[r["item_id"]]; r["score"] = {"verdict": "pass"}
+        else:
+            # A DISTINCT wrong answer per item, so no model looks collapsed (R14)
+            # and the only structure left in the matrix is the specialisation.
+            r["output"] = f"zz-{r['item_id']}"; r["score"] = {"verdict": "fail"}
+        return r
+
+    for rf in run_files(root):
+        rewrite(rf, specialise)
+    return sp
+
+
 def t_noisy_ordering_claim(root):
     return_spec = build_pod(root, arith_items(), models=FLEET,
                             claims=["Relative ordering of the six dry models."])
@@ -1922,6 +1971,7 @@ TRIALS = [
     ("one model missing an item (ragged)", t_ragged_matrix, ("P4", "fail")),
     ("inverted key (strong fail, weak pass)", t_inverted_key, ("P2", "warn")),
     ("whole fleet gives one identical wrong answer", t_unanimous_wrong, ("P5", "warn")),
+    ("fleet blends two abilities into one score", t_two_construct_fleet, ("P13", "warn")),
     ("ordering claimed inside sampling noise", t_noisy_ordering_claim, ("P6", "warn")),
     ("boundary: claimed pair flips in ~10% of resamples", t_boundary_ordering_flip, ("P6", "warn")),
     ("one model escapes the scorer", t_selective_escape, ("R12", "warn")),

@@ -5,7 +5,7 @@ Everything below follows from that.
 
 ## Break it, please
 
-**100 of 100 planted defects caught is not independent validation.** Those defects
+**101 of 101 planted defects caught is not independent validation.** Those defects
 were planted by the same hands that wrote the checks. A battery can become
 extremely good at catching exactly the mutants designed for it, and that number
 measures internal consistency: strong evidence each check fires on the failure it

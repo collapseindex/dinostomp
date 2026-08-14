@@ -903,6 +903,38 @@ def test_p2_null_holds_both_margins_fixed():
     assert sum(row_totals.values()) == sum(col_totals.values())
 
 
+def test_p13_fires_on_two_constructs_and_stays_quiet_on_one_axis():
+    """Concentration in excess of the fixed-margins null is specialisation.
+
+    A fleet split into two clusters, each solving a different item-half, blends
+    two abilities into one score, so its top-axis concentration clears the null.
+    A fleet that differs only in one skill scalar rides the null, because that
+    structure is determined by the margins the null preserves; firing on it
+    would be the flattering false positive P13 must never produce.
+    """
+    from dinostomp.psychometrics import (DIMENSION_MARGIN, concentration,
+                                         dimensionality_null)
+
+    # specialised: even models solve the first item-half, odd models the second
+    special = {f"m{k}": {f"i{j}": int((j < 20) == (k % 2 == 0)) for j in range(40)}
+               for k in range(6)}
+    c = concentration(special)
+    null = dimensionality_null(special, 200)
+    assert c > null + DIMENSION_MARGIN, "P13 must fire on a two-construct fleet"
+
+    # unidimensional Guttman scale: one skill per model, one difficulty per item
+    uni = {f"m{k}": {f"i{j}": int((j % 6) <= k) for j in range(40)} for k in range(6)}
+    assert concentration(uni) <= dimensionality_null(uni, 200) + DIMENSION_MARGIN, (
+        "a one-axis skill fleet must not fire; that structure is margin-determined")
+
+    # a lint that returns a different verdict on a second run is not a lint
+    assert dimensionality_null(special, 200) == null
+    # no differentiation to decompose: reported, not guessed at
+    identical = {f"m{k}": {f"i{j}": 1 for j in range(40)} for k in range(6)}
+    assert concentration(identical) is None
+    assert concentration({"m0": {"i0": 1}, "m1": {"i0": 0}}) is None  # too few items
+
+
 def test_p2_stays_quiet_when_the_count_is_what_chance_produces(tmp_path):
     """Real GSM8K: 31 observed against 31 expected. No finding."""
     from dinostomp.psychometrics import negative_rpb_null

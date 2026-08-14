@@ -87,6 +87,18 @@
       "provenance": "judgment",
       "basis": "3 models before unanimity is a word worth using"
     },
+    "min_fleet_dimension": {
+      "value": 6.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "6 examinees before a second axis is worth asking after; dimensionality needs more spread than reliability does"
+    },
+    "dimension_margin": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "calibrated",
+      "basis": "measured: at 0.10 above the fixed-margins null, 0/10 false alarms on unidimensional fleets and 0/10 misses on 2- and 3-cluster specialised fleets, at 6, 8 and 10 examinees"
+    },
     "min_items_psycho": {
       "value": 5.0,
       "source": "default",
@@ -299,8 +311,8 @@
     }
   },
   "coverage": {
-    "declared_total": 71,
-    "declared": 42,
+    "declared_total": 72,
+    "declared": 43,
     "ran": 40,
     "skipped": [
       {
@@ -310,6 +322,10 @@
       {
         "id": "R15",
         "reason": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock"
+      },
+      {
+        "id": "P13",
+        "reason": "4 model(s) x 40 common item(s); need 6+ models and 5+ items to unlock"
       }
     ],
     "not_applicable": [
@@ -434,7 +450,7 @@
   "summary": {
     "fail": 0,
     "warn": 3,
-    "skip": 2,
+    "skip": 3,
     "verdict": "incomplete",
     "scope": "pod"
   },
@@ -902,7 +918,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 01c79eca610f9d8e); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 744ea8ecc4581d22); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine cf11e5de89c91221: meta-llama/llama-3.2-3b-instruct seed 7 (tool 0.37.0), meta-llama/llama-3.1-8b-instruct seed 7 (tool 0.37.0), mistralai/ministral-8b-2512 seed 7 (tool 0.37.0) and 1 more"
@@ -1249,6 +1265,15 @@
         ],
         "reversals": 0
       }
+    },
+    {
+      "id": "P13",
+      "slug": "construct-dimensionality",
+      "check": "the fleet varies on one axis, not a blend of abilities",
+      "level": "skip",
+      "gating": false,
+      "detail": "4 model(s) x 40 common item(s); need 6+ models and 5+ items to unlock",
+      "witnesses": 0
     }
   ],
   "inputs": {

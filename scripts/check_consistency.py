@@ -96,7 +96,7 @@ def check_check_counts() -> list[str]:
 
 def num_word(n: int) -> str | None:
     words = {6: "six", 10: "Ten", 14: "Fourteen", 15: "Fifteen", 16: "sixteen", 17: "seventeen", 18: "eighteen", 20: "twenty", 21: "twenty-one",
-             25: "twenty-five", 47: "forty-seven", 57: "fifty-seven", 61: "sixty-one", 62: "sixty-two", 64: "sixty-four", 65: "sixty-five", 66: "sixty-six", 67: "sixty-seven", 68: "sixty-eight", 69: "sixty-nine", 70: "seventy", 71: "seventy-one",
+             25: "twenty-five", 47: "forty-seven", 57: "fifty-seven", 61: "sixty-one", 62: "sixty-two", 64: "sixty-four", 65: "sixty-five", 66: "sixty-six", 67: "sixty-seven", 68: "sixty-eight", 69: "sixty-nine", 70: "seventy", 71: "seventy-one", 72: "seventy-two",
              92: "ninety-two"}
     return words.get(n)
 
