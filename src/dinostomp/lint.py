@@ -57,8 +57,9 @@ from dinostomp.scorers import make_scorer, run_witnesses
 from dinostomp.evidence import missing_for, skip_reason, survey
 from dinostomp.extensions import discover, run_extensions
 from dinostomp.dataset import (DATA_SUFFIXES, build_items, infer_mapping,
-                               looks_like_dataset, read_rows, repair_items,
-                               sniff_separator, unrepairable_findings)
+                               leak_candidates, looks_like_dataset, read_rows,
+                               repair_items, sniff_separator, target_is_classlike,
+                               unrepairable_findings)
 from dinostomp import modality, perceptual, results as results_mod
 from dinostomp.fingerprint import engine_fingerprint
 from dinostomp.spec import Issue, jsonl_lines, load_spec, spec_sha256, validate_obj
@@ -90,6 +91,8 @@ CHECKS: list[tuple[str, str, bool, str]] = [
     ("S14", "no asset appears in two splits", True, "input_ref items declaring a split"),
     ("S15", "no near-duplicate assets", False, "input_ref images, with the vision extra installed"),
     ("S16", "the eval is not authored in a circle", False, "a provenance block is declared"),
+    ("S17", "no single column all but determines the target", False,
+     "a raw dataset audit with a class-like target and feature columns"),
     ("W1", "witnesses kill the mutant scorers", False, "always"),
     ("W2", "a correct answer survives its surface form", False,
      "a scorer that accepts a constructible baseline form"),
@@ -178,6 +181,7 @@ THRESHOLDS = {
     "escape_min_rate": 0.05,      # R12: and at least this absolute rate, so tiny fleets don't false-fire
     "shortcut_z": 3.0,            # S9: z-score vs the per-item 1/k null required to call a shortcut
     "shortcut_lift": 0.10,        # S9: and at least this absolute lift over the null mean
+    "target_leak_nmi": 0.50,      # S17: normalized MI of a single column with the target, above which it is a candidate leak
     "collapse_margin": 0.30,      # R14: modal-answer share this far above the key's own modal share
     "blind_lift_min": 0.10,       # R15: informed accuracy must clear a model's OWN blind score by this
     "collapse_exclude_share": 0.95,  # psychometrics drop a model only when it is THIS constant
@@ -236,7 +240,7 @@ SLUGS = {
     "S7": "conflicting-keys", "S8": "canary-present", "S9": "surface-shortcut",
     "S10": "canary-regurgitated", "S11": "corpus-overlap",
     "S12": "asset-drift", "S13": "label-in-path", "S14": "split-leak",
-    "S15": "near-dup-assets", "S16": "authorship-circularity",
+    "S15": "near-dup-assets", "S16": "authorship-circularity", "S17": "target-leak",
     "W1": "witness-coverage", "W2": "surface-form", "W3": "graded-witness",
     "C1": "claim-evidence",
     "R1": "input-drift", "R2": "witness-replay", "R3": "spend-ledger",
@@ -264,7 +268,7 @@ BY_SLUG = {v: k for k, v in SLUGS.items()}
 # evidence it was given, and saying so is cheaper than an asterisk.
 SCOPE_CHECKS = {
     "data": {"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S11",
-             "S12", "S13", "S14", "S15"},
+             "S12", "S13", "S14", "S15", "S17"},
 }
 SCOPE_CHECKS["pod"] = {cid for cid, *_ in CHECKS}
 
@@ -295,6 +299,9 @@ THRESHOLD_PROVENANCE = {
     "spend_tolerance_usd": ("structural", "floating-point slack on a money comparison"),
     "shortcut_z": ("convention", "3 sigma against the per-item chance null, the usual bar for "
                                  "calling a surface feature real"),
+    "target_leak_nmi": ("judgment", "0.5 normalized mutual information: a column that resolves "
+                                    "half the target's entropy is worth a human's eye. A candidate, "
+                                    "not a verdict; only the author knows if it exists at predict time"),
     "kr20_min": ("convention", "0.5 is the low end of what psychometrics calls usable "
                                "reliability; 0.7+ is the textbook bar and would skip most fleets"),
     "negative_discrimination": ("convention", "item analysis treats r_pb below about -0.2 as a "
@@ -3026,6 +3033,8 @@ def lint_eval(spec_path: str | Path, trust_code: bool = False,
     _asset_checks(rep, items, base)
     _canary_check(rep, base, spec["data"])
     _authorship_check(rep, spec)
+    rep.not_applicable("S17", "an eval pod's items are questions and answers, not a feature table; "
+                              "the single-column leak scan is for a raw tabular dataset audit")
     # A pod's dataset deserves the overlap check as much as a bare file does.
     _overlap_check(rep, items, references or {})
 
@@ -3360,6 +3369,16 @@ def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
                                           ext_findings), issues, context
         return None, issues, context
 
+    # Tabular audit: synthesize the question from the feature values so the
+    # duplicate-row and id checks still have an "item" to read, while the raw
+    # columns stay available for the leak scan. A duplicate synthesized question
+    # is a duplicate feature row, which is exactly what S1 should catch here.
+    if mapping.get("_tabular"):
+        feats = [c for c in (rows[0] if rows else {}) if c != mapping["target"]]
+        for r in rows:
+            r["_features"] = " | ".join(f"{c}={r.get(c)}" for c in feats)
+        mapping["input"] = "_features"
+
     sep = separator or sniff_separator(rows, mapping)
     if sep and not separator:
         notes.append(f"multi-value cells look {sep!r}-separated; pass --separator to override")
@@ -3382,6 +3401,31 @@ def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
     _item_checks(rep, items)
     _asset_checks(rep, items, path.parent)
     _overlap_check(rep, items, references or {})
+
+    # S17: the trench-coat detector. A raw table can carry a column that all but
+    # determines the target and would not be known at prediction time. This is
+    # the one check more at home in a dataset audit than a pod.
+    target_col = mapping.get("target")
+    hidden = {mapping.get("input"), mapping.get("id"), "_features"}
+    feature_cols = [c for c in (rows[0] if rows else {}) if c != target_col and c not in hidden]
+    if not target_col or not target_is_classlike(rows, target_col):
+        rep.not_applicable("S17", "the target is free-text or single-valued, not a class label, so "
+                                  "single-column predictivity is not meaningful; this is the leak "
+                                  "scan for a tabular classification table")
+    elif not feature_cols:
+        rep.not_applicable("S17", "no feature columns beyond the question and target to scan")
+    else:
+        cands = leak_candidates(rows, target_col, skip=hidden,
+                                nmi_min=THRESHOLDS["target_leak_nmi"])
+        rep.check("S17", not cands,
+                  f"{len(cands)} of {len(feature_cols)} column(s) all but determine the target; if "
+                  "any is not known at prediction time it is a label leak, which only you can decide",
+                  n=len(feature_cols),
+                  examples=[f"{c['column']}: normalized MI {c['nmi']} with the target "
+                            f"({c['kind']} pattern, {c['cardinality']} distinct value(s))"
+                            for c in cands],
+                  evidence={"candidates": cands, "target": target_col})
+
     for reason, cids in DATASET_NA.items():
         for cid in cids:
             rep.not_applicable(cid, reason)

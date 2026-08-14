@@ -2,6 +2,25 @@
 
 ### Unreleased
 
+- **S17 `target-leak`, the trench-coat detector.** Point dino at a raw feature
+  table (`dinostomp stomp churn.csv --target-field churned`) and it flags any
+  single column that all but determines the target: a label in a trench coat. It
+  scores each column's normalized mutual information with the target, so it is
+  base-rate robust (an 8%-churn label is not "predicted" at 92% by every column
+  the way accuracy-lift would say), and it reads two leak shapes, a column whose
+  VALUE gives the target (a refund flag that equals churn) and one whose
+  MISSINGNESS does (a days-until-cancellation that is null unless the row
+  churned). Two guards keep it honest: a cardinality ceiling so a unique id
+  column is not "predictive" for a useless reason, and n/a when the target is
+  free text (a Q&A eval, not a table). Diagnostic, and deliberately: it surfaces
+  a CANDIDATE, because a genuinely strong feature and a leak look identical to
+  any statistic, and only the author knows which columns exist at prediction
+  time. The tool narrows 40 columns to 2; the human decides which are
+  trench-coats. Added a tabular audit path (a `--target-field` with no question
+  column is a feature table, not an error). Registry 65 -> 66 checks. Built
+  after three models in a row ran datasets through dino and the one semantic sin
+  it could not see was exactly this.
+
 - **A per-call nonce for judges.** A python judge now receives `ctx["call"]`, a
   monotonic index unique to each grading call. A deterministic judge ignores it
   and stays byte-stable; a judge that MODELS a hot grader (a hosted judge sampled

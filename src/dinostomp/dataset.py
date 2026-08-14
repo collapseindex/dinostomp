@@ -182,6 +182,17 @@ def infer_mapping(rows: list[dict], overrides: dict | None = None
             mapping["choices"] = family
             notes.append(f"{'choices':8} <- {' + '.join(family)}   (assembled, one per column)")
 
+    # Tabular audit: when the caller names a target explicitly and no column
+    # looks like a question, this is a feature table (churn, fraud, a label plus
+    # predictors), not a Q&A eval. Treat every other column as a feature and run
+    # the leak scan (S17) rather than demanding a question that does not exist.
+    if "target" in overrides and "input" not in mapping and len(columns) >= 2 \
+            and not any(i.loc == "--target-field" for i in issues):
+        mapping["_tabular"] = True
+        notes.append("tabular audit: no question column, so every non-target "
+                     "column is treated as a feature for the leak scan")
+        return mapping, notes, issues
+
     for required in ("input", "target"):
         if required not in mapping and not any(i.loc == f"--{required}-field" for i in issues):
             # Name the plausible columns first. Dumping an eight-column header
@@ -715,6 +726,82 @@ def repair_items(items: list[dict], report: dict) -> tuple[list[dict], list[str]
         else:
             kept.append(item)
     return kept, log
+
+
+_LEAK_NULLS = {"", "na", "nan", "null", "none", "n/a"}
+
+
+def _entropy(counts, n: int) -> float:
+    import math
+    return -sum((c / n) * math.log(c / n) for c in counts if c)
+
+
+def _normalized_mi(feature: list, targets: list) -> float:
+    """Normalized mutual information I(F;T)/H(T) in [0,1].
+
+    Base-rate robust on purpose: a feature that DETERMINES the target scores 1.0
+    whether the target is 50/50 or 92/8, where accuracy-over-base-rate cannot,
+    an 8%-positive label is 'predicted' at 92% by a coin. 0 means independent.
+    """
+    import math
+    from collections import Counter
+
+    n = len(targets)
+    tcount = Counter(targets)
+    ht = _entropy(tcount.values(), n)
+    if ht == 0:
+        return 0.0                        # a constant target is unpredictable, not leaked
+    fcount = Counter(feature)
+    mi = 0.0
+    for (f, t), c in Counter(zip(feature, targets)).items():
+        pjt = c / n
+        mi += pjt * math.log(pjt / ((fcount[f] / n) * (tcount[t] / n)))
+    return max(0.0, mi / ht)
+
+
+def target_is_classlike(rows: list[dict], target: str, max_classes: int = 20) -> bool:
+    """A leak scan only makes sense against a class LABEL. A free-text answer
+    column (one distinct value per row) is a Q&A eval, not a table to audit for
+    feature leakage, and its question column would flag as a 'leak' every time."""
+    vals = [str(r.get(target)) for r in rows]
+    card = len(set(vals))
+    return 2 <= card <= max_classes and card <= len(rows) * 0.5
+
+
+def leak_candidates(rows: list[dict], target: str, *, skip=(),
+                    nmi_min: float = 0.5, max_card_frac: float = 0.5) -> list[dict]:
+    """Columns whose single-feature predictivity of the target is suspiciously
+    high: candidate label leaks for a human to adjudicate, not verdicts.
+
+    Two shapes, two guards:
+      value leak   the column's VALUE gives the target (a refund flag == churn)
+      null leak    whether the column is MISSING gives the target (a
+                   days-until-cancellation that is null unless the row churned)
+      id guard     a near-unique column has NMI 1.0 for a useless reason, so
+                   value-grouping is skipped above a cardinality ceiling
+      base guard   NMI, not accuracy, so an imbalanced label does not make every
+                   column look predictive
+    """
+    n = len(rows)
+    targets = [str(r.get(target)) for r in rows]
+    out = []
+    for col in (rows[0].keys() if rows else []):
+        if col == target or col in skip:
+            continue
+        vals = [str(r.get(col)) for r in rows]
+        card = len(set(vals))
+        value_nmi = None
+        if 2 <= card <= max(2, int(n * max_card_frac)):
+            value_nmi = _normalized_mi(vals, targets)
+        nulls = [str(r.get(col)).strip().lower() in _LEAK_NULLS for r in rows]
+        null_nmi = _normalized_mi(nulls, targets) if 0 < sum(nulls) < n else None
+        scored = [(x, k) for x, k in ((value_nmi, "value"), (null_nmi, "missingness")) if x is not None]
+        if not scored:
+            continue
+        best, kind = max(scored)
+        if best >= nmi_min:
+            out.append({"column": col, "nmi": round(best, 3), "kind": kind, "cardinality": card})
+    return sorted(out, key=lambda d: -d["nmi"])
 
 
 def unrepairable_findings(report: dict) -> list[str]:

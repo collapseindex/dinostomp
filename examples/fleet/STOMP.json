@@ -159,6 +159,12 @@
       "provenance": "judgment",
       "basis": "author judgment; no derivation or calibration on record"
     },
+    "target_leak_nmi": {
+      "value": 0.5,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "0.5 normalized mutual information: a column that resolves half the target's entropy is worth a human's eye. A candidate, not a verdict; only the author knows if it exists at predict time"
+    },
     "collapse_margin": {
       "value": 0.3,
       "source": "default",
@@ -269,7 +275,7 @@
     }
   },
   "coverage": {
-    "declared_total": 65,
+    "declared_total": 66,
     "declared": 29,
     "ran": 29,
     "skipped": [],
@@ -321,6 +327,10 @@
       {
         "id": "S16",
         "reason": "no provenance declared, so authorship is not described. Declaring who wrote the items, keys, scorer, and witnesses lets this surface a model sitting on both sides of a loop (e.g. keying its own questions)"
+      },
+      {
+        "id": "S17",
+        "reason": "an eval pod's items are questions and answers, not a feature table; the single-column leak scan is for a raw tabular dataset audit"
       },
       {
         "id": "W2",
@@ -578,6 +588,15 @@
       "witnesses": 0
     },
     {
+      "id": "S17",
+      "slug": "target-leak",
+      "check": "no single column all but determines the target",
+      "level": "n/a",
+      "gating": false,
+      "detail": "an eval pod's items are questions and answers, not a feature table; the single-column leak scan is for a raw tabular dataset audit",
+      "witnesses": 0
+    },
+    {
       "id": "W1",
       "slug": "witness-coverage",
       "check": "witnesses kill the mutant scorers",
@@ -822,7 +841,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now 76f44bc713434991); re-run to get numbers this report can stand behind",
+      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now 2f8e5ac5ce45f2d6); re-run to get numbers this report can stand behind",
       "witnesses": 6,
       "examples": [
         "engine 050e2f343915e1b9: dry-alpha seed 42 (tool 0.57.1), dry-bravo seed 42 (tool 0.57.1), dry-charlie seed 42 (tool 0.57.1) and 3 more"
