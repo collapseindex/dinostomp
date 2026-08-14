@@ -2,6 +2,22 @@
 
 ### Unreleased
 
+- **P14 `subskill-discriminant`: do the declared subskills actually separate in the
+  responses?** The discriminant leg of construct validity, judge-free. When items
+  carry a `subskill` label (an MMLU subject, a BBH task) and a per-subskill
+  leaderboard implies those subskills measure distinct things, P14 tests whether
+  items sharing a subskill cohere more than items from different subskills, against
+  a null that shuffles the labels across items. Observed separation above the null
+  means the partition is real; at or below it, the subskills are statistically
+  redundant and a per-subskill score overclaims distinct competence (Haberman's
+  subscore-value question, asked from the response matrix). Never reads what a
+  subskill IS. It is the dual of P13: subskills separate only when the fleet is
+  multidimensional, so a partition that carves also lights P13. Diagnostic, 6+
+  models and 2+ subskills each with 5+ items; n/a when no item declares a subskill.
+  Validated to never cry wolf on genuinely distinct subskills (0/10 false-warns at
+  6/8/10 examinees). Adds an optional `subskill` field to the item schema
+  (backward-compatible). Battery: 73 checks, 102 trials.
+
 - **P13 `construct-dimensionality`: does the fleet vary on one axis, or does its
   single score blend abilities that rank it differently?** The one construct-validity
   threat a response matrix can see, asked judge-free. dinostomp cannot ASSERT

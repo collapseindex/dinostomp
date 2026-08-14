@@ -79,6 +79,11 @@
       },
       "description": "Present only for multiple-choice items. The linter runs position and length bias checks when present."
     },
+    "subskill": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional label naming the sub-competence this item is meant to measure (an MMLU subject, a BBH task). When two or more subskills each carry enough items, P14 tests whether the declared subskills actually separate in the response matrix: whether items cohere more within a subskill than across, i.e. whether a per-subskill leaderboard reports distinct constructs or statistically redundant ones. Judge-free, and never asserts what the subskill IS."
+    },
     "metadata": {
       "type": "object"
     },

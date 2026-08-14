@@ -935,6 +935,39 @@ def test_p13_fires_on_two_constructs_and_stays_quiet_on_one_axis():
     assert concentration({"m0": {"i0": 1}, "m1": {"i0": 0}}) is None  # too few items
 
 
+def test_p14_separates_real_subskills_from_redundant_labels():
+    """A declared subskill partition is real only if items cohere more within a
+    subskill than across, beyond what shuffling the labels would give.
+
+    When models specialise by subskill the partition carves (observed above the
+    null); when one global skill drives every item the labels are redundant
+    (observed at or below the null), and calling those subskills distinct would
+    overclaim. Never-cry-wolf lives on the second line: a genuinely distinct
+    partition must clear the null.
+    """
+    from dinostomp.psychometrics import subskill_discriminability
+
+    labels = {f"i{j}": ["algebra", "geometry"][j % 2] for j in range(40)}
+
+    # distinct: even models own algebra items, odd models own geometry items
+    distinct = {}
+    for k in range(6):
+        owns = "algebra" if k % 2 == 0 else "geometry"
+        distinct[f"m{k}"] = {f"i{j}": int(labels[f"i{j}"] == owns) for j in range(40)}
+    obs, null = subskill_discriminability(distinct, labels, 200)
+    assert obs > null, "a partition models genuinely specialise on must clear the null"
+
+    # redundant: a single Guttman skill, labels interleaved by index, no clustering
+    redundant = {f"m{k}": {f"i{j}": int(j < 8 + 5 * k) for j in range(40)} for k in range(6)}
+    obs2, null2 = subskill_discriminability(redundant, labels, 200)
+    assert obs2 <= null2, "labels that ride one global skill must not read as distinct"
+
+    # determinism and the degenerate guards
+    assert subskill_discriminability(redundant, labels, 200) == (obs2, null2)
+    one_label = {f"i{j}": "algebra" for j in range(40)}
+    assert subskill_discriminability(distinct, one_label, 200) is None
+
+
 def test_p2_stays_quiet_when_the_count_is_what_chance_produces(tmp_path):
     """Real GSM8K: 31 observed against 31 expected. No finding."""
     from dinostomp.psychometrics import negative_rpb_null

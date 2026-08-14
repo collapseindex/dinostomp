@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 33 of 44 checks ran (33 of 44 ran; 28 n/a of 72 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 33 of 44 checks ran (33 of 44 ran; 29 n/a of 73 declared). Not a clean bill of health.
 
 ## Results
 
@@ -137,7 +137,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | ok | billed output tokens match the recorded text | 4 | 0 of 4 model(s) report far more output tokens than their recorded text accounts for (expected for hidden-reasoning models; otherwise check your invoice) |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 744ea8ecc4581d22); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now d2f9f1f7ab1331b9); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | no failed answer numerically equals its target | 0 | no failed record has a numeric target, so there is no numeric-equivalent miss to look for |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -161,6 +161,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | the number survives re-phrasing the instruction | 0 | no template probe on disk; run `dinostomp run <spec> --probe template` to unlock |
 | skip | the fleet ORDERING survives re-phrasing the instruction | 0 | no template probe on disk; run `dinostomp run <spec> --probe template` to unlock |
 | skip | the fleet varies on one axis, not a blend of abilities | 0 | 4 model(s) x 30 common item(s); need 6+ models and 5+ items to unlock |
+| n/a | declared subskills actually separate in the responses | 0 | no item declares a `subskill`; there is no partition to test |
 
 ### Receipts
 

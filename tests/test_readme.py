@@ -39,19 +39,19 @@ def rerun_pod(name: str, tmp_path: Path, capsys, probe: bool = False) -> str:
 @pytest.mark.parametrize("pod, quoted_lines, probe", [
     ("smoke", [
         "smoke-arith | dry-strong | complete | acc 1.000 [0.61, 1.00] on 6 checkable",
-        "INCOMPLETE: no failures, but only 20 of 31 checks ran (41 n/a of 72 declared).",
+        "INCOMPLETE: no failures, but only 20 of 32 checks ran (41 n/a of 73 declared).",
     ], False),
     ("fleet", [
         "fleet-arith | dry-alpha | complete | acc 1.000 [0.86, 1.00] on 24 checkable",
         "0 of 6 model(s) score no better than guessing; fleet spans 38% to 100% vs chance ~4% (modal target floor)",
-        "MECHANICALLY SOUND: no integrity findings, full coverage (34 of 34 ran; 38 n/a of 72 declared)",
+        "MECHANICALLY SOUND: no integrity findings, full coverage (34 of 34 ran; 39 n/a of 73 declared)",
     ], False),
     ("iris", [
-        "(33 of 33 ran; 39 n/a of 72 declared)",
+        "(33 of 33 ran; 40 n/a of 73 declared)",
     ], False),
     ("agent", [
         "agent-capitals | agent-grounded | complete | acc 0.923 [0.76, 0.98] on 26 checkable",
-        "INCOMPLETE: no failures, but only 41 of 46 checks ran (26 n/a of 72 declared).",
+        "INCOMPLETE: no failures, but only 41 of 46 checks ran (27 n/a of 73 declared).",
     ], True),
 ])
 def test_readme_transcripts_match_reality(pod, quoted_lines, probe, tmp_path, capsys):
@@ -309,7 +309,7 @@ def test_readme_data_scope_prose_matches_the_registry():
     from dinostomp.lint import CHECKS, SCOPE_CHECKS
 
     words = {10: "Ten", 14: "Fourteen", 47: "forty-seven", 48: "forty-eight", 50: "fifty", 51: "fifty-one", 52: "fifty-two", 53: "fifty-three", 15: "Fifteen", 16: "Sixteen", 17: "Seventeen", 18: "Eighteen",
-             57: "fifty-seven", 61: "sixty-one", 62: "sixty-two", 64: "sixty-four", 65: "sixty-five", 66: "sixty-six", 67: "sixty-seven", 68: "sixty-eight", 69: "sixty-nine", 70: "seventy", 71: "seventy-one", 72: "seventy-two", 54: "fifty-four"}
+             57: "fifty-seven", 61: "sixty-one", 62: "sixty-two", 64: "sixty-four", 65: "sixty-five", 66: "sixty-six", 67: "sixty-seven", 68: "sixty-eight", 69: "sixty-nine", 70: "seventy", 71: "seventy-one", 72: "seventy-two", 73: "seventy-three", 54: "fifty-four", 55: "fifty-five"}
     data_n = len(SCOPE_CHECKS["data"])
     rest_n = len(CHECKS) - data_n
     # The sentence wraps, so compare against normalised whitespace.

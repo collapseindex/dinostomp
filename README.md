@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.62.0 · Apache-2.0 · engine `744ea8ecc4581d22` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.62.0 · Apache-2.0 · engine `d2f9f1f7ab1331b9` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -76,7 +76,7 @@ One invariant runs under all of it: **nothing becomes evidence merely because an
 earlier stage said it was.** Summaries are recomputed from records, verdicts are
 re-scored from recorded text, and the engine hashes itself into its own output.
 
-Sixty-one checks, each negative-tested to prove it fires, most invisible until
+Seventy-three checks, each negative-tested to prove it fires, most invisible until
 something breaks. Each stage above is a place the ledger has a receipt from:
 
 | stage | what goes wrong there |
@@ -191,9 +191,9 @@ BROKEN AT DATA SCOPE: 2 gated finding(s) in the dataset itself
 That is a real run against the real MMLU test split, and `mmlu-02178` is the
 subtraction item above: the answer is on its option list twice, so a model that
 computes it correctly picks the wrong letter half the time. Eighteen of the
-seventy-two checks read data at rest, which is why this costs nothing.
+seventy-three checks read data at rest, which is why this costs nothing.
 
-**Five minutes, for the other fifty-four.** They need evidence: outputs, a
+**Five minutes, for the other fifty-five.** They need evidence: outputs, a
 scorer, a ledger, a claim.
 
 ```bash
@@ -255,7 +255,7 @@ Four things then happen that you did not ask for, and they are the product:
   between seeds is a finding; another moving 11.5 points is not, if its sample
   is smaller. The battery does that arithmetic so nobody has to eyeball it.
 - **Coverage is stated, always.** `MECHANICALLY SOUND: no integrity findings,
-  full coverage (34 of 34 ran; 38 n/a of 72 declared)` is a different claim from
+  full coverage (34 of 34 ran; 39 n/a of 73 declared)` is a different claim from
   a green tick, and the difference is printed every time.
 - **Nothing is trusted downstream of the run.** Summaries are recomputed from
   records, verdicts are re-scored offline, and hand-editing either is a gated
@@ -653,7 +653,7 @@ mechanical integrity; construct validity is argued, not computed, and a trivial,
 mis-aimed, or saturated eval can pass every check here. Sixty-one is not a
 number that bounds the ways an eval can be invalid.
 
-**The self-tests are not independent validation.** 101 of 101 caught means every
+**The self-tests are not independent validation.** 102 of 102 caught means every
 check fires on the failure it was built for. Those failures were planted by the
 same hands that wrote the checks, so it says nothing about defects nobody here
 imagined, and the scorecard prints that caveat under its own score. The next
@@ -665,11 +665,11 @@ published next to the tool's own defects.
 **The battery ships with its own validation, and you can run it.**
 
 ```bash
-python trials/run_trials.py        # 101 planted defects, 16 pods that must stay clean
+python trials/run_trials.py        # 102 planted defects, 16 pods that must stay clean
 python trials/pin_thresholds.py    # which of its own thresholds are load-bearing
 ```
 
-The current answers are 101 of 101 caught, 0 false alarms, and 34 of 36 thresholds
+The current answers are 102 of 102 caught, 0 false alarms, and 34 of 36 thresholds
 pinned. That last number is published because it is uncomfortable: two
 thresholds could be quietly loosened today without a single trial noticing, and
 the tool names them.
@@ -687,7 +687,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`744ea8ecc4581d22fe0dcb1a2da75a0624e90eb4be7aa522fbc104feb689760f`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`d2f9f1f7ab1331b9e2e2e3a5c25a1c89d15af3a25bce7b379adf55f857cebcf8`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

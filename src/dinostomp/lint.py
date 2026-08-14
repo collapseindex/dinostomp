@@ -54,6 +54,7 @@ from dinostomp.psychometrics import (
     majority,
     min_detectable_effect,
     point_biserials,
+    subskill_discriminability,
 )
 from dinostomp.runner import (CHARS_PER_TOKEN_EST, judge_entrypoint, mount_hashes,
                               select_items, summarize, target_entrypoint)
@@ -162,6 +163,8 @@ CHECKS: list[tuple[str, str, bool, str]] = [
      "template probe plus 2+ models"),
     ("P13", "the fleet varies on one axis, not a blend of abilities", False,
      "6+ models, 5+ common items"),
+    ("P14", "declared subskills actually separate in the responses", False,
+     "6+ models, 2+ labelled subskills"),
 ]
 GATING = {cid: hard for cid, _, hard, _ in CHECKS}
 NAMES = {cid: name for cid, name, _, _ in CHECKS}
@@ -185,8 +188,9 @@ THRESHOLDS = {
     # examinees, 5/5 at 40, with no false alarms at any size.
     "min_fleet_discrimination": 12,
     "min_fleet_agree": 3,      # P5 needs at least this many models
-    "min_fleet_dimension": 6,  # P13 needs more examinees than reliability does
+    "min_fleet_dimension": 6,  # P13/P14 need more examinees than reliability does
     "dimension_margin": DIMENSION_MARGIN,  # P13: excess over the null before it fires
+    "min_items_per_subskill": 5,  # P14: a subskill below this cannot be judged separable
     "min_items_psycho": 5,     # P1/P2/P3 need at least this many common items
     "spend_tolerance_usd": 1e-6,  # rounding slack when re-summing ledgers
     "candidate_list_min": 3,   # S2: this many OTHER answer-space values in a question = candidate list, not a leak
@@ -332,6 +336,7 @@ SLUGS = {
     "P7": "ceiling-floor", "P8": "dynamic-range", "P9": "order-stability",
     "P10": "seed-stability", "P11": "prompt-stability", "P12": "ranking-stability",
     "P13": "construct-dimensionality",
+    "P14": "subskill-discriminant",
 }
 
 BY_SLUG = {v: k for k, v in SLUGS.items()}
@@ -397,6 +402,8 @@ THRESHOLD_PROVENANCE = {
     "min_fleet_agree": ("judgment", "3 models before unanimity is a word worth using"),
     "min_fleet_dimension": ("judgment", "6 examinees before a second axis is worth asking after; "
                                         "dimensionality needs more spread than reliability does"),
+    "min_items_per_subskill": ("judgment", "5 items per declared subskill before its within-group "
+                                           "coherence is more than noise"),
     "dimension_margin": ("calibrated", "measured: at 0.10 above the fixed-margins null, 0/10 false "
                                        "alarms on unidimensional fleets and 0/10 misses on 2- and "
                                        "3-cluster specialised fleets, at 6, 8 and 10 examinees"),
@@ -470,7 +477,7 @@ CONSTRUCT_VALIDITY = {
 
 RUN_CHECK_IDS = ("R1", "R3", "R4", "R5", "R6", "R8", "R9", "R10", "R11", "R12", "R14", "R16", "R17",
                  "R18", "R19", "R20", "R21", "R22")
-PSYCHO_CHECK_IDS = ("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P13")
+PSYCHO_CHECK_IDS = ("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P13", "P14")
 # P9 lives with the probes, not the fleet matrix: it needs a probe run, not more models.
 TRAJECTORY_CHECK_IDS = ("T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8")
 JUDGE_CHECK_IDS = ("J1", "J2", "J3", "J4")
@@ -3178,7 +3185,8 @@ def _order_check(rep: Reporter, probes: list[dict], real_runs: list[dict]) -> No
 
 
 def _psychometric_checks(rep: Reporter, runs: list[dict], spec: dict,
-                         collapsed: dict | None = None) -> None:
+                         collapsed: dict | None = None,
+                         item_subskills: dict | None = None) -> None:
     if not runs:
         for cid in PSYCHO_CHECK_IDS:
             rep.skip(cid, "no runs on disk yet")
@@ -3191,7 +3199,7 @@ def _psychometric_checks(rep: Reporter, runs: list[dict], spec: dict,
     min_fleet = int(THRESHOLDS["min_fleet"])
     if len(models) < 2:
         hint = f"only {len(models)} model(s) on disk; run a fleet of {min_fleet}+ to unlock psychometrics"
-        for cid in ("P1", "P2", "P3", "P4", "P5", "P7", "P8", "P13"):
+        for cid in ("P1", "P2", "P3", "P4", "P5", "P7", "P8", "P13", "P14"):
             rep.skip(cid, hint)
         return
 
@@ -3384,6 +3392,52 @@ def _psychometric_checks(rep: Reporter, runs: list[dict], spec: dict,
                       evidence={"concentration": round(conc, 4), "null_95": round(null_dim, 4),
                                 "margin": THRESHOLDS["dimension_margin"],
                                 "n_examinees": len(psycho_models), "all_dry": all_dry})
+
+    # P14: do the declared subskills actually separate in the responses? A
+    # per-subskill leaderboard claims each subskill measures a distinct thing.
+    # This tests whether items sharing a subskill cohere more than items from
+    # different subskills, against a null that shuffles the labels across items.
+    # Observed separation above the null means the partition is real; at or
+    # below it, the subskills are statistically redundant and the per-subskill
+    # scores overclaim distinct competence. Judge-free: it never reads what a
+    # subskill IS, only whether the declared grouping shows up in who-passes-what.
+    # A quiet result on a small fleet is weak, the same honest limit as P2/P13.
+    if not item_subskills:
+        rep.not_applicable("P14", "no item declares a `subskill`; there is no partition to test")
+    elif len(psycho_models) < min_dim:
+        rep.skip("P14", f"{len(psycho_models)} model(s); need {min_dim}+ to test subskill "
+                        f"separation{dropped}")
+    else:
+        min_per = int(THRESHOLDS["min_items_per_subskill"])
+        per_skill = Counter(item_subskills[i] for i in psycho_common if i in item_subskills)
+        usable = {s for s, n in per_skill.items() if n >= min_per}
+        labels = {i: item_subskills[i] for i in psycho_common
+                  if i in item_subskills and item_subskills[i] in usable}
+        if len(usable) < 2:
+            rep.not_applicable("P14", f"fewer than 2 subskills carry {min_per}+ common items "
+                                      f"({len(usable)} qualifying); nothing to separate")
+        else:
+            result = subskill_discriminability(psycho_matrix, labels, THRESHOLDS["bootstrap_trials"])
+            if result is None:
+                rep.skip("P14", "the labelled items have no correlation structure to decompose")
+            else:
+                obs, null_sep = result
+                carves = obs > null_sep
+                underpowered = ("" if len(psycho_models) >= SMALL_FLEET
+                                else f"; at {len(psycho_models)} examinees this may be low power "
+                                     "rather than truly redundant subskills")
+                verdict = ("items cohere more within a subskill than across, so the declared "
+                           "partition is real" if carves else
+                           "items cohere no more within a subskill than across; the declared "
+                           "subskills are statistically redundant and a per-subskill score "
+                           "overclaims distinct competence")
+                rep.check("P14", carves,
+                          f"{len(usable)} subskill(s) over {len(labels)} item(s): within-minus-across "
+                          f"item agreement {obs:.2f} against {null_sep:.2f} the label-shuffled null "
+                          f"allows; {verdict}{'' if carves else underpowered}{dropped}",
+                          n=len(labels),
+                          evidence={"separation": round(obs, 4), "null_95": round(null_sep, 4),
+                                    "subskills": sorted(usable), "n_examinees": len(psycho_models)})
 
     # P5: unanimous identical wrong answers (the fleet agrees; the key does not)
     if len(models) < int(THRESHOLDS["min_fleet_agree"]):
@@ -3631,7 +3685,9 @@ def lint_eval(spec_path: str | Path, trust_code: bool = False,
     _self_preference_check(rep, probes, mine, spec)
     _psychometric_checks(rep, mine, spec,
                          collapsed_models(mine, chance['modal'],
-                                          THRESHOLDS['collapse_exclude_share']))
+                                          THRESHOLDS['collapse_exclude_share']),
+                         item_subskills={str(i["id"]): i["subskill"] for i in items
+                                         if i.get("subskill") and i.get("id") is not None})
 
     claim_results = None
     if not spec.get("claims"):

@@ -318,6 +318,73 @@ def concentration(matrix: Matrix) -> float | None:
     return _top_eigenvalue(cov) / trace
 
 
+def _item_correlations(matrix: Matrix, items: list[str]) -> dict[tuple[str, str], float]:
+    """Every pair of items, correlated across the fleet. Computed once so the
+    permutation null re-partitions the same numbers instead of recomputing
+    them per shuffle (the difference between a fast check and an O(n^2 * trials)
+    one)."""
+    models = sorted(matrix)
+    cols = {i: [float(matrix[m][i]) for m in models] for i in items}
+    corr: dict[tuple[str, str], float] = {}
+    for a in range(len(items)):
+        for b in range(a + 1, len(items)):
+            r = _pearson(cols[items[a]], cols[items[b]])
+            if r is not None:
+                corr[(items[a], items[b])] = r
+    return corr
+
+
+def _separation(corr: dict[tuple[str, str], float], label_of: dict[str, str]) -> float | None:
+    """Mean within-subskill item correlation minus mean across-subskill."""
+    within, across = [], []
+    for (i, j), r in corr.items():
+        (within if label_of[i] == label_of[j] else across).append(r)
+    if not within or not across:
+        return None
+    return fmean(within) - fmean(across)
+
+
+def subskill_discriminability(matrix: Matrix, labels: dict[str, str],
+                              trials: int = BOOTSTRAP_TRIALS,
+                              seed: int = 20260809) -> tuple[float, float] | None:
+    """(observed separation, label-permutation null 95th percentile), or None.
+
+    The judge-free discriminant-validity question: do items sharing a declared
+    subskill cohere more than items from different subskills? Observed
+    separation ABOVE the null means the declared subskills carve the response
+    space (they measure distinct things); at or below it, they do not, and a
+    per-subskill leaderboard is reporting redundant scores. Never says what any
+    subskill IS; only whether the declared partition shows up in the responses.
+
+    None when it cannot be formed: fewer than 2 common labelled items, fewer
+    than 2 distinct subskills, or a degenerate correlation structure.
+    """
+    items = sorted(set(common_items(matrix)) & set(labels))
+    if len(items) < 2:
+        return None
+    label_of = {i: labels[i] for i in items}
+    if len(set(label_of.values())) < 2:
+        return None
+    corr = _item_correlations(matrix, items)
+    observed = _separation(corr, label_of)
+    if observed is None:
+        return None
+    labs = [label_of[i] for i in items]
+    rng = random.Random(seed)
+    vals = []
+    for _ in range(trials):
+        shuffled = labs[:]
+        rng.shuffle(shuffled)
+        v = _separation(corr, dict(zip(items, shuffled)))
+        if v is not None:
+            vals.append(v)
+    if not vals:
+        return None
+    vals.sort()
+    null_95 = vals[min(len(vals) - 1, int(0.95 * len(vals)))]
+    return observed, null_95
+
+
 def dimensionality_null(matrix: Matrix, trials: int, seed: int = 20260809) -> float | None:
     """95th-percentile concentration under the fixed-margins null.
 

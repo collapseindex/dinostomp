@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 36 of 46 checks ran (36 of 46 ran; 26 n/a of 72 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 36 of 46 checks ran (36 of 46 ran; 27 n/a of 73 declared). Not a clean bill of health.
 
 ## Results
 
@@ -122,7 +122,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | warn | failed answers do not contain the reference | 2 | 2 of 2 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 3 | 3 of 3 run(s) were produced by a different engine than the one auditing them (now 744ea8ecc4581d22); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 3 | 3 of 3 run(s) were produced by a different engine than the one auditing them (now d2f9f1f7ab1331b9); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | no failed answer numerically equals its target | 1 | 0 of 1 numeric-target failure(s) equal their target as a number; the scorer may be rejecting a correct value in the wrong form |
 | warn | passing answers are grounded in tool evidence | 3 | 2 of 3 target(s) pass items whose answer does not APPEAR in their own evidence (6 such answer(s) in total). This is co-occurrence, not causation: an answer recalled from memory that also happens to appear in a retrieved snippet counts as grounded here, so this count is a floor |
@@ -146,6 +146,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | the number survives re-phrasing the instruction | 0 | no template probe on disk; run `dinostomp run <spec> --probe template` to unlock |
 | skip | the fleet ORDERING survives re-phrasing the instruction | 0 | no template probe on disk; run `dinostomp run <spec> --probe template` to unlock |
 | skip | the fleet varies on one axis, not a blend of abilities | 0 | 3 model(s) x 24 common item(s); need 6+ models and 5+ items to unlock |
+| n/a | declared subskills actually separate in the responses | 0 | no item declares a `subskill`; there is no partition to test |
 
 ### Receipts
 

@@ -719,6 +719,45 @@ def t_two_construct_fleet(root):
     return sp
 
 
+def t_redundant_subskills(root):
+    """A benchmark that reports per-subskill scores its data cannot justify.
+
+    Items are labelled into four subskills, but every model's pass pattern
+    follows a single global skill: which subskill an item belongs to says
+    nothing about who solves it. The declared partition does not separate in
+    the responses, so a per-subskill leaderboard reports redundant scores.
+    Every integrity check is clean; only P14 sees the partition is not real.
+    """
+    skills = ["algebra", "geometry", "logic", "calculus"]
+    items = [{"id": f"a{i}", "input": f"item {i}", "target": f"ans{i}",
+              "subskill": skills[i % 4]} for i in range(40)]
+    sp = ran(root, items=items, models=FLEET)
+    targets = {it["id"]: it["target"] for it in items}
+    models = sorted(m["model"] for m in FLEET)
+    # Guttman scale on GLOBAL item index: the model of rank r passes the easiest
+    # (8 + 5r) items regardless of subskill. Subskills are interleaved by index,
+    # so within-subskill item pairs span the same difficulty range as across-
+    # subskill pairs: no within-clustering for the labels to expose. Outputs are
+    # set (not just verdicts) so R8 re-derives; a wrong answer is unique per
+    # item AND model so no model looks collapsed (R14) and no item draws an
+    # identical fleet-wide wrong answer (P5); the target is non-numeric and never
+    # a substring of a wrong answer (R16/R22).
+    reach = {m: 8 + 5 * r for r, m in enumerate(models)}
+
+    def unidim(rec, i):
+        m = rec["model"]
+        idx = int(rec["item_id"][1:])
+        if idx < reach[m]:
+            rec["output"] = targets[rec["item_id"]]; rec["score"] = {"verdict": "pass"}
+        else:
+            rec["output"] = f"zz-{rec['item_id']}-{m}"; rec["score"] = {"verdict": "fail"}
+        return rec
+
+    for rf in run_files(root):
+        rewrite(rf, unidim)
+    return sp
+
+
 def t_noisy_ordering_claim(root):
     return_spec = build_pod(root, arith_items(), models=FLEET,
                             claims=["Relative ordering of the six dry models."])
@@ -1972,6 +2011,7 @@ TRIALS = [
     ("inverted key (strong fail, weak pass)", t_inverted_key, ("P2", "warn")),
     ("whole fleet gives one identical wrong answer", t_unanimous_wrong, ("P5", "warn")),
     ("fleet blends two abilities into one score", t_two_construct_fleet, ("P13", "warn")),
+    ("declared subskills that do not separate in the data", t_redundant_subskills, ("P14", "warn")),
     ("ordering claimed inside sampling noise", t_noisy_ordering_claim, ("P6", "warn")),
     ("boundary: claimed pair flips in ~10% of resamples", t_boundary_ordering_flip, ("P6", "warn")),
     ("one model escapes the scorer", t_selective_escape, ("R12", "warn")),

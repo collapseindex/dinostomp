@@ -99,6 +99,12 @@
       "provenance": "calibrated",
       "basis": "measured: at 0.10 above the fixed-margins null, 0/10 false alarms on unidimensional fleets and 0/10 misses on 2- and 3-cluster specialised fleets, at 6, 8 and 10 examinees"
     },
+    "min_items_per_subskill": {
+      "value": 5.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "5 items per declared subskill before its within-group coherence is more than noise"
+    },
     "min_items_psycho": {
       "value": 5.0,
       "source": "default",
@@ -311,7 +317,7 @@
     }
   },
   "coverage": {
-    "declared_total": 72,
+    "declared_total": 73,
     "declared": 35,
     "ran": 23,
     "skipped": [
@@ -512,6 +518,10 @@
       {
         "id": "P12",
         "reason": "instruction-framing probes need runs on disk"
+      },
+      {
+        "id": "P14",
+        "reason": "no item declares a `subskill`; there is no partition to test"
       }
     ]
   },
@@ -939,7 +949,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "2 of 2 run(s) were produced by a different engine than the one auditing them (now 744ea8ecc4581d22); re-run to get numbers this report can stand behind",
+      "detail": "2 of 2 run(s) were produced by a different engine than the one auditing them (now d2f9f1f7ab1331b9); re-run to get numbers this report can stand behind",
       "witnesses": 2,
       "examples": [
         "engine bdf9d65d922fbdd1: dry-strong seed 42 (tool 0.61.0), dry-up seed 42 (tool 0.61.0)"
@@ -1207,6 +1217,15 @@
       "level": "skip",
       "gating": false,
       "detail": "2 model(s) x 6 common item(s); need 6+ models and 5+ items to unlock",
+      "witnesses": 0
+    },
+    {
+      "id": "P14",
+      "slug": "subskill-discriminant",
+      "check": "declared subskills actually separate in the responses",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no item declares a `subskill`; there is no partition to test",
       "witnesses": 0
     }
   ],
