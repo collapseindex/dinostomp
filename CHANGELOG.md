@@ -2,6 +2,18 @@
 
 ### Unreleased
 
+- **S2 `answer-leak` no longer false-gates on a global label word (found on
+  BoolQ).** Run against BoolQ's validation split, S2 marked the benchmark BROKEN
+  over four items whose answer is "no" and whose question merely contains the word
+  ("a no ball", "No. 1 Court", "no sleep", "no insurance") where nothing leaked.
+  A tiny global label set (yes/no, true/false, entailment/neutral/contradiction)
+  is shared generic vocabulary, not per-item keys, which is exactly why S3/S4/S9
+  already go n/a on one; S2 now does too, when the answers are a global label set
+  of 3 or fewer values over 20+ items. Kept surgical: a set with many distinct
+  answers still gates a genuine leak. The first defect the real-benchmark hunt
+  turned up, in a way no synthetic pod had. [D-073](FINDINGS.md#d-073), and the
+  real BoolQ findings from the same run are [F-040](FINDINGS.md#f-040).
+
 - **S20 `key-skew`.** A data-scope warning that the answer key leans hard on one
   value. A benchmark where 65% of the answers are "yes" hands a model that always
   says "yes" a 65% score for knowing nothing, so an accuracy of 60% reads as

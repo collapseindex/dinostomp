@@ -214,6 +214,7 @@ THRESHOLDS = {
     "min_scored_misses": 5,       # R16: failed records a model needs before its misses are judged
     "prose_answer_words": 6,      # W4: a median answer this many words+ makes exact match a wording test, not a capability test
     "key_skew_margin": 0.10,      # S20: modal-answer share this far above a balanced key's 1/k is a skewed key worth naming
+    "global_label_max": 3,        # S2: a shared answer vocabulary this small (yes/no, entailment/neutral/contradiction) is a label set, not per-item keys
     "ungrounded_max": 0.10,       # T4: share of one model's PASSING answers absent from its own tool results
     "min_grounding_evidence": 5,  # T4: passing records a model needs before its grounding is judged
     "underreport_ratio": 0.50,    # T5: mean steps below this fraction of the fleet median = under-reporting
@@ -1129,8 +1130,17 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
         answer_space = {_norm(t) for i in text_items for t in _targets_of(i)
                         if len(t) >= THRESHOLDS["min_leak_len"]}
         exempt_at = min(int(THRESHOLDS["candidate_list_min"]), max(1, len(answer_space) - 1))
+        # A tiny GLOBAL LABEL SET makes free-form leak detection false-positive on
+        # ordinary vocabulary: "no" appears in "a no ball" and "No. 1 Court" with
+        # nothing leaked, and the answer being "no" is coincidence. The label words
+        # are shared vocabulary, not item-specific keys, the same reason S3/S4/S9
+        # go n/a on a global label set (see below). Found by running on BoolQ,
+        # where it gated four such items and marked the whole benchmark BROKEN.
+        label_targets = {_norm(t) for i in text_items for t in _targets_of(i)}
+        freeform_label_set = (len(text_items) >= THRESHOLDS["min_choice_items"]
+                              and 0 < len(label_targets) <= THRESHOLDS["global_label_max"])
         leaks = []
-        for i in text_items:
+        for i in ([] if freeform_label_set else text_items):
             q = _norm(i["input"])
             own = {_norm(t) for t in _targets_of(i) if len(t) >= THRESHOLDS["min_leak_len"]}
             # A bare NUMBER appearing in a question is not evidence of leakage.
@@ -1201,7 +1211,13 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
             choice_leaks.append(f"{i['id']}: correct option {hit[0]!r} appears in the stem "
                                 f"and no distractor does")
 
-        if not text_items and not choice_items:
+        if freeform_label_set and not choice_items:
+            rep.not_applicable(
+                "S2", f"every answer is one of {len(label_targets)} global label(s) "
+                      f"({', '.join(sorted(repr(t) for t in label_targets))}); a label word appearing "
+                      f"in a question is shared vocabulary, not a leaked key, so leak detection does "
+                      f"not apply here (the key's balance is S20's job)")
+        elif not text_items and not choice_items:
             asset_only = sum(1 for i in items if modality.ref_of(i))
             rep.not_applicable(
                 "S2", f"no free-form or multiple-choice items in this dataset"
@@ -1209,7 +1225,7 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
                          f"the label in the PATH (S13), not in the question" if asset_only else ""))
         else:
             found = leaks + choice_leaks
-            scanned = len(text_items) + len(choice_items)
+            scanned = (0 if freeform_label_set else len(text_items)) + len(choice_items)
             rep.check("S2", not found,
                       f"{len(found)} of {scanned} item(s) leak their answer into the question",
                       n=scanned, examples=found)

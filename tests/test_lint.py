@@ -375,11 +375,17 @@ def test_forged_verdicts_are_caught_by_rescoring(tmp_path):
 
 
 def test_s2_candidate_list_is_not_a_leak(tmp_path):
-    """A question offering the answer space ('answer yes, no, or maybe') names
-    its own target without leaking anything."""
+    """A question offering the answer space names its own target without leaking.
+
+    Five labels, not three: a set of three or fewer is a global label set that S2
+    treats as n/a (a label word is generic vocabulary). This exercises the
+    candidate-list rule itself, where the question naming the OTHER options is
+    what earns the exemption."""
+    labels = ["red", "blue", "green", "gold", "gray"]
     items = []
-    for i, t in enumerate(["yes", "no", "maybe", "yes", "no", "maybe"] * 4):
-        items.append({"id": f"c{i}", "input": f"Question {i}: answer yes, no, or maybe.", "target": t})
+    for i in range(30):
+        items.append({"id": f"c{i}", "input": f"Question {i}: is it red, blue, green, gold, or gray?",
+                      "target": labels[i % 5]})
     report = stomp(write_eval(tmp_path, items))
     assert finding(report, "S2")["level"] == "pass", "candidate lists must be exempt"
 

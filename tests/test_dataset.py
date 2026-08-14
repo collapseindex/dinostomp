@@ -335,6 +335,40 @@ def test_s2_does_not_flag_a_reading_comprehension_stem(tmp_path):
     assert finding(rep, "S2")["level"] == "pass"
 
 
+# --- S2 must not false-positive on a global label set (found on BoolQ) --------
+
+
+def test_s2_na_on_a_binary_label_set_where_the_label_word_is_ordinary(tmp_path):
+    # BoolQ: the answer is one of {yes, no}, and "no" turns up in "a no ball" and
+    # "No. 1 Court" with nothing leaked. S2 must not gate on the label word.
+    qs = ["can a batsman be run out on a no ball", "is it illegal to drive with no sleep",
+          "has no 1 court at wimbledon got a roof", "is a no insurance ticket a moving violation"]
+    rows = [{"id": f"y{i}", "question": f"is thing number {i} really true here", "answer": "yes"}
+            for i in range(20)]
+    rows += [{"id": f"n{i}", "question": q, "answer": "no"} for i, q in enumerate(qs)]
+    rep, issues, _ = lint_dataset(write_jsonl(tmp_path, rows))
+    assert rep is not None, issues
+    assert finding(rep, "S2")["level"] == "n/a", finding(rep, "S2")
+
+
+def test_s2_na_on_a_ternary_nli_label_set(tmp_path):
+    rows = [{"id": f"q{i}", "question": f"premise {i}; does the hypothesis follow, and note it is not a contradiction here",
+             "answer": ["entailment", "neutral", "contradiction"][i % 3]} for i in range(24)]
+    assert finding(lint_dataset(write_jsonl(tmp_path, rows))[0], "S2")["level"] == "n/a"
+
+
+def test_s2_still_catches_a_real_leak_in_an_open_ended_set(tmp_path):
+    # The fix must stay surgical: a dataset with many distinct answers is NOT a
+    # label set, so a genuine answer-in-question leak still gates.
+    rows = [{"id": f"q{i}", "question": f"What is the capital of country {i}?", "answer": f"City{i}"}
+            for i in range(24)]
+    rows.append({"id": "leak", "question": "What is the capital of France? The answer is Paris.",
+                 "answer": "Paris"})
+    s2 = finding(lint_dataset(write_jsonl(tmp_path, rows))[0], "S2")
+    assert s2["level"] == "fail"
+    assert any("leak" in ex for ex in s2["examples"])
+
+
 def test_a_custom_fixes_path_is_honoured(tmp_path):
     rows = [{"question": f"q{i}", "answer": f"a{i}"} for i in range(20)]
     rows.append({"question": "q3", "answer": "a3"})

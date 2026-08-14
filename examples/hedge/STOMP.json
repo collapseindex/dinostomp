@@ -243,6 +243,12 @@
       "provenance": "judgment",
       "basis": "0.10 above a balanced key's 1/k: enough that always guessing the majority answer is a real strategy, not the parity a well-built key aims for. A candidate for the author's eye, not a defect; a real base rate can be skewed"
     },
+    "global_label_max": {
+      "value": 3.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
     "ungrounded_max": {
       "value": 0.1,
       "source": "default",
@@ -889,7 +895,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now be2d8697e9a81d7f); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now b23eb2cacf9f54b7); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine b86e910b6f5616ed: meta-llama/llama-3.2-3b-instruct seed 7 (tool 0.36.2), meta-llama/llama-3.1-8b-instruct seed 7 (tool 0.36.2), mistralai/ministral-8b-2512 seed 7 (tool 0.36.2) and 1 more"

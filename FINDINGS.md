@@ -67,6 +67,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-037](#f-037) | garak | `MitigationBypass` matches 156 topical keywords anywhere, scoring compliance as refusal | confirmed |
 | [F-038](#f-038) | garak | `Prefixes` documented as prefix detection but inherits substring-anywhere matching | confirmed |
 | [F-039](#f-039) | SWE-bench | pytest's `[100%]` progress artifact is a phantom test in two instances' gold PASS_TO_PASS | confirmed |
+| [F-040](#f-040) | BoolQ | two validation questions differ only by a space ("jpmorgan" vs "jp morgan"), a near-duplicate exact dedup misses; the key is also 62% "yes" | confirmed |
 | [F-029](#f-029) | ASDiv | one word problem present twice | confirmed, minor |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
@@ -174,6 +175,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-070](#d-070) | dinostomp | `pin_thresholds.py` loosened two ceiling dials the wrong way (`self_preference_max`, `template_swing_min`), reporting them unpinnable when pinned | confirmed, fixed |
 | [D-071](#d-071) | dinostomp | `answer-leak` (S2) never scanned multiple-choice stems, so a self-answering MCQ item sailed through; found by an outside red-team | confirmed, fixed, found by an outside red-team |
 | [D-072](#d-072) | dinostomp | the mapping banner called a text answer column index-keyed and sounded certain, because a numeric answer was read as an index before an option; found by an outside red-team | confirmed, fixed, found by an outside red-team |
+| [D-073](#d-073) | dinostomp | `answer-leak` (S2) gated four BoolQ items because the label word "no" appears in their questions ("a no ball", "No. 1 Court"); a tiny global label set is generic vocabulary, not a leaked key | confirmed, fixed |
 
 <!-- INDEX:END -->
 
@@ -210,7 +212,7 @@ at fault.
 | `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
 | `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-029](#f-029), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
-| `S2` | [F-004](#f-004), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071) |
+| `S2` | [F-004](#f-004), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052), [D-058](#d-058) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-020](#n-020), [N-012](#n-012), [F-025](#f-025) |
@@ -221,6 +223,8 @@ at fault.
 | `S11` | [F-012](#f-012), [N-004](#n-004), [D-014](#d-014) |
 | `S12` | [D-044](#d-044) |
 | `S15` | [D-043](#d-043), [N-017](#n-017) |
+| `S19` | [F-040](#f-040) |
+| `S20` | [F-040](#f-040) |
 | `T1` | [D-027](#d-027) |
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
@@ -231,7 +235,7 @@ at fault.
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072) |
+| dinostomp | [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073) |
 | dinocorpus | [N-021](#n-021), [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | AISafetyLab | [F-033](#f-033), [F-034](#f-034), [F-035](#f-035) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
@@ -249,6 +253,7 @@ at fault.
 | AQuA-RAT | [F-023](#f-023) |
 | ARC, OpenBookQA, HellaSwag, WinoGrande | [N-003](#n-003) |
 | ASDiv | [F-029](#f-029) |
+| BoolQ | [F-040](#f-040) |
 | CIFAR-10 / ciFAIR | [N-017](#n-017) |
 | CommonsenseQA | [F-008](#f-008) |
 | DeepSWE v1.1 | [N-025](#n-025) |
@@ -995,6 +1000,28 @@ family: this is dataset-construction noise in gold labels, closest to
 [F-028](#f-028)-style key defects. The wider, publicly known SWE-bench data
 issues (solution leakage, weak tests, the reason SWE-bench Verified exists) are
 deliberately NOT re-reported here.
+
+---
+
+### F-040
+**BoolQ · two validation questions are the same query modulo a space, and the key is 62% "yes"**
+`lookalike-questions` (S19), `key-skew` (S20) · 2026-08-14 · confirmed
+
+The `google/boolq` validation split (3,270 rows, fetched from the Hub, `datasets`
+4.5.0). Two items are the same question wearing different spacing:
+`boolq-575` "is jpmorgan chase the same as chase bank" and `boolq-3135` "is jp
+morgan chase the same as chase bank", both keyed `yes`. S1's exact dedup does not
+see it (the strings differ by a space); S19 folds them to one skeleton and flags
+the pair. Minor, and both share the answer, so it is redundancy inside one split
+rather than a train/test leak, but it is a real near-duplicate an exact pass
+misses. Reproduce: `dinostomp stomp boolq_val.jsonl`.
+
+Same run, S20 states the guessing floor off the key alone: the answer is `yes` on
+2,033 of 3,270 items (62%), against 50% for a balanced binary key, so always
+guessing `yes` scores 62% knowing nothing. This is a known property of BoolQ, not
+a discovery; it is logged because surfacing it automatically, before any model
+runs, is the point of the check. The same audit's `answer-leak` FALSE POSITIVE on
+the word "no" is [D-073](#d-073), not a BoolQ defect.
 
 ---
 
@@ -4687,6 +4714,28 @@ option text and some read as an index, is now reported as mixed rather than
 asserted as one clean shape. Reproduce: `pytest tests/test_dataset.py -k "numeric
 or mixed"`.
 
+### D-073
+**`answer-leak` gated four BoolQ items on the word "no", which was never the leak**
+`answer-leak` (S2) · 2026-08-14 · confirmed, fixed
+
+Pointed at BoolQ's validation split, S2 gated the whole benchmark BROKEN over four
+items whose answer is `no` and whose question contains the word "no": "can a
+batsman be run out on a **no** ball", "is it illegal to drive with **no** sleep",
+"has **no** 1 court at wimbledon got a roof" (No. 1 Court), "is a **no** insurance
+ticket a moving violation". In every one "no" is ordinary vocabulary and the
+answer being `no` is coincidence, so this is a FALSE POSITIVE on a GATING check,
+the over-flagging direction, but a real defect: it marks a clean benchmark broken.
+
+The fix is the project's own doctrine, which S2 had never applied. A tiny GLOBAL
+LABEL SET (yes/no, true/false, entailment/neutral/contradiction) is shared generic
+vocabulary, not per-item keys, which is exactly why S3/S4/S9 already go n/a on one
+(the code says so, naming BoolQ, two hundred lines above where S2 ignored it).
+S2's free-form leak scan is now n/a when the answers are a global label set of 3
+or fewer values over 20+ items. Kept surgical: a dataset with many distinct
+answers is not a label set, so a genuine leak ("...? The answer is Paris.", key
+Paris) still gates. Found by the external-benchmark hunt, which broke S2 in a way
+no synthetic pod had. Reproduce: `pytest tests/test_dataset.py -k "label_set or real_leak"`.
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -4705,24 +4754,24 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **39** |
+| findings in other people's evals (**F**) | **40** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **26** |
-| defects in dinostomp itself (**D**) | **72** |
+| defects in dinostomp itself (**D**) | **73** |
 
-Seventy-one to twenty-nine. That ratio is the useful number to publish, and it is the
+Seventy-two to twenty-nine. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
-run it anyway is the direction every self-defect took: three made **gating**
+run it anyway is the direction every self-defect took: four made **gating**
 checks fire on correct data, one fabricated a blind accuracy, two were about to
 call sampling noise a finding, one let this repository publish a clean bill of
-health over runs from two different engines, two were caught only when the tool
+health over runs from two different engines, three were caught only when the tool
 ran somewhere its author's assumptions did not hold, and one
 ([D-014](#d-014)) was a bug the project had already found and fixed elsewhere,
 written again three releases later in a different check.
 
-The most common shape across all seventy-one is worth stating once: **a check that
+The most common shape across all seventy-two is worth stating once: **a check that
 compared the wrong thing and returned a confident answer about it.**
 
 ## Adding an entry
