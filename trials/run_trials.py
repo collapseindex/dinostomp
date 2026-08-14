@@ -798,6 +798,50 @@ def binary_items(n=40):
              "target": "yes" if i % 2 else "no", "choices": ["yes", "no"]} for i in range(n)]
 
 
+def t_boundary_blind_lift(root):
+    # A model that reads the question on only a FEW items and guesses the rest,
+    # so its informed accuracy clears its own blind score by ~0.075: caught at
+    # the shipped 0.10 lift bar (below it, so R15 warns the signal is thin) and
+    # missed at a 3x loosening (0.033, which the lift clears). Five of 40 items
+    # carry a `cue:` the question reveals and the blind mask deletes; on the
+    # rest the model returns a deterministic per-item coin, identical informed
+    # and blind, so those cancel and only the cued lift survives.
+    agent = NL.join([
+        'import hashlib',
+        'def run(item, ctx):',
+        '    inp = str(item["input"])',
+        '    coin = "yes" if int(hashlib.sha256((ctx["model"] + str(item["id"])).encode()).hexdigest()[:8], 16) % 2 else "no"',
+        '    if "There is no question" in inp:',   # the blind mask
+        '        return {"output": coin}',
+        '    if "cue:yes" in inp: return {"output": "yes"}',
+        '    if "cue:no" in inp: return {"output": "no"}',
+        '    return {"output": coin}'])
+    (root / "agent.py").write_text(agent + NL, encoding="utf-8")
+    items = [{"id": f"b{i}",
+              "input": f"Is statement {i} true? Reply yes or no."
+                       + (f" cue:{'yes' if i % 2 else 'no'}" if i < 5 else ""),
+              "target": "yes" if i % 2 else "no", "choices": ["yes", "no"]}
+             for i in range(40)]
+    spec = {
+        "name": "trial-pod", "version": "0.1.0",
+        "question": "Does the model answer these binary items from the question?",
+        "data": {"path": "items.jsonl", "format": "jsonl"},
+        "models": [{"provider": "python", "model": "agent-peek", "entrypoint": "agent.py:run"}],
+        "scorer": {"kind": "exact", "witnesses": [
+            {"output": "yes", "target": "yes", "expect": "pass"},
+            {"output": "no", "target": "yes", "expect": "fail"}]},
+        "run": {"n": 40, "seed": 7, "budget_usd": 0},
+    }
+    (root / "items.jsonl").write_text(
+        NL.join(['{"_canary": "dinostomp canary DO NOT TRAIN trials"}']
+                + [json.dumps(i) for i in items]) + NL, encoding="utf-8")
+    p = root / "eval.yaml"
+    p.write_text(yaml.safe_dump(spec), encoding="utf-8")
+    assert run_spec(p).exit_code == OK
+    assert run_spec(p, probe="blind").exit_code == OK
+    return p
+
+
 def t_input_deaf_model(root):
     # Informed accuracy equal to its own blind accuracy: the model contributed
     # no signal, and no other check would say so on a balanced key.
@@ -1718,6 +1762,26 @@ def t_boundary_billing_ratio(root):
     return sp
 
 
+def t_boundary_kr20(root):
+    # A fleet whose reliability sits between the shipped floor (0.50) and a 3x
+    # loosening (0.167). Each model passes a mostly-idiosyncratic set of items
+    # (only 0.05 of the pass signal is shared item difficulty, the rest per-model
+    # noise), so the fleet totals barely correlate: KR-20 ~0.35. P1 warns at 0.50
+    # and passes at 0.167, so the loosening is what moves past it. Six models x
+    # 30 items clears P1's fleet (4) and common-item (5) minimums.
+    six = ["agent-a", "agent-b", "agent-c", "agent-d", "agent-e", "agent-f"]
+    twist = _twist(
+        '    import hashlib as _hh',
+        '    def _u(k): return int(_hh.sha256(k.encode()).hexdigest()[:8], 16) / 0xFFFFFFFF',
+        '    _mods = ["agent-a", "agent-b", "agent-c", "agent-d", "agent-e", "agent-f"]',
+        '    _mi = _mods.index(ctx["model"]) if ctx["model"] in _mods else 0',
+        '    _s = 0.3 + 0.5 * (_mi / 5.0)',
+        '    _i = int("".join(c for c in str(item["id"]) if c.isdigit()) or "0")',
+        '    _p = 0.05 * (_s - _u("d|" + str(_i))) + 0.95 * (0.5 - _u("n|" + ctx["model"] + "|" + str(_i))) > 0',
+        '    answer = str(total) if _p else str(total + 1)')
+    return ran_agent(root, items=arith_items(30), models=six, twist=twist)
+
+
 def t_boundary_dead_weight(root):
     # 70% of items separate nobody. Caught at 0.50, missed at 1.50 (which is
     # unreachable, so a loosened setting can never fire).
@@ -1851,6 +1915,7 @@ TRIALS = [
     ("boundary: billed 5x the recorded text", t_boundary_billing_ratio, ("R18", "warn")),
     ("boundary: a leak with only 2 other options offered", t_boundary_candidate_list, ("S2", "fail")),
     ("boundary: 70% of items separate nobody", t_boundary_dead_weight, ("P3", "warn")),
+    ("boundary: fleet reliability KR-20 ~0.35", t_boundary_kr20, ("P1", "warn")),
     ("boundary: the whole fleet at 5%", t_boundary_floor_acc, ("P7", "warn")),
     ("boundary: 10% accuracy against a 2.5% floor", t_boundary_guess_margin, ("R7", "warn")),
     ("boundary: a fleet spanning 5 points", t_boundary_dynamic_range, ("P8", "warn")),
@@ -1868,6 +1933,7 @@ TRIALS = [
     ("scorer fails answers that contain the right answer", t_scorer_grades_format, ("R16", "warn")),
     ("one model answers every item identically", t_collapsed_model, ("R14", "warn")),
     ("model scores the same informed as blind", t_input_deaf_model, ("R15", "warn")),
+    ("boundary: informed clears blind by only 0.075", t_boundary_blind_lift, ("R15", "warn")),
     ("one model in a competent fleet is at chance", t_one_model_at_chance, ("R7", "warn")),
     ("judge credits everything (stopped by its own witnesses)", t_judge_credits_everything,
      ("RUNNER", GATED)),

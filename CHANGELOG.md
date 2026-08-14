@@ -21,7 +21,7 @@
   wrong way. Surfaced by a fast per-threshold verifier disagreeing with the
   shipped sweep. With it fixed and a boundary trial added for J4 (a 20-point
   own-family generosity gap, caught at 0.10 and missed at 0.30), the self-own is
-  30 of 35 pinned, 5 unpinned. `run_trials.py` now runs 96 planted defects.
+  32 of 35 pinned, 3 unpinned. Also pinned `kr20_min` (P1: a fleet forced to KR-20 ~0.35, caught at the 0.50 floor, missed at 0.167) and `blind_lift_min` (R15: a model whose informed accuracy clears its own blind score by only 0.075, caught at 0.10, missed at 0.033). `run_trials.py` now runs 98 planted defects.
 
 ### v0.62.0 (2026-08-13)
 
