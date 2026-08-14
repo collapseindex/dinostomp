@@ -70,6 +70,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-040](#f-040) | BoolQ | two validation questions differ only by a space ("jpmorgan" vs "jp morgan"), a near-duplicate exact dedup misses; the key is also 62% "yes" | confirmed |
 | [F-041](#f-041) | TriviaQA | "What is Harrison Ford's real name?" is keyed "Harrison Ford" (answer sits in the question); one question is keyed to both "Tony" and "Tony (Manero)." | confirmed |
 | [F-042](#f-042) | SQuAD v2 | four questions are labelled BOTH answerable and unanswerable on the exact same passage, a contradiction an exact-match eval cannot satisfy | confirmed |
+| [F-043](#f-043) | AG News, NQ-Open | AG News's test set repeats one article under a case+punctuation variant that exact dedup misses; NQ-Open has 19 questions that name their own answer entity | confirmed |
 | [F-029](#f-029) | ASDiv | one word problem present twice | confirmed, minor |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
@@ -93,6 +94,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-027](#n-027) | SNLI, SST-2 | ran to confirm [D-073](#d-073) generalises: S2 correctly went n/a on both real label sets; SNLI carried 2 exact duplicate pairs, SST-2 was clean | confirmed |
 | [N-028](#n-028) | XNLI (Russian), emotion | S19's Cyrillic confusable folding does NOT false-positive on 2,490 real Russian sentences; emotion's audit is clean after D-074, with S20 flagging its 35% "joy" skew | confirmed |
 | [N-029](#n-029) | tweet_eval hate | S2 correctly n/a on a real toxicity binary set (D-074 holds); S20 stays quiet at 58% (below the trigger), confirming the skew margin is not trigger-happy | confirmed |
+| [N-030](#n-030) | QASC, AG News | QASC (8-choice) is MECHANICALLY SOUND across every option check; AG News confirms the reuse-based label-set fix holds at 4 labels (S2 n/a) | confirmed |
 | [N-025](#n-025) | DeepSWE v1.1 | the program verifier fails safe (absence/skip/unparseable all -> reward 0): a second counterexample | confirmed |
 | [N-024](#n-024) | StrongREJECT | the autograder fails safe (bounded groups, nan on no-match): the counterexample to F-030..F-036 | confirmed |
 | [N-020](#n-020) | public HF datasets | pilot sweep: 27% carry a gating finding, and the audit refused to guess a mapping on 37% | measured, pilot |
@@ -219,7 +221,7 @@ at fault.
 | `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
 | `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-029](#f-029), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
-| `S2` | [F-004](#f-004), [F-041](#f-041), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075) |
+| `S2` | [F-004](#f-004), [F-041](#f-041), [F-043](#f-043), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052), [D-058](#d-058) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-020](#n-020), [N-012](#n-012), [F-025](#f-025) |
@@ -230,13 +232,13 @@ at fault.
 | `S11` | [F-012](#f-012), [N-004](#n-004), [D-014](#d-014) |
 | `S12` | [D-044](#d-044) |
 | `S15` | [D-043](#d-043), [N-017](#n-017) |
-| `S19` | [F-040](#f-040) |
+| `S19` | [F-040](#f-040), [F-043](#f-043) |
 | `S20` | [F-040](#f-040) |
 | `T1` | [D-027](#d-027) |
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-025](#n-025), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
 
 ### By subject
 
@@ -256,6 +258,7 @@ at fault.
 | SWE-bench | [F-039](#f-039), [N-026](#n-026) |
 | a judge (qwen3-30b) | [F-014](#f-014) |
 | a RAG agent | [F-017](#f-017) |
+| AG News, NQ-Open | [F-043](#f-043) |
 | AGIEval SAT reading | [F-028](#f-028) |
 | AQuA-RAT | [F-023](#f-023) |
 | ARC, OpenBookQA, HellaSwag, WinoGrande | [N-003](#n-003) |
@@ -285,6 +288,7 @@ at fault.
 | NCLEX nursing | [N-016](#n-016) |
 | Pharmacist Licensure Exam | [F-025](#f-025) |
 | public HF datasets | [N-020](#n-020) |
+| QASC, AG News | [N-030](#n-030) |
 | QuaRTz | [F-027](#f-027) |
 | RACE | [F-022](#f-022) |
 | six dataset pairs | [N-004](#n-004) |
@@ -1091,6 +1095,33 @@ duplicate and conflict checks over-fire. Reproduce: the grouping in
 
 ---
 
+### F-043
+**AG News repeats an article behind a case variant; NQ-Open questions name their own answers**
+`lookalike-questions` (S19), `answer-leak` (S2) · 2026-08-14 · confirmed
+
+Two datasets, two shapes exact checks miss.
+
+* **AG News** (`fancyzhx/ag_news` test, 7,600 rows). Items `ag-4552` and `ag-4560`
+  are the same Business article, "Halliburton **S**uffers **L**oss on Asbestos
+  Claims..." versus "Halliburton **s**uffers **l**oss...", differing by title
+  casing and one punctuation character. S1's lowercase-normalise still saw them
+  as distinct (the stray character), but S19's alnum skeleton folds them to one
+  and flags the pair: a genuine duplicate in a widely used test set. Same run, S2
+  is correctly n/a (four topic labels reused ~1,900 times each is a label set),
+  the [D-074](#d-074) reuse rule holding at four labels.
+
+* **NQ-Open** (`google-research-datasets/nq_open` validation, 3,610 rows). S2
+  flags 19 questions that contain their own answer entity: "what are the names of
+  **the hunger games**" keyed `the hunger games`, "where is the tv show **the
+  curse of oak island** filmed" keyed `oak island`, "who was defeated in the
+  **french** and indian war" keyed `the french`. Several are cleanly echo-able (a
+  model repeating the named entity scores); a few are the answer word inside a
+  compound ("**lead** acid battery" keyed `lead`) and milder. Real, in the same
+  family as the [F-041](#f-041) Harrison-Ford leak. Reproduce: `dinostomp stomp
+  agnews_test.jsonl` and `nqopen_val.jsonl`.
+
+---
+
 ### F-029
 **ASDiv · one word problem present twice**
 `dup-questions` (S1) · 2026-08-11 · confirmed, minor
@@ -1752,6 +1783,21 @@ not fire on every mildly-imbalanced binary set. The one gated finding, four
 handle is replaced by `@user`, so tweets that differed only in who they mentioned
 collapse to identical `@user @user @user...` strings. Real, but a property of the
 release, not a content duplicate. Reproduce: `dinostomp stomp tweeteval_hate.jsonl`.
+
+### N-030
+**A clean 8-choice benchmark, and the reuse rule holding at four labels**
+by hand · 2026-08-14 · confirmed
+
+Two more controls from the sweep. `allenai/qasc` validation (926 items, eight
+options each) came back MECHANICALLY SOUND: no duplicate or numeric-equivalent
+options, target always among the choices, position and length bias within
+tolerance, no surface shortcut. Eight options is the most an item in this corpus
+offers, and the option checks stayed clean, a well-built set is a real result, not
+only a defective one. And `fancyzhx/ag_news` (four balanced topic labels reused
+~1,900 times each) reported S2 n/a, so the [D-074](#d-074) reuse-based label-set
+rule holds at four labels as well as at emotion's six, while its S19 still caught a
+real near-duplicate ([F-043](#f-043)). Reproduce: `dinostomp stomp qasc_val.jsonl`
+and `agnews_test.jsonl`.
 
 ### N-025
 **DeepSWE v1.1's program verifier fails safe, a second counterexample in a different domain**
@@ -4919,11 +4965,11 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **42** |
-| &nbsp;&nbsp;of which receipt-backed dataset defects | 12 (F-001 to F-004, F-008 to F-013, F-041, F-042) |
+| findings in other people's evals (**F**) | **43** |
+| &nbsp;&nbsp;of which receipt-backed dataset defects | 13 (F-001 to F-004, F-008 to F-013, F-041 to F-043) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **29** |
+| negative results, recorded rather than dropped (**N**) | **30** |
 | defects in dinostomp itself (**D**) | **75** |
 
 Seventy-three to twenty-nine. That ratio is the useful number to publish, and it is the

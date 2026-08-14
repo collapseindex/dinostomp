@@ -9,10 +9,10 @@
     "engine": "7b6d59727e6568839ae19031219b77028572b95c53029f179bef2e166a326c3c"
   },
   "counts": {
-    "F": 42,
+    "F": 43,
     "D": 75,
-    "N": 29,
-    "total": 146
+    "N": 30,
+    "total": 148
   },
   "series": {
     "F": "other people's evals",
@@ -635,6 +635,26 @@
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-042"
     },
     {
+      "id": "F-043",
+      "series": "F",
+      "series_name": "other people's evals",
+      "title": "AG News repeats an article behind a case variant; NQ-Open questions name their own answers",
+      "summary": "AG News's test set repeats one article under a case+punctuation variant that exact dedup misses; NQ-Open has 19 questions that name their own answer entity",
+      "subject": "AG News, NQ-Open",
+      "check_label": "`lookalike-questions` (S19), `answer-leak` (S2)",
+      "checks": [
+        "S19",
+        "S2"
+      ],
+      "date": "2026-08-14",
+      "date_iso": "2026-08-14",
+      "date_precision": "day",
+      "status": "confirmed",
+      "status_class": "confirmed",
+      "anchor": "#f-043",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-043"
+    },
+    {
       "id": "F-029",
       "series": "F",
       "series_name": "other people's evals",
@@ -1059,6 +1079,23 @@
       "status_class": "confirmed",
       "anchor": "#n-029",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-029"
+    },
+    {
+      "id": "N-030",
+      "series": "N",
+      "series_name": "negative results",
+      "title": "A clean 8-choice benchmark, and the reuse rule holding at four labels",
+      "summary": "QASC (8-choice) is MECHANICALLY SOUND across every option check; AG News confirms the reuse-based label-set fix holds at 4 labels (S2 n/a)",
+      "subject": "QASC, AG News",
+      "check_label": "by hand",
+      "checks": [],
+      "date": "2026-08-14",
+      "date_iso": "2026-08-14",
+      "date_precision": "day",
+      "status": "confirmed",
+      "status_class": "confirmed",
+      "anchor": "#n-030",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-030"
     },
     {
       "id": "N-025",
