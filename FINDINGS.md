@@ -73,6 +73,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-043](#f-043) | AG News, NQ-Open | AG News's test set repeats one article under a case+punctuation variant that exact dedup misses; NQ-Open has 19 questions that name their own answer entity | confirmed |
 | [F-044](#f-044) | MBPP, HumanEval | MBPP keys one task ("count squares in a rectangle") to two different reference solutions; HumanEval ships two structurally identical bracket problems (56, 61) | confirmed |
 | [F-045](#f-045) | CNN/DailyMail | the test set carries an exact-duplicate article back to back, and one reference "summary" is copied verbatim from its own article | confirmed |
+| [F-046](#f-046) | LoCoMo | conversation 7 asks eleven questions twice each (same answer); one temporal item ("...sell the car he restored last year?") is keyed "Last year" | confirmed, minor |
 | [F-029](#f-029) | ASDiv | one word problem present twice | confirmed, minor |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
@@ -222,8 +223,8 @@ at fault.
 | `R15` | [D-006](#d-006) |
 | `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
-| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-044](#f-044), [F-045](#f-045), [F-029](#f-029), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
-| `S2` | [F-004](#f-004), [F-041](#f-041), [F-043](#f-043), [F-045](#f-045), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075) |
+| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-044](#f-044), [F-045](#f-045), [F-046](#f-046), [F-029](#f-029), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
+| `S2` | [F-004](#f-004), [F-041](#f-041), [F-043](#f-043), [F-045](#f-045), [F-046](#f-046), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052), [D-058](#d-058) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-020](#n-020), [N-012](#n-012), [F-025](#f-025) |
@@ -281,6 +282,7 @@ at fault.
 | llama-3.2-3b | [F-016](#f-016) |
 | LLM-as-judge | [N-013](#n-013) |
 | lm-eval-harness log | [N-007](#n-007) |
+| LoCoMo | [F-046](#f-046) |
 | LogiQA | [F-019](#f-019) |
 | MATH-500 | [F-021](#f-021) |
 | MBPP, HumanEval | [F-044](#f-044) |
@@ -1167,6 +1169,35 @@ season of The Amazing Race..."), so a model that extracts those sentences scores
 perfect summary with no abstraction. Both minor in a 1,500 sample, both real, and
 both the kind of thing a summarisation leaderboard inherits silently. Reproduce:
 `dinostomp stomp cnn_1500.jsonl`.
+
+---
+
+### F-046
+**LoCoMo repeats eleven questions inside one conversation, and one answer is echoed in its own question**
+`dup-questions` (S1), `answer-leak` (S2) · 2026-08-14 · confirmed, minor
+
+`snap-research/locomo` (LoCoMo-10, the long-term conversational-memory benchmark),
+1,986 QA over ten conversations, 1,542 of them carrying a gold answer. The QA is
+answered *over one conversation*, so each item was scoped to its conversation id
+before the audit: a duplicate then means the same question was asked twice of the
+same conversation, not the same generic question asked of two different ones.
+Conversation 7 does exactly that eleven times, each question present twice, each
+pair agreeing on the answer (for example "What are the names of Jolene's snakes?",
+"Where did Deborah get her cats?", "When did Jolene's parents give her first
+console?"): a within-conversation duplicate double-weights those memory probes in
+that conversation's score. Separately, one temporal item echoes its own answer,
+`When did Dave sell the car he restored last year?` keyed `Last year`, so the
+phrase the model must produce is sitting in the question.
+
+The honest part is what dinostomp did **not** flag. A naive substring check lights
+up on eleven items, but ten of those are choice-format questions that offer the
+answer as one of two options ("Does John live close to a beach or the mountains?"
+-> "beach"), which is not a leak; S2 correctly ignores an answer that is an offered
+choice and flags only the one genuine echo. Both issues are minor and concentrated
+(all eleven dups in a single conversation of ten, one leak in 1,542 items), both
+real, and both the kind of thing a memory leaderboard inherits without noticing.
+Reproduce: scope each item to its conversation id and `dinostomp stomp
+locomo_scoped.jsonl`.
 
 ---
 
@@ -5013,8 +5044,8 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **45** |
-| &nbsp;&nbsp;of which receipt-backed dataset defects | 15 (F-001 to F-004, F-008 to F-013, F-041 to F-045) |
+| findings in other people's evals (**F**) | **46** |
+| &nbsp;&nbsp;of which receipt-backed dataset defects | 16 (F-001 to F-004, F-008 to F-013, F-041 to F-046) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **30** |

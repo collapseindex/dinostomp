@@ -9,10 +9,10 @@
     "engine": "01c79eca610f9d8e83c41b2f5b7e1f08dd7054c392188770939b2285a36f702d"
   },
   "counts": {
-    "F": 45,
+    "F": 46,
     "D": 75,
     "N": 30,
-    "total": 150
+    "total": 151
   },
   "series": {
     "F": "other people's evals",
@@ -694,6 +694,26 @@
       "status_class": "confirmed",
       "anchor": "#f-045",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-045"
+    },
+    {
+      "id": "F-046",
+      "series": "F",
+      "series_name": "other people's evals",
+      "title": "LoCoMo repeats eleven questions inside one conversation, and one answer is echoed in its own question",
+      "summary": "conversation 7 asks eleven questions twice each (same answer); one temporal item (\"...sell the car he restored last year?\") is keyed \"Last year\"",
+      "subject": "LoCoMo",
+      "check_label": "`dup-questions` (S1), `answer-leak` (S2)",
+      "checks": [
+        "S1",
+        "S2"
+      ],
+      "date": "2026-08-14",
+      "date_iso": "2026-08-14",
+      "date_precision": "day",
+      "status": "confirmed, minor",
+      "status_class": "confirmed",
+      "anchor": "#f-046",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-046"
     },
     {
       "id": "F-029",

@@ -2,6 +2,16 @@
 
 ### Unreleased
 
+- **[F-046](FINDINGS.md#f-046): LoCoMo repeats eleven questions inside one
+  conversation, and one answer is echoed in its question.** The long-term-memory
+  benchmark, audited with each item scoped to its conversation id (the SQuAD-correct
+  identity: a duplicate is the same question asked twice of the *same* conversation).
+  Conversation 7 asks eleven questions twice, each pair agreeing on the answer;
+  one temporal item ("...sell the car he restored last year?") is keyed "Last year".
+  Both minor and concentrated, both real. The honest half is what S2 did not flag:
+  ten choice-format questions offer the answer as an option ("beach or mountains?"
+  -> "beach"), which S2 correctly ignores, so only the one genuine echo gates.
+
 - **A `record` scorer kind, for evals with no correct answer.** A preference or
   free-choice elicitation ("which of these two do you prefer?") has no gold, so
   there is nothing to grade for correctness; what there is to grade is whether the
