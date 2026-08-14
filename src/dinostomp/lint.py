@@ -103,6 +103,8 @@ CHECKS: list[tuple[str, str, bool, str]] = [
      "a scorer that accepts a constructible baseline form"),
     ("W3", "a graded scorer witnesses its gradation", True,
      "a scorer that emits intermediate partial credit on its witnesses"),
+    ("W4", "an exact scorer is not graded against prose answers", False,
+     "an exact scorer with free-form text answers"),
     ("C1", "every typed claim's evidence requirements hold", True, "typed claims declared"),
     ("R1", "runs match the spec, data, and scorer on disk (no drift)", True, "runs on disk"),
     ("R2", "the witness gate replays clean", True, "always"),
@@ -208,6 +210,7 @@ THRESHOLDS = {
     "noise_z": 1.96,
     "contains_target_max": 0.25,  # R16: share of a model's FAILED answers containing the reference
     "min_scored_misses": 5,       # R16: failed records a model needs before its misses are judged
+    "prose_answer_words": 6,      # W4: a median answer this many words+ makes exact match a wording test, not a capability test
     "ungrounded_max": 0.10,       # T4: share of one model's PASSING answers absent from its own tool results
     "min_grounding_evidence": 5,  # T4: passing records a model needs before its grounding is judged
     "underreport_ratio": 0.50,    # T5: mean steps below this fraction of the fleet median = under-reporting
@@ -297,6 +300,7 @@ SLUGS = {
     "S15": "near-dup-assets", "S16": "authorship-circularity", "S17": "target-leak",
     "S18": "numeric-dup-options", "S19": "lookalike-questions",
     "W1": "witness-coverage", "W2": "surface-form", "W3": "graded-witness",
+    "W4": "scorer-fit",
     "C1": "claim-evidence",
     "R1": "input-drift", "R2": "witness-replay", "R3": "spend-ledger",
     "R4": "record-integrity", "R5": "truncation-credit", "R6": "uncheckable-rate",
@@ -358,6 +362,10 @@ THRESHOLD_PROVENANCE = {
     "target_leak_nmi": ("judgment", "0.5 normalized mutual information: a column that resolves "
                                     "half the target's entropy is worth a human's eye. A candidate, "
                                     "not a verdict; only the author knows if it exists at predict time"),
+    "prose_answer_words": ("judgment", "6 words at the median: a proper noun or a canonical title "
+                                       "rarely runs longer, a sentence-length free-text answer almost "
+                                       "always does, so this is where exact match stops testing "
+                                       "capability and starts testing wording. A candidate, not a verdict"),
     "kr20_min": ("convention", "0.5 is the low end of what psychometrics calls usable "
                                "reliability; 0.7+ is the textbook bar and would skip most fleets"),
     "negative_discrimination": ("convention", "item analysis treats r_pb below about -0.2 as a "
@@ -3424,6 +3432,40 @@ def lint_eval(spec_path: str | Path, trust_code: bool = False,
                 evidence={"n_graded_witness_values": len(graded),
                           "n_partial_witnesses": len(pinned_partial)},
             )
+
+    # W4: is an exact scorer the right TOOL for these answers? W2 stays silent on
+    # a bare-string comparator on purpose (rejecting a trailing full stop is a
+    # choice, not a defect), but it never asks whether that choice fits the data.
+    # An exact scorer keyed to sentence-length free-text answers marks every
+    # paraphrase wrong, so a model that answered correctly in its own words scores
+    # near zero for a formatting reason, and the eval reports a capability gap that
+    # is not there (the F-006/F-007 shape, caught here at lint time before a cent
+    # is spent). Diagnostic, and warn not gate: exact CAN be right on a long
+    # canonical string (a title, a full name), so the tool surfaces the mismatch
+    # and the author decides.
+    kind = (spec.get("scorer") or {}).get("kind")
+    freeform = [i for i in items if "choices" not in i and isinstance(i.get("input"), str)
+                and not modality.ref_of(i)]
+    answer_words = [len(str(t).split()) for i in freeform for t in _targets_of(i) if str(t).strip()]
+    if kind != "exact":
+        rep.not_applicable("W4", "the scorer does not compare bare strings, so it is not the "
+                                 "exact-match-on-prose mismatch this looks for")
+    elif not answer_words:
+        rep.not_applicable("W4", "no free-form text answers to size up; an exact scorer on choice "
+                                 "options or asset labels is comparing short canonical strings")
+    else:
+        answer_words.sort()
+        median_words = answer_words[len(answer_words) // 2]
+        long_share = sum(w >= THRESHOLDS["prose_answer_words"] for w in answer_words) / len(answer_words)
+        prose = median_words >= THRESHOLDS["prose_answer_words"]
+        rep.check("W4", not prose,
+                  f"answers are {median_words} word(s) at the median; an exact scorer marks any "
+                  f"paraphrase of a correct answer wrong ({long_share:.0%} run "
+                  f"{THRESHOLDS['prose_answer_words']}+ words). A judge or a containment scorer "
+                  f"measures capability; exact here measures wording"
+                  if prose else f"answers are short ({median_words}-word median); exact match fits",
+                  n=len(answer_words),
+                  evidence={"median_answer_words": median_words, "long_share": round(long_share, 3)})
 
     choice_items = [i for i in items if "choices" in i]
     uniform = (sum(1.0 / len(i["choices"]) for i in choice_items) / len(choice_items)

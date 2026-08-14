@@ -231,6 +231,12 @@
       "provenance": "judgment",
       "basis": "author judgment; no derivation or calibration on record"
     },
+    "prose_answer_words": {
+      "value": 6.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "6 words at the median: a proper noun or a canonical title rarely runs longer, a sentence-length free-text answer almost always does, so this is where exact match stops testing capability and starts testing wording. A candidate, not a verdict"
+    },
     "ungrounded_max": {
       "value": 0.1,
       "source": "default",
@@ -275,9 +281,9 @@
     }
   },
   "coverage": {
-    "declared_total": 69,
-    "declared": 31,
-    "ran": 31,
+    "declared_total": 70,
+    "declared": 32,
+    "ran": 32,
     "skipped": [],
     "not_applicable": [
       {
@@ -660,6 +666,19 @@
       "witnesses": 0
     },
     {
+      "id": "W4",
+      "slug": "scorer-fit",
+      "check": "an exact scorer is not graded against prose answers",
+      "level": "pass",
+      "gating": false,
+      "detail": "answers are short (1-word median); exact match fits",
+      "witnesses": 24,
+      "evidence": {
+        "median_answer_words": 1,
+        "long_share": 0.0
+      }
+    },
+    {
       "id": "C1",
       "slug": "claim-evidence",
       "check": "every typed claim's evidence requirements hold",
@@ -863,7 +882,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now 552065c84ca60d98); re-run to get numbers this report can stand behind",
+      "detail": "6 of 6 run(s) were produced by a different engine than the one auditing them (now dfba7e2e5027f059); re-run to get numbers this report can stand behind",
       "witnesses": 6,
       "examples": [
         "engine 050e2f343915e1b9: dry-alpha seed 42 (tool 0.57.1), dry-bravo seed 42 (tool 0.57.1), dry-charlie seed 42 (tool 0.57.1) and 3 more"

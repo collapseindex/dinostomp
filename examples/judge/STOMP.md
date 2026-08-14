@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 33 of 39 checks ran (33 of 39 ran; 30 n/a of 69 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 33 of 39 checks ran (33 of 39 ran; 31 n/a of 70 declared). Not a clean bill of health.
 
 ## Results
 
@@ -113,6 +113,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | ok | no two items are the same question in different encodings | 26 | 0 group(s) of items are the same question in different encodings |
 | ok | witnesses kill the mutant scorers | 4 | 0 of 4 applicable mutant scorer(s) survive the witness suite |
 | ok | a correct answer survives its surface form | 7 | 0 surface form(s) lose a correct answer and 0 credit a decoy, of 7 applicable |
+| n/a | an exact scorer is not graded against prose answers | 0 | the scorer does not compare bare strings, so it is not the exact-match-on-prose mismatch this looks for |
 | ok | uncheckable rate is sane | 104 | 0% of 104 record(s) are uncheckable |
 | ok | accuracy is distinguishable from guessing | 4 | 0 of 4 model(s) score no better than guessing; fleet spans 27% to 85% vs chance ~4% (modal target floor) |
 | ok | runs cover the spec's declared scope, nothing foreign | 4 | 0 run(s) outside the spec's declared scope |
@@ -122,7 +123,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 3 | 0 of 3 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 552065c84ca60d98); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now dfba7e2e5027f059); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | no failed answer numerically equals its target | 0 | no failed record has a numeric target, so there is no numeric-equivalent miss to look for |
 | n/a | passing answers are grounded in tool evidence | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |

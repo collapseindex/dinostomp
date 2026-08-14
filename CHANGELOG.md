@@ -2,6 +2,19 @@
 
 ### Unreleased
 
+- **W4 `scorer-fit`.** An exact scorer keyed to sentence-length free-text answers
+  marks every paraphrase wrong, so a model that answered correctly in its own
+  words scores near zero for a formatting reason and the eval reports a capability
+  gap that is not there (the F-006/F-007 shape, but caught at lint time before a
+  cent is spent). W2 stays silent on exact scorers by design (rejecting a trailing
+  full stop is a choice, not a defect); W4 asks the question W2 does not, whether
+  exact is the right tool for THESE answers. It warns when the scorer is exact and
+  the free-form answers run 6+ words at the median, where a proper noun or a title
+  rarely reaches and a sentence almost always does. Diagnostic, not a gate: exact
+  CAN be right on a long canonical string, so it surfaces the mismatch and the
+  author decides (a judge or a containment scorer is the usual fix). Registry
+  69 -> 70 checks. Found by red-teaming the scorer family before a wider release.
+
 - **S19 now names a contradiction, not just a duplicate.** When a lookalike group
   (same question modulo an encoding variant) is keyed to CONFLICTING answers, S19
   says so loudly. This is the more dangerous half of the finding and S7

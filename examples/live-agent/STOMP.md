@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 35 of 44 checks ran (35 of 44 ran; 25 n/a of 69 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 35 of 44 checks ran (35 of 44 ran; 26 n/a of 70 declared). Not a clean bill of health.
 
 ## Results
 
@@ -111,6 +111,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | ok | no two items are the same question in different encodings | 24 | 0 group(s) of items are the same question in different encodings |
 | warn | witnesses kill the mutant scorers | 5 | 1 of 5 applicable mutant scorer(s) survive the witness suite |
 | ok | a correct answer survives its surface form | 6 | 0 surface form(s) lose a correct answer and 0 credit a decoy, of 6 applicable |
+| n/a | an exact scorer is not graded against prose answers | 0 | the scorer does not compare bare strings, so it is not the exact-match-on-prose mismatch this looks for |
 | ok | uncheckable rate is sane | 72 | 0% of 72 record(s) are uncheckable |
 | ok | accuracy is distinguishable from guessing | 3 | 0 of 3 model(s) score no better than guessing; fleet spans 54% to 83% vs chance ~8% (modal target floor) |
 | ok | runs cover the spec's declared scope, nothing foreign | 3 | 0 run(s) outside the spec's declared scope |
@@ -120,7 +121,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | warn | failed answers do not contain the reference | 2 | 2 of 2 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 3 | 3 of 3 run(s) were produced by a different engine than the one auditing them (now 552065c84ca60d98); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 3 | 3 of 3 run(s) were produced by a different engine than the one auditing them (now dfba7e2e5027f059); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | no failed answer numerically equals its target | 1 | 0 of 1 numeric-target failure(s) equal their target as a number; the scorer may be rejecting a correct value in the wrong form |
 | warn | passing answers are grounded in tool evidence | 3 | 2 of 3 target(s) pass items whose answer does not APPEAR in their own evidence (6 such answer(s) in total). This is co-occurrence, not causation: an answer recalled from memory that also happens to appear in a retrieved snippet counts as grounded here, so this count is a floor |
