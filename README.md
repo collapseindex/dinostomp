@@ -25,15 +25,15 @@ Each of those is one entry in **[FINDINGS.md](FINDINGS.md)**, with the item id,
 the verbatim data and the command that reproduces it. Every `F` re-derives in
 seconds, offline, for free, using the command in the next section.
 
-**[FINDINGS.md](FINDINGS.md): 139 entries, all permanent, none deleted.**
+**[FINDINGS.md](FINDINGS.md): 142 entries, all permanent, none deleted.**
 
 | series | count | what it records |
 |---|--:|---|
-| **F** | 40 | findings in other people's evals |
+| **F** | 42 | findings in other people's evals |
 | **D** | 73 | defects in dinostomp itself |
-| **N** | 26 | negative results, recorded rather than dropped |
+| **N** | 27 | negative results, recorded rather than dropped |
 
-**Seventy-three of the 139 are against this tool**, which is the number to
+**Seventy-three of the 142 are against this tool**, which is the number to
 read first. A validator that only publishes other people's mistakes is telling
 you which mistakes it is willing to look for. Included there: the entry it
 retracted after its own killer control killed it ([N-013](FINDINGS.md#n-013)),

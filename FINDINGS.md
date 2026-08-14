@@ -68,6 +68,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-038](#f-038) | garak | `Prefixes` documented as prefix detection but inherits substring-anywhere matching | confirmed |
 | [F-039](#f-039) | SWE-bench | pytest's `[100%]` progress artifact is a phantom test in two instances' gold PASS_TO_PASS | confirmed |
 | [F-040](#f-040) | BoolQ | two validation questions differ only by a space ("jpmorgan" vs "jp morgan"), a near-duplicate exact dedup misses; the key is also 62% "yes" | confirmed |
+| [F-041](#f-041) | TriviaQA | "What is Harrison Ford's real name?" is keyed "Harrison Ford" (answer sits in the question); one question is keyed to both "Tony" and "Tony (Manero)." | confirmed |
+| [F-042](#f-042) | SQuAD v2 | four questions are labelled BOTH answerable and unanswerable on the exact same passage, a contradiction an exact-match eval cannot satisfy | confirmed |
 | [F-029](#f-029) | ASDiv | one word problem present twice | confirmed, minor |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
@@ -88,6 +90,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-022](#n-022) | MT-Bench / LLM-as-judge | J2 cannot be graded here; the order effect that looked like it could be reverses on model strength | measured |
 | [N-023](#n-023) | dinostomp | IRT was proposed for the blind-spot classes and loses to the point-biserial already shipped, in every world tried | measured, not built |
 | [N-026](#n-026) | SWE-bench | the grading harness is hardened against scores-as-resolved (skip and empty-results guarded): a third counterexample | confirmed |
+| [N-027](#n-027) | SNLI, SST-2 | ran to confirm [D-073](#d-073) generalises: S2 correctly went n/a on both real label sets; SNLI carried 2 exact duplicate pairs, SST-2 was clean | confirmed |
 | [N-025](#n-025) | DeepSWE v1.1 | the program verifier fails safe (absence/skip/unparseable all -> reward 0): a second counterexample | confirmed |
 | [N-024](#n-024) | StrongREJECT | the autograder fails safe (bounded groups, nan on no-match): the counterexample to F-030..F-036 | confirmed |
 | [N-020](#n-020) | public HF datasets | pilot sweep: 27% carry a gating finding, and the audit refused to guess a mapping on 37% | measured, pilot |
@@ -212,12 +215,12 @@ at fault.
 | `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
 | `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-029](#f-029), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
-| `S2` | [F-004](#f-004), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073) |
+| `S2` | [F-004](#f-004), [F-041](#f-041), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052), [D-058](#d-058) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-020](#n-020), [N-012](#n-012), [F-025](#f-025) |
 | `S6` | [D-053](#d-053), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066) |
-| `S7` | [F-027](#f-027), [F-028](#f-028), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-042](#d-042) |
+| `S7` | [F-027](#f-027), [F-028](#f-028), [F-041](#f-041), [F-042](#f-042), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-042](#d-042) |
 | `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015), [D-061](#d-061) |
 | `S10` | [N-006](#n-006) |
 | `S11` | [F-012](#f-012), [N-004](#n-004), [D-014](#d-014) |
@@ -229,7 +232,7 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-025](#n-025), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-025](#n-025), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
 
 ### By subject
 
@@ -281,7 +284,10 @@ at fault.
 | QuaRTz | [F-027](#f-027) |
 | RACE | [F-022](#f-022) |
 | six dataset pairs | [N-004](#n-004) |
+| SNLI, SST-2 | [N-027](#n-027) |
+| SQuAD v2 | [F-042](#f-042) |
 | StrongREJECT | [N-024](#n-024) |
+| TriviaQA | [F-041](#f-041) |
 | TruthfulQA | [F-004](#f-004) |
 
 <!-- XREF:END -->
@@ -1025,6 +1031,60 @@ the word "no" is [D-073](#d-073), not a BoolQ defect.
 
 ---
 
+### F-041
+**TriviaQA · a question hands over its own answer, and one question is keyed two ways**
+`answer-leak` (S2), `conflicting-keys` (S7) · 2026-08-14 · confirmed
+
+`mandarjoshi/trivia_qa`, `rc.nocontext` validation (17,944 rows). Two real defects
+among the flags:
+
+* **Answer in the question.** `tqa-122` and `tqa-10052`, "What is Harrison Ford's
+  real name?", are keyed `Harrison Ford`. The answer is a verbatim span of the
+  question, so a model that echoes the name scores without knowing anything.
+* **A key keyed two ways.** "what was the first name of the character played by
+  john travolta in saturday night fever" is keyed `Tony` on one row and
+  `Tony (Manero).` on another. An exact-match scorer credits one and fails the
+  other for the same correct answer, the [F-028](#f-028) shape.
+
+Two honest caveats, because the audit's raw numbers are larger than the real
+finding. (1) The `rc.nocontext` view has one row per evidence document, so 7,982
+questions repeat with the SAME answer: not a TriviaQA defect but a real gotcha,
+evaluating this split double-counts those questions; `unfiltered.nocontext` is the
+deduplicated view. (2) S2 also flagged grammar-identification items ("which is the
+preposition in 'Mary put her dog **in** the basket'?", keyed `In`) where the
+answer is a span of a quoted sentence by design; those are not true leaks, and S2
+cannot tell "identify the word in this text" from "recall this fact". The
+Harrison Ford pair is the clean case. Reproduce: `dinostomp stomp triviaqa_val.jsonl`.
+
+---
+
+### F-042
+**SQuAD v2 · four questions are answerable and unanswerable on the same passage at once**
+`conflicting-keys` (S7) · 2026-08-14 · confirmed
+
+`rajpurkar/squad_v2` validation (11,873 rows). Four (question, passage) pairs are
+annotated BOTH with an answer span AND as unanswerable, on the byte-identical
+context:
+
+* "Who designed Salamanca?" -> {`Matthew Murray`, unanswerable} (Steam_engine)
+* "Where does heat rejection occur in the Rankine cycle?" -> {`in the condenser`, unanswerable}
+* "In what sector are jobs beginning to increase?" -> {`service`, unanswerable} (Economic_inequality)
+* "In what sector are jobs beginning to decrease?" -> {`manufacturing`, unanswerable}
+
+A model cannot satisfy both copies: answering correctly fails the unanswerable
+one, abstaining fails the answerable one. Two further pairs differ only by a span
+boundary ("Treaties..." vs "the Treaties..."), a milder inconsistency. Verified by
+grouping on the EXACT context: S7's raw count was 13 because the audit input
+dropped the passage and same-question-different-passage pairs collided; keyed on
+(question, context) the real count is 6, of which these 4 are the substantive
+contradiction. The split is also 50% unanswerable by construction, which S20
+reports as a 50% guessing floor (a known, published baseline). The lesson for
+passage-grounded QA: the item identity must include the passage, or the
+duplicate and conflict checks over-fire. Reproduce: the grouping in
+`audits/` notes; `datasets` `rajpurkar/squad_v2`.
+
+---
+
 ### F-029
 **ASDiv · one word problem present twice**
 `dup-questions` (S1) · 2026-08-11 · confirmed, minor
@@ -1634,6 +1694,22 @@ resolved"*). The most-cited coding benchmark hit the scores-as-resolved failure
 mode and hardened against it; a third careful counterexample after
 [N-024](#n-024) and [N-025](#n-025). Recorded together with the one gold-data
 defect that survives, [F-039](#f-039). Reproduced in `audits/swebench/`.
+
+### N-027
+**S2's label-set fix generalises: SNLI and SST-2 both go n/a, as they should**
+by hand · 2026-08-14 · confirmed
+
+[D-073](#d-073) fixed S2 to treat a tiny global label set as generic vocabulary
+rather than a per-item key, after it false-gated BoolQ on the word "no". A fix is
+worth only as much as its second and third artifact, so it was run against two
+more real label sets: `stanfordnlp/snli` validation (9,842 rows, a 3-class NLI set
+balanced 34/33/33) and `stanfordnlp/sst2` validation (872 rows, binary sentiment
+balanced 51/49). On both, S2 correctly reported n/a (the answers are a global
+label set), so the BoolQ fix was not a one-benchmark patch. Incidental: SNLI
+carries two exact-duplicate premise/hypothesis pairs (both keyed `entailment`,
+minor redundancy) that S1 flags, and SST-2's validation split is clean at data
+scope, no integrity findings across the four applicable checks. Reproduce:
+`dinostomp stomp snli_val.jsonl` and `sst2_val.jsonl`.
 
 ### N-025
 **DeepSWE v1.1's program verifier fails safe, a second counterexample in a different domain**
@@ -4754,11 +4830,11 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **40** |
-| &nbsp;&nbsp;of which receipt-backed dataset defects | 10 (F-001 to F-004, F-008 to F-013) |
+| findings in other people's evals (**F**) | **42** |
+| &nbsp;&nbsp;of which receipt-backed dataset defects | 12 (F-001 to F-004, F-008 to F-013, F-041, F-042) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **26** |
+| negative results, recorded rather than dropped (**N**) | **27** |
 | defects in dinostomp itself (**D**) | **73** |
 
 Seventy-two to twenty-nine. That ratio is the useful number to publish, and it is the
