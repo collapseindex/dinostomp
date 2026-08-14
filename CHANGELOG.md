@@ -2,6 +2,20 @@
 
 ### Unreleased
 
+- **S2's label-set exemption now covers reused vocabularies above three labels
+  (found on dair-ai/emotion).** [D-073](FINDINGS.md#d-073) fixed the false gate on
+  a global label set of three or fewer values; the very next benchmark, a 6-class
+  emotion set, fell outside that cap and S2 gated it BROKEN over "anger" in "i felt
+  anger". A class's own word in its own text is inherent to all text
+  classification, not a leaked key. The `<=3` cap was the wrong shape: what makes a
+  label set is a small vocabulary REUSED across the set (emotion's six labels
+  average ~333 items each), versus open QA (thousands of answers, little reuse,
+  where a question naming its answer really is a leak). S2 is now n/a when the
+  answers are three or fewer values OR a vocabulary reused 10+ items per label on
+  average. Verified n/a on BoolQ, SNLI, SST-2, emotion while TriviaQA and a planted
+  leak still gate. [D-074](FINDINGS.md#d-074); Cyrillic S19 control and emotion in
+  [N-028](FINDINGS.md#n-028).
+
 - **S2 `answer-leak` no longer false-gates on a global label word (found on
   BoolQ).** Run against BoolQ's validation split, S2 marked the benchmark BROKEN
   over four items whose answer is "no" and whose question merely contains the word

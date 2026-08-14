@@ -6,13 +6,13 @@
   "tool": {
     "name": "dinostomp",
     "version": "0.62.0",
-    "engine": "b23eb2cacf9f54b7388f7803dcc05a4c984b612f7c02fb6741efe6dee59513e8"
+    "engine": "7b6d59727e6568839ae19031219b77028572b95c53029f179bef2e166a326c3c"
   },
   "counts": {
     "F": 42,
-    "D": 73,
-    "N": 27,
-    "total": 142
+    "D": 74,
+    "N": 28,
+    "total": 144
   },
   "series": {
     "F": "other people's evals",
@@ -1025,6 +1025,23 @@
       "status_class": "confirmed",
       "anchor": "#n-027",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-027"
+    },
+    {
+      "id": "N-028",
+      "series": "N",
+      "series_name": "negative results",
+      "title": "S19 does not false-positive on real Cyrillic, and emotion audits clean after the fix",
+      "summary": "S19's Cyrillic confusable folding does NOT false-positive on 2,490 real Russian sentences; emotion's audit is clean after D-074, with S20 flagging its 35% \"joy\" skew",
+      "subject": "XNLI (Russian), emotion",
+      "check_label": "by hand",
+      "checks": [],
+      "date": "2026-08-14",
+      "date_iso": "2026-08-14",
+      "date_precision": "day",
+      "status": "confirmed",
+      "status_class": "confirmed",
+      "anchor": "#n-028",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-028"
     },
     {
       "id": "N-025",
@@ -2613,6 +2630,25 @@
       "status_class": "confirmed",
       "anchor": "#d-073",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-073"
+    },
+    {
+      "id": "D-074",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "the same false positive at six labels: S2 gated an emotion set on the word \"anger\"",
+      "summary": "S2's label-set exemption was capped at 3 labels, so it still gated dair-ai/emotion (6 labels) on \"anger\" in \"i felt anger\"; a small heavily-reused vocabulary is a label set too",
+      "subject": "dinostomp",
+      "check_label": "`answer-leak` (S2)",
+      "checks": [
+        "S2"
+      ],
+      "date": "2026-08-14",
+      "date_iso": "2026-08-14",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-074",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-074"
     }
   ]
 }

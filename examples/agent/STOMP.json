@@ -249,6 +249,12 @@
       "provenance": "judgment",
       "basis": "author judgment; no derivation or calibration on record"
     },
+    "label_reuse_min": {
+      "value": 10.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "10 items per distinct answer on average: a classification set reuses its few labels heavily (emotion is ~333), open QA does not (TriviaQA is ~2), so this is where a small answer space stops being per-item keys and becomes a label vocabulary S2 should not read as leakage"
+    },
     "ungrounded_max": {
       "value": 0.1,
       "source": "default",
@@ -888,7 +894,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now b23eb2cacf9f54b7); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 7b6d59727e656883); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine 050e2f343915e1b9: agent-grounded seed 42 (tool 0.57.1), agent-lazy seed 42 (tool 0.57.1), agent-narrow seed 42 (tool 0.57.1) and 1 more"

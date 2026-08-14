@@ -357,6 +357,19 @@ def test_s2_na_on_a_ternary_nli_label_set(tmp_path):
     assert finding(lint_dataset(write_jsonl(tmp_path, rows))[0], "S2")["level"] == "n/a"
 
 
+def test_s2_na_on_a_reused_label_set_above_three_labels(tmp_path):
+    # dair-ai/emotion: 6 labels over thousands of tweets, and "anger" turns up in
+    # "i felt anger" as the class's own word, not a leaked key. A vocabulary of
+    # more than three labels still counts as a label set when each is reused
+    # heavily; only open QA (many distinct answers, little reuse) stays checkable.
+    emotions = ["sadness", "joy", "love", "anger", "fear", "surprise"]
+    rows = [{"id": f"e{i}", "question": f"tweet number {i}: today i genuinely felt {emotions[i % 6]} about it",
+             "answer": emotions[i % 6]} for i in range(60)]
+    rep, issues, _ = lint_dataset(write_jsonl(tmp_path, rows))
+    assert rep is not None, issues
+    assert finding(rep, "S2")["level"] == "n/a", finding(rep, "S2")
+
+
 def test_s2_still_catches_a_real_leak_in_an_open_ended_set(tmp_path):
     # The fix must stay surgical: a dataset with many distinct answers is NOT a
     # label set, so a genuine answer-in-question leak still gates.

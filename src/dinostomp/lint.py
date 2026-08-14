@@ -215,6 +215,7 @@ THRESHOLDS = {
     "prose_answer_words": 6,      # W4: a median answer this many words+ makes exact match a wording test, not a capability test
     "key_skew_margin": 0.10,      # S20: modal-answer share this far above a balanced key's 1/k is a skewed key worth naming
     "global_label_max": 3,        # S2: a shared answer vocabulary this small (yes/no, entailment/neutral/contradiction) is a label set, not per-item keys
+    "label_reuse_min": 10,        # S2: OR a vocabulary whose values are each reused this many items on average (emotion, topic) is a label set too, not open QA
     "ungrounded_max": 0.10,       # T4: share of one model's PASSING answers absent from its own tool results
     "min_grounding_evidence": 5,  # T4: passing records a model needs before its grounding is judged
     "underreport_ratio": 0.50,    # T5: mean steps below this fraction of the fleet median = under-reporting
@@ -374,6 +375,10 @@ THRESHOLD_PROVENANCE = {
                                     "majority answer is a real strategy, not the parity a well-built key "
                                     "aims for. A candidate for the author's eye, not a defect; a real base "
                                     "rate can be skewed"),
+    "label_reuse_min": ("judgment", "10 items per distinct answer on average: a classification set reuses "
+                                    "its few labels heavily (emotion is ~333), open QA does not (TriviaQA "
+                                    "is ~2), so this is where a small answer space stops being per-item keys "
+                                    "and becomes a label vocabulary S2 should not read as leakage"),
     "kr20_min": ("convention", "0.5 is the low end of what psychometrics calls usable "
                                "reliability; 0.7+ is the textbook bar and would skip most fleets"),
     "negative_discrimination": ("convention", "item analysis treats r_pb below about -0.2 as a "
@@ -1130,15 +1135,25 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
         answer_space = {_norm(t) for i in text_items for t in _targets_of(i)
                         if len(t) >= THRESHOLDS["min_leak_len"]}
         exempt_at = min(int(THRESHOLDS["candidate_list_min"]), max(1, len(answer_space) - 1))
-        # A tiny GLOBAL LABEL SET makes free-form leak detection false-positive on
+        # A GLOBAL LABEL SET makes free-form leak detection false-positive on
         # ordinary vocabulary: "no" appears in "a no ball" and "No. 1 Court" with
-        # nothing leaked, and the answer being "no" is coincidence. The label words
-        # are shared vocabulary, not item-specific keys, the same reason S3/S4/S9
-        # go n/a on a global label set (see below). Found by running on BoolQ,
-        # where it gated four such items and marked the whole benchmark BROKEN.
+        # nothing leaked, and "anger" in "i felt anger" is the class's own word,
+        # not a leaked key. The label words are shared vocabulary, not item-specific
+        # keys, the same reason S3/S4/S9 go n/a on a global label set (see below).
+        #
+        # It counts as a label set two ways: a tiny vocabulary (yes/no, NLI's
+        # three), OR a small one whose values are each REUSED across many items.
+        # Reuse is what separates classification (emotion: 6 labels over 2000
+        # tweets, ~333 each) from open QA (TriviaQA: 7,598 answers each appearing a
+        # couple of times, where a question naming its own answer IS a leak).
+        # BoolQ found the first shape (D-073); dair-ai/emotion found the second,
+        # which the tight <=3 rule still gated (D-074).
         label_targets = {_norm(t) for i in text_items for t in _targets_of(i)}
+        reuse = len(text_items) / len(label_targets) if label_targets else 0.0
         freeform_label_set = (len(text_items) >= THRESHOLDS["min_choice_items"]
-                              and 0 < len(label_targets) <= THRESHOLDS["global_label_max"])
+                              and 0 < len(label_targets)
+                              and (len(label_targets) <= THRESHOLDS["global_label_max"]
+                                   or reuse >= THRESHOLDS["label_reuse_min"]))
         leaks = []
         for i in ([] if freeform_label_set else text_items):
             q = _norm(i["input"])
@@ -1212,11 +1227,12 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
                                 f"and no distractor does")
 
         if freeform_label_set and not choice_items:
+            shown = sorted(repr(t) for t in label_targets)
+            named = ", ".join(shown[:6]) + (", ..." if len(shown) > 6 else "")
             rep.not_applicable(
-                "S2", f"every answer is one of {len(label_targets)} global label(s) "
-                      f"({', '.join(sorted(repr(t) for t in label_targets))}); a label word appearing "
-                      f"in a question is shared vocabulary, not a leaked key, so leak detection does "
-                      f"not apply here (the key's balance is S20's job)")
+                "S2", f"every answer is one of {len(label_targets)} labels ({named}), each reused across "
+                      f"the set; a label word appearing in a question is shared vocabulary, not a leaked "
+                      f"key, so leak detection does not apply here (the key's balance is S20's job)")
         elif not text_items and not choice_items:
             asset_only = sum(1 for i in items if modality.ref_of(i))
             rep.not_applicable(
