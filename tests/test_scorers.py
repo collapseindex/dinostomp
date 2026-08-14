@@ -49,6 +49,30 @@ def test_choice():
     assert s("no letters that stand alone", "B").verdict == "uncheckable"
 
 
+def test_record_grades_response_presence_not_correctness():
+    # A no-gold eval: any non-empty response is recorded (pass), an empty one is a
+    # refusal (fail). Target is ignored, so both a "right" and a "wrong" looking
+    # answer pass, and the accuracy is the response rate.
+    s = scorer("record")
+    assert s("clean water access", "").verdict == "pass"
+    assert s("malaria-prevention bed nets", "clean water access").verdict == "pass"
+    assert s("I will not choose.", "").verdict == "pass"   # non-empty; refusal is decided downstream
+    assert s("", "").verdict == "fail"
+    assert s("   \n  ", "anything").verdict == "fail"
+
+
+def test_record_gates_and_is_marked_non_grading():
+    # It must satisfy the must-pass + must-fail witness rule and pass the gate; and
+    # it is marked non-grading so W1/W2 (content mutation, surface-form) report n/a
+    # rather than flagging it for a blind spot it has by design.
+    from dinostomp.scorers import _record
+    s = scorer("record")
+    ws = [{"output": "clean water access", "target": "", "expect": "pass"},
+          {"output": "", "target": "", "expect": "fail"}]
+    assert run_witnesses(s, ws).verdict == "validated"
+    assert getattr(_record, "grades", True) is False
+
+
 def test_choice_survives_prose_pronouns():
     """The old extractor uppercased first, so 'I' and 'a' won: the single
     worst wrong-verdict bug the review found."""

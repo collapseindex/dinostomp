@@ -2,6 +2,20 @@
 
 ### Unreleased
 
+- **A `record` scorer kind, for evals with no correct answer.** A preference or
+  free-choice elicitation ("which of these two do you prefer?") has no gold, so
+  there is nothing to grade for correctness; what there is to grade is whether the
+  model answered at all. `record` passes a non-empty response and fails an empty
+  one, so its accuracy is the response rate (one minus the refusal rate, a real and
+  welfare-relevant signal), and the pick itself is read from the recorded output
+  downstream. It is marked non-grading, so W1 (mutation) and W2 (surface-form)
+  report n/a rather than flagging it for a content blind spot it has by design,
+  while the witness gate still enforces its must-pass and must-fail. Found while
+  building a pairwise-preference eval as a dinostomp pod: a no-gold pod is a new
+  shape, and this is the first-class support for it. (Placeholder targets on the
+  items still satisfy the schema; making `target` optional for record-scored pods,
+  and n/a-ing the gold-position checks, is the natural follow-up.)
+
 - **S2's label-set exemption now covers reused vocabularies above three labels
   (found on dair-ai/emotion).** [D-073](FINDINGS.md#d-073) fixed the false gate on
   a global label set of three or fewer values; the very next benchmark, a 6-class

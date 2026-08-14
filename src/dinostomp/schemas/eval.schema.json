@@ -435,6 +435,7 @@
             "regex",
             "numeric",
             "choice",
+            "record",
             "python",
             "judge"
           ]

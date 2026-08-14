@@ -3422,6 +3422,11 @@ def lint_eval(spec_path: str | Path, trust_code: bool = False,
         rep.skip("W1", "hosted judge: the mutation gauntlet would re-invoke it once per mutant "
                        "per witness, which a lint must never pay for; run the judge probe instead")
         gauntlet = None
+    elif not getattr(scorer, "grades", True):
+        rep.not_applicable("W1", "a record scorer grades whether the model responded, not what it "
+                                 "said, so every content mutant is its intended blind spot rather than a "
+                                 "defect; the witness gate still enforces its must-pass and must-fail")
+        gauntlet = None
     else:
         gauntlet = run_gauntlet(scorer, spec["scorer"]["witnesses"], items)
     if gauntlet is not None:
@@ -3443,6 +3448,9 @@ def lint_eval(spec_path: str | Path, trust_code: bool = False,
     elif not getattr(scorer, "offline_replayable", True):
         rep.skip("W2", "hosted judge: re-invoking it once per shape per target is a cost "
                        "a lint must never incur; run the judge probe instead")
+    elif not getattr(scorer, "grades", True):
+        rep.not_applicable("W2", "a record scorer does not grade the answer's content, so there is no "
+                                 "correct answer for a surface form to lose")
     else:
         shapes = run_shape_gauntlet(scorer, items)
         if shapes.n_applicable == 0:

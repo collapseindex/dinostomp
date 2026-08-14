@@ -133,6 +133,36 @@ def _choice(output: str, target: Any) -> ScoreResult:
     )
 
 
+def _record(output: str, target: Any) -> ScoreResult:
+    """Record-only scoring for an eval with no correct answer.
+
+    A preference or free-choice elicitation ("which of these two do you prefer?")
+    has no gold, so there is nothing to grade for correctness. What there IS to
+    grade is whether the model answered at all: a non-empty response is recorded
+    and passes, an empty one is a refusal and fails. The pick itself lives in the
+    recorded output and is read downstream; this scorer's accuracy is the
+    response rate, i.e. one minus the refusal rate, which is the only judgeable
+    property a no-gold eval has and a genuinely welfare-relevant one.
+
+    `target` is ignored (there is no gold), so an item may carry a placeholder to
+    satisfy the schema. Because empty fails and non-empty passes, the scorer can
+    fail and the mutation gauntlet kills the always-pass mutant on the empty
+    witness; content-blind mutants are equivalent (it never reads content) and
+    are excluded, so W1 needs no special case.
+    """
+    if output.strip():
+        return ScoreResult("pass", evidence="response recorded")
+    return ScoreResult("fail", evidence="no response (empty or refusal)")
+
+
+# It grades presence, not content, so every content mutation (negation, case,
+# substring) is an intended blind spot rather than a defect. W1/W2 read this and
+# report n/a rather than flagging the record scorer for not discriminating what it
+# was never asked to discriminate. The witness gate still runs and still requires a
+# must-pass and a must-fail (empty), so the scorer's own contract is enforced.
+_record.grades = False  # type: ignore[attr-defined]
+
+
 def _regex_factory(params: dict) -> Scorer:
     pattern = params.get("pattern")
     if not isinstance(pattern, str) or not pattern:
@@ -217,6 +247,8 @@ def make_scorer(cfg: dict, base_dir: Path) -> Scorer:
         return _numeric_factory(params)
     if kind == "choice":
         return _choice
+    if kind == "record":
+        return _record
     if kind == "regex":
         return _regex_factory(params)
     if kind == "python":
