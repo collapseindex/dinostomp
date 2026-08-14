@@ -9,10 +9,10 @@
     "engine": "7b6d59727e6568839ae19031219b77028572b95c53029f179bef2e166a326c3c"
   },
   "counts": {
-    "F": 43,
+    "F": 45,
     "D": 75,
     "N": 30,
-    "total": 148
+    "total": 150
   },
   "series": {
     "F": "other people's evals",
@@ -653,6 +653,47 @@
       "status_class": "confirmed",
       "anchor": "#f-043",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-043"
+    },
+    {
+      "id": "F-044",
+      "series": "F",
+      "series_name": "other people's evals",
+      "title": "MBPP keys one task to two different solutions; HumanEval ships a problem twice",
+      "summary": "MBPP keys one task (\"count squares in a rectangle\") to two different reference solutions; HumanEval ships two structurally identical bracket problems (56, 61)",
+      "subject": "MBPP, HumanEval",
+      "check_label": "`dup-questions` (S1), `conflicting-keys` (S7), `lookalike-questions` (S19)",
+      "checks": [
+        "S1",
+        "S7",
+        "S19"
+      ],
+      "date": "2026-08-14",
+      "date_iso": "2026-08-14",
+      "date_precision": "day",
+      "status": "confirmed",
+      "status_class": "confirmed",
+      "anchor": "#f-044",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-044"
+    },
+    {
+      "id": "F-045",
+      "series": "F",
+      "series_name": "other people's evals",
+      "title": "CNN/DailyMail repeats an article, and one reference summary is pure copy-paste",
+      "summary": "the test set carries an exact-duplicate article back to back, and one reference \"summary\" is copied verbatim from its own article",
+      "subject": "CNN/DailyMail",
+      "check_label": "`dup-questions` (S1), `answer-leak` (S2)",
+      "checks": [
+        "S1",
+        "S2"
+      ],
+      "date": "2026-08-14",
+      "date_iso": "2026-08-14",
+      "date_precision": "day",
+      "status": "confirmed",
+      "status_class": "confirmed",
+      "anchor": "#f-045",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-045"
     },
     {
       "id": "F-029",

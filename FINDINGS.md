@@ -71,6 +71,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-041](#f-041) | TriviaQA | "What is Harrison Ford's real name?" is keyed "Harrison Ford" (answer sits in the question); one question is keyed to both "Tony" and "Tony (Manero)." | confirmed |
 | [F-042](#f-042) | SQuAD v2 | four questions are labelled BOTH answerable and unanswerable on the exact same passage, a contradiction an exact-match eval cannot satisfy | confirmed |
 | [F-043](#f-043) | AG News, NQ-Open | AG News's test set repeats one article under a case+punctuation variant that exact dedup misses; NQ-Open has 19 questions that name their own answer entity | confirmed |
+| [F-044](#f-044) | MBPP, HumanEval | MBPP keys one task ("count squares in a rectangle") to two different reference solutions; HumanEval ships two structurally identical bracket problems (56, 61) | confirmed |
+| [F-045](#f-045) | CNN/DailyMail | the test set carries an exact-duplicate article back to back, and one reference "summary" is copied verbatim from its own article | confirmed |
 | [F-029](#f-029) | ASDiv | one word problem present twice | confirmed, minor |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
@@ -220,19 +222,19 @@ at fault.
 | `R15` | [D-006](#d-006) |
 | `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
-| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-029](#f-029), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
-| `S2` | [F-004](#f-004), [F-041](#f-041), [F-043](#f-043), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075) |
+| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-044](#f-044), [F-045](#f-045), [F-029](#f-029), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
+| `S2` | [F-004](#f-004), [F-041](#f-041), [F-043](#f-043), [F-045](#f-045), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052), [D-058](#d-058) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-020](#n-020), [N-012](#n-012), [F-025](#f-025) |
 | `S6` | [D-053](#d-053), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066) |
-| `S7` | [F-027](#f-027), [F-028](#f-028), [F-041](#f-041), [F-042](#f-042), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-042](#d-042) |
+| `S7` | [F-027](#f-027), [F-028](#f-028), [F-041](#f-041), [F-042](#f-042), [F-044](#f-044), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-042](#d-042) |
 | `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015), [D-061](#d-061) |
 | `S10` | [N-006](#n-006) |
 | `S11` | [F-012](#f-012), [N-004](#n-004), [D-014](#d-014) |
 | `S12` | [D-044](#d-044) |
 | `S15` | [D-043](#d-043), [N-017](#n-017) |
-| `S19` | [F-040](#f-040), [F-043](#f-043) |
+| `S19` | [F-040](#f-040), [F-043](#f-043), [F-044](#f-044) |
 | `S20` | [F-040](#f-040) |
 | `T1` | [D-027](#d-027) |
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
@@ -265,6 +267,7 @@ at fault.
 | ASDiv | [F-029](#f-029) |
 | BoolQ | [F-040](#f-040) |
 | CIFAR-10 / ciFAIR | [N-017](#n-017) |
+| CNN/DailyMail | [F-045](#f-045) |
 | CommonsenseQA | [F-008](#f-008) |
 | DeepSWE v1.1 | [N-025](#n-025) |
 | dinostomp-aei | [D-050](#d-050) |
@@ -280,6 +283,7 @@ at fault.
 | lm-eval-harness log | [N-007](#n-007) |
 | LogiQA | [F-019](#f-019) |
 | MATH-500 | [F-021](#f-021) |
+| MBPP, HumanEval | [F-044](#f-044) |
 | MedMCQA | [F-009](#f-009) |
 | MedQA-USMLE | [N-015](#n-015) |
 | MMLU-Pro | [F-011](#f-011) |
@@ -1119,6 +1123,50 @@ Two datasets, two shapes exact checks miss.
   compound ("**lead** acid battery" keyed `lead`) and milder. Real, in the same
   family as the [F-041](#f-041) Harrison-Ford leak. Reproduce: `dinostomp stomp
   agnews_test.jsonl` and `nqopen_val.jsonl`.
+
+---
+
+### F-044
+**MBPP keys one task to two different solutions; HumanEval ships a problem twice**
+`dup-questions` (S1), `conflicting-keys` (S7), `lookalike-questions` (S19) · 2026-08-14 · confirmed
+
+Two code-generation benchmarks.
+
+* **MBPP** (`google-research-datasets/mbpp` full test, 500 rows). The prompt "write
+  a python function to count the number of squares in a rectangle" appears twice,
+  keyed to two DIFFERENT reference solutions: S1 flags the duplicate and S7 flags
+  the contradiction. A candidate solution is graded against two different gold
+  answers depending on which copy it lands on, the [F-028](#f-028) shape in code.
+
+* **HumanEval** (`openai/openai_humaneval`, 164 rows). Problems `HumanEval/56` and
+  `HumanEval/61` are the same `correct_bracketing` task, one over `<`/`>` and one
+  over `(`/`)`, with near-identical prompts and near-identical solutions (the only
+  difference is the bracket character in the comparison). Structurally redundant.
+  A CAVEAT on how S19 surfaced it: the skeleton drops every non-alphanumeric, so
+  the bracket characters, which are the whole difference between the two problems,
+  vanish and the two collapse to one skeleton, and the contradiction escalation
+  then reads their differing solutions as a conflict. On symbol-heavy content
+  (code, formulae) that fold is too aggressive: it correctly spots the redundancy
+  but mislabels two legitimately-different problems as a contradiction. S19 is a
+  diagnostic (warn), not a gate, so this is noise in a warning, not a false BROKEN,
+  but it is a real limitation on code. Reproduce: `dinostomp stomp mbpp_test.jsonl`
+  and `humaneval.jsonl`.
+
+---
+
+### F-045
+**CNN/DailyMail repeats an article, and one reference summary is pure copy-paste**
+`dup-questions` (S1), `answer-leak` (S2) · 2026-08-14 · confirmed
+
+`abisee/cnn_dailymail` 3.0.0 test, first 1,500 rows. `cnn-987` and `cnn-988` are
+the same article back to back, byte-identical text and identical highlights: an
+exact duplicate in the test set, which double-counts that story in any score. And
+`cnn-1356`'s reference "summary" is copied verbatim from its own article, every
+highlight line is a substring of the source ("Tyler MacNiven, who won the ninth
+season of The Amazing Race..."), so a model that extracts those sentences scores a
+perfect summary with no abstraction. Both minor in a 1,500 sample, both real, and
+both the kind of thing a summarisation leaderboard inherits silently. Reproduce:
+`dinostomp stomp cnn_1500.jsonl`.
 
 ---
 
@@ -4965,8 +5013,8 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **43** |
-| &nbsp;&nbsp;of which receipt-backed dataset defects | 13 (F-001 to F-004, F-008 to F-013, F-041 to F-043) |
+| findings in other people's evals (**F**) | **45** |
+| &nbsp;&nbsp;of which receipt-backed dataset defects | 15 (F-001 to F-004, F-008 to F-013, F-041 to F-045) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **30** |
