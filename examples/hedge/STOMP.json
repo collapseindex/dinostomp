@@ -275,7 +275,7 @@
     }
   },
   "coverage": {
-    "declared_total": 68,
+    "declared_total": 69,
     "declared": 42,
     "ran": 32,
     "skipped": [
@@ -384,6 +384,10 @@
       {
         "id": "R21",
         "reason": "no record carries a graded value"
+      },
+      {
+        "id": "R22",
+        "reason": "no failed record has a numeric target, so there is no numeric-equivalent miss to look for"
       },
       {
         "id": "T1",
@@ -846,7 +850,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 1507d3bc100a33ea); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 3404b533e34dd996); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine b86e910b6f5616ed: meta-llama/llama-3.2-3b-instruct seed 7 (tool 0.36.2), meta-llama/llama-3.1-8b-instruct seed 7 (tool 0.36.2), mistralai/ministral-8b-2512 seed 7 (tool 0.36.2) and 1 more"
@@ -873,6 +877,15 @@
       "level": "n/a",
       "gating": true,
       "detail": "no record carries a graded value",
+      "witnesses": 0
+    },
+    {
+      "id": "R22",
+      "slug": "numeric-miss",
+      "check": "no failed answer numerically equals its target",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no failed record has a numeric target, so there is no numeric-equivalent miss to look for",
       "witnesses": 0
     },
     {

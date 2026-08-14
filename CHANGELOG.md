@@ -2,6 +2,18 @@
 
 ### Unreleased
 
+- **R22 `numeric-miss`.** A failed record whose answer is the same NUMBER as its
+  target: an exact scorer marks "1/2" wrong against a key of "0.5", or "1,000"
+  wrong against "1000", so a model that computed the right value is scored as a
+  miss, accuracy is understated, and a fleet ranking can flip on it. The run-time
+  mirror of S18, and the sibling R16 cannot see it: R16 is string containment
+  ("0.5" is not in "1/2"), this is numeric equality. Reuses the same conservative
+  parser as S18 (ints, decimals, thousands separators, integer fractions,
+  percent, single number words). Diagnostic, not a gate: a task may deliberately
+  require a specific FORM ("write it as a fraction"), so it surfaces the candidate
+  and the author decides. Registry 68 -> 69 checks. Found by red-teaming the
+  runs-on-disk family before a wider release.
+
 - **S19 `lookalike-questions`.** S1 `dup-questions` is exact (casefold plus
   whitespace), so two copies of one question that differ only by a smart quote,
   an NFC-vs-NFD accent, or a Cyrillic letter that reads as Latin sail past it as

@@ -125,6 +125,8 @@ CHECKS: list[tuple[str, str, bool, str]] = [
     ("R19", "the runs were produced by this engine", False, "runs recording a tool_sha256"),
     ("R20", "repeated items reached a verdict", False, "runs with run.repeats > 1"),
     ("R21", "graded scores stay in range", True, "records carrying a graded value"),
+    ("R22", "no failed answer numerically equals its target", False,
+     "failed records whose target is a number"),
     ("T1", "no forbidden tool is called", True, "forbidden_tools declared"),
     ("T2", "every required tool is actually called", True, "required_tools declared"),
     ("T3", "trajectories are well-formed", True, "python-target runs on disk"),
@@ -303,6 +305,7 @@ SLUGS = {
     "R13": "blind-solvable", "R14": "response-collapse", "R15": "input-blind",
     "R16": "scorer-artifact", "R17": "nothing-scoreable", "R18": "billing-mismatch",
     "R19": "engine-drift", "R20": "repeat-ties", "R21": "graded-range",
+    "R22": "numeric-miss",
     "T1": "forbidden-tool", "T2": "required-tool", "T3": "trajectory-shape",
     "T4": "answer-grounding", "T5": "trace-underreport", "T6": "redundant-calls",
     "T7": "answer-grounding-causal", "T8": "trace-observed",
@@ -432,7 +435,7 @@ CONSTRUCT_VALIDITY = {
 
 
 RUN_CHECK_IDS = ("R1", "R3", "R4", "R5", "R6", "R8", "R9", "R10", "R11", "R12", "R14", "R16", "R17",
-                 "R18", "R19", "R20", "R21")
+                 "R18", "R19", "R20", "R21", "R22")
 PSYCHO_CHECK_IDS = ("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8")
 # P9 lives with the probes, not the fleet matrix: it needs a probe run, not more models.
 TRAJECTORY_CHECK_IDS = ("T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8")
@@ -2770,6 +2773,44 @@ def _run_checks(rep: Reporter, mine: list[dict], foreign: list[dict], spec_file:
                   f"{len(suspect)} of {len(judged_misses)} model(s) are failed on answers that "
                   "contain the reference; the scorer may be grading format, not correctness",
                   n=len(judged_misses), examples=suspect)
+
+    # R22: a failed answer that is the same NUMBER as its target. R16 above
+    # catches a wrong answer that CONTAINS the reference as text; this catches the
+    # one it cannot, where the strings differ but the numbers do not. An exact
+    # scorer marks "1/2" wrong against a key of "0.5", or "1,000" wrong against
+    # "1000", so a model that computed the right value is scored as if it missed.
+    # The run-time mirror of S18, and the same F-002 severity: accuracy is
+    # understated and a fleet ranking can flip on it.
+    #
+    # Diagnostic, not a gate: a task may deliberately require a specific FORM
+    # ("write it as a fraction"), where "0.5" against a key of "1/2" is genuinely
+    # wrong, so the tool surfaces the candidate and the author decides.
+    numeric_fails, numeric_misses = 0, []
+    for entry, r in all_records:
+        if (r.get("score") or {}).get("verdict") != "fail" or "output" not in r:
+            continue
+        item = item_by_id.get(str(r.get("item_id")))
+        if item is None:
+            continue
+        num_targets = [t for t in _targets_of(item) if _as_number(t) is not None]
+        if not num_targets:
+            continue
+        numeric_fails += 1
+        out_val = _as_number(r.get("output"))
+        if out_val is None:
+            continue
+        if any(abs(out_val - _as_number(t)) <= 1e-9 * max(1.0, abs(_as_number(t))) for t in num_targets):
+            model = str((entry["manifest"] or {}).get("model"))
+            numeric_misses.append(f"{model} / {r.get('item_id')}: answer {str(r.get('output'))!r} "
+                                  f"equals its target as a number, but was scored fail")
+    if not numeric_fails:
+        rep.not_applicable("R22", "no failed record has a numeric target, so there is no "
+                                  "numeric-equivalent miss to look for")
+    else:
+        rep.check("R22", not numeric_misses,
+                  f"{len(numeric_misses)} of {numeric_fails} numeric-target failure(s) equal their "
+                  f"target as a number; the scorer may be rejecting a correct value in the wrong form",
+                  n=numeric_fails, examples=numeric_misses[:8])
 
     # R7: distinguishable from guessing. The floor is the WORSE of uniform
     # per-item chance and the informed-guesser cap (always answer the modal

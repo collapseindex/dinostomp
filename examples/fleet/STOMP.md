@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**OK**: no failures, 1 warning(s) (30 of 30 ran; 38 n/a of 68 declared)
+**OK**: no failures, 1 warning(s) (31 of 31 ran; 38 n/a of 69 declared)
 
 > All runs used the offline dry provider; results exercise the benchmark, not any real model.
 
@@ -134,8 +134,9 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | ok | failed answers do not contain the reference | 4 | 0 of 4 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 6 | 6 of 6 run(s) were produced by a different engine than the one auditing them (now 1507d3bc100a33ea); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 6 | 6 of 6 run(s) were produced by a different engine than the one auditing them (now 3404b533e34dd996); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
+| ok | no failed answer numerically equals its target | 44 | 0 of 44 numeric-target failure(s) equal their target as a number; the scorer may be rejecting a correct value in the wrong form |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | tool calls are not redundant | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |

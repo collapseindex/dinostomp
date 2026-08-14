@@ -275,9 +275,9 @@
     }
   },
   "coverage": {
-    "declared_total": 68,
-    "declared": 43,
-    "ran": 34,
+    "declared_total": 69,
+    "declared": 44,
+    "ran": 35,
     "skipped": [
       {
         "id": "S10",
@@ -863,7 +863,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now 1507d3bc100a33ea); re-run to get numbers this report can stand behind",
+      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now 3404b533e34dd996); re-run to get numbers this report can stand behind",
       "witnesses": 3,
       "examples": [
         "engine be4c83d7129cec32: live-grounded seed 7 (tool 0.38.0), live-oneshot seed 7 (tool 0.38.0), live-greedy seed 7 (tool 0.38.0)"
@@ -891,6 +891,15 @@
       "gating": true,
       "detail": "no record carries a graded value",
       "witnesses": 0
+    },
+    {
+      "id": "R22",
+      "slug": "numeric-miss",
+      "check": "no failed answer numerically equals its target",
+      "level": "pass",
+      "gating": false,
+      "detail": "0 of 1 numeric-target failure(s) equal their target as a number; the scorer may be rejecting a correct value in the wrong form",
+      "witnesses": 1
     },
     {
       "id": "T1",
