@@ -112,6 +112,32 @@ def test_s19_defers_an_exact_duplicate_to_s1(tmp_path):
 
 # --- scope -------------------------------------------------------------------
 
+def test_s19_names_a_contradiction_that_s7_cannot_see(tmp_path):
+    # Same question modulo a curly quote, keyed to CONFLICTING answers. S7 gates
+    # on contradictions but is exact, so it passes; S19 must escalate the finding
+    # from a soft dup to a named contradiction. This is the under-flagging half.
+    rows = _pool() + [
+        {"id": "c1", "question": "What's two plus two equal to exactly here?", "answer": "4"},
+        {"id": "c2", "question": "What’s two plus two equal to exactly here?", "answer": "5"}]
+    rep, issues, _ = lint_dataset(_jsonl(tmp_path, rows))
+    assert rep is not None, issues
+    assert finding(rep, "S7")["level"] == "pass"          # the gate cannot see it
+    s19 = finding(rep, "S19")
+    assert s19["level"] == "warn"
+    assert any("CONFLICT" in ex for ex in s19["examples"])
+
+
+def test_s19_lookalike_with_matching_answers_is_not_called_a_contradiction(tmp_path):
+    rows = _pool() + [
+        {"id": "m1", "question": "What is the boiling point of water in Celsius exactly?", "answer": "100"},
+        {"id": "m2", "question": "What is the boiling point of water in Celsius exactly?", "answer": "100"}]
+    # identical strings -> exact S1 dup, so S19 defers; add an encoding variant instead:
+    rows[-1]["question"] = "What is the boiling point of wаter in Celsius exactly?"  # Cyrillic a
+    s = s19(tmp_path, rows)
+    assert s["level"] == "warn"
+    assert not any("CONFLICT" in ex for ex in s["examples"])
+
+
 def test_s19_ignores_asset_items_that_share_a_prompt(tmp_path):
     # A classification pod asks the same question over different images; those are
     # distinct items keyed by their asset, not encoding duplicates. S19 must skip

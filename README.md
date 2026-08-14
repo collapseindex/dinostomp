@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.62.0 · Apache-2.0 · engine `3404b533e34dd996` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.62.0 · Apache-2.0 · engine `552065c84ca60d98` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -687,7 +687,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`3404b533e34dd996295beb4a0046ba5af6f7bb5ff648285be63abc0b19f572a2`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`552065c84ca60d98511a8412bf7b99fd3985341e27e5b44e0ca8026fd3432c1d`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

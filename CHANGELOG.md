@@ -2,6 +2,14 @@
 
 ### Unreleased
 
+- **S19 now names a contradiction, not just a duplicate.** When a lookalike group
+  (same question modulo an encoding variant) is keyed to CONFLICTING answers, S19
+  says so loudly. This is the more dangerous half of the finding and S7
+  (`contradictory-targets`, which gates on exactly this) cannot see it, because S7
+  keys on the byte-exact question and these differ by a smart quote or a
+  homoglyph. Motivated by F-027/F-028, which were real contradictory-key defects
+  caught only because those questions happened to be byte-identical.
+
 - **R22 `numeric-miss`.** A failed record whose answer is the same NUMBER as its
   target: an exact scorer marks "1/2" wrong against a key of "0.5", or "1,000"
   wrong against "1000", so a model that computed the right value is scored as a

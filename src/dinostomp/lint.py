@@ -1031,8 +1031,15 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
     for group in skels.values():
         if len(group) > 1 and len({_item_key(i) for i in group}) > 1:
             ids = ", ".join(str(i["id"]) for i in group)
-            lookalikes.append(f"{ids}: same question after folding lookalike characters "
-                              f"({str(group[0]['input'])[:60]!r})")
+            # A lookalike group keyed to DIFFERENT answers is not just a duplicate,
+            # it is a contradiction, and S7 (which gates on it) cannot see it,
+            # because S7 keys on the exact question and these differ by an encoding
+            # variant. Say so loudly: this is the more dangerous half of the finding.
+            targets = {" | ".join(sorted(_targets_of(i))) for i in group}
+            conflict = (" and their ANSWERS CONFLICT, a contradiction S7 cannot see because "
+                        "the questions are not byte-identical") if len(targets) > 1 else ""
+            lookalikes.append(f"{ids}: same question after folding lookalike characters"
+                              f"{conflict} ({str(group[0]['input'])[:60]!r})")
     if len(items) < 2:
         rep.not_applicable("S19", "a single item cannot collide with another")
     else:

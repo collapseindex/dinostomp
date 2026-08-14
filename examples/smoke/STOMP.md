@@ -100,7 +100,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 1 | 1 of 1 run(s) were produced by a different engine than the one auditing them (now 3404b533e34dd996); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 1 | 1 of 1 run(s) were produced by a different engine than the one auditing them (now 552065c84ca60d98); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | no failed answer numerically equals its target | 0 | no failed record has a numeric target, so there is no numeric-equivalent miss to look for |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
