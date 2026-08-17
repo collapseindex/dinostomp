@@ -192,11 +192,23 @@ which bytes judged them, and re-publishing it should be a decision rather than a
 side effect.
 
 Examples and reports are parity-tested too. After a change that moves any
-reported number:
+reported number, regenerate all ten committed reports:
 
 ```bash
-for p in smoke fleet iris agent judge; do dinostomp report examples/$p/eval.yaml; done
+for p in smoke fleet graded hedge iris judge agent live-agent mediated presentation; do
+  dinostomp report examples/$p/eval.yaml --no-extensions
+done
 ```
+
+`--no-extensions` is not optional here. CI installs `.[dev,vision]` and nothing
+else, so a report regenerated on a machine that happens to have an extension
+installed records a dependency the verifier will not have, and comes back
+`UNVERIFIABLE` for everybody except its author. A report naming no extensions
+re-derives core-only, which is why it still verifies on a machine that has one.
+
+The pod list is the whole list on purpose. Regenerating a subset leaves the rest
+carrying numbers from an older engine, and `dinostomp verify` is the only thing
+that will tell you, one pod at a time.
 
 ## Style
 
