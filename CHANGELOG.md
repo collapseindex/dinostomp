@@ -2,6 +2,18 @@
 
 ### Unreleased
 
+- **New check S21 `rows-audited`: the audit says how much of the file it read.**
+  A row with no question or no answer cannot be audited, so it was dropped, and
+  the count went to one line of prose on stdout. It never reached `STOMP.json`
+  and never touched the verdict, so a Sample Superstore CSV with the People and
+  Returns tables concatenated under the Orders header came back MECHANICALLY
+  SOUND with exit 0 over 807 rows it had silently discarded
+  ([D-079](FINDINGS.md#d-079)). S21 now states the number on every audit, passing
+  or failing, and gates above `dropped_rows_max` (1% of the file). Both scopes
+  report it: the pod path loads all-or-nothing, so it passes there by
+  construction and says why. Battery is 74 checks, 19 of them data-scoped.
+  Ledger: 159 entries (F 49, D 79, N 31).
+
 - **`audits/cuda-agent`: the first audit here whose subject is a training corpus
   and an RL reward instrument** rather than an eval and its scorer. CUDA Agent
   (arXiv:2602.24286) against its released CUDA-Agent-Ops-6K and KernelBench, no

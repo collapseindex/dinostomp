@@ -501,3 +501,65 @@ def test_a_real_choices_column_produces_no_such_note(tmp_path):
     report, issues, ctx = lint_dataset(p)
     assert report is not None
     assert "FREE-FORM" not in " ".join(ctx.get("notes") or [])
+
+
+# --- S21 rows-audited ---------------------------------------------------------
+#
+# The invariant in this module's own docstring, finally enforced. A public
+# Superstore CSV concatenates the People and Returns tables underneath the
+# Orders header; with Profit as the target those 807 rows have no answer, so
+# they were dropped, mentioned in one line of prose, and the file was reported
+# MECHANICALLY SOUND with exit 0 (D-079).
+
+def orders_plus_two_other_tables(tmp_path, n_orders=900, n_appended=100):
+    """The real defect shape: one header, three different tables under it."""
+    rows = [[str(i), f"CA-2015-{i:05d}", "Consumer", str(round(3.5 * i, 2))]
+            for i in range(n_orders)]
+    # A second schema, whose columns do not line up with the header at all.
+    rows.append(["Person", "Region", "", ""])
+    rows += [[f"Anna {i}", "West", "", ""] for i in range(n_appended - 1)]
+    return write_csv(tmp_path, ["Row ID", "Order ID", "Segment", "Profit"], rows)
+
+
+def test_a_second_schema_appended_under_the_header_is_not_a_sound_dataset(tmp_path):
+    src = orders_plus_two_other_tables(tmp_path)
+    report, _, ctx = lint_dataset(src, field_overrides={"target": "Profit"})
+    f = finding(report, "S21")
+    assert f["level"] == "fail", f
+    assert report["summary"]["verdict"] == "broken"
+    assert "100" in f["detail"] and "1000" in f["detail"]
+
+
+def test_the_dropped_count_reaches_the_report_not_only_the_terminal(tmp_path):
+    """The half that made this worse than it looked: STOMP.json had no trace."""
+    src = orders_plus_two_other_tables(tmp_path)
+    report, _, _ = lint_dataset(src, field_overrides={"target": "Profit"})
+    blob = json.dumps(report)
+    assert "dropped" in blob.lower()
+    ev = finding(report, "S21")["evidence"]
+    assert ev["rows_read"] == 1000 and ev["rows_dropped"] == 100
+
+
+def test_a_file_where_nothing_was_dropped_says_so(tmp_path):
+    """A pass has to mean something: every row was audited, and the count says it."""
+    rows = [[str(i), f"CA-{i:05d}", "Consumer", str(round(3.5 * i, 2))] for i in range(200)]
+    src = write_csv(tmp_path, ["Row ID", "Order ID", "Segment", "Profit"], rows)
+    report, _, _ = lint_dataset(src, field_overrides={"target": "Profit"})
+    f = finding(report, "S21")
+    assert f["level"] == "pass"
+    assert f["evidence"]["rows_dropped"] == 0
+
+
+def test_one_stray_row_is_recorded_without_gating_the_dataset(tmp_path):
+    """A single unparseable row in a thousand is housekeeping, not a defect.
+
+    It still has to be COUNTED, because the difference between this case and
+    the one above is a rate, and a rate nobody can see is a rate nobody can
+    argue with.
+    """
+    rows = [[str(i), f"CA-{i:05d}", "Consumer", str(round(3.5 * i, 2))] for i in range(999)]
+    rows.append(["999", "CA-00999", "Consumer", ""])
+    src = write_csv(tmp_path, ["Row ID", "Order ID", "Segment", "Profit"], rows)
+    f = finding(lint_dataset(src, field_overrides={"target": "Profit"})[0], "S21")
+    assert f["level"] == "pass"
+    assert f["evidence"]["rows_dropped"] == 1

@@ -104,6 +104,7 @@ CHECKS: list[tuple[str, str, bool, str]] = [
      "two or more items carrying a textual question"),
     ("S20", "the answer key is not dominated by one value", False,
      "20+ items carrying a target"),
+    ("S21", "the audit covers the rows it was given", True, "always"),
     ("W1", "witnesses kill the mutant scorers", False, "always"),
     ("W2", "a correct answer survives its surface form", False,
      "a scorer that accepts a constructible baseline form"),
@@ -178,6 +179,7 @@ THRESHOLDS = {
     "min_choice_items": 20,    # S3/S4/S9 need at least this many keyed choice items
     "min_checkable": MIN_EVIDENCE,   # R7/R13/C1 need at least this many scored units
     "min_leak_len": 2,         # S2 ignores 1-char targets (too many false hits)
+    "dropped_rows_max": 0.01,  # S21 gates above this share of the file left unaudited
     "near_dup_bits": 5,        # S15: dHash Hamming distance counting as a near-duplicate
     "kr20_min": 0.50,          # P1 warns below this reliability
     "negative_discrimination": -0.20,  # P2 flags items at or below this r_pb
@@ -315,6 +317,7 @@ SLUGS = {
     "S12": "asset-drift", "S13": "label-in-path", "S14": "split-leak",
     "S15": "near-dup-assets", "S16": "authorship-circularity", "S17": "target-leak",
     "S18": "numeric-dup-options", "S19": "lookalike-questions", "S20": "key-skew",
+    "S21": "rows-audited",
     "W1": "witness-coverage", "W2": "surface-form", "W3": "graded-witness",
     "W4": "scorer-fit",
     "C1": "claim-evidence",
@@ -346,7 +349,7 @@ BY_SLUG = {v: k for k, v in SLUGS.items()}
 # evidence it was given, and saying so is cheaper than an asterisk.
 SCOPE_CHECKS = {
     "data": {"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S11",
-             "S12", "S13", "S14", "S15", "S17", "S18", "S19", "S20"},
+             "S12", "S13", "S14", "S15", "S17", "S18", "S19", "S20", "S21"},
 }
 SCOPE_CHECKS["pod"] = {cid for cid, *_ in CHECKS}
 
@@ -377,6 +380,10 @@ THRESHOLD_PROVENANCE = {
     "spend_tolerance_usd": ("structural", "floating-point slack on a money comparison"),
     "shortcut_z": ("convention", "3 sigma against the per-item chance null, the usual bar for "
                                  "calling a surface feature real"),
+    "dropped_rows_max": ("judgment", "1% of a file being unauditable is the line between "
+                                     "housekeeping and a structural problem. Empirical basis: "
+                                     "all 31 fetched benchmark corpora drop ZERO rows, so any "
+                                     "material drop is unusual rather than routine"),
     "target_leak_nmi": ("judgment", "0.5 normalized mutual information: a column that resolves "
                                     "half the target's entropy is worth a human's eye. A candidate, "
                                     "not a verdict; only the author knows if it exists at predict time"),
@@ -1031,6 +1038,46 @@ def _asset_checks(rep: Reporter, items: list[dict], base_dir: Path | None) -> No
                   examples=[f"{a} ~ {b} ({d} bits)" for a, b, d in pairs[:8]],
                   evidence={"undecodable": len(undecodable), "compared": len(hashes),
                             "max_bits": int(THRESHOLDS["near_dup_bits"])})
+
+
+def _rows_audited_check(rep: Reporter, rows_read: int, rows_audited: int, *,
+                        strict_loader: bool = False) -> None:
+    """S21: how much of the file did this audit actually read?
+
+    A row with no question or no answer cannot be audited, so `build_items`
+    skips it. That is correct, and it was reported in one line of PROSE, which
+    meant the count never reached STOMP.json and never touched the verdict. A
+    public Sample Superstore CSV concatenates the People and Returns tables
+    underneath the Orders header; with Profit as the target those 807 rows have
+    no answer, so they were dropped and the file came back MECHANICALLY SOUND
+    with exit 0 (D-079). The dataset audited was not the file supplied.
+
+    A pass states the number too. "0 of 9,994 rows dropped" is a fact a reader
+    can use; a silent pass is the same output for a clean file and for a file
+    that lost a tenth of itself.
+
+    `strict_loader` is the pod path, where `load_items` refuses a dataset it
+    cannot read whole rather than dropping rows from it. The count is zero by
+    construction there, and saying WHY it is zero is the difference between a
+    guarantee and a coincidence a reader has to take on trust.
+    """
+    dropped = rows_read - rows_audited
+    share = dropped / rows_read if rows_read else 0.0
+    limit = THRESHOLDS["dropped_rows_max"]
+    if dropped:
+        detail = (f"{dropped} of {rows_read} row(s) could not be audited and were dropped for an "
+                  f"empty question or answer ({share:.1%} of the file, gate {limit:.0%}); "
+                  f"the verdict below is about the {rows_audited} row(s) that remain, not about "
+                  f"the file you supplied")
+    elif strict_loader:
+        detail = (f"0 of {rows_read} row(s) were dropped: the pod loader refuses a dataset it "
+                  f"cannot read whole, so every row in the file reached the audit")
+    else:
+        detail = f"0 of {rows_read} row(s) were dropped: every row in the file was audited"
+    rep.check("S21", share <= limit, detail, n=rows_read,
+              evidence={"rows_read": rows_read, "rows_dropped": dropped,
+                        "rows_audited": rows_audited, "dropped_share": round(share, 4),
+                        "gate": limit})
 
 
 def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> None:
@@ -3513,6 +3560,7 @@ def lint_eval(spec_path: str | Path, trust_code: bool = False,
             return None, [Issue(loc="$.scorer", message=str(exc), check="scorer")]
 
     rep = Reporter()
+    _rows_audited_check(rep, len(items), len(items), strict_loader=True)
     _item_checks(rep, items)
     _asset_checks(rep, items, base)
     _canary_check(rep, base, spec["data"])
@@ -3927,6 +3975,7 @@ def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
             item["id"] = f"row-{n:06d}"
 
     rep = Reporter()
+    _rows_audited_check(rep, len(rows), len(items))
     _item_checks(rep, items, tabular=bool(mapping.get("_tabular")))
     _asset_checks(rep, items, path.parent)
     _overlap_check(rep, items, references or {}, reference_errors)

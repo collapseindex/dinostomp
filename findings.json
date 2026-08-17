@@ -6,13 +6,13 @@
   "tool": {
     "name": "dinostomp",
     "version": "0.62.0",
-    "engine": "61d8eeef4133d369f35d87da71c45539f8257fee02038341da79ff9a5dcc7d45"
+    "engine": "d72749626c89701e5a964ee65a42c372d21e6d46bdd34f01f4e37c56dd50c59b"
   },
   "counts": {
     "F": 49,
-    "D": 78,
+    "D": 79,
     "N": 31,
-    "total": 158
+    "total": 159
   },
   "series": {
     "F": "other people's evals",
@@ -2912,6 +2912,25 @@
       "status_class": "confirmed",
       "anchor": "#d-078",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-078"
+    },
+    {
+      "id": "D-079",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "A file that lost 807 of its rows to the loader was reported MECHANICALLY SOUND",
+      "summary": "807 rows the loader could not audit were dropped with the count printed only to stdout, so a file missing 8% of itself was reported MECHANICALLY SOUND with exit 0",
+      "subject": "dinostomp",
+      "check_label": "`rows-audited` (S21)",
+      "checks": [
+        "S21"
+      ],
+      "date": "2026-08-17",
+      "date_iso": "2026-08-17",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-079",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-079"
     }
   ]
 }

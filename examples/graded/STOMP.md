@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 23 of 35 checks ran (23 of 35 ran; 38 n/a of 73 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 24 of 36 checks ran (24 of 36 ran; 38 n/a of 74 declared). Not a clean bill of health.
 
 > All runs used the offline dry provider; results exercise the benchmark, not any real model.
 
@@ -59,6 +59,7 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | n/a | every referenced asset resolves and still hashes the same | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
+| ok | the audit covers the rows it was given | 6 | 0 of 6 row(s) were dropped: the pod loader refuses a dataset it cannot read whole, so every row in the file reached the audit |
 | skip | a graded scorer witnesses its gradation | 0 | this pod ships Python that linting would have to IMPORT and therefore RUN (scorer.py); re-run with --trust-code if you have read it and accept that |
 | n/a | every typed claim's evidence requirements hold | 0 | no typed claims declared |
 | ok | runs match the spec, data, and scorer on disk (no drift) | 2 | 0 of 2 run(s) no longer match the spec, data, or scorer on disk |
@@ -106,7 +107,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 2 | 2 of 2 run(s) were produced by a different engine than the one auditing them (now 61d8eeef4133d369); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 2 | 2 of 2 run(s) were produced by a different engine than the one auditing them (now d72749626c89701e); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | no failed answer numerically equals its target | 3 | 0 of 3 numeric-target failure(s) equal their target as a number; the scorer may be rejecting a correct value in the wrong form |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -138,6 +139,11 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 - a model closes an authorship loop: claude-opus-5 is credited with items, keys, scorer, witnesses, and no review_by is declared: one author, no declared independent check
 - evidence: `{"items_by": "claude-opus-5", "keys_by": "claude-opus-5", "scorer_by": "claude-opus-5", "witnesses_by": "claude-opus-5"}`
+
+</details>
+<details><summary>[ok] the audit covers the rows it was given</summary>
+
+- evidence: `{"dropped_share": 0.0, "gate": 0.01, "rows_audited": 6, "rows_dropped": 0, "rows_read": 6}`
 
 </details>
 <details><summary>[ok] uncheckable rate is sane</summary>

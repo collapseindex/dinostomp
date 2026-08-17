@@ -95,10 +95,14 @@ def check_check_counts() -> list[str]:
 
 
 def num_word(n: int) -> str | None:
-    words = {6: "six", 10: "Ten", 14: "Fourteen", 15: "Fifteen", 16: "sixteen", 17: "seventeen", 18: "eighteen", 20: "twenty", 21: "twenty-one",
-             25: "twenty-five", 47: "forty-seven", 57: "fifty-seven", 61: "sixty-one", 62: "sixty-two", 64: "sixty-four", 65: "sixty-five", 66: "sixty-six", 67: "sixty-seven", 68: "sixty-eight", 69: "sixty-nine", 70: "seventy", 71: "seventy-one", 72: "seventy-two", 73: "seventy-three",
-             92: "ninety-two"}
-    return words.get(n)
+    """The battery size in English. Delegates to `spell` on purpose.
+
+    This was a hand-maintained dict, and adding S21 took the registry to a
+    number nobody had typed into it, so the consistency checker failed with
+    "extend num_word()" rather than with anything about the docs. That is the
+    exact failure mode `spell` was written to end, one function below.
+    """
+    return spell(n)
 
 
 _ONES = ["zero", "one", "two", "three", "four", "five", "six", "seven",

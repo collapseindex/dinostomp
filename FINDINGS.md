@@ -195,6 +195,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-076](#d-076) | dinostomp | `--against` read the reference with bare inference, so --input-field applied to one of the two files being compared and a corpus whose question column is `code` was refused | confirmed, fixed |
 | [D-077](#d-077) | dinostomp | a reference corpus was rejected for having no answer key, a field the overlap comparison never reads; every no-gold corpus was unusable as a reference | confirmed, fixed |
 | [D-078](#d-078) | dinostomp | S11 reported n/a with the reason "no reference dataset supplied" to a user who had supplied one and had it refused, in the written report rather than only on stdout | confirmed, fixed |
+| [D-079](#d-079) | dinostomp | 807 rows the loader could not audit were dropped with the count printed only to stdout, so a file missing 8% of itself was reported MECHANICALLY SOUND with exit 0 | confirmed, fixed |
 
 <!-- INDEX:END -->
 
@@ -244,6 +245,7 @@ at fault.
 | `S15` | [D-043](#d-043), [N-017](#n-017) |
 | `S19` | [F-040](#f-040), [F-043](#f-043), [F-044](#f-044) |
 | `S20` | [F-040](#f-040) |
+| `S21` | [D-079](#d-079) |
 | `T1` | [D-027](#d-027) |
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
@@ -254,7 +256,7 @@ at fault.
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078) |
+| dinostomp | [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078), [D-079](#d-079) |
 | dinocorpus | [N-021](#n-021), [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | AISafetyLab | [F-033](#f-033), [F-034](#f-034), [F-035](#f-035) |
 | CUDA-Agent-Ops-6K | [F-047](#f-047), [F-048](#f-048), [N-031](#n-031) |
@@ -326,7 +328,7 @@ at fault.
 `dup-questions` (S1) · 2026-07 · confirmed
 
 The battery's first contact with real data was the most famous dataset in
-statistics. Transcript re-run under the current 73-check battery; the original
+statistics. Transcript re-run under the current 74-check battery; the original
 catch happened at 23 checks.
 
 ```
@@ -5210,6 +5212,32 @@ else's dataset, which is the third time an outside artifact has produced a defec
 here that the pods in this repo never could. Reproduce: `pytest
 tests/test_overlap.py -k "does_not_read_as_no_reference"`.
 
+### D-079
+**A file that lost 807 of its rows to the loader was reported MECHANICALLY SOUND**
+`rows-audited` (S21) · 2026-08-17 · confirmed, fixed
+
+The public Sample Superstore CSV concatenates the People and Returns tables
+underneath the Orders header. With `Profit` as the target, those 807 rows carry
+no answer, so `build_items` dropped them, which is the correct thing to do with
+a row that cannot be audited. The count then went into one line of PROSE on
+stdout. It never reached `STOMP.json`, and it never touched the verdict, so the
+file came back **MECHANICALLY SOUND** with exit 0.
+
+The dataset that was audited was not the file that was supplied, and nothing in
+the written report said so. This is the same shape as [D-078](#d-078) one
+release earlier: a fact the run knew, printed to a terminal that outlives
+nothing, while the artifact a reader actually keeps recorded a clean bill of
+health. A silent drop is worse than a loud one precisely because the tool's
+whole claim is that the verdict covers what you handed it.
+
+S21 now states the number on every audit, passing or failing, at both scopes.
+A pass reads "0 of 9,994 row(s) were dropped", which is a fact a reader can
+use; a silent pass is the same output for a clean file and for a file that lost
+a tenth of itself. Above `dropped_rows_max` (1% of the file) it gates. The
+empirical basis for that line: all 31 fetched benchmark corpora drop ZERO rows,
+so any material drop is unusual rather than routine. Reproduce: `pytest
+tests/test_dataset.py -k "second_schema_appended"`.
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -5233,9 +5261,9 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **31** |
-| defects in dinostomp itself (**D**) | **78** |
+| defects in dinostomp itself (**D**) | **79** |
 
-Seventy-three to twenty-nine. That ratio is the useful number to publish, and it is the
+Seventy-nine to forty-nine. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
 run it anyway is the direction every self-defect took: five made **gating**
   checks fire on correct data, one fabricated a blind accuracy, two were about to
@@ -5245,7 +5273,7 @@ health over runs from two different engines, four were caught only when the tool
 ([D-014](#d-014)) was a bug the project had already found and fixed elsewhere,
 written again three releases later in a different check.
 
-The most common shape across all seventy-three is worth stating once: **a check that
+The most common shape across all seventy-nine is worth stating once: **a check that
 compared the wrong thing and returned a confident answer about it.**
 
 ## Adding an entry

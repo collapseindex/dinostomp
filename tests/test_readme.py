@@ -23,6 +23,21 @@ DOCS = "\n".join((REPO / f).read_text(encoding="utf-8") for f in DOC_FILES)
 README = DOCS
 
 
+def _consistency():
+    """scripts/check_consistency.py as a module, for its number speller.
+
+    Importing it beats copying the speller: two copies of "what is 74 in
+    English" is the drift this file exists to catch.
+    """
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "check_consistency", REPO / "scripts" / "check_consistency.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def rerun_pod(name: str, tmp_path: Path, capsys, probe: bool = False) -> str:
     src = REPO / "examples" / name
     dst = tmp_path / name
@@ -39,19 +54,19 @@ def rerun_pod(name: str, tmp_path: Path, capsys, probe: bool = False) -> str:
 @pytest.mark.parametrize("pod, quoted_lines, probe", [
     ("smoke", [
         "smoke-arith | dry-strong | complete | acc 1.000 [0.61, 1.00] on 6 checkable",
-        "INCOMPLETE: no failures, but only 20 of 32 checks ran (41 n/a of 73 declared).",
+        "INCOMPLETE: no failures, but only 21 of 33 checks ran (41 n/a of 74 declared).",
     ], False),
     ("fleet", [
         "fleet-arith | dry-alpha | complete | acc 1.000 [0.86, 1.00] on 24 checkable",
         "0 of 6 model(s) score no better than guessing; fleet spans 38% to 100% vs chance ~4% (modal target floor)",
-        "MECHANICALLY SOUND: no integrity findings, full coverage (34 of 34 ran; 39 n/a of 73 declared)",
+        "MECHANICALLY SOUND: no integrity findings, full coverage (35 of 35 ran; 39 n/a of 74 declared)",
     ], False),
     ("iris", [
-        "(33 of 33 ran; 40 n/a of 73 declared)",
+        "(34 of 34 ran; 40 n/a of 74 declared)",
     ], False),
     ("agent", [
         "agent-capitals | agent-grounded | complete | acc 0.923 [0.76, 0.98] on 26 checkable",
-        "INCOMPLETE: no failures, but only 41 of 46 checks ran (27 n/a of 73 declared).",
+        "INCOMPLETE: no failures, but only 42 of 47 checks ran (27 n/a of 74 declared).",
     ], True),
 ])
 def test_readme_transcripts_match_reality(pod, quoted_lines, probe, tmp_path, capsys):
@@ -308,15 +323,18 @@ def test_readme_data_scope_prose_matches_the_registry():
     """
     from dinostomp.lint import CHECKS, SCOPE_CHECKS
 
-    words = {10: "Ten", 14: "Fourteen", 47: "forty-seven", 48: "forty-eight", 50: "fifty", 51: "fifty-one", 52: "fifty-two", 53: "fifty-three", 15: "Fifteen", 16: "Sixteen", 17: "Seventeen", 18: "Eighteen",
-             57: "fifty-seven", 61: "sixty-one", 62: "sixty-two", 64: "sixty-four", 65: "sixty-five", 66: "sixty-six", 67: "sixty-seven", 68: "sixty-eight", 69: "sixty-nine", 70: "seventy", 71: "seventy-one", 72: "seventy-two", 73: "seventy-three", 54: "fifty-four", 55: "fifty-five"}
+    # `spell` rather than a dict of the numbers that happened to be true when
+    # this was written. The dict version stopped at seventy-three and adding
+    # S21 made it a KeyError instead of a failing assertion, which is a check
+    # that breaks rather than one that reports.
+    spell = _consistency().spell
     data_n = len(SCOPE_CHECKS["data"])
     rest_n = len(CHECKS) - data_n
     # The sentence wraps, so compare against normalised whitespace.
     flat = " ".join(README.split())
-    assert f"{words[data_n]} of the {words[len(CHECKS)]} checks read data at rest" in flat, (
+    assert f"{spell(data_n).capitalize()} of the {spell(len(CHECKS))} checks read data at rest" in flat, (
         f"the data-scope sentence disagrees with the registry ({data_n} of {len(CHECKS)})")
-    assert f"for the other {words[rest_n]}" in flat, (
+    assert f"for the other {spell(rest_n)}" in flat, (
         f"the 'other N' sentence disagrees with the registry ({rest_n})")
 
 

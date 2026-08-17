@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.62.0 · Apache-2.0 · engine `61d8eeef4133d369` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.62.0 · Apache-2.0 · engine `d72749626c89701e` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -25,15 +25,15 @@ Each of those is one entry in **[FINDINGS.md](FINDINGS.md)**, with the item id,
 the verbatim data and the command that reproduces it. Every `F` re-derives in
 seconds, offline, for free, using the command in the next section.
 
-**[FINDINGS.md](FINDINGS.md): 158 entries, all permanent, none deleted.**
+**[FINDINGS.md](FINDINGS.md): 159 entries, all permanent, none deleted.**
 
 | series | count | what it records |
 |---|--:|---|
 | **F** | 49 | findings in other people's evals |
-| **D** | 78 | defects in dinostomp itself |
+| **D** | 79 | defects in dinostomp itself |
 | **N** | 31 | negative results, recorded rather than dropped |
 
-**Seventy-eight of the 158 are against this tool**, which is the number to
+**Seventy-nine of the 159 are against this tool**, which is the number to
 read first. A validator that only publishes other people's mistakes is telling
 you which mistakes it is willing to look for. Included there: the entry it
 retracted after its own killer control killed it ([N-013](FINDINGS.md#n-013)),
@@ -47,7 +47,7 @@ graded against an answer key somebody outside this repo wrote**
 against ciFAIR's hand-annotated CIFAR-10 duplicates, and
 [N-019](FINDINGS.md#n-019) against MT-Bench's human preference votes). All three
 produced the least flattering numbers in the file, which is the argument for
-more of them. Seventy-eight self-found defects is still self-grading, and that
+more of them. Seventy-nine self-found defects is still self-grading, and that
 number moves when an outsider runs it rather than when the total goes up.
 [Break it, please](CONTRIBUTING.md#break-it-please).
 
@@ -76,7 +76,7 @@ One invariant runs under all of it: **nothing becomes evidence merely because an
 earlier stage said it was.** Summaries are recomputed from records, verdicts are
 re-scored from recorded text, and the engine hashes itself into its own output.
 
-Seventy-three checks, each negative-tested to prove it fires, most invisible until
+Seventy-four checks, each negative-tested to prove it fires, most invisible until
 something breaks. Each stage above is a place the ledger has a receipt from:
 
 | stage | what goes wrong there |
@@ -190,8 +190,8 @@ BROKEN AT DATA SCOPE: 2 gated finding(s) in the dataset itself
 
 That is a real run against the real MMLU test split, and `mmlu-02178` is the
 subtraction item above: the answer is on its option list twice, so a model that
-computes it correctly picks the wrong letter half the time. Eighteen of the
-seventy-three checks read data at rest, which is why this costs nothing.
+computes it correctly picks the wrong letter half the time. Nineteen of the
+seventy-four checks read data at rest, which is why this costs nothing.
 
 **Five minutes, for the other fifty-five.** They need evidence: outputs, a
 scorer, a ledger, a claim.
@@ -255,7 +255,7 @@ Four things then happen that you did not ask for, and they are the product:
   between seeds is a finding; another moving 11.5 points is not, if its sample
   is smaller. The battery does that arithmetic so nobody has to eyeball it.
 - **Coverage is stated, always.** `MECHANICALLY SOUND: no integrity findings,
-  full coverage (34 of 34 ran; 39 n/a of 73 declared)` is a different claim from
+  full coverage (35 of 35 ran; 39 n/a of 74 declared)` is a different claim from
   a green tick, and the difference is printed every time.
 - **Nothing is trusted downstream of the run.** Summaries are recomputed from
   records, verdicts are re-scored offline, and hand-editing either is a gated
@@ -687,7 +687,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`61d8eeef4133d369f35d87da71c45539f8257fee02038341da79ff9a5dcc7d45`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`d72749626c89701e5a964ee65a42c372d21e6d46bdd34f01f4e37c56dd50c59b`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 
@@ -696,7 +696,7 @@ fee for a new check and the rules a patch may not remove. [Apache-2.0](LICENSE).
 
 <sub>Built and maintained by one person, unfunded. If it caught something in your
 eval, [sponsorship](https://github.com/sponsors/collapseindex) buys time to keep
-pointing it at real benchmarks and publishing what it finds, including the seventy-eight
+pointing it at real benchmarks and publishing what it finds, including the seventy-nine
   findings against itself. Adversarial pods and bug reports are worth more than
 money and are always free:
 [break it, please](CONTRIBUTING.md#break-it-please).</sub>

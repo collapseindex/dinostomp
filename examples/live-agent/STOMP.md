@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 36 of 46 checks ran (36 of 46 ran; 27 n/a of 73 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 37 of 47 checks ran (37 of 47 ran; 27 n/a of 74 declared). Not a clean bill of health.
 
 ## Results
 
@@ -75,6 +75,7 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | n/a | every referenced asset resolves and still hashes the same | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
+| ok | the audit covers the rows it was given | 24 | 0 of 24 row(s) were dropped: the pod loader refuses a dataset it cannot read whole, so every row in the file reached the audit |
 | n/a | a graded scorer witnesses its gradation | 0 | this scorer does not emit intermediate partial credit, so there is no gradation to witness |
 | n/a | every typed claim's evidence requirements hold | 0 | no typed claims declared |
 | ok | runs match the spec, data, and scorer on disk (no drift) | 3 | 0 of 3 run(s) no longer match the spec, data, or scorer on disk |
@@ -122,7 +123,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | warn | failed answers do not contain the reference | 2 | 2 of 2 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 3 | 3 of 3 run(s) were produced by a different engine than the one auditing them (now 61d8eeef4133d369); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 3 | 3 of 3 run(s) were produced by a different engine than the one auditing them (now d72749626c89701e); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | no failed answer numerically equals its target | 1 | 0 of 1 numeric-target failure(s) equal their target as a number; the scorer may be rejecting a correct value in the wrong form |
 | warn | passing answers are grounded in tool evidence | 3 | 2 of 3 target(s) pass items whose answer does not APPEAR in their own evidence (6 such answer(s) in total). This is co-occurrence, not causation: an answer recalled from memory that also happens to appear in a retrieved snippet counts as grounded here, so this count is a floor |
@@ -153,6 +154,11 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 <details><summary>[ok] the answer key is not dominated by one value</summary>
 
 - evidence: `{"modal_share": 0.083, "modal_value": "oxygen", "n_distinct": 22}`
+
+</details>
+<details><summary>[ok] the audit covers the rows it was given</summary>
+
+- evidence: `{"dropped_share": 0.0, "gate": 0.01, "rows_audited": 24, "rows_dropped": 0, "rows_read": 24}`
 
 </details>
 <details><summary>[warn] witnesses kill the mutant scorers</summary>

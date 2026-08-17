@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**OK**: no failures, 1 warning(s) (33 of 33 ran; 40 n/a of 73 declared)
+**OK**: no failures, 1 warning(s) (34 of 34 ran; 40 n/a of 74 declared)
 
 > All runs used the offline dry provider; results exercise the benchmark, not any real model.
 
@@ -81,6 +81,7 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | n/a | every referenced asset resolves and still hashes the same | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
+| ok | the audit covers the rows it was given | 149 | 0 of 149 row(s) were dropped: the pod loader refuses a dataset it cannot read whole, so every row in the file reached the audit |
 | n/a | a graded scorer witnesses its gradation | 0 | this scorer does not emit intermediate partial credit, so there is no gradation to witness |
 | n/a | every typed claim's evidence requirements hold | 0 | no typed claims declared |
 | ok | runs match the spec, data, and scorer on disk (no drift) | 6 | 0 of 6 run(s) no longer match the spec, data, or scorer on disk |
@@ -128,7 +129,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | ok | failed answers do not contain the reference | 5 | 0 of 5 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 6 | 6 of 6 run(s) were produced by a different engine than the one auditing them (now 61d8eeef4133d369); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 6 | 6 of 6 run(s) were produced by a different engine than the one auditing them (now d72749626c89701e); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | no failed answer numerically equals its target | 0 | no failed record has a numeric target, so there is no numeric-equivalent miss to look for |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -159,6 +160,11 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 <details><summary>[ok] the answer key is not dominated by one value</summary>
 
 - evidence: `{"modal_share": 0.336, "modal_value": "setosa", "n_distinct": 3}`
+
+</details>
+<details><summary>[ok] the audit covers the rows it was given</summary>
+
+- evidence: `{"dropped_share": 0.0, "gate": 0.01, "rows_audited": 149, "rows_dropped": 0, "rows_read": 149}`
 
 </details>
 <details><summary>[ok] witnesses kill the mutant scorers</summary>

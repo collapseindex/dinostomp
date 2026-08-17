@@ -45,6 +45,12 @@
       "provenance": "judgment",
       "basis": "2 characters before a target is long enough to 'appear' in a question"
     },
+    "dropped_rows_max": {
+      "value": 0.01,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "1% of a file being unauditable is the line between housekeeping and a structural problem. Empirical basis: all 31 fetched benchmark corpora drop ZERO rows, so any material drop is unusual rather than routine"
+    },
     "near_dup_bits": {
       "value": 5.0,
       "source": "default",
@@ -317,9 +323,9 @@
     }
   },
   "coverage": {
-    "declared_total": 73,
-    "declared": 46,
-    "ran": 41,
+    "declared_total": 74,
+    "declared": 47,
+    "ran": 42,
     "skipped": [
       {
         "id": "S10",
@@ -451,7 +457,12 @@
         "id": "P14",
         "reason": "no item declares a `subskill`; there is no partition to test"
       }
-    ]
+    ],
+    "extensions": {
+      "loaded": 1,
+      "validated": 1,
+      "unvalidated": 0
+    }
   },
   "summary": {
     "fail": 0,
@@ -649,6 +660,22 @@
         "modal_share": 0.038,
         "n_distinct": 26,
         "modal_value": "france"
+      }
+    },
+    {
+      "id": "S21",
+      "slug": "rows-audited",
+      "check": "the audit covers the rows it was given",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 of 26 row(s) were dropped: the pod loader refuses a dataset it cannot read whole, so every row in the file reached the audit",
+      "witnesses": 26,
+      "evidence": {
+        "rows_read": 26,
+        "rows_dropped": 0,
+        "rows_audited": 26,
+        "dropped_share": 0.0,
+        "gate": 0.01
       }
     },
     {
@@ -920,7 +947,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 61d8eeef4133d369); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now d72749626c89701e); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine 050e2f343915e1b9: agent-grounded seed 42 (tool 0.57.1), agent-lazy seed 42 (tool 0.57.1), agent-narrow seed 42 (tool 0.57.1) and 1 more"
@@ -1240,6 +1267,161 @@
       "gating": false,
       "detail": "no item declares a `subskill`; there is no partition to test",
       "witnesses": 0
+    }
+  ],
+  "extensions": [
+    {
+      "name": "dinostomp-aei",
+      "version": "0.1.0",
+      "sha256": "4e46c6005a4e3c7e54a4c2dfb8b40be81abbf10f6c31e1a08a2b7efb414ff6b8",
+      "checks": [
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5",
+        "A6",
+        "A7",
+        "A8",
+        "A9",
+        "A10",
+        "A11"
+      ],
+      "validated": true
+    }
+  ],
+  "extension_findings": [
+    {
+      "check_id": "x:dinostomp-aei:A1",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "the file carries exactly the documented columns",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A2",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "every metric, geo level and category is one the README documents",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A3",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "no value exceeds the documented two decimal places",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A4",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "no value falls outside the range its documented unit permits",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A5",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "no cell is published twice at the same grain",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A6",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "partition families sum to 100 wherever the release declares that they do",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A7",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "no row sits deeper than its category's documented hierarchy",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A8",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "reporting periods tile as half-open calendar months",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A9",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "every geo_id matches the form its geo_level documents",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A10",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "node_name and node_external_id agree one-to-one",
+      "gating": false,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A11",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "how much of each `pct` distribution was actually published",
+      "gating": false,
+      "extension": "dinostomp-aei",
+      "validated": true
     }
   ],
   "inputs": {
