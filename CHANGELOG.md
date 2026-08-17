@@ -2,6 +2,33 @@
 
 ### Unreleased
 
+- **`audits/cuda-agent`: the first audit here whose subject is a training corpus
+  and an RL reward instrument** rather than an eval and its scorer. CUDA Agent
+  (arXiv:2602.24286) against its released CUDA-Agent-Ops-6K and KernelBench, no
+  GPU, no API calls, $0.00. Four findings: 352 of 6,000 training samples are
+  byte-identical duplicates ([F-047](FINDINGS.md#f-047)); 550 of 5,929 rows
+  declare an operator absent from their own code
+  ([F-048](FINDINGS.md#f-048)); the anti-reward-hacking guard patches `dir(F)`
+  and 11 of 13 routes to a torch operator survive it, including any name
+  imported before it runs ([F-049](FINDINGS.md#f-049)); and their
+  decontamination claim HOLDS under an independent instrument, published with
+  the control that shows what the check cannot see
+  ([N-031](FINDINGS.md#n-031)). Ledger: 158 entries (F 49, D 78, N 31).
+
+- **`--against` works on corpora that are not shaped like an MCQ pod.** Three
+  defects, all found in one sitting by pointing S11 at an outside reference for
+  the first time (CUDA-Agent-Ops-6K against KernelBench). The reference is now
+  read with the same `--input-field` / `--target-field` the audited file gets,
+  for any column it has, and an override naming a column it does not have is
+  dropped rather than raised ([D-076](FINDINGS.md#d-076)). A reference no longer
+  needs an answer key, because `comparable()` compares questions and options and
+  never reads the target; keyless items keep their choices and are no longer
+  dropped by the empty-target guard ([D-077](FINDINGS.md#d-077)). And S11 no
+  longer tells a user that no reference was supplied when one was supplied and
+  refused: the n/a reason names the refusal, in the written report and not only
+  on stdout ([D-078](FINDINGS.md#d-078)). The CLI prints which columns a
+  reference was read as. `load_reference` returns `(items, errors, notes)`.
+
 - **P14 `subskill-discriminant`: do the declared subskills actually separate in the
   responses?** The discriminant leg of construct validity, judge-free. When items
   carry a `subskill` label (an MMLU subject, a BBH task) and a per-subskill

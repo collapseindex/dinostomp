@@ -559,7 +559,11 @@ def build_items(rows: list[dict], mapping: dict[str, str], separator: str | None
     """Canonical items from raw rows. Returns (items, notes)."""
     notes: list[str] = []
     id_col = mapping.get("id")
-    in_col, tgt_col = mapping["input"], mapping["target"]
+    # `target` is absent only for a reference corpus loaded for the overlap
+    # check, which compares questions and never reads an answer key (D-077).
+    # Every audited dataset still gets a target or a refusal, because
+    # infer_mapping raises before this is reached.
+    in_col, tgt_col = mapping["input"], mapping.get("target")
     ch_col = mapping.get("choices")
     items = []
     key_styles: set[str] = set()
@@ -606,7 +610,14 @@ def build_items(rows: list[dict], mapping: dict[str, str], separator: str | None
             raw = row.get(ch_col)
             if isinstance(raw, str) and separator in raw:
                 choices = [c.strip() for c in raw.split(separator) if c.strip()]
-        if choices:
+        if tgt_col is None:
+            # Keyless: a reference corpus for the overlap check (D-077). Its
+            # options still travel, because `comparable()` compares the question
+            # WITH its options, but there is no key to resolve them against.
+            if choices:
+                item["choices"] = choices
+            target = ""
+        elif choices:
             item["choices"] = choices
             target, resolved = _resolve_choice_key(
                 row, tgt_col, choices,
@@ -623,7 +634,9 @@ def build_items(rows: list[dict], mapping: dict[str, str], separator: str | None
         # and comparing str(target) against "None" silently deleted a perfectly
         # good item. Dropping data quietly is the flattering direction: fewer
         # items is fewer chances for a check to find anything.
-        missing = target is None or (isinstance(target, str) and not target.strip())             or (isinstance(target, list) and not target)
+        missing = tgt_col is not None and (
+            target is None or (isinstance(target, str) and not target.strip())
+            or (isinstance(target, list) and not target))
         item["target"] = target if isinstance(target, list) else str(target).strip()
         # An item with an asset needs no inline prompt: a classification pod's
         # item IS the image. Requiring `input` here would drop every one of them

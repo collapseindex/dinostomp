@@ -3480,7 +3480,9 @@ def pod_code_paths(spec: dict) -> list[str]:
 
 def lint_eval(spec_path: str | Path, trust_code: bool = False,
               references: dict[str, list[dict]] | None = None,
-              use_extensions: bool = True) -> tuple[dict | None, list[Issue]]:
+              use_extensions: bool = True,
+              reference_errors: list[str] | None = None
+              ) -> tuple[dict | None, list[Issue]]:
     """Stomp one eval pod. Returns (report, issues); report is None only when
     the spec, data, or scorer could not be loaded at all."""
     spec_file = Path(spec_path).resolve()
@@ -3518,7 +3520,7 @@ def lint_eval(spec_path: str | Path, trust_code: bool = False,
     rep.not_applicable("S17", "an eval pod's items are questions and answers, not a feature table; "
                               "the single-column leak scan is for a raw tabular dataset audit")
     # A pod's dataset deserves the overlap check as much as a bare file does.
-    _overlap_check(rep, items, references or {})
+    _overlap_check(rep, items, references or {}, reference_errors)
 
     # W1: mutation-test the witnesses. The gate proves the scorer can fail;
     # this measures whether the witnesses would notice a scorer failing WRONG.
@@ -3845,7 +3847,8 @@ def _extension_only_report(path: Path, reason: str, loaded: list, ext_findings: 
 def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
                  separator: str | None = None,
                  references: dict[str, list[dict]] | None = None,
-                 use_extensions: bool = True
+                 use_extensions: bool = True,
+                 reference_errors: list[str] | None = None
                  ) -> tuple[dict | None, list[Issue], dict]:
     """Stomp a bare dataset: no spec, no scorer, no runs, no money.
 
@@ -3926,7 +3929,7 @@ def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
     rep = Reporter()
     _item_checks(rep, items, tabular=bool(mapping.get("_tabular")))
     _asset_checks(rep, items, path.parent)
-    _overlap_check(rep, items, references or {})
+    _overlap_check(rep, items, references or {}, reference_errors)
 
     # S17: the trench-coat detector. A raw table can carry a column that all but
     # determines the target and would not be known at prediction time. This is
@@ -4084,15 +4087,28 @@ def _template_checks(rep: Reporter, probes: list[dict], real_runs: list[dict]) -
               evidence={"framings": shared_framings, "reversals": len(reversals)})
 
 
-def _overlap_check(rep: Reporter, items: list[dict], references: dict) -> None:
+def _overlap_check(rep: Reporter, items: list[dict], references: dict,
+                   reference_errors: list[str] | None = None) -> None:
     """S11: are these items already in a dataset you were handed?
 
     n/a without a reference, because "no overlap found against nothing" is the
     kind of pass that teaches people a green line means safety. The finding
     text carries the limit too: overlap is evidence about the corpora compared,
     and silence here is not evidence about a training set.
+
+    A reference that WAS supplied and could not be read gets its own reason.
+    Telling someone no reference was supplied when they supplied one sends them
+    to fix the flag they already typed, and it reads as "nothing to compare"
+    when the truth is "the comparison did not run" (D-078).
     """
     if not references:
+        if reference_errors:
+            rep.not_applicable(
+                "S11", f"a reference dataset WAS supplied and was refused, so this "
+                       f"comparison never ran: {'; '.join(reference_errors)}. "
+                       f"Name its columns with --input-field / --target-field, which "
+                       f"apply to the reference for any column it has.")
+            return
         rep.not_applicable("S11", "no reference dataset supplied; pass --against <file> to "
                                   "compare these items against a corpus you have. This never "
                                   "checks training data, and cannot.")

@@ -106,6 +106,40 @@ also produce.
   from merely similar images. Fetched by `benchmarks/cifair/fetch.py`, licensed
   CC-BY-SA, not vendored.
 
+## Artifacts audited outside the benchmark pods
+
+The `audits/` directory holds audits of things that are not eval pods: graders,
+refusal classifiers, agent harnesses, and one training corpus. Each is driven by
+`audits/<name>/audit.py`, which imports the subject's own code and runs it
+unmodified rather than reimplementing it, and nothing is vendored. Every subject
+is pinned by repository and commit so a reader can fetch the same bytes.
+
+| subject | source | pinned at |
+|---|---|---|
+| CUDA Agent | Dai, W., Wu, H., Yu, Q. et al. (2026). *CUDA Agent: Large-Scale Agentic RL for High-Performance CUDA Kernel Generation.* [arXiv:2602.24286](https://arxiv.org/abs/2602.24286). ByteDance Seed / Institute for AI Industry Research, Tsinghua University. | repo `BytedTsinghua-SIA/CUDA-Agent` @ `473025c8`; no licence file in the repo |
+| CUDA-Agent-Ops-6K | The 6,000-sample synthesised training corpus released with the above, `BytedTsinghua-SIA/CUDA-Agent-Ops-6K`. A TRAINING set, not an eval: it carries no answer key, and the audit reads it as data at rest. | CC-BY-4.0, per the dataset card |
+| KernelBench | Ouyang, A., Guo, S., Arora, S., Zhang, A. L., Hu, W., Ré, C. & Mirhoseini, A. (2025). *KernelBench: Can LLMs Write Efficient GPU Kernels?* [arXiv:2502.10517](https://arxiv.org/abs/2502.10517) | repo `ScalingIntelligence/KernelBench` @ `423217d9`, MIT. Used here as the REFERENCE corpus for [N-031](FINDINGS.md#n-031), not as an audit target |
+| SWE-bench | `https://github.com/swe-bench/SWE-bench` | commit `c7fd5abffe0b2086a8bb9389d23c47d930ef571f` |
+| DeepSWE | `https://github.com/datacurve-ai/deep-swe` | commit `435ee89ec2f2e2289f33b0da4f992f0b7b7266b9` |
+| HarmBench | `https://github.com/centerforaisafety/HarmBench` | commit `8e1604d1171fe8a48d8febecd22f600e462bdcdd` |
+| JailbreakBench | `https://github.com/JailbreakBench/jailbreakbench` | commit `23dbdf6b19650521604456229bc1d9c4156c85c1` |
+| StrongREJECT | `https://github.com/alexandrasouly/strongreject` | commit `f7cad6c17e624e21d8df2278e918ae1dddb4cb56` |
+| AISafetyLab | `https://github.com/thu-coai/AISafetyLab` | commit `3fd15737dee5c6858466162d6a68e6cb6f996b27` |
+| garak | `https://github.com/NVIDIA/garak` | commit `b1e0101a177981cc423455448fd745be88b87916` |
+
+The lower seven rows record the artifact each audit actually ran against, which
+is what its findings are about. Several have accompanying papers that are not
+cited here yet; a commit is the stronger identifier for an audit of *code*, and
+the gap in the paper column is a gap rather than a claim that none exists.
+
+The same scope note as the benchmark table applies, and applies harder here.
+CUDA Agent is a speed result and no audit in this repo checks a speedup:
+[F-047](FINDINGS.md#f-047) to [F-049](FINDINGS.md#f-049) and
+[N-031](FINDINGS.md#n-031) are about a released dataset and a released
+verification script. [N-031](FINDINGS.md#n-031) in particular records that their
+decontamination claim SURVIVED an independent check, which is the kind of result
+that only gets published if negative results are in the ledger by default.
+
 ## Failure modes the battery was built against
 
 The trials are **not** enumerated from the check registry. They are drawn from

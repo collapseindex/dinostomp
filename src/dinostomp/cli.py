@@ -333,16 +333,22 @@ def _stomp_dataset(args) -> int:
                  "choices": getattr(args, "choices_field", None)}
     references, ref_errors = {}, []
     for ref in (getattr(args, "against", None) or []):
-        ref_items, errs = load_reference(ref)
+        # The same --input-field the audited file gets, for any column the
+        # reference actually has (D-076): two files being compared usually share
+        # a header, and when they do not the override is dropped, not raised.
+        ref_items, errs, ref_notes = load_reference(ref, overrides)
         ref_errors.extend(errs)
         if ref_items:
             references[Path(ref).name] = ref_items
+        for note in ref_notes:
+            print(f"  [reference] {note}")
     for err in ref_errors:
         print(f"  [reference] skipped: {err}")
     report, issues, ctx = lint_dataset(args.spec, field_overrides=overrides,
                                        separator=getattr(args, "separator", None),
                                        references=references,
-                                       use_extensions=not getattr(args, "no_extensions", False))
+                                       use_extensions=not getattr(args, "no_extensions", False),
+                                       reference_errors=ref_errors)
     if report is None:
         print("CANNOT STOMP:")
         _print_issues(issues)
@@ -721,16 +727,20 @@ def cmd_stomp(args) -> int:
     # a cheerful verdict about the wrong thing.
     if looks_like_dataset(args.spec):
         return _stomp_dataset(args)
-    references = {}
+    references, ref_errors = {}, []
     for ref in (getattr(args, "against", None) or []):
-        ref_items, errs = load_reference(ref)
+        ref_items, errs, ref_notes = load_reference(ref)
+        ref_errors.extend(errs)
         for err in errs:
             print(f"  [reference] skipped: {err}")
+        for note in ref_notes:
+            print(f"  [reference] {note}")
         if ref_items:
             references[Path(ref).name] = ref_items
     report, issues = lint_eval(args.spec, trust_code=args.trust_code,
                                references=references,
-                               use_extensions=not args.no_extensions)
+                               use_extensions=not args.no_extensions,
+                               reference_errors=ref_errors)
     if report is None:
         print("CANNOT STOMP:")
         _print_issues(issues)

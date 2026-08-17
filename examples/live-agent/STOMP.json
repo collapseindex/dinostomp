@@ -940,7 +940,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now d2f9f1f7ab1331b9); re-run to get numbers this report can stand behind",
+      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now 61d8eeef4133d369); re-run to get numbers this report can stand behind",
       "witnesses": 3,
       "examples": [
         "engine be4c83d7129cec32: live-grounded seed 7 (tool 0.38.0), live-oneshot seed 7 (tool 0.38.0), live-greedy seed 7 (tool 0.38.0)"

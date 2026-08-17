@@ -6,13 +6,13 @@
   "tool": {
     "name": "dinostomp",
     "version": "0.62.0",
-    "engine": "d2f9f1f7ab1331b9e2e2e3a5c25a1c89d15af3a25bce7b379adf55f857cebcf8"
+    "engine": "61d8eeef4133d369f35d87da71c45539f8257fee02038341da79ff9a5dcc7d45"
   },
   "counts": {
-    "F": 46,
-    "D": 75,
-    "N": 30,
-    "total": 151
+    "F": 49,
+    "D": 78,
+    "N": 31,
+    "total": 158
   },
   "series": {
     "F": "other people's evals",
@@ -716,6 +716,59 @@
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-046"
     },
     {
+      "id": "F-047",
+      "series": "F",
+      "series_name": "other people's evals",
+      "title": "CUDA-Agent-Ops-6K ships 352 byte-identical duplicate training samples",
+      "summary": "352 of 6,000 synthesised training samples are byte-identical repeats, leaving 5,648 distinct; the pipeline's own AST similarity was pointed only outward",
+      "subject": "CUDA-Agent-Ops-6K",
+      "check_label": "`dup-questions` (S1)",
+      "checks": [
+        "S1"
+      ],
+      "date": "2026-08-16",
+      "date_iso": "2026-08-16",
+      "date_precision": "day",
+      "status": "confirmed, minor",
+      "status_class": "confirmed",
+      "anchor": "#f-047",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-047"
+    },
+    {
+      "id": "F-048",
+      "series": "F",
+      "series_name": "other people's evals",
+      "title": "one CUDA-Agent-Ops-6K row in eleven declares an operator its own code never uses",
+      "summary": "550 of 5,929 rows (9.3%) declare an operator absent from their own code, mostly dimensionality swaps (ConvTranspose1d declared, ConvTranspose3d written)",
+      "subject": "CUDA-Agent-Ops-6K",
+      "check_label": "`corpus`",
+      "checks": [],
+      "date": "2026-08-16",
+      "date_iso": "2026-08-16",
+      "date_precision": "day",
+      "status": "confirmed, minor",
+      "status_class": "confirmed",
+      "anchor": "#f-048",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-048"
+    },
+    {
+      "id": "F-049",
+      "series": "F",
+      "series_name": "other people's evals",
+      "title": "CUDA Agent's anti-reward-hacking guard blocks one spelling of the operators it blocks",
+      "summary": "the anti-reward-hacking guard patches `dir(F)`, so 11 of 13 routes to a torch operator survive it, including any name imported before it runs",
+      "subject": "CUDA Agent reward harness",
+      "check_label": "`corpus`",
+      "checks": [],
+      "date": "2026-08-16",
+      "date_iso": "2026-08-16",
+      "date_precision": "day",
+      "status": "confirmed, scoped",
+      "status_class": "confirmed",
+      "anchor": "#f-049",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-049"
+    },
+    {
       "id": "F-029",
       "series": "F",
       "series_name": "other people's evals",
@@ -1212,6 +1265,25 @@
       "status_class": "measured",
       "anchor": "#n-020",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-020"
+    },
+    {
+      "id": "N-031",
+      "series": "N",
+      "series_name": "negative results",
+      "title": "CUDA Agent's decontamination claim holds, and the check that cleared it has a blind spot worth publishing",
+      "summary": "CUDA Agent's decontamination holds under an independent instrument (0 of 6,000 overlap KernelBench); the control shows a size-retuned copy is invisible at jaccard 0.993",
+      "subject": "CUDA-Agent-Ops-6K",
+      "check_label": "`corpus-overlap` (S11)",
+      "checks": [
+        "S11"
+      ],
+      "date": "2026-08-16",
+      "date_iso": "2026-08-16",
+      "date_precision": "day",
+      "status": "measured",
+      "status_class": "measured",
+      "anchor": "#n-031",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-031"
     },
     {
       "id": "N-021",
@@ -2783,6 +2855,63 @@
       "status_class": "open",
       "anchor": "#d-075",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-075"
+    },
+    {
+      "id": "D-076",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "`--against` ignored the field names the caller had already typed",
+      "summary": "`--against` read the reference with bare inference, so --input-field applied to one of the two files being compared and a corpus whose question column is `code` was refused",
+      "subject": "dinostomp",
+      "check_label": "`corpus-overlap` (S11)",
+      "checks": [
+        "S11"
+      ],
+      "date": "2026-08-16",
+      "date_iso": "2026-08-16",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-076",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-076"
+    },
+    {
+      "id": "D-077",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "a reference corpus was rejected for missing an answer key the comparison never reads",
+      "summary": "a reference corpus was rejected for having no answer key, a field the overlap comparison never reads; every no-gold corpus was unusable as a reference",
+      "subject": "dinostomp",
+      "check_label": "`corpus-overlap` (S11)",
+      "checks": [
+        "S11"
+      ],
+      "date": "2026-08-16",
+      "date_iso": "2026-08-16",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-077",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-077"
+    },
+    {
+      "id": "D-078",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "S11 said no reference was supplied to a user who had supplied one",
+      "summary": "S11 reported n/a with the reason \"no reference dataset supplied\" to a user who had supplied one and had it refused, in the written report rather than only on stdout",
+      "subject": "dinostomp",
+      "check_label": "`corpus-overlap` (S11)",
+      "checks": [
+        "S11"
+      ],
+      "date": "2026-08-16",
+      "date_iso": "2026-08-16",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-078",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-078"
     }
   ]
 }

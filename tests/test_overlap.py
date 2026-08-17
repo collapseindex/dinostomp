@@ -11,7 +11,8 @@ import pytest
 
 from dinostomp.cli import main
 from dinostomp.lint import lint_dataset
-from dinostomp.overlap import find_overlap, jaccard, normalise, shingles
+from dinostomp.overlap import (find_overlap, jaccard, load_reference, normalise,
+                               shingles)
 
 
 def write(tmp_path, rows, name):
@@ -117,8 +118,7 @@ def test_s11_fires_and_says_what_it_cannot_conclude(tmp_path):
     rows = [q(i) for i in range(20)]
     src = write(tmp_path, rows, "d.jsonl")
     ref = write(tmp_path, rows[:5], "ref.jsonl")
-    from dinostomp.overlap import load_reference
-    ref_items, errs = load_reference(ref)
+    ref_items, errs, _ = load_reference(ref)
     assert not errs
     report, _, _ = lint_dataset(src, references={"ref.jsonl": ref_items})
     f = finding(report, "S11")
@@ -152,3 +152,88 @@ def test_normalise_and_jaccard_are_boring_on_purpose():
     assert normalise("  Hello,   WORLD!! ") == "hello world"
     assert jaccard(set(), {"a"}) == 0.0
     assert jaccard({"a", "b"}, {"a", "b"}) == 1.0
+
+
+# --against had two holes, both found by pointing a real audit at a real
+# reference corpus (CUDA-Agent-Ops-6K against KernelBench, 2026-08-16). The
+# reference was refused for reasons that have nothing to do with overlap, and
+# S11 then reported n/a with a reason that named the wrong cause.
+
+def test_a_reference_is_read_with_the_fields_the_caller_named(tmp_path):
+    """D-076: --input-field applies to the audited file only.
+
+    A corpus whose question column is called something the inference does not
+    know -- `code`, `passage`, `snippet` -- is refused before it is ever
+    compared, and the audit continues without the check the user asked for.
+    """
+    fields = {"input": "code", "target": "ops", "id": "id"}
+    rows = [{"id": f"i{i}", "code": q(i)["question"], "ops": "x"} for i in range(20)]
+    src = write(tmp_path, rows, "d.jsonl")
+    ref = write(tmp_path, rows[:5], "ref.jsonl")
+
+    items, errs, _ = load_reference(ref, fields)
+    assert not errs, errs
+    assert len(items) == 5
+
+    report, _, _ = lint_dataset(src, field_overrides=fields,
+                                references={"ref.jsonl": items})
+    f = finding(report, "S11")
+    assert f["level"] == "warn", f["detail"]
+    assert "5 of 20" in f["detail"]
+
+
+def test_a_reference_needs_no_answer_key(tmp_path):
+    """D-077: overlap never reads the target, but loading demanded one.
+
+    `comparable()` compares the question and its options. A reference corpus
+    with no answer column -- every no-gold eval, every bare prompt set -- was
+    rejected for missing a field the comparison does not use.
+    """
+    ref = write(tmp_path, [{"id": f"i{i}", "question": q(i)["question"]} for i in range(5)],
+                "ref.jsonl")
+    items, errs, _ = load_reference(ref)
+    assert not errs, errs
+    assert len(items) == 5
+    report, _, _ = lint_dataset(write(tmp_path, [q(i) for i in range(20)], "d.jsonl"),
+                                references={"ref.jsonl": items})
+    assert finding(report, "S11")["level"] == "warn"
+
+
+def test_a_refused_reference_does_not_read_as_no_reference(tmp_path):
+    """D-078: the n/a reason blamed the user for not passing what they passed."""
+    ref = write(tmp_path, [{"id": "i0", "blob": "unmappable"}], "ref.jsonl")
+    items, errs, _ = load_reference(ref)
+    assert errs and not items
+    report, _, _ = lint_dataset(write(tmp_path, [q(i) for i in range(20)], "d.jsonl"),
+                                references={}, reference_errors=errs)
+    f = finding(report, "S11")
+    assert f["level"] == "n/a"
+    assert "no reference dataset supplied" not in f["detail"]
+    assert "refused" in f["detail"] or "could not" in f["detail"]
+
+
+def test_the_cli_reports_a_reference_it_could_not_read(tmp_path, capsys):
+    """The skip line was already honest. The report it wrote was not."""
+    rows = [q(i) for i in range(20)]
+    src = write(tmp_path, rows, "d.jsonl")
+    ref = write(tmp_path, [{"id": "i0", "blob": "unmappable"}], "ref.jsonl")
+    out_json = tmp_path / "report.json"
+    main(["stomp", str(src), "--against", str(ref), "--json", str(out_json)])
+    assert "[reference] skipped" in capsys.readouterr().out
+    f = finding(json.loads(out_json.read_text(encoding="utf-8")), "S11")
+    assert f["level"] == "n/a"
+    assert "WAS supplied and was refused" in f["detail"]
+    assert "no reference dataset supplied" not in f["detail"]
+
+
+def test_the_cli_says_which_columns_it_read_the_reference_as(tmp_path, capsys):
+    """A guess the user cannot see is a guess the user cannot correct."""
+    fields = ["--input-field", "code", "--target-field", "ops"]
+    rows = [{"id": f"i{i}", "code": q(i)["question"], "ops": "x"} for i in range(20)]
+    src = write(tmp_path, rows, "d.jsonl")
+    ref = write(tmp_path, rows[:5], "ref.jsonl")
+    main(["stomp", str(src), "--against", str(ref), *fields])
+    out = capsys.readouterr().out
+    assert "[reference] ref.jsonl: 5 item(s), read as" in out
+    assert "input<-code" in out
+    assert "5 of 20" in out

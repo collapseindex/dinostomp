@@ -74,6 +74,9 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-044](#f-044) | MBPP, HumanEval | MBPP keys one task ("count squares in a rectangle") to two different reference solutions; HumanEval ships two structurally identical bracket problems (56, 61) | confirmed |
 | [F-045](#f-045) | CNN/DailyMail | the test set carries an exact-duplicate article back to back, and one reference "summary" is copied verbatim from its own article | confirmed |
 | [F-046](#f-046) | LoCoMo | conversation 7 asks eleven questions twice each (same answer); one temporal item ("...sell the car he restored last year?") is keyed "Last year" | confirmed, minor |
+| [F-047](#f-047) | CUDA-Agent-Ops-6K | 352 of 6,000 synthesised training samples are byte-identical repeats, leaving 5,648 distinct; the pipeline's own AST similarity was pointed only outward | confirmed, minor |
+| [F-048](#f-048) | CUDA-Agent-Ops-6K | 550 of 5,929 rows (9.3%) declare an operator absent from their own code, mostly dimensionality swaps (ConvTranspose1d declared, ConvTranspose3d written) | confirmed, minor |
+| [F-049](#f-049) | CUDA Agent reward harness | the anti-reward-hacking guard patches `dir(F)`, so 11 of 13 routes to a torch operator survive it, including any name imported before it runs | confirmed, scoped |
 | [F-029](#f-029) | ASDiv | one word problem present twice | confirmed, minor |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
@@ -101,6 +104,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-025](#n-025) | DeepSWE v1.1 | the program verifier fails safe (absence/skip/unparseable all -> reward 0): a second counterexample | confirmed |
 | [N-024](#n-024) | StrongREJECT | the autograder fails safe (bounded groups, nan on no-match): the counterexample to F-030..F-036 | confirmed |
 | [N-020](#n-020) | public HF datasets | pilot sweep: 27% carry a gating finding, and the audit refused to guess a mapping on 37% | measured, pilot |
+| [N-031](#n-031) | CUDA-Agent-Ops-6K | CUDA Agent's decontamination holds under an independent instrument (0 of 6,000 overlap KernelBench); the control shows a size-retuned copy is invisible at jaccard 0.993 | measured |
 | [N-021](#n-021) | dinocorpus | the corpus now varies shape, not just class, and the covered arm drops to 98% | measured |
 | [N-007](#n-007) | lm-eval-harness log | both reported metrics re-derive from the raw log-probs | negative |
 | [N-008](#n-008) | dinostomp | an even `run.repeats` reported p-squared, not p | measured, fixed |
@@ -188,6 +192,9 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-073](#d-073) | dinostomp | `answer-leak` (S2) gated four BoolQ items because the label word "no" appears in their questions ("a no ball", "No. 1 Court"); a tiny global label set is generic vocabulary, not a leaked key | confirmed, fixed |
 | [D-074](#d-074) | dinostomp | S2's label-set exemption was capped at 3 labels, so it still gated dair-ai/emotion (6 labels) on "anger" in "i felt anger"; a small heavily-reused vocabulary is a label set too | confirmed, fixed |
 | [D-075](#d-075) | dinostomp | S2 over-flags multi-hop COMPARISON questions ("which came first, A or B?"), where the answer is one of two offered alternatives; the forced-choice exemption is "or"-adjacent-only | scoped |
+| [D-076](#d-076) | dinostomp | `--against` read the reference with bare inference, so --input-field applied to one of the two files being compared and a corpus whose question column is `code` was refused | confirmed, fixed |
+| [D-077](#d-077) | dinostomp | a reference corpus was rejected for having no answer key, a field the overlap comparison never reads; every no-gold corpus was unusable as a reference | confirmed, fixed |
+| [D-078](#d-078) | dinostomp | S11 reported n/a with the reason "no reference dataset supplied" to a user who had supplied one and had it refused, in the written report rather than only on stdout | confirmed, fixed |
 
 <!-- INDEX:END -->
 
@@ -223,7 +230,7 @@ at fault.
 | `R15` | [D-006](#d-006) |
 | `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
-| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-044](#f-044), [F-045](#f-045), [F-046](#f-046), [F-029](#f-029), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
+| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-044](#f-044), [F-045](#f-045), [F-046](#f-046), [F-047](#f-047), [F-029](#f-029), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
 | `S2` | [F-004](#f-004), [F-041](#f-041), [F-043](#f-043), [F-045](#f-045), [F-046](#f-046), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052), [D-058](#d-058) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
@@ -232,7 +239,7 @@ at fault.
 | `S7` | [F-027](#f-027), [F-028](#f-028), [F-041](#f-041), [F-042](#f-042), [F-044](#f-044), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-042](#d-042) |
 | `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015), [D-061](#d-061) |
 | `S10` | [N-006](#n-006) |
-| `S11` | [F-012](#f-012), [N-004](#n-004), [D-014](#d-014) |
+| `S11` | [F-012](#f-012), [N-004](#n-004), [N-031](#n-031), [D-014](#d-014), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078) |
 | `S12` | [D-044](#d-044) |
 | `S15` | [D-043](#d-043), [N-017](#n-017) |
 | `S19` | [F-040](#f-040), [F-043](#f-043), [F-044](#f-044) |
@@ -241,15 +248,16 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [F-048](#f-048), [F-049](#f-049), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075) |
+| dinostomp | [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078) |
 | dinocorpus | [N-021](#n-021), [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | AISafetyLab | [F-033](#f-033), [F-034](#f-034), [F-035](#f-035) |
+| CUDA-Agent-Ops-6K | [F-047](#f-047), [F-048](#f-048), [N-031](#n-031) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | JailbreakBench | [F-030](#f-030), [F-031](#f-031), [F-032](#f-032) |
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
@@ -270,6 +278,7 @@ at fault.
 | CIFAR-10 / ciFAIR | [N-017](#n-017) |
 | CNN/DailyMail | [F-045](#f-045) |
 | CommonsenseQA | [F-008](#f-008) |
+| CUDA Agent reward harness | [F-049](#f-049) |
 | DeepSWE v1.1 | [N-025](#n-025) |
 | dinostomp-aei | [D-050](#d-050) |
 | DROP | [F-020](#f-020) |
@@ -1201,6 +1210,91 @@ locomo_scoped.jsonl`.
 
 ---
 
+### F-047
+**CUDA-Agent-Ops-6K ships 352 byte-identical duplicate training samples**
+`dup-questions` (S1) · 2026-08-16 · confirmed, minor
+
+`BytedTsinghua-SIA/CUDA-Agent-Ops-6K`, the 6,000-sample synthesised training set
+released with CUDA Agent (arXiv:2602.24286). 352 rows are byte-identical repeats
+of an earlier row, leaving **5,648 distinct** tasks in a set advertised as 6,000.
+Raw-byte and lowercase+whitespace-collapsed counts agree exactly at 352, so none
+of it is an artifact of normalisation; every cluster is exactly ×2 and none
+carries conflicting `ops` labels.
+
+The pipeline that built this set already computes pairwise AST similarity, and
+Appendix A describes pointing it outward at the evaluation set to decontaminate.
+A byte-identical pair inside the training set scores 1.0 on that same tool. This
+is a training corpus rather than an eval, so the effect is a sampling weight and
+not a wrong answer: 5.9% of the corpus is drawn at double rate during RL.
+Reproduce: `python audits/cuda-agent/audit.py`, and see
+[audits/cuda-agent/FINDINGS.md](audits/cuda-agent/FINDINGS.md).
+
+---
+
+### F-048
+**one CUDA-Agent-Ops-6K row in eleven declares an operator its own code never uses**
+`corpus` · 2026-08-16 · confirmed, minor
+
+Same dataset. `ops` is the provenance label naming which torch operators a
+synthesised task was composed from, and for **550 of 5,929** torch-sourced rows
+(9.3%) the code does not contain an operator the label declares. The extractor
+is rigged against the finding: it counts every attribute name in the file as a
+possible use, so the Tensor-method spelling `x.tril()` counts, and it excludes
+operators with a syntax form (`add` is written `+`) rather than calling them
+absent, which drops 66 further rows.
+
+The pattern is dimensionality substitution: `ConvTranspose1d` is declared and
+absent 111 times, `ConvTranspose3d` 103. `ops6k-0048` declares five operators and
+three are wrong, `nn.AdaptiveAvgPool3d` against a code using `AdaptiveAvgPool2d`,
+`nn.ConvTranspose1d` against `ConvTranspose3d`, and a declared `torch.einsum` that
+never appears while an undeclared `torch.clamp` does. `ops6k-0000` declares
+`torch.diag` while its code imports `digamma`.
+
+Not a defect in the headline, which is a speed measurement. It means the
+released set's coverage story is told by a column that disagrees with its own
+code about one row in eleven, and any composition statistic computed over `ops`
+inherits that. Not a dinostomp check: no check reads whether a label describes
+its own item, which is worth noting as a gap rather than dressing up as a hit.
+Reproduce: `python audits/cuda-agent/audit.py` (leg 3).
+
+---
+
+### F-049
+**CUDA Agent's anti-reward-hacking guard blocks one spelling of the operators it blocks**
+`corpus` · 2026-08-16 · confirmed, scoped
+
+`agent_workdir/utils/verification.py` runs a candidate kernel inside
+`block_torch_functional()`, which replaces every public callable in
+`dir(torch.nn.functional)` with a raiser. The paper describes this as
+"system-level permission isolation ... to prevent reward hacking" (§1): a custom
+CUDA kernel must not simply call the PyTorch operator it is replacing.
+
+It is an attribute patch on one module object, and **11 of 13** routes to a torch
+operator survive it: `torch.relu`, `x.relu()`, `torch.matmul`, `torch.conv2d`,
+`torch.ops.aten.relu`, `torch._C._nn.linear`, `torch.softmax`, and any name bound
+before the guard runs. That last one is the cheapest bypass and costs one import
+line, because the guard rebinds a module attribute and never reaches an
+already-bound name: `from torch.nn.functional import conv2d` at the top of
+`model_new.py` leaves `conv2d(x, w)` ALLOWED inside the guarded region. Confirmed
+the same way for `linear`, `scaled_dot_product_attention` and `avg_pool2d`, which
+are exactly the expensive operators an agent is paid to reimplement.
+
+A correction this audit made to its own first reading: prebound `relu` and
+`max_pool2d` do raise, but by collateral damage rather than by the guard's
+intent, because their Python bodies call `has_torch_function_unary`, itself a
+public callable in `dir(F)` and therefore also patched. That holds only while
+torch keeps routing those bodies through a patched name.
+
+**Scoped deliberately.** This is a hole in a released harness, NOT evidence that
+the trained model exploited it: no released artifact records rollout behaviour,
+and a wholesale fallback would pass verification while earning little on speed.
+The realistic shape is partial, three operators of a fused task implemented and
+the fourth falling through, which verification would not notice. Reproduce:
+`python audits/cuda-agent/audit.py --cuda-agent <clone>` (leg 4, CPU torch is
+enough).
+
+---
+
 ### F-029
 **ASDiv · one word problem present twice**
 `dup-questions` (S1) · 2026-08-11 · confirmed, minor
@@ -1971,6 +2065,41 @@ the correct answer.
 re-running gives different numbers and `RESULT.json` records one dated run.
 Nothing here supports a claim about the population of public datasets. The entry
 exists so a later, properly sampled sweep has a baseline to disagree with.
+
+---
+
+### N-031
+**CUDA Agent's decontamination claim holds, and the check that cleared it has a blind spot worth publishing**
+`corpus-overlap` (S11) · 2026-08-16 · measured
+
+The negative result beside [F-047](#f-047) and [F-048](#f-048), recorded because
+a clean line is the one most worth stating the limits of. CUDA Agent (Appendix
+A) drops a training sample when its maximum AST similarity to any evaluation
+program exceeds 0.9. Checked with a different instrument, character shingles over
+all 6,000 training samples against all 250 KernelBench problems (levels 1-3):
+**0 exact, 0 same-question, 0 near-verbatim**. Their claim survives an
+independent check that was not the one they ran.
+
+What makes it worth an entry is the control. Three known contaminants were
+planted in the 6,000 and S11 was required to find them: a verbatim KernelBench
+problem was flagged exact at 1.0, the same problem with its class renamed was
+flagged near at 0.921, and **the same problem with only its tensor dimensions
+changed was not flagged at all**. That third case is dinostomp's own
+`is_template_sibling` exemption doing exactly what it was built for on
+arithmetic templates, and exactly the wrong thing on kernel code, where a matmul
+at another size is arguably the same kernel problem: it sits at jaccard **0.993**
+and is invisible by construction.
+
+Zero real rows landed in the exempt category, so the pass stands rather than
+being rescued by the caveat. But "0 overlap" here means no verbatim and no
+cosmetic reuse, and it does NOT mean no size-retuned reuse, and it never meant
+anything about a training corpus. Two further limits: the operator SET of 126
+training rows matches a level-1 problem's exactly, which neither instrument
+counts as contamination and which their 0.9 AST threshold could never fire on
+(their own Figure 7 shows the distribution topping out near 0.6); and this
+compares a released training set against a public benchmark, which is not the
+same as auditing what a model was trained on. Reproduce: `python
+audits/cuda-agent/audit.py --kernelbench <clone>` (leg 2).
 
 ---
 
@@ -5026,6 +5155,61 @@ than patched carelessly. It over-flags (marks clean data BROKEN), the safe
 direction; the HotpotQA data itself is fine. Reproduce: `dinostomp stomp
 hotpot_val.jsonl`; the flags are all comparison stems.
 
+### D-076
+**`--against` ignored the field names the caller had already typed**
+`corpus-overlap` (S11) · 2026-08-16 · confirmed, fixed
+
+The first audit to point S11 at a reference corpus outside this repo could not
+run it. Auditing CUDA-Agent-Ops-6K (a CUDA kernel training set) against
+KernelBench, both files hold their question in a column called `code`, so the
+audited file was read fine with `--input-field code` and the reference was
+refused: `no column looks like the input`. `load_reference` called
+`infer_mapping` with no overrides, so the flags applied to one of the two files
+being compared.
+
+The refusal was printed, so nothing was silent, but the check the user asked for
+did not run and the audit continued to a report without it. Overrides now reach
+the reference for any column it HAS; one naming a column it does not have is
+dropped rather than raised, so two files with different headers still compare.
+The CLI prints what the reference was read as. Reproduce: `pytest
+tests/test_overlap.py -k "fields_the_caller_named"`.
+
+### D-077
+**a reference corpus was rejected for missing an answer key the comparison never reads**
+`corpus-overlap` (S11) · 2026-08-16 · confirmed, fixed
+
+Same audit, second wall. `comparable()` compares a question and its options and
+never touches the target, but `load_reference` went through the full mapping
+inference, which treats a missing target as a refusal. So a reference with
+questions and no answer column could not be loaded at all, for a field no
+finding would have used.
+
+That rejects every no-gold corpus: a prompt set, a preference battery, anything
+scored by a `record` scorer. `build_items` also dropped every keyless row on its
+empty-target guard, so a "successful" load would have silently produced zero
+items and a clean-looking n/a. Both fixed together: a missing target is not an
+issue for a reference, keyless items keep their choices, and the empty-target
+drop applies only where there is a key to be missing. Reproduce: `pytest
+tests/test_overlap.py -k "needs_no_answer_key"`.
+
+### D-078
+**S11 said no reference was supplied to a user who had supplied one**
+`corpus-overlap` (S11) · 2026-08-16 · confirmed, fixed
+
+Downstream of [D-076](#d-076)/[D-077](#d-077) and worse than either, because it
+is the report rather than the run. When a reference was refused, `references`
+arrived empty and S11 reported n/a with the reason "no reference dataset
+supplied; pass --against <file>". The user had passed `--against`. The advice
+was to do the thing they had just done, and the report recorded "nothing to
+compare" when the truth was "the comparison did not run".
+
+A skip line on stdout does not repair a written report: `STOMP.json` outlives the
+terminal, and that reason is what a reader gets. S11 now distinguishes the two
+cases and names the refusal in the n/a text. Found while auditing somebody
+else's dataset, which is the third time an outside artifact has produced a defect
+here that the pods in this repo never could. Reproduce: `pytest
+tests/test_overlap.py -k "does_not_read_as_no_reference"`.
+
 ## The honest scorecard
 
 **One external check.** [N-012](#n-012) is the only entry here scored against a ground truth this project did not produce: 5,700 MMLU items annotated by hand at Edinburgh. Against the one error type a data-at-rest check can reach, the battery scores precision 25% and **recall 5%**, up from 14% and 3% before this measurement was used to fix it. It also found two double-keyed items the annotators marked `ok` ([F-018](#f-018)). Both directions are the finding; neither on its own is.
@@ -5044,12 +5228,12 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **46** |
+| findings in other people's evals (**F**) | **49** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 16 (F-001 to F-004, F-008 to F-013, F-041 to F-046) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **30** |
-| defects in dinostomp itself (**D**) | **75** |
+| negative results, recorded rather than dropped (**N**) | **31** |
+| defects in dinostomp itself (**D**) | **78** |
 
 Seventy-three to twenty-nine. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to

@@ -109,19 +109,44 @@ def jaccard(a: set[str], b: set[str]) -> float:
     return len(a & b) / len(a | b)
 
 
-def load_reference(path: str | Path) -> tuple[list[dict], list[str]]:
-    """Read a reference dataset with the same inference the audit uses."""
+def load_reference(path: str | Path, overrides: dict | None = None
+                   ) -> tuple[list[dict], list[str], list[str]]:
+    """Read a reference dataset. Returns (items, errors, notes).
+
+    Two rules here exist because a real audit was refused by both of them
+    (CUDA-Agent-Ops-6K against KernelBench, 2026-08-16), and neither refusal was
+    about overlap:
+
+      * D-076: the caller's --input-field / --target-field apply to the
+        reference too, for any column that EXISTS in it. A corpus whose question
+        column is called `code` is not an exotic file, and inference does not
+        know that name. An override naming a column the reference does not have
+        is dropped rather than raised, so pointing an audit at two files with
+        different headers still works.
+      * D-077: a reference needs no answer key. `comparable()` reads the
+        question and its options and never the target, so demanding one rejected
+        every no-gold corpus over a field the comparison does not use.
+
+    `notes` says which columns were read, because the alternative is a guess
+    the user cannot see and therefore cannot correct.
+    """
     from dinostomp.dataset import build_items, infer_mapping, read_rows
 
     p = Path(path)
     rows, issues = read_rows(p)
     if issues:
-        return [], [f"{p.name}: {issues[0].message}"]
-    mapping, _, map_issues = infer_mapping(rows)
+        return [], [f"{p.name}: {issues[0].message}"], []
+    columns = list(rows[0].keys()) if rows else []
+    keep = {k: v for k, v in (overrides or {}).items() if v and v in columns}
+    mapping, _, map_issues = infer_mapping(rows, keep)
+    # A missing target is not a reason to refuse a reference; a missing question
+    # is, because that is the thing being compared.
+    map_issues = [i for i in map_issues if i.loc != "--target-field"]
     if map_issues:
-        return [], [f"{p.name}: {map_issues[0].message}"]
+        return [], [f"{p.name}: {map_issues[0].message}"], []
     items, _ = build_items(rows, mapping)
-    return items, []
+    read = ", ".join(f"{k}<-{v}" for k, v in mapping.items() if isinstance(v, str))
+    return items, [], [f"{p.name}: {len(items)} item(s), read as {read}"]
 
 
 def find_overlap(items: list[dict], references: dict[str, list[dict]]

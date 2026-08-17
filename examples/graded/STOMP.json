@@ -949,7 +949,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "2 of 2 run(s) were produced by a different engine than the one auditing them (now d2f9f1f7ab1331b9); re-run to get numbers this report can stand behind",
+      "detail": "2 of 2 run(s) were produced by a different engine than the one auditing them (now 61d8eeef4133d369); re-run to get numbers this report can stand behind",
       "witnesses": 2,
       "examples": [
         "engine bdf9d65d922fbdd1: dry-strong seed 42 (tool 0.61.0), dry-up seed 42 (tool 0.61.0)"
