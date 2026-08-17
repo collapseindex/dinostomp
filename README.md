@@ -41,7 +41,7 @@ the loader bug that manufactured a finding about a driving test
 ([D-039](FINDINGS.md#d-039)), and a defect in the findings feed itself
 ([D-040](FINDINGS.md#d-040)).
 
-One caveat belongs up here rather than at the bottom: **three of the 121 were
+One caveat belongs up here rather than at the bottom: **three of the 159 were
 graded against an answer key somebody outside this repo wrote**
 ([N-012](FINDINGS.md#n-012) against MMLU-Redux, [N-017](FINDINGS.md#n-017)
 against ciFAIR's hand-annotated CIFAR-10 duplicates, and
@@ -389,7 +389,7 @@ At 24 items an UNPAIRED comparison resolves gaps down to about 40%.
 Then item difficulty and discrimination, hardest first, with who missed each one
 and the most common wrong answer. Then accuracy sliced by every metadata field
 the items carry, which on MMLU is accuracy by subject. Then cost and tokens,
-summed from the records. Then the claims, then all sixty-one checks, then the
+summed from the records. Then the claims, then all seventy-four checks, then the
 receipts and the provenance.
 
 Three rules hold that section together:
@@ -592,7 +592,7 @@ extension is named, versioned and hashed in the report, so a `SOUND` is always a
 claim about a specific set of code.
 
 The full contract, including why an extension is trusted when a stranger's pod
-is not, is in **[METHODOLOGY.md](METHODOLOGY.md)** along with all sixty-one
+is not, is in **[METHODOLOGY.md](METHODOLOGY.md)** along with all seventy-four
 checks and why each one exists.
 
 ## In CI
@@ -650,7 +650,7 @@ measures the intended construct: NOT ESTABLISHED BY DINOSTOMP
 That is a constant. There is no flag and no code path that sets it to anything
 else, and a test walks the source to keep it that way. This battery checks
 mechanical integrity; construct validity is argued, not computed, and a trivial,
-mis-aimed, or saturated eval can pass every check here. Sixty-one is not a
+mis-aimed, or saturated eval can pass every check here. Seventy-four is not a
 number that bounds the ways an eval can be invalid.
 
 **The self-tests are not independent validation.** 102 of 102 caught means every
@@ -678,7 +678,7 @@ the tool names them.
 
 - **[AUTHORING.md](AUTHORING.md)** — writing a spec, or having a model write one: the schema contract and the self-correction loop
 - **[FINDINGS.md](FINDINGS.md)** — what it found, in MMLU, GSM8K, TruthfulQA, and in itself
-- **[METHODOLOGY.md](METHODOLOGY.md)** — the sixty-one checks, the pod format, the philosophy, the self-audit
+- **[METHODOLOGY.md](METHODOLOGY.md)** — the seventy-four checks, the pod format, the philosophy, the self-audit
 - **[SECURITY.md](SECURITY.md)** — pod code, untrusted model output, money, what this does not do
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — the entry fee for a new check is a planted defect, not an argument
 - **[findings.json](findings.json)** — the ledger as data: versioned, validated against [docs/findings.schema.json](docs/findings.schema.json) before it is written
