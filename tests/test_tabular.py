@@ -107,6 +107,48 @@ def test_g1_catches_a_non_breaking_space(tmp_path):
     assert "NO-BREAK SPACE" in detail_for(report, "G1")
 
 
+def test_g1_catches_a_byte_order_mark_in_a_column_header(tmp_path):
+    """D-086, found on a real ACNH villager export.
+
+    A BOM on a column NAME is strictly worse than one in a cell: the header
+    visibly reads `Name` and `df["Name"]` raises KeyError. G1 read values only,
+    so it reported no invisible characters over a file that had one where it
+    mattered most.
+    """
+    path = tmp_path / "bom.csv"
+    path.write_text("﻿Name,Species\n" + "\n".join(
+        f"villager{i},goat" for i in range(6)) + "\n", encoding="utf-8")
+    report, issues, _ = lint_dataset(path)
+    assert report is not None, [i.message for i in issues]
+    finding = next(f for f in report["findings"] if f["id"] == "G1")
+    assert finding["level"] == "warn"
+    assert "COLUMN NAME" in finding["detail"]
+    assert any("HEADER" in e and "BOM" in e for e in finding["examples"]), finding["examples"]
+
+
+def test_g7_does_not_report_a_villager_named_nan(tmp_path):
+    """D-085, found on the same file. `Nan` is a goat, not a NaN.
+
+    "Unknown", "None" and "NA" are legitimate values in half the tables ever
+    written, so the ambiguous sentinels only count where a NUMBER belongs.
+    """
+    header = ["name", "species", "personality"]
+    rows = [["Nan", "goat", "normal"], ["None", "cat", "lazy"], ["Unknown", "dog", "jock"],
+            ["Bob", "cat", "lazy"], ["Rosie", "cat", "normal"], ["Raymond", "cat", "smug"]]
+    levels, report = audit(tmp_path, header, rows)
+    assert levels["G7"] == "pass", detail_for(report, "G7")
+
+
+def test_g7_still_catches_the_same_words_where_a_number_belongs(tmp_path):
+    """The other side of D-085: in a numeric column those words ARE holes."""
+    header = ["sku", "qty"]
+    rows = [["A1", "10"], ["A2", "unknown"], ["A3", "12"], ["A4", "none"],
+            ["A5", "8"], ["A6", "14"], ["A7", "9"], ["A8", "11"]]
+    levels, report = audit(tmp_path, header, rows)
+    assert levels["G7"] == "warn"
+    assert "qty" in detail_for(report, "G7")
+
+
 def test_g1_catches_trailing_whitespace(tmp_path):
     rows = [r[:] for r in CLEAN_ROWS]
     rows[1][2] = "Acme Corp "

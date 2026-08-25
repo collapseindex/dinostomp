@@ -51,10 +51,18 @@ INVISIBLE_CHARS = {
 # casefold and strip. The empty string is deliberately NOT here: a blank cell is
 # a blank cell, and reporting every one of them as a sentinel would bury the
 # finding that matters under the ordinary shape of real data.
+# STRUCTURAL: never a real value in any column, in any domain.
 TEXT_SENTINELS = {
-    "n/a", "na", "n.a.", "#n/a", "-", "--", "---", "null", "none", "nil",
-    "nan", "missing", "unknown", "tbd", "?", ".", "#value!", "#ref!",
+    "n/a", "n.a.", "#n/a", "-", "--", "---", "null", "tbd", "?", ".",
+    "#value!", "#ref!", "#div/0!", "#name?", "#num!",
 }
+# SEMANTIC: a missing-value marker in a numeric column and an ORDINARY VALUE
+# anywhere else. "Unknown" and "None" are legitimate categories in half the
+# tables ever written, "NA" is a country code and a surname, and "Nan" is a
+# goat in Animal Crossing: pointed at a real villager table, G7 reported her
+# name as a missing-value placeholder (D-085). These are only sentinels where
+# a number belongs.
+NUMERIC_CONTEXT_SENTINELS = {"nan", "na", "none", "nil", "missing", "unknown"}
 
 # Numbers that are almost never measurements. Flagged only when they REPEAT in
 # an otherwise well-behaved numeric column, because one -1 is a value and
@@ -190,6 +198,18 @@ class ColumnProfile:
         return self.n_filled >= MIN_ROWS_FOR_PROFILE and self.numeric_share >= NUMERIC_MAJORITY
 
     @property
+    def mostly_numeric(self) -> bool:
+        """Numeric ENOUGH that a word in it is a hole, not a category.
+
+        Deliberately looser than `is_numeric`: a column of prices where a
+        tenth of the cells say "unknown" is exactly the case G7 is for, and
+        `is_numeric` would have already disqualified it.
+        """
+        if self.n_filled < MIN_ROWS_FOR_PROFILE:
+            return False
+        return self.numeric_share >= 0.5
+
+    @property
     def looks_like_key(self) -> bool:
         if self.n_filled < MIN_ROWS_FOR_PROFILE:
             return False
@@ -222,6 +242,24 @@ def check_cell_hygiene(rows: list[dict], profiles: dict[str, ColumnProfile]) -> 
     """
     edge, invisible = defaultdict(int), defaultdict(Counter)
     examples: list[str] = []
+    # HEADERS FIRST. A byte-order mark or a trailing space on a column NAME is
+    # the same defect as one in a cell and strictly worse in consequence: the
+    # column is then unreachable by the name everyone can see, so `df["Name"]`
+    # raises KeyError on a file whose header visibly reads Name. Pointed at a
+    # real ACNH villager export, this check reported no invisible characters
+    # over a header that began with a UTF-8 BOM, because it only ever read
+    # values (D-086).
+    for column in profiles:
+        name = str(column)
+        if name != name.strip():
+            edge[name] += 1
+            examples.append(f"HEADER {name!r} has edge whitespace, so the column is not "
+                            f"reachable as {name.strip()!r}")
+        for char, label in INVISIBLE_CHARS.items():
+            if char in name:
+                invisible[name][label] += 1
+                examples.append(f"HEADER {name!r} contains {label}, so the column is not "
+                                f"reachable by the name printed above it")
     for column, prof in profiles.items():
         for value in prof.filled:
             if not isinstance(value, str):
@@ -237,8 +275,12 @@ def check_cell_hygiene(rows: list[dict], profiles: dict[str, ColumnProfile]) -> 
                         examples.append(f"{column}: {value!r} contains {name}")
     total = sum(edge.values()) + sum(sum(c.values()) for c in invisible.values())
     if not total:
-        return True, "no edge whitespace or invisible characters", len(rows), [], {}
+        return True, "no edge whitespace or invisible characters in any header or cell",             len(rows), [], {}
+    header_hits = sum(1 for e in examples if e.startswith("HEADER "))
     parts = []
+    if header_hits:
+        parts.append(f"{header_hits} COLUMN NAME(S) not reachable by the name printed above "
+                     f"them")
     if edge:
         parts.append(f"{sum(edge.values())} cell(s) with leading/trailing whitespace "
                      f"in {len(edge)} column(s)")
@@ -443,7 +485,8 @@ def check_sentinels(rows: list[dict], profiles: dict[str, ColumnProfile]) -> Res
     for column, prof in profiles.items():
         if prof.n_filled < MIN_ROWS_FOR_PROFILE:
             continue
-        found = Counter(t for t in prof.texts if t.casefold() in TEXT_SENTINELS)
+        vocabulary = TEXT_SENTINELS | (NUMERIC_CONTEXT_SENTINELS if prof.mostly_numeric else set())
+        found = Counter(t for t in prof.texts if t.casefold() in vocabulary)
         if found:
             text_hits[column] = found
         if prof.is_numeric:

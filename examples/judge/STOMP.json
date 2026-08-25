@@ -1192,7 +1192,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now a5105c1e4cff98b1); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now d992bdfcfeaae493); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine 050e2f343915e1b9: bot-bare seed 42 (tool 0.57.1), bot-chatty seed 42 (tool 0.57.1), bot-hedged seed 42 (tool 0.57.1) and 1 more"

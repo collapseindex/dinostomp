@@ -83,6 +83,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-082](#d-082) | dinostomp | adding a check series made every previously-sound pod report INCOMPLETE | confirmed, fixed |
 | [D-083](#d-083) | dinostomp | the new check series was about to claim the id namespace extension authors use | confirmed, fixed |
 | [D-084](#d-084) | dinostomp | a spreadsheet with no formulas reported INCOMPLETE for questions it could not be asked | confirmed, fixed |
+| [D-085](#d-085) | dinostomp | a villager named Nan was reported as a missing-value placeholder | confirmed, fixed |
+| [D-086](#d-086) | dinostomp | the hygiene check read every cell and never read the headers, so a BOM in a column name was invisible | confirmed, fixed |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
@@ -220,8 +222,9 @@ at fault.
 
 | check | findings |
 |---|---|
+| `G1` | [D-086](#d-086) |
 | `G6` | [D-080](#d-080) |
-| `G7` | [D-080](#d-080) |
+| `G7` | [D-080](#d-080), [D-085](#d-085) |
 | `G8` | [D-081](#d-081) |
 | `J1` | [N-019](#n-019), [D-017](#d-017), [D-056](#d-056) |
 | `J2` | [F-014](#f-014), [N-022](#n-022) |
@@ -264,7 +267,7 @@ at fault.
 
 | subject | findings |
 |---|---|
-| dinostomp | [D-080](#d-080), [D-081](#d-081), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078), [D-079](#d-079) |
+| dinostomp | [D-080](#d-080), [D-081](#d-081), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-085](#d-085), [D-086](#d-086), [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078), [D-079](#d-079) |
 | dinocorpus | [N-021](#n-021), [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | AISafetyLab | [F-033](#f-033), [F-034](#f-034), [F-035](#f-035) |
 | CUDA-Agent-Ops-6K | [F-047](#f-047), [F-048](#f-048), [N-031](#n-031) |
@@ -1405,6 +1408,48 @@ An ordinary value-only spreadsheet, the most common kind there is, came back
 INCOMPLETE with three skips it could never have satisfied. Those checks now
 report `n/a` naming what is absent, and only a workbook that HAS formulas can
 be incomplete about them.
+
+### D-085
+**A villager named Nan was reported as a missing-value placeholder**
+`sentinel-values` (G7) · 2026-08-24 · confirmed, fixed
+
+The first real spreadsheet the new series was pointed at, outside its own
+fixtures, was a public Animal Crossing villager export. G7 reported one
+finding: `Name ('Nan')`.
+
+Nan is a goat. The sentinel vocabulary casefolded every candidate and matched
+`nan` the not-a-number against `Nan` the proper noun, and the same list would
+have condemned `Unknown` and `None` in any column where they are ordinary
+categories, which is half the tables ever written, and `NA` in a column of
+country codes.
+
+The vocabulary is now split. STRUCTURAL sentinels (`n/a`, `#REF!`, `-`, `null`)
+are never a real value in any column and count everywhere. SEMANTIC ones
+(`nan`, `na`, `none`, `nil`, `missing`, `unknown`) only count where a NUMBER
+belongs, which is where they are holes rather than answers.
+
+The clean control did not catch this because every control column was a number,
+a date or a code. A control set with no proper nouns in it cannot exercise a
+check whose failure mode is proper nouns, and the fixtures now contain names.
+
+### D-086
+**The hygiene check read every cell and never read the headers**
+`cell-hygiene` (G1) · 2026-08-24 · confirmed, fixed
+
+The same villager file begins with a UTF-8 byte-order mark, so its first column
+is named `\ufeffName`. G1 reported "no edge whitespace or invisible characters"
+because it iterated the VALUES of each column and never looked at the name of
+one.
+
+A BOM or a trailing space on a column name is the same defect as one in a cell
+and strictly worse in consequence. The header visibly reads `Name`, every
+reader can see `Name`, and `df["Name"]` raises `KeyError` on a file that looks
+correct in every spreadsheet and every preview. It is the first thing that
+happens to anyone opening that file and the check was silent about it.
+
+G1 now reads headers before cells and says which are unreachable by the name
+printed above them. Both findings came from one file, on the first contact this
+series had with data nobody here wrote.
 
 ## Negative results
 
@@ -5352,7 +5397,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **31** |
-| defects in dinostomp itself (**D**) | **84** |
+| defects in dinostomp itself (**D**) | **86** |
 
 Seventy-nine to forty-nine. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
@@ -5364,7 +5409,7 @@ health over runs from two different engines, four were caught only when the tool
 ([D-014](#d-014)) was a bug the project had already found and fixed elsewhere,
 written again three releases later in a different check.
 
-The most common shape across all eighty-four is worth stating once: **a check that
+The most common shape across all eighty-six is worth stating once: **a check that
 compared the wrong thing and returned a confident answer about it.**
 
 ## Adding an entry

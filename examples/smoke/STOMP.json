@@ -1212,7 +1212,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "1 of 1 run(s) were produced by a different engine than the one auditing them (now a5105c1e4cff98b1); re-run to get numbers this report can stand behind",
+      "detail": "1 of 1 run(s) were produced by a different engine than the one auditing them (now d992bdfcfeaae493); re-run to get numbers this report can stand behind",
       "witnesses": 1,
       "examples": [
         "engine 050e2f343915e1b9: dry-strong seed 42 (tool 0.57.1)"
