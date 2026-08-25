@@ -3,6 +3,7 @@ verify against their committed reports. This is what makes the repo
 "pre-verifiable from day one" true rather than aspirational: a fresh clone
 runs this and re-derives every published example number offline."""
 
+import json
 from pathlib import Path
 
 import pytest
@@ -11,6 +12,29 @@ from dinostomp.report import verify_report
 
 REPO = Path(__file__).resolve().parents[1]
 PODS = [p.parent for p in (REPO / "examples").glob("*/eval.yaml")]
+
+
+def test_committed_reports_name_no_extensions():
+    """A published report must re-derive on a machine that is not this one.
+
+    `verify` re-derives with the extension set the report NAMES, so a report
+    generated while a plugin happened to be installed is UNVERIFIABLE anywhere
+    that plugin is absent, including CI. That shipped once already (D-078's
+    neighbour, fixed in the commit that regenerated all ten), and it shipped
+    again the moment someone regenerated the examples on a developer machine
+    with the AEI extension installed: the local suite passed both times,
+    because the local machine is never the stranger.
+
+    So the invariant is asserted on the committed bytes rather than on a
+    verification run: examples are published with `--no-extensions`.
+    """
+    for pod in PODS:
+        published = json.loads((pod / "STOMP.json").read_text(encoding="utf-8"))
+        named = published.get("extensions")
+        assert not named, (
+            f"{pod.name}/STOMP.json names {named}; regenerate it with "
+            f"`dinostomp report {pod.name}/eval.yaml --no-extensions` or nobody without "
+            f"that plugin can verify it")
 
 
 @pytest.mark.parametrize("pod", PODS, ids=lambda p: p.name)

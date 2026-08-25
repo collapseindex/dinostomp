@@ -17,7 +17,7 @@ jobs:
         with: {python-version: "3.11"}
       # `vision` too: without it S15 skips, and a check that is only ever
       # skipped in CI is a check nobody tests on a second platform.
-      - run: pip install -e '.[dev,vision]'
+      - run: pip install -e '.[dev,vision,xlsx]'
       - name: verify the published report re-derives
         run: dinostomp verify examples/${{ matrix.pod }}/eval.yaml
       - name: stomp
@@ -31,7 +31,7 @@ jobs:
         with: {python-version: "3.11"}
       # `vision` too: without it S15 skips, and a check that is only ever
       # skipped in CI is a check nobody tests on a second platform.
-      - run: pip install -e '.[dev,vision]'
+      - run: pip install -e '.[dev,vision,xlsx]'
       - run: python -m pytest -q
       - name: findings index is current
         run: python scripts/index_findings.py --check
