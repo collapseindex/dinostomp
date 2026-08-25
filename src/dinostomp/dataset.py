@@ -30,7 +30,8 @@ from typing import Any
 
 from dinostomp.spec import Issue, jsonl_lines, read_data_text
 
-DATA_SUFFIXES = {".csv": "csv", ".jsonl": "jsonl", ".ndjson": "jsonl", ".json": "json"}
+DATA_SUFFIXES = {".csv": "csv", ".jsonl": "jsonl", ".ndjson": "jsonl", ".json": "json",
+                 ".tsv": "csv", ".xlsx": "xlsx", ".xlsm": "xlsx"}
 
 # Column names that mean the same canonical field, most specific first. Order
 # matters: a row with both `question` and `text` wants `question`.
@@ -62,6 +63,15 @@ COMMON_SEPARATORS = ["|", ";", "\t"]
 MAX_SNIFF_ROWS = 200
 MAX_DATA_BYTES = 100 * 1024 * 1024
 
+# Which sheet a workbook's VALUE checks read, and what else was in the file.
+# Keyed by path so the caller can print it: reporting on sheet 1 of 9 without
+# saying so is reporting on a file the user did not open.
+_WORKBOOK_NOTES: dict[str, list[str]] = {}
+
+
+def workbook_notes(path: str | Path) -> list[str]:
+    return _WORKBOOK_NOTES.get(str(Path(path).resolve()), []) or _WORKBOOK_NOTES.get(str(path), [])
+
 
 def looks_like_dataset(path: str | Path) -> bool:
     """Is this a data file rather than a spec? Extension only, deliberately.
@@ -88,9 +98,28 @@ def read_rows(path: Path) -> tuple[list[dict], list[Issue]]:
                                   f"{MAX_DATA_BYTES // 1024 // 1024}MB cap")]
     fmt = DATA_SUFFIXES[path.suffix.lower()]
     try:
+        if fmt == "xlsx":
+            # Values only. The formulas, hidden rows and merged ranges this pass
+            # discards are exactly what the X checks read the file a second time
+            # to see, in workbook.py: a spreadsheet flattened to values has
+            # already lost the half of its defects nobody else looks for.
+            from dinostomp import workbook
+
+            if not workbook.available():
+                return [], [Issue(loc=str(path), check="data",
+                                  message=workbook.UNAVAILABLE_REASON)]
+            try:
+                rows, notes = workbook.sheet_rows(path)
+            except Exception as exc:  # noqa: BLE001 - openpyxl raises widely
+                return [], [Issue(loc=str(path), check="data",
+                                  message=f"cannot read workbook: "
+                                          f"{exc.__class__.__name__}: {exc}")]
+            _WORKBOOK_NOTES[str(path)] = notes
+            return rows, []
         if fmt == "csv":
+            delimiter = "\t" if path.suffix.lower() == ".tsv" else ","
             with path.open(encoding="utf-8", newline="") as fh:
-                return [dict(r) for r in csv.DictReader(fh)], []
+                return [dict(r) for r in csv.DictReader(fh, delimiter=delimiter)], []
         text = read_data_text(path)
     except OSError as exc:
         return [], [Issue(loc=str(path), message=f"cannot read file: {exc}", check="data")]

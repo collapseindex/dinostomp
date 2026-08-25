@@ -78,6 +78,11 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-048](#f-048) | CUDA-Agent-Ops-6K | 550 of 5,929 rows (9.3%) declare an operator absent from their own code, mostly dimensionality swaps (ConvTranspose1d declared, ConvTranspose3d written) | confirmed, minor |
 | [F-049](#f-049) | CUDA Agent reward harness | the anti-reward-hacking guard patches `dir(F)`, so 11 of 13 routes to a torch operator survive it, including any name imported before it runs | confirmed, scoped |
 | [F-029](#f-029) | ASDiv | one word problem present twice | confirmed, minor |
+| [D-080](#d-080) | dinostomp | the number reader rejected every value over 999, producing a false alarm and a miss from one pattern | confirmed, fixed |
+| [D-081](#d-081) | dinostomp | a category check measured distinctness on raw values, so the defect it looks for hid it | confirmed, fixed |
+| [D-082](#d-082) | dinostomp | adding a check series made every previously-sound pod report INCOMPLETE | confirmed, fixed |
+| [D-083](#d-083) | dinostomp | the new check series was about to claim the id namespace extension authors use | confirmed, fixed |
+| [D-084](#d-084) | dinostomp | a spreadsheet with no formulas reported INCOMPLETE for questions it could not be asked | confirmed, fixed |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
@@ -215,6 +220,9 @@ at fault.
 
 | check | findings |
 |---|---|
+| `G6` | [D-080](#d-080) |
+| `G7` | [D-080](#d-080) |
+| `G8` | [D-081](#d-081) |
 | `J1` | [N-019](#n-019), [D-017](#d-017), [D-056](#d-056) |
 | `J2` | [F-014](#f-014), [N-022](#n-022) |
 | `P2` | [N-023](#n-023), [D-003](#d-003), [D-008](#d-008) |
@@ -250,13 +258,13 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [F-048](#f-048), [F-049](#f-049), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [F-048](#f-048), [F-049](#f-049), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078), [D-079](#d-079) |
+| dinostomp | [D-080](#d-080), [D-081](#d-081), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078), [D-079](#d-079) |
 | dinocorpus | [N-021](#n-021), [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | AISafetyLab | [F-033](#f-033), [F-034](#f-034), [F-035](#f-035) |
 | CUDA-Agent-Ops-6K | [F-047](#f-047), [F-048](#f-048), [N-031](#n-031) |
@@ -328,7 +336,7 @@ at fault.
 `dup-questions` (S1) · 2026-07 · confirmed
 
 The battery's first contact with real data was the most famous dataset in
-statistics. Transcript re-run under the current 74-check battery; the original
+statistics. Transcript re-run under the current 91-check battery; the original
 catch happened at 23 checks.
 
 ```
@@ -1314,6 +1322,89 @@ because a duplicate silently double-weights whatever the item measures, and
 because the same audit at a wrong mapping reported SIX duplicates here, which is
 the number that would have been published without the guards in
 [D-057](#d-057).
+
+### D-080
+**The number reader rejected every value over 999, in both directions at once**
+`type-drift` (G6), `sentinel-values` (G7) · 2026-08-24 · confirmed, fixed
+
+The first draft of the G series parsed a spreadsheet number with a pattern that
+required thousands separators once a number passed three digits:
+`\d{1,3}(?:[, ]\d{3})*`. Written that way it matches `1,200.00` and rejects
+`1200.00`, so every column holding an ordinary unseparated value over 999
+became "not numeric".
+
+That single pattern produced a false alarm and a miss simultaneously, which is
+why it is one entry rather than two. G6 reported the clean control's
+`unit_price` column as text-contaminated because `1200.00` would not parse. G7
+missed a planted `999999` sentinel in the same column, because a sentinel it
+cannot read as a number is not a number it can recognise.
+
+Both arms of the corpus caught it on the same run, from opposite sides: the
+specificity arm said the clean file was dirty and the sensitivity arm said the
+dirty file was clean. Neither arm alone would have located the cause. The
+alternation now accepts an ungrouped run of digits of any length.
+
+### D-081
+**The defect hid the defect: a category check dismissed the columns it was for**
+`category-collapse` (G8) · 2026-08-24 · confirmed, fixed
+
+G8 exists to find a column where `West`, `west` and `WEST` are three groups in
+a database and one region in a human's head. It guarded against firing on free
+text by skipping any column more than half distinct, and it measured that
+distinctness on the RAW values.
+
+Raw distinctness is inflated by exactly the defect being looked for. A region
+column of ten rows written four ways reads as 70% distinct, so the check
+dismissed it as free text and stayed silent. The first real spreadsheet the
+series was pointed at contained the defect, and the check said nothing.
+
+The guard now measures distinctness after normalisation. Pointed at the same
+file it reports `region (7 -> 4)` and `vendor (7 -> 5)`.
+
+### D-082
+**Adding a check series made every previously-sound pod report INCOMPLETE**
+`report` scope accounting · 2026-08-24 · confirmed, fixed
+
+An unreached check is a skip, and any in-scope skip makes a verdict
+`incomplete`. The filter deciding "in scope" read
+`scope == "pod" or f.id in SCOPE_CHECKS[scope]`, whose first branch is true for
+every pod, so a pod counted every declared check as answerable including
+seventeen that read a file as a raw grid and can never apply to it.
+
+The first pod audited after the G and XL series landed went from
+MECHANICALLY SOUND to INCOMPLETE without a single thing changing about the pod.
+Coverage that moves when an unrelated feature ships is not coverage.
+
+Out-of-scope checks are now `n/a` with the scope named, which leaves the
+denominator, and the filter consults the scope set for every scope rather than
+short-circuiting on one of them.
+
+### D-083
+**The new series was about to claim the id an extension author reaches for first**
+check id namespace · 2026-08-24 · confirmed, fixed
+
+The workbook checks were `X1` to `X6`. Extension check ids are namespaced, and
+an extension whose raw id collides with a core id is refused at load. The
+repository's own extension test fixture uses `X1` as its demo id, which is the
+evidence: `X` is the letter anybody writes when they need a placeholder.
+
+Claiming it would have refused those extensions with a message about a
+collision the author could not have anticipated. The cost of avoiding it was
+one rename before anything shipped, so the series is `XL1` to `XL6`.
+
+### D-084
+**A spreadsheet with no formulas reported INCOMPLETE forever**
+`range-short` (XL5), `pasted-constant` (XL1), `uncalculated` (XL6) · 2026-08-24 · confirmed, fixed
+
+`Reporter.check` turns a pass over zero witnesses into a skip, because a
+vacuous pass is not a pass. Correct in general, and wrong for a workbook that
+simply contains no formulas: there is no aggregate whose range could stop
+short, so the question cannot be asked rather than having gone unanswered.
+
+An ordinary value-only spreadsheet, the most common kind there is, came back
+INCOMPLETE with three skips it could never have satisfied. Those checks now
+report `n/a` naming what is absent, and only a workbook that HAS formulas can
+be incomplete about them.
 
 ## Negative results
 
@@ -5261,7 +5352,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **31** |
-| defects in dinostomp itself (**D**) | **79** |
+| defects in dinostomp itself (**D**) | **84** |
 
 Seventy-nine to forty-nine. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
@@ -5273,7 +5364,7 @@ health over runs from two different engines, four were caught only when the tool
 ([D-014](#d-014)) was a bug the project had already found and fixed elsewhere,
 written again three releases later in a different check.
 
-The most common shape across all seventy-nine is worth stating once: **a check that
+The most common shape across all eighty-four is worth stating once: **a check that
 compared the wrong thing and returned a confident answer about it.**
 
 ## Adding an entry

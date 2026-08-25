@@ -36,6 +36,9 @@ from pathlib import Path
 
 import yaml
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from table_trials import CLEAN_TABLE_TRIALS, TABLE_TRIALS
 from dinostomp.lint import lint_eval
 from dinostomp.spec import spec_sha256
 
@@ -2237,6 +2240,48 @@ CLEAN_TRIALS = [
 ]
 
 
+def run_table_trial(name, builder, expectation):
+    """The table arm. Same rubric as a pod trial, different front door.
+
+    `lint_dataset` is the path a user reaches by typing `dinostomp stomp
+    orders.xlsx`, so the trial exercises what a user actually runs rather than
+    a check function called directly by its author.
+    """
+    from dinostomp.lint import lint_dataset
+
+    tmp = Path(tempfile.mkdtemp(prefix="dinotable-"))
+    try:
+        report, issues, _ = lint_dataset(builder(tmp))
+        if report is None:
+            return False, f"cannot stomp: {issues[:1]}"
+        check_id, level = expectation
+        finding = next(f for f in report["findings"] if f["id"] == check_id)
+        actual = f"{check_id}={finding['level']}, verdict={report['summary']['verdict']}"
+        caught = finding["level"] == level
+        if caught and level == "fail":
+            caught = report["summary"]["verdict"] == "broken"
+        return caught, actual
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def run_clean_table_trial(name, builder):
+    from dinostomp.lint import lint_dataset
+
+    tmp = Path(tempfile.mkdtemp(prefix="dinotable-clean-"))
+    try:
+        report, issues, _ = lint_dataset(builder(tmp))
+        if report is None:
+            return False, f"cannot stomp: {issues[:1]}"
+        noisy = [f"{f['id']}={f['level']}" for f in report["findings"]
+                 if f["level"] in ("fail", "warn")]
+        actual = (f"verdict={report['summary']['verdict']}"
+                  + (f", findings: {noisy}" if noisy else ", 0 findings"))
+        return not noisy, actual
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def run_clean_trial(name, builder):
     tmp = Path(tempfile.mkdtemp(prefix="dinotrial-clean-"))
     try:
@@ -2331,6 +2376,63 @@ def main() -> int:
         print(f"  {name:<48} {'0 findings':<16} {actual:<40} {tag}")
         rows.append({"defect": None, "clean_pod": name, "actual": actual, "clean": clean})
     print(f"\n  specificity: 0 findings on {len(CLEAN_TRIALS) - false_alarms} of {len(CLEAN_TRIALS)} clean pods")
+
+    # The TABLE arm. Until this existed, the header of this file recorded that
+    # wiring a dataset arm into the scorecard was "the right fix and is not
+    # done"; the G and XL series needed it, so it is done here rather than
+    # leaving seventeen checks graded only by their own unit tests.
+    print(f"\n  {'spreadsheet defect (table arm)':<48} {'expected':<16} {'actual':<28} verdict")
+    table_missed = 0
+    table_unrunnable = 0
+    for trial in TABLE_TRIALS:
+        name, builder, expectation = trial[0], trial[1], trial[2]
+        precondition = trial[3] if len(trial) > 3 else None
+        exp = f"{expectation[0]} {expectation[1]}"
+        if precondition is not None and not precondition():
+            table_unrunnable += 1
+            print(f"  {name:<48} {exp:<16} {'not runnable here':<28} NOT RUN")
+            rows.append({"defect": name, "expected": exp, "actual": "not runnable here",
+                         "caught": None, "arm": "table"})
+            continue
+        try:
+            caught, actual = run_table_trial(name, builder, expectation)
+        except Exception as exc:  # noqa: BLE001 - a crashing trial is a MISSED trial, loudly
+            caught, actual = False, f"trial crashed: {type(exc).__name__}: {exc}"
+        tag = "CAUGHT" if caught else "** MISSED **"
+        if not caught:
+            table_missed += 1
+        print(f"  {name:<48} {exp:<16} {actual:<28} {tag}")
+        rows.append({"defect": name, "expected": exp, "actual": actual, "caught": caught,
+                     "arm": "table"})
+    table_ran = len(TABLE_TRIALS) - table_unrunnable
+    print(f"\n  table sensitivity: {table_ran - table_missed} of {table_ran} "
+          f"spreadsheet defects caught, {table_missed} missed")
+    if table_unrunnable:
+        print(f"  {table_unrunnable} trial(s) NOT RUN here because openpyxl is absent, so this "
+              f"is {table_ran} of the {len(TABLE_TRIALS)} declared. "
+              f"Install it with `pip install -e '.[dev,xlsx]'`.")
+
+    print(f"\n  {'clean table (specificity arm)':<48} {'expected':<16} {'actual':<40} verdict")
+    table_false_alarms = 0
+    table_clean_ran = 0
+    for name, builder, precondition in CLEAN_TABLE_TRIALS:
+        if precondition is not None and not precondition():
+            print(f"  {name:<48} {'0 findings':<16} {'not runnable here':<40} NOT RUN")
+            continue
+        table_clean_ran += 1
+        try:
+            clean, actual = run_clean_table_trial(name, builder)
+        except Exception as exc:  # noqa: BLE001 - a crashing clean trial is a false alarm
+            clean, actual = False, f"trial crashed: {type(exc).__name__}: {exc}"
+        tag = "CLEAN" if clean else "** FALSE ALARM **"
+        if not clean:
+            table_false_alarms += 1
+        print(f"  {name:<48} {'0 findings':<16} {actual:<40} {tag}")
+        rows.append({"defect": None, "clean_table": name, "actual": actual, "clean": clean})
+    print(f"\n  table specificity: 0 findings on "
+          f"{table_clean_ran - table_false_alarms} of {table_clean_ran} clean tables")
+    missed += table_missed
+    false_alarms += table_false_alarms
     # Printed every run, under the score, because the score is the thing people
     # quote. A battery can become extremely good at catching the exact mutants
     # written for it, and these mutants were written by the same hands as the

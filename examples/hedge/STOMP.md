@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 34 of 45 checks ran (34 of 45 ran; 29 n/a of 74 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 34 of 45 checks ran (34 of 45 ran; 46 n/a of 91 declared). Not a clean bill of health.
 
 ## Results
 
@@ -91,6 +91,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
 | ok | the audit covers the rows it was given | 30 | 0 of 30 row(s) were dropped: the pod loader refuses a dataset it cannot read whole, so every row in the file reached the audit |
+| n/a | rows are unique | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no error value is saved in the workbook | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | every column aggregate covers its own column | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
 | skip | a graded scorer witnesses its gradation | 0 | hosted judge: a graded judge's gradation is checked by the judge probe |
 | n/a | every typed claim's evidence requirements hold | 0 | no typed claims declared |
 | ok | runs match the spec, data, and scorer on disk (no drift) | 4 | 0 of 4 run(s) no longer match the spec, data, or scorer on disk |
@@ -126,6 +129,20 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | no two options are the same number written differently | 0 | no multiple-choice items in this dataset |
 | ok | no two items are the same question in different encodings | 30 | 0 group(s) of items are the same question in different encodings |
 | ok | the answer key is not dominated by one value | 30 | the answer key is not dominated by one value (modal 3% of 30 answers) |
+| n/a | no cell carries edge whitespace or invisible characters | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no identifier column repeats a value | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no digit-string column has leading zeros a conversion would destroy | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no date column mixes formats or reads both ways | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no numeric column is contaminated with text | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no value stands in for missing without saying so | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no category column splits one label across spellings | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no rate column mixes fraction and percent scales | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no numeric column stores symbols or separators | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no rows are duplicates once case and whitespace stop counting | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no constant is pasted inside a formula column | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | nothing an aggregate counts is hidden from the reader | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no merged range flattens a row on import | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | every formula has been calculated | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
 | skip | witnesses kill the mutant scorers | 0 | hosted judge: the mutation gauntlet would re-invoke it once per mutant per witness, which a lint must never pay for; run the judge probe instead |
 | skip | a correct answer survives its surface form | 0 | hosted judge: re-invoking it once per shape per target is a cost a lint must never incur; run the judge probe instead |
 | n/a | an exact scorer is not graded against prose answers | 0 | the scorer does not compare bare strings, so it is not the exact-match-on-prose mismatch this looks for |
@@ -138,7 +155,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | ok | billed output tokens match the recorded text | 4 | 0 of 4 model(s) report far more output tokens than their recorded text accounts for (expected for hidden-reasoning models; otherwise check your invoice) |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now d72749626c89701e); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now a5105c1e4cff98b1); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | no failed answer numerically equals its target | 0 | no failed record has a numeric target, so there is no numeric-equivalent miss to look for |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |

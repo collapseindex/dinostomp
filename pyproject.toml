@@ -23,6 +23,11 @@ dev = ["pytest>=7.0"]
 # picture" needs pixels. S15 is the one check that does, and it skips loudly
 # when this is absent rather than passing quietly.
 vision = ["Pillow>=9.0"]
+# Workbook STRUCTURE, and nothing else. The core reads a spreadsheet's values
+# through this too, but only the X checks need the formulas, hidden rows, merged
+# ranges and calculation state, and they skip loudly when this is absent rather
+# than passing quietly. Every dataframe reader throws that half away silently.
+xlsx = ["openpyxl>=3.1"]
 
 [project.scripts]
 dinostomp = "dinostomp.cli:main"

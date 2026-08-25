@@ -6,13 +6,13 @@
   "tool": {
     "name": "dinostomp",
     "version": "0.62.0",
-    "engine": "d72749626c89701e5a964ee65a42c372d21e6d46bdd34f01f4e37c56dd50c59b"
+    "engine": "a5105c1e4cff98b18c2bf76e771a11a0c6d804f42d66c797235e3887adde5b77"
   },
   "counts": {
     "F": 49,
-    "D": 79,
+    "D": 84,
     "N": 31,
-    "total": 159
+    "total": 164
   },
   "series": {
     "F": "other people's evals",
@@ -786,6 +786,96 @@
       "status_class": "confirmed",
       "anchor": "#f-029",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-029"
+    },
+    {
+      "id": "D-080",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "The number reader rejected every value over 999, in both directions at once",
+      "summary": "the number reader rejected every value over 999, producing a false alarm and a miss from one pattern",
+      "subject": "dinostomp",
+      "check_label": "`type-drift` (G6), `sentinel-values` (G7)",
+      "checks": [
+        "G6",
+        "G7"
+      ],
+      "date": "2026-08-24",
+      "date_iso": "2026-08-24",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-080",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-080"
+    },
+    {
+      "id": "D-081",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "The defect hid the defect: a category check dismissed the columns it was for",
+      "summary": "a category check measured distinctness on raw values, so the defect it looks for hid it",
+      "subject": "dinostomp",
+      "check_label": "`category-collapse` (G8)",
+      "checks": [
+        "G8"
+      ],
+      "date": "2026-08-24",
+      "date_iso": "2026-08-24",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-081",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-081"
+    },
+    {
+      "id": "D-082",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "Adding a check series made every previously-sound pod report INCOMPLETE",
+      "summary": "adding a check series made every previously-sound pod report INCOMPLETE",
+      "subject": "dinostomp",
+      "check_label": "`report` scope accounting",
+      "checks": [],
+      "date": "2026-08-24",
+      "date_iso": "2026-08-24",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-082",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-082"
+    },
+    {
+      "id": "D-083",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "The new series was about to claim the id an extension author reaches for first",
+      "summary": "the new check series was about to claim the id namespace extension authors use",
+      "subject": "dinostomp",
+      "check_label": "check id namespace",
+      "checks": [],
+      "date": "2026-08-24",
+      "date_iso": "2026-08-24",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-083",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-083"
+    },
+    {
+      "id": "D-084",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "A spreadsheet with no formulas reported INCOMPLETE forever",
+      "summary": "a spreadsheet with no formulas reported INCOMPLETE for questions it could not be asked",
+      "subject": "dinostomp",
+      "check_label": "`range-short` (XL5), `pasted-constant` (XL1), `uncalculated` (XL6)",
+      "checks": [],
+      "date": "2026-08-24",
+      "date_iso": "2026-08-24",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-084",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-084"
     },
     {
       "id": "F-018",

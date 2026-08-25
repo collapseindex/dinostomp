@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.62.0 · Apache-2.0 · engine `d72749626c89701e` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.62.0 · Apache-2.0 · engine `a5105c1e4cff98b1` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -25,15 +25,15 @@ Each of those is one entry in **[FINDINGS.md](FINDINGS.md)**, with the item id,
 the verbatim data and the command that reproduces it. Every `F` re-derives in
 seconds, offline, for free, using the command in the next section.
 
-**[FINDINGS.md](FINDINGS.md): 159 entries, all permanent, none deleted.**
+**[FINDINGS.md](FINDINGS.md): 164 entries, all permanent, none deleted.**
 
 | series | count | what it records |
 |---|--:|---|
 | **F** | 49 | findings in other people's evals |
-| **D** | 79 | defects in dinostomp itself |
+| **D** | 84 | defects in dinostomp itself |
 | **N** | 31 | negative results, recorded rather than dropped |
 
-**Seventy-nine of the 159 are against this tool**, which is the number to
+**Eighty-four of the 164 are against this tool**, which is the number to
 read first. A validator that only publishes other people's mistakes is telling
 you which mistakes it is willing to look for. Included there: the entry it
 retracted after its own killer control killed it ([N-013](FINDINGS.md#n-013)),
@@ -47,7 +47,7 @@ graded against an answer key somebody outside this repo wrote**
 against ciFAIR's hand-annotated CIFAR-10 duplicates, and
 [N-019](FINDINGS.md#n-019) against MT-Bench's human preference votes). All three
 produced the least flattering numbers in the file, which is the argument for
-more of them. Seventy-nine self-found defects is still self-grading, and that
+more of them. Eighty-four self-found defects is still self-grading, and that
 number moves when an outsider runs it rather than when the total goes up.
 [Break it, please](CONTRIBUTING.md#break-it-please).
 
@@ -76,7 +76,7 @@ One invariant runs under all of it: **nothing becomes evidence merely because an
 earlier stage said it was.** Summaries are recomputed from records, verdicts are
 re-scored from recorded text, and the engine hashes itself into its own output.
 
-Seventy-four checks, each negative-tested to prove it fires, most invisible until
+Ninety-one checks, each negative-tested to prove it fires, most invisible until
 something breaks. Each stage above is a place the ledger has a receipt from:
 
 | stage | what goes wrong there |
@@ -190,8 +190,8 @@ BROKEN AT DATA SCOPE: 2 gated finding(s) in the dataset itself
 
 That is a real run against the real MMLU test split, and `mmlu-02178` is the
 subtraction item above: the answer is on its option list twice, so a model that
-computes it correctly picks the wrong letter half the time. Nineteen of the
-seventy-four checks read data at rest, which is why this costs nothing.
+computes it correctly picks the wrong letter half the time. Thirty-six of the
+ninety-one checks read data at rest, which is why this costs nothing.
 
 **Five minutes, for the other fifty-five.** They need evidence: outputs, a
 scorer, a ledger, a claim.
@@ -255,12 +255,78 @@ Four things then happen that you did not ask for, and they are the product:
   between seeds is a finding; another moving 11.5 points is not, if its sample
   is smaller. The battery does that arithmetic so nobody has to eyeball it.
 - **Coverage is stated, always.** `MECHANICALLY SOUND: no integrity findings,
-  full coverage (35 of 35 ran; 39 n/a of 74 declared)` is a different claim from
+  full coverage (35 of 35 ran; 56 n/a of 91 declared)` is a different claim from
   a green tick, and the difference is printed every time.
 - **Nothing is trusted downstream of the run.** Summaries are recomputed from
   records, verdicts are re-scored offline, and hand-editing either is a gated
   finding.
 
+
+## Spreadsheets: the file most people actually have
+
+Point it at a spreadsheet that was never an eval. No question column, no answer
+key, no spec:
+
+```bash
+pip install 'dinostomp[xlsx]'
+dinostomp stomp orders.xlsx
+```
+
+```
+  [warn] category-collapse      no category column splits one label across spellings
+           - region: 7 labels collapse to 4 ('East' = 'EAST'; 'West' = 'west')
+  [warn] numeric-string         no digit-string column has leading zeros a conversion would destroy
+           - sku: 10 of 10 values keep a leading zero (e.g. 00123) -> converting to a number would change them
+  [warn] sentinel-values        no value stands in for missing without saying so
+           - qty: 999999 x3 (repeats in a numeric column; a sentinel, or real values?)
+  [FAIL] range-short            every column aggregate covers its own column
+           - Orders!E13 = =SUM(E2:E8) excludes populated E row(s) 9, 10, 11
+BROKEN AT DATA SCOPE: 1 gated finding(s) in the dataset itself
+```
+
+Two things there are worth separating.
+
+**The last one is invisible to every tool built on a dataframe.** `SUM(E2:E8)`
+in a column populated to row 11 is a total that presents itself as complete and
+is not. `pandas.read_excel` evaluates nothing, keeps the cached values and
+discards the formulas, the hidden rows, the merged ranges and the calculation
+state before a model or a human ever sees the file, so six of the checks below
+are structurally unreachable after that call no matter how good the reader is.
+The most expensive spreadsheet mistake in economics was this exact shape:
+Reinhart and Rogoff's 2010 growth-and-debt result averaged `L30:L44` in a column
+whose data ran to row 49, and the paper was cited in budget debates on two
+continents before anyone opened the formula. The `XL` series reads the workbook
+as a workbook, which is the only way to see it.
+
+**The others are proposals, not repairs**, and that is the harder half. A column
+of `00123` is a broken numeric column if it holds quantities and a CORRECT text
+column if it holds zip codes, SKUs or phone numbers, and nothing in the file
+says which. So `numeric-string` reports what a conversion would destroy and
+refuses to want it gone. `category-collapse` shows the merge it WOULD produce
+and the members that would merge. A cleaner that silently normalises those
+columns is not saving anyone time; it is destroying data confidently, which is
+the failure this whole repo exists to catch. The rule the table checks follow:
+
+> **The tool proposes. The human disposes.** Nothing here rewrites your file.
+
+Two checks in the series are the same phenomenon pointing opposite directions,
+which is the argument in executable form: auto-fixing "numbers stored as text"
+destroys the leading zeros that "digit-string column" exists to protect. Both
+ship, they disagree on purpose, and
+[a test asserts they disagree](tests/test_tabular.py).
+
+Twenty-eight checks read a table this way, split by what they need to see it:
+
+| series | reads | needs |
+|---|---|---|
+| **G1-G11** | the values: whitespace and invisible characters, duplicate and near-duplicate rows, identifier columns that repeat, leading zeros, mixed and locale-ambiguous dates, text in numeric columns, sentinels, split categories, mixed percent scales, currency formatting | nothing; works on `.csv`, `.tsv`, `.jsonl`, `.xlsx` |
+| **XL1-XL6** | the workbook: constants pasted over formulas, saved `#REF!`/`#DIV/0!`, hidden rows and columns and sheets, merged ranges, aggregates that stop short of their own column, formulas never calculated | `pip install 'dinostomp[xlsx]'`, and every check says UNAVAILABLE with the install line rather than passing quietly when it is absent |
+
+A table that is not an eval reports at **table scope**: the eval checks are
+`n/a` rather than missing, because a vendor list is not an incomplete eval, it
+is a complete table. A file too small to profile is still refused, from this
+front door as from the other one, so nothing collects a clean bill of health it
+did not earn.
 
 ## More you can ask of a dataset
 
@@ -389,7 +455,7 @@ At 24 items an UNPAIRED comparison resolves gaps down to about 40%.
 Then item difficulty and discrimination, hardest first, with who missed each one
 and the most common wrong answer. Then accuracy sliced by every metadata field
 the items carry, which on MMLU is accuracy by subject. Then cost and tokens,
-summed from the records. Then the claims, then all seventy-four checks, then the
+summed from the records. Then the claims, then all ninety-one checks, then the
 receipts and the provenance.
 
 Three rules hold that section together:
@@ -592,7 +658,7 @@ extension is named, versioned and hashed in the report, so a `SOUND` is always a
 claim about a specific set of code.
 
 The full contract, including why an extension is trusted when a stranger's pod
-is not, is in **[METHODOLOGY.md](METHODOLOGY.md)** along with all seventy-four
+is not, is in **[METHODOLOGY.md](METHODOLOGY.md)** along with all ninety-one
 checks and why each one exists.
 
 ## In CI
@@ -650,7 +716,7 @@ measures the intended construct: NOT ESTABLISHED BY DINOSTOMP
 That is a constant. There is no flag and no code path that sets it to anything
 else, and a test walks the source to keep it that way. This battery checks
 mechanical integrity; construct validity is argued, not computed, and a trivial,
-mis-aimed, or saturated eval can pass every check here. Seventy-four is not a
+mis-aimed, or saturated eval can pass every check here. Ninety-one is not a
 number that bounds the ways an eval can be invalid.
 
 **The self-tests are not independent validation.** 102 of 102 caught means every
@@ -678,7 +744,7 @@ the tool names them.
 
 - **[AUTHORING.md](AUTHORING.md)** — writing a spec, or having a model write one: the schema contract and the self-correction loop
 - **[FINDINGS.md](FINDINGS.md)** — what it found, in MMLU, GSM8K, TruthfulQA, and in itself
-- **[METHODOLOGY.md](METHODOLOGY.md)** — the seventy-four checks, the pod format, the philosophy, the self-audit
+- **[METHODOLOGY.md](METHODOLOGY.md)** — the ninety-one checks, the pod format, the philosophy, the self-audit
 - **[SECURITY.md](SECURITY.md)** — pod code, untrusted model output, money, what this does not do
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — the entry fee for a new check is a planted defect, not an argument
 - **[findings.json](findings.json)** — the ledger as data: versioned, validated against [docs/findings.schema.json](docs/findings.schema.json) before it is written
@@ -687,7 +753,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`d72749626c89701e5a964ee65a42c372d21e6d46bdd34f01f4e37c56dd50c59b`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`a5105c1e4cff98b18c2bf76e771a11a0c6d804f42d66c797235e3887adde5b77`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 
@@ -696,7 +762,7 @@ fee for a new check and the rules a patch may not remove. [Apache-2.0](LICENSE).
 
 <sub>Built and maintained by one person, unfunded. If it caught something in your
 eval, [sponsorship](https://github.com/sponsors/collapseindex) buys time to keep
-pointing it at real benchmarks and publishing what it finds, including the seventy-nine
+pointing it at real benchmarks and publishing what it finds, including the eighty-four
   findings against itself. Adversarial pods and bug reports are worth more than
 money and are always free:
 [break it, please](CONTRIBUTING.md#break-it-please).</sub>

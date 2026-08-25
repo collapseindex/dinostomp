@@ -105,6 +105,38 @@ CHECKS: list[tuple[str, str, bool, str]] = [
     ("S20", "the answer key is not dominated by one value", False,
      "20+ items carrying a target"),
     ("S21", "the audit covers the rows it was given", True, "always"),
+    # G: hygiene for a table that was never an eval. No mapping, no target, no
+    # semantics; only facts a reader could confirm by eye. See tabular.py for
+    # why almost all of these warn rather than gate.
+    ("G1", "no cell carries edge whitespace or invisible characters", False, "any table"),
+    ("G2", "rows are unique", True, "any table"),
+    ("G3", "no identifier column repeats a value", False, "a column named like an identifier"),
+    ("G4", "no digit-string column has leading zeros a conversion would destroy", False,
+     "a column of digit strings"),
+    ("G5", "no date column mixes formats or reads both ways", False, "a column of dates"),
+    ("G6", "no numeric column is contaminated with text", False, "a mostly-numeric column"),
+    ("G7", "no value stands in for missing without saying so", False, "any table"),
+    ("G8", "no category column splits one label across spellings", False,
+     "a low-cardinality text column"),
+    ("G9", "no rate column mixes fraction and percent scales", False,
+     "a numeric column named like a rate"),
+    ("G10", "no numeric column stores symbols or separators", False, "a mostly-numeric column"),
+    ("G11", "no rows are duplicates once case and whitespace stop counting", False, "any table"),
+    # XL: the workbook underneath the rectangle. Every one of these is invisible
+    # to anything that reads a spreadsheet by converting it to values first,
+    # which is what every dataframe reader does. Needs the xlsx extra.
+    ("XL1", "no constant is pasted inside a formula column", False,
+     "an .xlsx with formula columns, with the xlsx extra installed"),
+    ("XL2", "no error value is saved in the workbook", True,
+     "an .xlsx, with the xlsx extra installed"),
+    ("XL3", "nothing an aggregate counts is hidden from the reader", False,
+     "an .xlsx, with the xlsx extra installed"),
+    ("XL4", "no merged range flattens a row on import", False,
+     "an .xlsx, with the xlsx extra installed"),
+    ("XL5", "every column aggregate covers its own column", True,
+     "an .xlsx with column aggregates, with the xlsx extra installed"),
+    ("XL6", "every formula has been calculated", False,
+     "an .xlsx with formulas, with the xlsx extra installed"),
     ("W1", "witnesses kill the mutant scorers", False, "always"),
     ("W2", "a correct answer survives its surface form", False,
      "a scorer that accepts a constructible baseline form"),
@@ -318,6 +350,12 @@ SLUGS = {
     "S15": "near-dup-assets", "S16": "authorship-circularity", "S17": "target-leak",
     "S18": "numeric-dup-options", "S19": "lookalike-questions", "S20": "key-skew",
     "S21": "rows-audited",
+    "G1": "cell-hygiene", "G2": "dup-rows", "G3": "dup-keys",
+    "G4": "numeric-string", "G5": "date-format", "G6": "type-drift",
+    "G7": "sentinel-values", "G8": "category-collapse", "G9": "percent-scale",
+    "G10": "formatted-numbers", "G11": "near-dup-rows",
+    "XL1": "pasted-constant", "XL2": "formula-error", "XL3": "hidden-cells",
+    "XL4": "merged-cells", "XL5": "range-short", "XL6": "uncalculated",
     "W1": "witness-coverage", "W2": "surface-form", "W3": "graded-witness",
     "W4": "scorer-fit",
     "C1": "claim-evidence",
@@ -347,14 +385,30 @@ BY_SLUG = {v: k for k, v in SLUGS.items()}
 
 # Which checks each SCOPE is answerable for. A verdict is only as broad as the
 # evidence it was given, and saying so is cheaper than an asterisk.
+GRID_CHECKS = {f"G{i}" for i in range(1, 12)}
+WORKBOOK_CHECKS = {f"XL{i}" for i in range(1, 7)}
+# Hygiene for a table, answerable about any table including one that IS an eval.
+TABLE_CHECKS = GRID_CHECKS | WORKBOOK_CHECKS
+
 SCOPE_CHECKS = {
     "data": {"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S11",
-             "S12", "S13", "S14", "S15", "S17", "S18", "S19", "S20", "S21"},
+             "S12", "S13", "S14", "S15", "S17", "S18", "S19", "S20", "S21"} | TABLE_CHECKS,
+    # A table with no question and no answer column. The eval checks are not
+    # merely unreached here, they are unanswerable, so they must not count
+    # against coverage: a vendor list is not an incomplete eval, it is a
+    # complete table. Refusing to report at all was the old behaviour and it
+    # taught the user nothing about a file full of real defects.
+    "table": TABLE_CHECKS,
 }
-SCOPE_CHECKS["pod"] = {cid for cid, *_ in CHECKS}
+# A pod is every check EXCEPT the table series. The G and XL checks read a file
+# as a grid, and a pod's data has already been read as items by the time these
+# would run, so leaving them in pod scope would make every pod permanently
+# INCOMPLETE for checks that were never applicable to it.
+SCOPE_CHECKS["pod"] = {cid for cid, *_ in CHECKS} - TABLE_CHECKS
 
 SCOPE_BLURB = {
     "data": "the dataset at rest",
+    "table": "the table at rest: structure, types and hygiene, with no eval semantics",
     "pod": "the dataset, the scorer, and every run on disk",
 }
 
@@ -573,9 +627,19 @@ class Reporter:
                scope: str = "pod", extensions: list[dict] | None = None,
                loaded_extensions: list | None = None) -> dict:
         # Any declared check never reached is a skip: coverage self-audit.
+        # Except one that this SCOPE cannot answer at all, which is `n/a` and
+        # leaves the denominator. The distinction matters: a pod audit never
+        # reads its data as a raw grid, so the G and X checks are not evidence
+        # it failed to gather, they are questions it was never asked. Filing
+        # them as skips made every previously-sound pod report INCOMPLETE the
+        # moment the table series was added.
         for cid, *_ in CHECKS:
             if cid not in self.findings:
-                self.skip(cid, "not reached")
+                if cid not in SCOPE_CHECKS.get(scope, set()):
+                    self.not_applicable(cid, f"out of scope for a {scope} audit "
+                                             f"({SCOPE_BLURB.get(scope, scope)})")
+                else:
+                    self.skip(cid, "not reached")
         ordered = [self.findings[cid] for cid, *_ in CHECKS]
 
         n_a = [f for f in ordered if f.level == "n/a"]
@@ -594,7 +658,7 @@ class Reporter:
         # --allow-incomplete by reflex, which is the exact habit the flag
         # exists to prevent. So a data-scoped audit reports at data scope, and
         # says which scope it reported at.
-        in_scope_skips = [f for f in skipped if scope == "pod" or f.id in SCOPE_CHECKS[scope]]
+        in_scope_skips = [f for f in skipped if f.id in SCOPE_CHECKS[scope]]
         if fails:
             verdict = "broken"
         elif in_scope_skips:
@@ -3892,6 +3956,86 @@ def _extension_only_report(path: Path, reason: str, loaded: list, ext_findings: 
                       extensions=ext_findings, loaded_extensions=loaded)
 
 
+def _table_checks(rep: Reporter, rows: list[dict], path: Path) -> None:
+    """The G and XL series: read the file as a table, not as an eval.
+
+    Every check reports one of pass / warn / fail / n/a / UNAVAILABLE, and the
+    last two are load-bearing. A .csv has no formulas, so XL is `n/a` and leaves
+    the denominator. An .xlsx without openpyxl installed is `skip` WITH the
+    install line, because a check that cannot see must never read as a check
+    that saw nothing wrong.
+    """
+    from dinostomp import tabular, workbook
+
+    profiles = tabular.profile(rows, skip={"_features"})
+    for cid, result in (
+        ("G1", tabular.check_cell_hygiene(rows, profiles)),
+        ("G2", tabular.check_duplicate_rows(rows)),
+        ("G3", tabular.check_duplicate_keys(rows, profiles)),
+        ("G4", tabular.check_numeric_strings(rows, profiles)),
+        ("G5", tabular.check_date_formats(rows, profiles)),
+        ("G6", tabular.check_type_drift(rows, profiles)),
+        ("G7", tabular.check_sentinels(rows, profiles)),
+        ("G8", tabular.check_category_collapse(rows, profiles)),
+        ("G9", tabular.check_percent_scale(rows, profiles)),
+        ("G10", tabular.check_formatted_numbers(rows, profiles)),
+        ("G11", tabular.check_near_duplicate_rows(rows)),
+    ):
+        ok, detail, n, examples, evidence = result
+        rep.check(cid, ok, detail, n=n, examples=examples, evidence=evidence)
+
+    if not workbook.looks_like_workbook(path):
+        for cid in sorted(WORKBOOK_CHECKS):
+            rep.not_applicable(cid, f"{path.suffix or 'this file'} has no formulas, hidden rows "
+                                    f"or merged cells to read; workbook structure exists only "
+                                    f"in .xlsx/.xlsm")
+        return
+    if not workbook.available():
+        for cid in sorted(WORKBOOK_CHECKS):
+            rep.skip(cid, workbook.UNAVAILABLE_REASON)
+        return
+    try:
+        sheets = workbook.load_sheets(path)
+    except Exception as exc:  # noqa: BLE001 - openpyxl raises a wide family
+        for cid in sorted(WORKBOOK_CHECKS):
+            rep.skip(cid, f"could not read the workbook structure: "
+                          f"{exc.__class__.__name__}: {exc}")
+        return
+    for cid, result in (
+        ("XL1", workbook.check_pasted_constants(sheets)),
+        ("XL2", workbook.check_formula_errors(sheets)),
+        ("XL3", workbook.check_hidden_cells(sheets)),
+        ("XL4", workbook.check_merged_cells(sheets)),
+        ("XL5", workbook.check_short_ranges(sheets)),
+        ("XL6", workbook.check_uncalculated(sheets)),
+    ):
+        ok, detail, n, examples, evidence = result
+        # A workbook with no formulas has no aggregate to check, which is `n/a`
+        # and leaves the denominator. Filing it as a skip would mean a perfectly
+        # ordinary value-only spreadsheet reports INCOMPLETE forever for
+        # questions it was never possible to ask of it.
+        if evidence.get("not_applicable"):
+            rep.not_applicable(cid, evidence["not_applicable"])
+        else:
+            rep.check(cid, ok, detail, n=n, examples=examples, evidence=evidence)
+
+
+def _table_only_report(path: Path, rows: list[dict], reason: str) -> dict:
+    """A table that is not an eval still gets a real audit, at table scope.
+
+    The alternative, and the old behaviour, was to refuse the file entirely
+    because no column looked like a question. That refusal is correct about
+    evals and useless about spreadsheets, which is most of the files people
+    actually have.
+    """
+    rep = Reporter()
+    _table_checks(rep, rows, path)
+    for cid, *_ in CHECKS:
+        if cid not in TABLE_CHECKS and cid not in rep.findings:
+            rep.not_applicable(cid, reason)
+    return rep.report(path.name, inputs={"data_sha256": spec_sha256(path)}, scope="table")
+
+
 def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
                  separator: str | None = None,
                  references: dict[str, list[dict]] | None = None,
@@ -3944,7 +4088,38 @@ def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
                          f"{len(claimed)} finding(s) came from extensions")
             return _extension_only_report(path, issues[0].message, loaded,
                                           ext_findings), issues, context
-        return None, issues, context
+        # A MISPARSED file is still a dead end, and must stay one. When the
+        # delimiter guard has fired, the "table" in memory is a fiction: one
+        # column holding whole rows as strings. Auditing that fiction would
+        # report cheerfully on a file nobody has actually read, which is the
+        # failure this project exists to catch, and it would bury the one
+        # message the user needs (D-036).
+        if any(i.loc == "--separator" for i in issues):
+            return None, issues, context
+        # A table too small to profile is also still a dead end. Below the
+        # profiling floor almost every G check has nothing to measure and would
+        # report a pass over a handful of rows, which is the vacuous-pass
+        # failure the Reporter guards against everywhere else. An unmappable
+        # two-row aggregate must not acquire a clean bill of health it did not
+        # earn, from the core any more than from an extension.
+        from dinostomp.tabular import MIN_ROWS_FOR_PROFILE
+
+        if len(rows) < MIN_ROWS_FOR_PROFILE:
+            issues.append(Issue(
+                loc=str(path), check="data",
+                message=f"{len(rows)} row(s) is too few to audit as a table either "
+                        f"({MIN_ROWS_FOR_PROFILE} needed to profile a column), so nothing "
+                        f"here would mean anything"))
+            return None, issues, context
+        # Not an eval, and that is allowed. The eval checks stay refused and
+        # unanswered, which is the honest outcome for a file with no question
+        # column, but the table itself still gets audited as a table.
+        reason = issues[0].message
+        notes.append(f"no eval mapping ({reason}), so the S-series did not run. "
+                     f"Auditing this as a plain table instead: structure, types and "
+                     f"hygiene. Pass --input-field/--target-field to audit it as an eval.")
+        context["scope"] = "table"
+        return _table_only_report(path, rows, reason), issues, context
 
     # Tabular audit: synthesize the question from the feature values so the
     # duplicate-row and id checks still have an "item" to read, while the raw
@@ -3976,6 +4151,7 @@ def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
 
     rep = Reporter()
     _rows_audited_check(rep, len(rows), len(items))
+    _table_checks(rep, rows, path)
     _item_checks(rep, items, tabular=bool(mapping.get("_tabular")))
     _asset_checks(rep, items, path.parent)
     _overlap_check(rep, items, references or {}, reference_errors)

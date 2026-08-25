@@ -733,10 +733,32 @@ def test_zero_witness_pass_becomes_skip():
 
 
 def test_unreached_checks_count_as_skipped_in_report():
+    """An empty audit is INCOMPLETE, and every check says which kind of silence.
+
+    A check that this scope could answer and did not is a `skip`. One the scope
+    cannot answer at all (the grid checks against a pod, which never reads its
+    data as a raw grid) is `n/a` and leaves the denominator. What must never
+    happen, and is what this test actually guards, is a check going quiet in a
+    way that reads as a pass.
+    """
+    from dinostomp.lint import SCOPE_CHECKS
+
     rep = Reporter()
     report = rep.report("nowhere")
     assert report["summary"]["verdict"] == "incomplete"
-    assert len(report["coverage"]["skipped"]) == len(report["findings"])
+    levels = {f["id"]: f["level"] for f in report["findings"]}
+    assert set(levels.values()) <= {"skip", "n/a"}, "an unreached check must never look like a pass"
+    in_scope = SCOPE_CHECKS["pod"]
+    assert all(levels[cid] == "skip" for cid in in_scope), "an answerable check that did not run is a skip"
+    assert all(levels[cid] == "n/a" for cid in levels if cid not in in_scope)
+    assert len(report["coverage"]["skipped"]) == len(in_scope)
+
+
+def test_an_empty_table_audit_is_also_incomplete():
+    """The table scope gets no free pass for being smaller."""
+    report = Reporter().report("nowhere", scope="table")
+    assert report["summary"]["verdict"] == "incomplete"
+    assert {f["level"] for f in report["findings"]} <= {"skip", "n/a"}
 
 
 def test_report_validates_against_schema(tmp_path):

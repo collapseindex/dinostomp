@@ -2,6 +2,46 @@
 
 ### Unreleased
 
+- **Twenty-eight new checks read a spreadsheet as a spreadsheet: the `G` and
+  `XL` series.** `dinostomp stomp orders.xlsx` now audits a table that was never
+  an eval, at a new **table scope**, instead of refusing the file because no
+  column looked like a question. `G1`-`G11` read the values (whitespace and
+  invisible characters, duplicate and near-duplicate rows, repeated identifiers,
+  leading zeros, mixed and locale-ambiguous dates, text in numeric columns,
+  sentinels, categories split by capitalisation, mixed percent scales, currency
+  formatting). `XL1`-`XL6` read the workbook itself and are the half no
+  dataframe reader can reach: constants pasted over formulas, saved `#REF!`,
+  hidden rows and columns and sheets, merged ranges, aggregates whose range
+  stops above the last populated row of their own column, and formulas never
+  calculated. That last one is the Reinhart-Rogoff defect and it gates.
+  `.xlsx`/`.xlsm`/`.tsv` are readable now; the workbook checks need
+  `pip install 'dinostomp[xlsx]'` and report UNAVAILABLE with the install line
+  rather than passing quietly without it, exactly as S15 does for `vision`.
+- **The table checks propose, they never repair.** A digit-string column with
+  leading zeros is correct as text and broken as a number and the file cannot
+  say which, so `G4` reports what a conversion would destroy and stops.
+  `--emit-fixes` is unchanged and still only deletes and deduplicates.
+- **DinoTrials grew a table arm.** The header of `trials/run_trials.py` recorded
+  that wiring a dataset arm into the scorecard was "the right fix and is not
+  done"; twenty-eight new checks needed it, so it is done: 16 planted
+  spreadsheet defects and 2 clean tables, scored separately from the pod arm.
+  The clean controls are deliberately awkward (a line-item table whose order id
+  repeats by design, a workbook whose subtotals between them cover every row),
+  because a battery that stays quiet only on sterile data has not been tested
+  for specificity at all.
+- **Five defects in the tool, found while building it** and published with the
+  rest: a number reader that rejected every value over 999 and so produced a
+  false alarm and a miss from one pattern ([D-080](FINDINGS.md#d-080)); a
+  category check whose guard measured raw distinctness, so the defect it looks
+  for hid it ([D-081](FINDINGS.md#d-081)); a scope filter that made every
+  previously-sound pod report INCOMPLETE the moment a new series landed
+  ([D-082](FINDINGS.md#d-082)); a check-id namespace collision with the ids
+  extension authors reach for first ([D-083](FINDINGS.md#d-083)); and a
+  value-only workbook reporting INCOMPLETE for questions it could not be asked
+  ([D-084](FINDINGS.md#d-084)).
+- Out-of-scope checks now report `n/a` naming the scope instead of `skip`, so
+  coverage no longer moves when an unrelated series ships.
+
 - **New check S21 `rows-audited`: the audit says how much of the file it read.**
   A row with no question or no answer cannot be audited, so it was dropped, and
   the count went to one line of prose on stdout. It never reached `STOMP.json`

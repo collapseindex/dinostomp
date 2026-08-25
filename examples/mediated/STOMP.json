@@ -323,7 +323,7 @@
     }
   },
   "coverage": {
-    "declared_total": 74,
+    "declared_total": 91,
     "declared": 47,
     "ran": 37,
     "skipped": [
@@ -422,6 +422,74 @@
         "reason": "no multiple-choice items in this dataset"
       },
       {
+        "id": "G1",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G2",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G3",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G4",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G5",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G6",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G7",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G8",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G9",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G10",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G11",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "XL1",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "XL2",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "XL3",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "XL4",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "XL5",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "XL6",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
         "id": "W2",
         "reason": "this scorer compares exactly rather than extracting, so surface-form robustness is not a property it claims"
       },
@@ -477,7 +545,12 @@
         "id": "P14",
         "reason": "no item declares a `subskill`; there is no partition to test"
       }
-    ]
+    ],
+    "extensions": {
+      "loaded": 1,
+      "validated": 1,
+      "unvalidated": 0
+    }
   },
   "summary": {
     "fail": 0,
@@ -692,6 +765,159 @@
         "dropped_share": 0.0,
         "gate": 0.01
       }
+    },
+    {
+      "id": "G1",
+      "slug": "cell-hygiene",
+      "check": "no cell carries edge whitespace or invisible characters",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G2",
+      "slug": "dup-rows",
+      "check": "rows are unique",
+      "level": "n/a",
+      "gating": true,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G3",
+      "slug": "dup-keys",
+      "check": "no identifier column repeats a value",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G4",
+      "slug": "numeric-string",
+      "check": "no digit-string column has leading zeros a conversion would destroy",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G5",
+      "slug": "date-format",
+      "check": "no date column mixes formats or reads both ways",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G6",
+      "slug": "type-drift",
+      "check": "no numeric column is contaminated with text",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G7",
+      "slug": "sentinel-values",
+      "check": "no value stands in for missing without saying so",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G8",
+      "slug": "category-collapse",
+      "check": "no category column splits one label across spellings",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G9",
+      "slug": "percent-scale",
+      "check": "no rate column mixes fraction and percent scales",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G10",
+      "slug": "formatted-numbers",
+      "check": "no numeric column stores symbols or separators",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G11",
+      "slug": "near-dup-rows",
+      "check": "no rows are duplicates once case and whitespace stop counting",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "XL1",
+      "slug": "pasted-constant",
+      "check": "no constant is pasted inside a formula column",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "XL2",
+      "slug": "formula-error",
+      "check": "no error value is saved in the workbook",
+      "level": "n/a",
+      "gating": true,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "XL3",
+      "slug": "hidden-cells",
+      "check": "nothing an aggregate counts is hidden from the reader",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "XL4",
+      "slug": "merged-cells",
+      "check": "no merged range flattens a row on import",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "XL5",
+      "slug": "range-short",
+      "check": "every column aggregate covers its own column",
+      "level": "n/a",
+      "gating": true,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "XL6",
+      "slug": "uncalculated",
+      "check": "every formula has been calculated",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
     },
     {
       "id": "W1",
@@ -947,7 +1173,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now d72749626c89701e); re-run to get numbers this report can stand behind",
+      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now a5105c1e4cff98b1); re-run to get numbers this report can stand behind",
       "witnesses": 3,
       "examples": [
         "engine 050e2f343915e1b9: greedy seed 7 (tool 0.57.1), grounded seed 7 (tool 0.57.1), oneshot seed 7 (tool 0.57.1)"
@@ -1261,6 +1487,161 @@
       "gating": false,
       "detail": "no item declares a `subskill`; there is no partition to test",
       "witnesses": 0
+    }
+  ],
+  "extensions": [
+    {
+      "name": "dinostomp-aei",
+      "version": "0.1.0",
+      "sha256": "4e46c6005a4e3c7e54a4c2dfb8b40be81abbf10f6c31e1a08a2b7efb414ff6b8",
+      "checks": [
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5",
+        "A6",
+        "A7",
+        "A8",
+        "A9",
+        "A10",
+        "A11"
+      ],
+      "validated": true
+    }
+  ],
+  "extension_findings": [
+    {
+      "check_id": "x:dinostomp-aei:A1",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "the file carries exactly the documented columns",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A2",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "every metric, geo level and category is one the README documents",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A3",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "no value exceeds the documented two decimal places",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A4",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "no value falls outside the range its documented unit permits",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A5",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "no cell is published twice at the same grain",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A6",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "partition families sum to 100 wherever the release declares that they do",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A7",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "no row sits deeper than its category's documented hierarchy",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A8",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "reporting periods tile as half-open calendar months",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A9",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "every geo_id matches the form its geo_level documents",
+      "gating": true,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A10",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "node_name and node_external_id agree one-to-one",
+      "gating": false,
+      "extension": "dinostomp-aei",
+      "validated": true
+    },
+    {
+      "check_id": "x:dinostomp-aei:A11",
+      "level": "n/a",
+      "detail": "this check reads a dataset file; it does not apply to an eval pod",
+      "n": 0,
+      "examples": [],
+      "evidence": {},
+      "name": "how much of each `pct` distribution was actually published",
+      "gating": false,
+      "extension": "dinostomp-aei",
+      "validated": true
     }
   ],
   "inputs": {

@@ -469,8 +469,26 @@ def test_a_genuine_one_column_file_is_not_blamed_on_a_delimiter(tmp_path):
     p = tmp_path / "one.csv"
     p.write_text("notes\nhello\nworld\n", encoding="utf-8")
     report, issues, _ = lint_dataset(p)
-    assert report is None
     assert not any("delimited" in i.message for i in issues), [i.message for i in issues]
+    assert any(i.loc in ("--input-field", "--target-field") for i in issues)
+    # Two rows is below the profiling floor, so the table audit refuses it too
+    # and says which of the two reasons applies. A file this small must not
+    # collect a clean bill of health from either front door.
+    assert report is None
+    assert any("too few to audit as a table" in i.message for i in issues)
+
+
+def test_a_wider_one_column_file_is_audited_as_a_table(tmp_path):
+    """The other side of the floor: a genuine one-column file with enough rows
+    is not an eval and is not a misparse, so it gets a real table audit."""
+    from dinostomp.lint import lint_dataset
+
+    p = tmp_path / "notes.csv"
+    p.write_text("notes\n" + "\n".join(f"observation number {i}" for i in range(8)) + "\n",
+                 encoding="utf-8")
+    report, issues, _ = lint_dataset(p)
+    assert not any("delimited" in i.message for i in issues), [i.message for i in issues]
+    assert report is not None and report["summary"]["scope"] == "table"
 
 
 def test_a_choices_column_that_yields_no_choices_says_so(tmp_path):
