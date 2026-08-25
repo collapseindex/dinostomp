@@ -54,19 +54,19 @@ def rerun_pod(name: str, tmp_path: Path, capsys, probe: bool = False) -> str:
 @pytest.mark.parametrize("pod, quoted_lines, probe", [
     ("smoke", [
         "smoke-arith | dry-strong | complete | acc 1.000 [0.61, 1.00] on 6 checkable",
-        "INCOMPLETE: no failures, but only 21 of 33 checks ran (58 n/a of 91 declared).",
+        "INCOMPLETE: no failures, but only 21 of 33 checks ran (65 n/a of 98 declared).",
     ], False),
     ("fleet", [
         "fleet-arith | dry-alpha | complete | acc 1.000 [0.86, 1.00] on 24 checkable",
         "0 of 6 model(s) score no better than guessing; fleet spans 38% to 100% vs chance ~4% (modal target floor)",
-        "MECHANICALLY SOUND: no integrity findings, full coverage (35 of 35 ran; 56 n/a of 91 declared)",
+        "MECHANICALLY SOUND: no integrity findings, full coverage (35 of 35 ran; 63 n/a of 98 declared)",
     ], False),
     ("iris", [
-        "(34 of 34 ran; 57 n/a of 91 declared)",
+        "(34 of 34 ran; 64 n/a of 98 declared)",
     ], False),
     ("agent", [
         "agent-capitals | agent-grounded | complete | acc 0.923 [0.76, 0.98] on 26 checkable",
-        "INCOMPLETE: no failures, but only 42 of 47 checks ran (44 n/a of 91 declared).",
+        "INCOMPLETE: no failures, but only 42 of 47 checks ran (51 n/a of 98 declared).",
     ], True),
 ])
 def test_readme_transcripts_match_reality(pod, quoted_lines, probe, tmp_path, capsys):

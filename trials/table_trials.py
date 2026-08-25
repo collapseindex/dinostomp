@@ -228,3 +228,89 @@ CLEAN_TABLE_TRIALS = [
     ("a line-item table with a repeating order id", clean_line_item_csv, None),
     ("a workbook whose subtotals cover every row", clean_subtotal_workbook, openpyxl_available),
 ]
+
+
+# ---- the join arm: two tables, one planted defect between them ---------
+
+JOIN_CHILD_HEADER = ["order_id", "vendor_code", "amount"]
+JOIN_CHILD_ROWS = [
+    ["ORD-1001", "ACME", "120.00"],
+    ["ORD-1002", "GLOBEX", "300.50"],
+    ["ORD-1003", "INITECH", "88.25"],
+    ["ORD-1004", "ACME", "640.00"],
+    ["ORD-1005", "HOOLI", "980.10"],
+    ["ORD-1006", "GLOBEX", "150.75"],
+]
+JOIN_PARENT_HEADER = ["vendor_code", "vendor_name", "amount"]
+JOIN_PARENT_ROWS = [
+    ["ACME", "Acme Corp", "760.00"],
+    ["GLOBEX", "Globex", "451.25"],
+    ["INITECH", "Initech", "88.25"],
+    ["HOOLI", "Hooli", "980.10"],
+    ["SOYLENT", "Soylent", "0.00"],
+]
+
+
+def _pair(root: Path, child=None, parent=None) -> tuple[Path, Path]:
+    left = _csv(root, child or JOIN_CHILD_ROWS, JOIN_CHILD_HEADER, "orders.csv")
+    right = _csv(root, parent or JOIN_PARENT_ROWS, JOIN_PARENT_HEADER, "vendors.csv")
+    return left, right
+
+
+def j_nothing_matches(root: Path):
+    parent = [["X-" + r[0], r[1], r[2]] for r in JOIN_PARENT_ROWS]
+    return _pair(root, parent=parent)
+
+
+def j_orphan_rows(root: Path):
+    return _pair(root, child=JOIN_CHILD_ROWS + [["ORD-1007", "UMBRELLA", "12.00"]])
+
+
+def j_case_only_mismatch(root: Path):
+    """The ACNH defect: one capital letter, no error anywhere."""
+    child = [r[:] for r in JOIN_CHILD_ROWS]
+    child[2][1] = "initech"
+    return _pair(root, child=child)
+
+
+def j_parent_key_repeats(root: Path):
+    return _pair(root, parent=JOIN_PARENT_ROWS + [["ACME", "Acme Corp (old)", "0.00"]])
+
+
+def j_key_type_mismatch(root: Path):
+    child = [[f"ORD-{i}", f"0{i}0", "10.00"] for i in range(1, 7)]
+    parent = [[str(int(f"0{i}0")), f"Vendor {i}", "10.00"] for i in range(1, 7)]
+    return _pair(root, child=child, parent=parent)
+
+
+def j_total_disagrees(root: Path):
+    parent = [r[:] for r in JOIN_PARENT_ROWS]
+    parent[1][2] = "999.99"
+    return _pair(root, parent=parent)
+
+
+def clean_join(root: Path):
+    """A line-item table against a vendor lookup: the ordinary shape."""
+    return _pair(root)
+
+
+# A trial may name the keys. Two of these defects are only reachable that way,
+# and that is a property of the defects rather than a convenience: when the
+# intended key matches NOTHING, or when the two sides store it as different
+# types, there is nothing for inference to find. Saying which columns you meant
+# is the only way to be told they are broken.
+JOIN_TRIALS = [
+    ("an inner join that returns nothing at all", j_nothing_matches, ("JN1", "fail"),
+     ("vendor_code", "vendor_code")),
+    ("a code the lookup table has never heard of", j_orphan_rows, ("JN2", "warn")),
+    ("one capital letter between the two tables", j_case_only_mismatch, ("JN3", "fail")),
+    ("a lookup key that appears twice", j_parent_key_repeats, ("JN4", "warn")),
+    ("a join that multiplies its own rows", j_parent_key_repeats, ("JN5", "warn")),
+    ("the same key stored as text and as a number", j_key_type_mismatch, ("JN6", "warn"),
+     ("vendor_code", "vendor_code")),
+    ("a parent total that disagrees with its own children", j_total_disagrees, ("JN7", "fail")),
+]
+
+CLEAN_JOIN_TRIALS = [
+    ("a line-item table against its vendor lookup", clean_join, None),
+]

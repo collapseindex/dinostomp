@@ -38,7 +38,8 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from table_trials import CLEAN_TABLE_TRIALS, TABLE_TRIALS
+from table_trials import (CLEAN_JOIN_TRIALS, CLEAN_TABLE_TRIALS,
+                          JOIN_TRIALS, TABLE_TRIALS)
 from dinostomp.lint import lint_eval
 from dinostomp.spec import spec_sha256
 
@@ -2240,6 +2241,47 @@ CLEAN_TRIALS = [
 ]
 
 
+
+
+def run_join_trial(name, builder, expectation, keys=None):
+    """The join arm. Two tables in, one relationship audited."""
+    from dinostomp.lint import lint_join
+
+    tmp = Path(tempfile.mkdtemp(prefix="dinojoin-"))
+    try:
+        left, right = builder(tmp)
+        lk, rk = keys if keys else (None, None)
+        report, issues, _ = lint_join(left, right, left_key=lk, right_key=rk)
+        if report is None:
+            return False, f"cannot audit: {[i.message for i in issues][:1]}"
+        check_id, level = expectation
+        finding = next(f for f in report["findings"] if f["id"] == check_id)
+        actual = f"{check_id}={finding['level']}, verdict={report['summary']['verdict']}"
+        caught = finding["level"] == level
+        if caught and level == "fail":
+            caught = report["summary"]["verdict"] == "broken"
+        return caught, actual
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def run_clean_join_trial(name, builder):
+    from dinostomp.lint import lint_join
+
+    tmp = Path(tempfile.mkdtemp(prefix="dinojoin-clean-"))
+    try:
+        left, right = builder(tmp)
+        report, issues, _ = lint_join(left, right)
+        if report is None:
+            return False, f"cannot audit: {[i.message for i in issues][:1]}"
+        noisy = [f"{f['id']}={f['level']}" for f in report["findings"]
+                 if f["level"] in ("fail", "warn")]
+        actual = (f"verdict={report['summary']['verdict']}"
+                  + (f", findings: {noisy}" if noisy else ", 0 findings"))
+        return not noisy, actual
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
 def run_table_trial(name, builder, expectation):
     """The table arm. Same rubric as a pod trial, different front door.
 
@@ -2431,6 +2473,44 @@ def main() -> int:
         rows.append({"defect": None, "clean_table": name, "actual": actual, "clean": clean})
     print(f"\n  table specificity: 0 findings on "
           f"{table_clean_ran - table_false_alarms} of {table_clean_ran} clean tables")
+
+    # The JOIN arm. One table can be immaculate and the relationship between
+    # two can still be broken, silently, in the flattering direction.
+    print(f"\n  {'join defect (two tables)':<48} {'expected':<16} {'actual':<28} verdict")
+    join_missed = 0
+    for trial in JOIN_TRIALS:
+        name, builder, expectation = trial[0], trial[1], trial[2]
+        keys = trial[3] if len(trial) > 3 else None
+        exp = f"{expectation[0]} {expectation[1]}"
+        try:
+            caught, actual = run_join_trial(name, builder, expectation, keys)
+        except Exception as exc:  # noqa: BLE001 - a crashing trial is a MISSED trial, loudly
+            caught, actual = False, f"trial crashed: {type(exc).__name__}: {exc}"
+        tag = "CAUGHT" if caught else "** MISSED **"
+        if not caught:
+            join_missed += 1
+        print(f"  {name:<48} {exp:<16} {actual:<28} {tag}")
+        rows.append({"defect": name, "expected": exp, "actual": actual, "caught": caught,
+                     "arm": "join"})
+    print(f"\n  join sensitivity: {len(JOIN_TRIALS) - join_missed} of {len(JOIN_TRIALS)} "
+          f"join defects caught, {join_missed} missed")
+
+    print(f"\n  {'clean join (specificity arm)':<48} {'expected':<16} {'actual':<40} verdict")
+    join_false_alarms = 0
+    for name, builder, _precondition in CLEAN_JOIN_TRIALS:
+        try:
+            clean, actual = run_clean_join_trial(name, builder)
+        except Exception as exc:  # noqa: BLE001 - a crashing clean trial is a false alarm
+            clean, actual = False, f"trial crashed: {type(exc).__name__}: {exc}"
+        tag = "CLEAN" if clean else "** FALSE ALARM **"
+        if not clean:
+            join_false_alarms += 1
+        print(f"  {name:<48} {'0 findings':<16} {actual:<40} {tag}")
+        rows.append({"defect": None, "clean_join": name, "actual": actual, "clean": clean})
+    print(f"\n  join specificity: 0 findings on "
+          f"{len(CLEAN_JOIN_TRIALS) - join_false_alarms} of {len(CLEAN_JOIN_TRIALS)} clean joins")
+    missed += join_missed
+    false_alarms += join_false_alarms
     missed += table_missed
     false_alarms += table_false_alarms
     # Printed every run, under the score, because the score is the thing people

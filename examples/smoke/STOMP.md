@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 21 of 33 checks ran (21 of 33 ran; 58 n/a of 91 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 21 of 33 checks ran (21 of 33 ran; 65 n/a of 98 declared). Not a clean bill of health.
 
 > All runs used the offline dry provider; results exercise the benchmark, not any real model.
 
@@ -59,6 +59,9 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | n/a | rows are unique | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
 | n/a | no error value is saved in the workbook | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
 | n/a | every column aggregate covers its own column | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | the join returns rows at all | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no key fails to match on case or whitespace alone | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | every parent total equals the sum of its children | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
 | n/a | a graded scorer witnesses its gradation | 0 | this scorer does not emit intermediate partial credit, so there is no gradation to witness |
 | n/a | every typed claim's evidence requirements hold | 0 | no typed claims declared |
 | ok | runs match the spec, data, and scorer on disk (no drift) | 1 | 0 of 1 run(s) no longer match the spec, data, or scorer on disk |
@@ -108,6 +111,10 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | nothing an aggregate counts is hidden from the reader | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
 | n/a | no merged range flattens a row on import | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
 | n/a | every formula has been calculated | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no left row is dropped by the join | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | the right-hand key is unique | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | the join does not multiply rows | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | both sides store the key the same way | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
 | ok | witnesses kill the mutant scorers | 5 | 0 of 5 applicable mutant scorer(s) survive the witness suite |
 | n/a | a correct answer survives its surface form | 0 | this scorer compares exactly rather than extracting, so surface-form robustness is not a property it claims |
 | ok | an exact scorer is not graded against prose answers | 6 | answers are short (1-word median); exact match fits |
@@ -120,7 +127,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 1 | 1 of 1 run(s) were produced by a different engine than the one auditing them (now d992bdfcfeaae493); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 1 | 1 of 1 run(s) were produced by a different engine than the one auditing them (now 364df9523c32101a); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | no failed answer numerically equals its target | 0 | no failed record has a numeric target, so there is no numeric-equivalent miss to look for |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |

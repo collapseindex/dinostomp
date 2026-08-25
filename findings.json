@@ -6,13 +6,13 @@
   "tool": {
     "name": "dinostomp",
     "version": "0.62.0",
-    "engine": "d992bdfcfeaae493c8844a76d92b79d6911871924f31d59e61a71202edf07331"
+    "engine": "364df9523c32101a278eb78c7d0911d9cb952d3e9bd4ac935d9b3b8a3873c321"
   },
   "counts": {
     "F": 49,
-    "D": 86,
+    "D": 88,
     "N": 31,
-    "total": 166
+    "total": 168
   },
   "series": {
     "F": "other people's evals",
@@ -914,6 +914,40 @@
       "status_class": "confirmed",
       "anchor": "#d-086",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-086"
+    },
+    {
+      "id": "D-087",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "Key inference ranked a colour column above the real join key",
+      "summary": "key inference ranked a colour column above the real join key, scoring coverage without identification",
+      "subject": "dinostomp",
+      "check_label": "`join key inference`",
+      "checks": [],
+      "date": "2026-08-24",
+      "date_iso": "2026-08-24",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-087",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-087"
+    },
+    {
+      "id": "D-088",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "When the real key matched nothing, inference joined on a coincidence instead",
+      "summary": "when the real key matched nothing, inference silently joined on a 33% coincidence instead",
+      "subject": "dinostomp",
+      "check_label": "`join key inference`",
+      "checks": [],
+      "date": "2026-08-24",
+      "date_iso": "2026-08-24",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-088",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-088"
     },
     {
       "id": "F-018",

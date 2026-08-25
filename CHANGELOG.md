@@ -2,6 +2,28 @@
 
 ### Unreleased
 
+- **Seven new checks read the JOIN between two tables: the `JN` series, and a
+  `dinostomp join` command.** A join is the one operation that fails silently
+  AND in the flattering direction: an inner join that drops rows raises
+  nothing and leaves a tidier dataset behind. `join-viable` gates when the
+  join returns nothing at all, `key-normalisation` gates on keys that fail to
+  match on case or whitespace alone, and `totals-reconcile` gates when a
+  parent total disagrees with the sum of its own children. `orphan-rows`,
+  `parent-key-unique`, `join-fanout` and `key-type-drift` warn. The join key
+  is inferred, printed, and REFUSED when the best candidate is merely an
+  overlap: a join performed on the wrong column does not error, it answers.
+- **It found the case study's defect by itself.** Pointed at the public ACNH
+  villager and music tables with no hints, it inferred the key and reported
+  that `To The Edge` would match `To the Edge`: three villagers dropped from
+  every per-song analysis by one capital letter, which this repository had
+  previously found by hand.
+- **DinoTrials grew a join arm**: 7 planted defects between two tables, 1
+  clean join, scored separately from the pod and table arms.
+- Two more defects in the tool, both in key inference and both published:
+  ranking a colour column above the real key by scoring coverage without
+  identification ([D-087](FINDINGS.md#d-087)), and falling back to a 33%
+  coincidence when the real key matched nothing, reporting faithfully about a
+  relationship nobody meant ([D-088](FINDINGS.md#d-088)).
 - **Twenty-eight new checks read a spreadsheet as a spreadsheet: the `G` and
   `XL` series.** `dinostomp stomp orders.xlsx` now audits a table that was never
   an eval, at a new **table scope**, instead of refusing the file because no

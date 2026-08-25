@@ -137,6 +137,17 @@ CHECKS: list[tuple[str, str, bool, str]] = [
      "an .xlsx with column aggregates, with the xlsx extra installed"),
     ("XL6", "every formula has been calculated", False,
      "an .xlsx with formulas, with the xlsx extra installed"),
+    # JN: two tables and the join between them. A join is the one operation that
+    # fails silently AND in the flattering direction: rows that do not match are
+    # dropped without an error and leave a tidier dataset behind.
+    ("JN1", "the join returns rows at all", True, "two tables and a key"),
+    ("JN2", "no left row is dropped by the join", False, "two tables and a key"),
+    ("JN3", "no key fails to match on case or whitespace alone", True, "two tables and a key"),
+    ("JN4", "the right-hand key is unique", False, "two tables and a key"),
+    ("JN5", "the join does not multiply rows", False, "two tables and a key"),
+    ("JN6", "both sides store the key the same way", False, "two tables and a key"),
+    ("JN7", "every parent total equals the sum of its children", True,
+     "a numeric column on both sides, declared with --reconcile or matched by name"),
     ("W1", "witnesses kill the mutant scorers", False, "always"),
     ("W2", "a correct answer survives its surface form", False,
      "a scorer that accepts a constructible baseline form"),
@@ -356,6 +367,9 @@ SLUGS = {
     "G10": "formatted-numbers", "G11": "near-dup-rows",
     "XL1": "pasted-constant", "XL2": "formula-error", "XL3": "hidden-cells",
     "XL4": "merged-cells", "XL5": "range-short", "XL6": "uncalculated",
+    "JN1": "join-viable", "JN2": "orphan-rows", "JN3": "key-normalisation",
+    "JN4": "parent-key-unique", "JN5": "join-fanout", "JN6": "key-type-drift",
+    "JN7": "totals-reconcile",
     "W1": "witness-coverage", "W2": "surface-form", "W3": "graded-witness",
     "W4": "scorer-fit",
     "C1": "claim-evidence",
@@ -386,6 +400,7 @@ BY_SLUG = {v: k for k, v in SLUGS.items()}
 # Which checks each SCOPE is answerable for. A verdict is only as broad as the
 # evidence it was given, and saying so is cheaper than an asterisk.
 GRID_CHECKS = {f"G{i}" for i in range(1, 12)}
+JOIN_CHECKS = {f"JN{i}" for i in range(1, 8)}
 WORKBOOK_CHECKS = {f"XL{i}" for i in range(1, 7)}
 # Hygiene for a table, answerable about any table including one that IS an eval.
 TABLE_CHECKS = GRID_CHECKS | WORKBOOK_CHECKS
@@ -399,16 +414,20 @@ SCOPE_CHECKS = {
     # complete table. Refusing to report at all was the old behaviour and it
     # taught the user nothing about a file full of real defects.
     "table": TABLE_CHECKS,
+    # Two tables. The single-table checks are answerable about each file on its
+    # own and are reported there, so a join audit speaks only about the join.
+    "join": JOIN_CHECKS,
 }
 # A pod is every check EXCEPT the table series. The G and XL checks read a file
 # as a grid, and a pod's data has already been read as items by the time these
 # would run, so leaving them in pod scope would make every pod permanently
 # INCOMPLETE for checks that were never applicable to it.
-SCOPE_CHECKS["pod"] = {cid for cid, *_ in CHECKS} - TABLE_CHECKS
+SCOPE_CHECKS["pod"] = {cid for cid, *_ in CHECKS} - TABLE_CHECKS - JOIN_CHECKS
 
 SCOPE_BLURB = {
     "data": "the dataset at rest",
     "table": "the table at rest: structure, types and hygiene, with no eval semantics",
+    "join": "the relationship between two tables: what the join drops, duplicates, or never matches",
     "pod": "the dataset, the scorer, and every run on disk",
 }
 
@@ -4035,6 +4054,92 @@ def _table_only_report(path: Path, rows: list[dict], reason: str) -> dict:
             rep.not_applicable(cid, reason)
     return rep.report(path.name, inputs={"data_sha256": spec_sha256(path)}, scope="table")
 
+
+
+def lint_join(left_path: str | Path, right_path: str | Path, *,
+              left_key: str | None = None, right_key: str | None = None,
+              reconcile: list[str] | None = None
+              ) -> tuple[dict | None, list[Issue], dict]:
+    """Audit the join between two tables before anyone performs it.
+
+    Returns (report, issues, context). `context` carries the key that was
+    chosen and how, because every finding below rests on that choice being
+    right, and a join performed on the wrong column does not error: it answers.
+    """
+    from dinostomp import relational
+
+    context: dict = {"notes": [], "key": None}
+    paths = []
+    for role, raw in (("left", left_path), ("right", right_path)):
+        path = Path(raw).resolve()
+        if not path.is_file():
+            return None, [Issue(loc=str(path), check="data",
+                                message=f"{role} table not found")], context
+        if not looks_like_dataset(path):
+            return None, [Issue(loc=str(path), check="data",
+                                message=f"{role} table is not a readable dataset file")], context
+        paths.append(path)
+
+    tables = []
+    for path in paths:
+        rows, issues = read_rows(path)
+        if issues:
+            return None, issues, context
+        if not rows:
+            return None, [Issue(loc=str(path), check="data",
+                                message="table is empty; an empty table must never look green")], context
+        tables.append(rows)
+    left, right = tables
+    context["left_rows"], context["right_rows"] = len(left), len(right)
+
+    if left_key or right_key:
+        if not (left_key and right_key):
+            return None, [Issue(loc="--left-key", check="fields",
+                                message="pass both --left-key and --right-key, or neither")], context
+        for role, column, rows_ in (("left", left_key, left), ("right", right_key, right)):
+            if column not in relational.columns_of(rows_):
+                return None, [Issue(
+                    loc=f"--{role}-key", check="fields",
+                    message=f"column {column!r} is not in the {role} table; columns are "
+                            f"{', '.join(relational.columns_of(rows_))}")], context
+        key = relational.JoinKey(left_key, right_key, inferred=False)
+        context["notes"].append(f"join key: {key}")
+    else:
+        key, notes = relational.infer_key(left, right)
+        context["notes"].extend(notes)
+        if key is None:
+            return None, [Issue(loc="--left-key", check="fields", message=notes[0])], context
+    context["key"] = {"left": key.left, "right": key.right, "inferred": key.inferred}
+
+    facts = relational.analyse(left, right, key)
+    pairs = relational.reconcile_pairs(left, right, reconcile)
+    if pairs and not reconcile:
+        context["notes"].append(
+            f"reconciling by matching column name(s): "
+            f"{', '.join(f'{p}=  {c}' for p, c in pairs)}")
+
+    rep = Reporter()
+    for cid, result in (
+        ("JN1", relational.check_join_viable(facts)),
+        ("JN2", relational.check_orphan_rows(facts)),
+        ("JN3", relational.check_key_normalisation(facts)),
+        ("JN4", relational.check_parent_key_unique(facts)),
+        ("JN5", relational.check_fanout(facts)),
+        ("JN6", relational.check_key_type(left, right, key)),
+        ("JN7", relational.check_reconcile(left, right, key, pairs)),
+    ):
+        ok, detail, n, examples, evidence = result
+        if evidence.get("not_applicable"):
+            rep.not_applicable(cid, evidence["not_applicable"])
+        else:
+            rep.check(cid, ok, detail, n=n, examples=examples, evidence=evidence)
+
+    report = rep.report(f"{paths[0].name} <-> {paths[1].name}",
+                        inputs={"left_sha256": spec_sha256(paths[0]),
+                                "right_sha256": spec_sha256(paths[1]),
+                                "left_key": key.left, "right_key": key.right},
+                        scope="join")
+    return report, [], context
 
 def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
                  separator: str | None = None,

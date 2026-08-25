@@ -961,6 +961,44 @@ def cmd_plan(args) -> int:
     return 0
 
 
+
+def cmd_join(args) -> int:
+    """Audit the join between two tables before anyone performs it."""
+    from dinostomp.lint import lint_join
+
+    report, issues, ctx = lint_join(args.left, args.right,
+                                    left_key=args.left_key, right_key=args.right_key,
+                                    reconcile=args.reconcile)
+    if report is None:
+        print("CANNOT AUDIT THIS JOIN:")
+        _print_issues(issues)
+        for note in ctx.get("notes", []):
+            print(f"  {note}")
+        return CANNOT_RUN
+    print(f"JOIN AUDIT: {report['target']}")
+    for note in ctx.get("notes", []):
+        print(f"  {note}")
+    print()
+    for f in report["findings"]:
+        if f["level"] == "n/a":
+            continue
+        print(f"  {LEVEL_TAGS[f['level']]} {f['slug']:<22} {f['check']:<48} {f['detail']}")
+        for ex in f.get("examples", []):
+            print(f"           - {ex}")
+    summary = report["summary"]
+    print()
+    if summary["verdict"] == "broken":
+        print(f"BROKEN JOIN: {summary['fail']} gated finding(s). "
+              f"Do not join these two files until this is resolved.")
+        return GATED
+    if summary["warn"]:
+        print(f"JOIN USABLE, WITH {summary['warn']} WARNING(S). Read them before you rely "
+              f"on a total computed after this join.")
+    else:
+        print("JOIN SOUND: every left row matches exactly one right row, nothing recoverable "
+              "was left unmatched.")
+    return 0
+
 def main(argv=None) -> int:
     # Item text is utf-8; a cp1252 console must not crash the report print.
     if hasattr(sys.stdout, "reconfigure"):
@@ -1029,6 +1067,16 @@ def main(argv=None) -> int:
     p_imp.add_argument("--score-field")
     p_imp.add_argument("--model-field")
     p_imp.set_defaults(func=cmd_import)
+
+    p_join = sub.add_parser("join", help="audit the join between two tables before performing it")
+    p_join.add_argument("left", help="the table whose rows are at risk (the child / fact table)")
+    p_join.add_argument("right", help="the table it points at (the parent / lookup)")
+    p_join.add_argument("--left-key", help="join column in the left table")
+    p_join.add_argument("--right-key", help="join column in the right table")
+    p_join.add_argument("--reconcile", action="append", metavar="PARENT=CHILD",
+                        help="check a parent total against the sum of its children, "
+                             "e.g. --reconcile total=amount (repeatable)")
+    p_join.set_defaults(func=cmd_join)
 
     p_stomp = sub.add_parser("stomp", help="lint a spec and its runs, or a bare dataset file")
     p_stomp.add_argument("spec", help="an eval.yaml, or a .csv/.jsonl/.json dataset to audit directly")

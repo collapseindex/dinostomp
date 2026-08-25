@@ -50,7 +50,7 @@ eight hundred lines away, reads as a broken example rather than a designed one.
 smoke-arith | dry-strong | complete | acc 1.000 [0.61, 1.00] on 6 checkable (0 uncheckable excluded) | $0.0000
 ...
   [skip] fleet score totals are reliable (KR-20)    only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics
-INCOMPLETE: no failures, but only 21 of 33 checks ran (58 n/a of 91 declared). Not a clean bill of health.
+INCOMPLETE: no failures, but only 21 of 33 checks ran (65 n/a of 98 declared). Not a clean bill of health.
   note: all runs used the offline dry provider; results exercise the benchmark, not any real model.
 ```
 
@@ -70,7 +70,7 @@ fleet-arith | dry-charlie | complete | acc 0.375 [0.21, 0.57] on 24 checkable (0
   [ok]   fleet score totals are reliable (KR-20)    KR-20 0.94 across 6 models x 24 items; small fleet (6 examinees), treat as a noisy estimate
   [ok]   accuracy is distinguishable from guessing   0 of 6 model(s) score no better than guessing; fleet spans 38% to 100% vs chance ~4% (modal target floor)
   [ok]   the fleet is not pinned at a ceiling or floor  fleet accuracy spans 38% to 100% on 24 item(s)
-STOMPED CLEAN (34 of 34 ran; 57 n/a of 91 declared)
+STOMPED CLEAN (34 of 34 ran; 64 n/a of 98 declared)
   note: all runs used the offline dry provider; results exercise the benchmark, not any real model.
   this result is entitled to claim:
     - Exact-match accuracy with a 95% interval on these 24 addition items, bare-number format, per model.
@@ -196,6 +196,13 @@ All 57 checks, their tier, and when they apply. The **slug** is what appears in 
 | XL4 | `merged-cells` | no merged range flattens a row on import | diagnostic (warns) | an .xlsx, with the xlsx extra installed |
 | XL5 | `range-short` | every column aggregate covers its own column | invariant (gates) | an .xlsx with column aggregates, with the xlsx extra installed |
 | XL6 | `uncalculated` | every formula has been calculated | diagnostic (warns) | an .xlsx with formulas, with the xlsx extra installed |
+| JN1 | `join-viable` | the join returns rows at all | invariant (gates) | two tables and a key |
+| JN2 | `orphan-rows` | no left row is dropped by the join | diagnostic (warns) | two tables and a key |
+| JN3 | `key-normalisation` | no key fails to match on case or whitespace alone | invariant (gates) | two tables and a key |
+| JN4 | `parent-key-unique` | the right-hand key is unique | diagnostic (warns) | two tables and a key |
+| JN5 | `join-fanout` | the join does not multiply rows | diagnostic (warns) | two tables and a key |
+| JN6 | `key-type-drift` | both sides store the key the same way | diagnostic (warns) | two tables and a key |
+| JN7 | `totals-reconcile` | every parent total equals the sum of its children | invariant (gates) | a numeric column on both sides, declared with --reconcile or matched by name |
 | W1 | `witness-coverage` | witnesses kill the mutant scorers | diagnostic (warns) | always |
 | W2 | `surface-form` | a correct answer survives its surface form | diagnostic (warns) | a scorer that accepts a constructible baseline form |
 | W3 | `graded-witness` | a graded scorer witnesses its gradation | invariant (gates) | a scorer that emits intermediate partial credit on its witnesses |
@@ -638,7 +645,7 @@ accounted for, including the ones it cannot supply.
 ### The verdict names its inputs
 
 ```
-MECHANICALLY SOUND: no integrity findings, full coverage (35 of 35 ran; 56 n/a of 91 declared)
+MECHANICALLY SOUND: no integrity findings, full coverage (35 of 35 ran; 63 n/a of 98 declared)
   extension: gsm8k-extras 0.2.1 (a41f9c22b7e05d18), 3 check(s), validated
 ```
 
@@ -836,7 +843,7 @@ agent-capitals | agent-grounded | complete | acc 0.923 [0.76, 0.98] on 26 checka
   [ok]   passing answers are grounded in tool evidence   0 of 4 target(s) pass items their own evidence does not support (2 such answer(s) in total)
            - cap-santiago (agent-lazy): passed, but its answer appears in no tool result
            - cap-tunis (agent-lazy): passed, but its answer appears in no tool result
-INCOMPLETE: no failures, but only 42 of 47 checks ran (44 n/a of 91 declared).
+INCOMPLETE: no failures, but only 42 of 47 checks ran (51 n/a of 98 declared).
 ```
 
 `agent-lazy` is the pod's teaching case. It scores a perfect 100%, it calls the required tool on every single item, and every policy check passes it, because it really does retrieve. What T4 notices is that two of its correct answers appear in no retrieved evidence at all: it answered from memory and retrieved afterwards. That is the Clever Hans of tool use, and it is judge-free, since "does the answer occur in the tool output" is a fact rather than an opinion. Note also what the check did NOT do: two ungrounded answers out of twenty-six is under the threshold, so T4 passed, printed both receipts, and left the call to you.
@@ -884,7 +891,7 @@ Edit the spec, the data, the scorer, the agent, or the judge after a run and sto
 ```
   [FAIL] runs match the spec, data, and scorer on disk (no drift)  1 of 6 run(s) no longer match ...
            - 20260808_..._dry-alpha_n24_s42.jsonl: data changed since this run
-BROKEN: 1 gated finding(s) (35 of 35 ran; 56 n/a of 91 declared)
+BROKEN: 1 gated finding(s) (35 of 35 ran; 63 n/a of 98 declared)
 ```
 
 Exit codes for `run`: `0` complete, `1` gated (witnesses failed, nothing ran), `2` cannot run (invalid spec or data, unpriced model, missing key), `3` stopped early (budget, provider, or scorer; partial on disk, resume with `--resume <run file>`). For `stomp` and `report`: `0` clean or ok, `1` broken, `2` cannot stomp, `4` incomplete. Incomplete is nonzero **by default**: an unattended pipeline must never accept thin coverage because someone forgot a flag; `--allow-incomplete` is the explicit, loudly-printed escape hatch.

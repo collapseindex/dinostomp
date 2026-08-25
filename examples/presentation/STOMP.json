@@ -323,7 +323,7 @@
     }
   },
   "coverage": {
-    "declared_total": 91,
+    "declared_total": 98,
     "declared": 44,
     "ran": 41,
     "skipped": [
@@ -439,6 +439,34 @@
       },
       {
         "id": "XL6",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "JN1",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "JN2",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "JN3",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "JN4",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "JN5",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "JN6",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "JN7",
         "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
       },
       {
@@ -907,6 +935,69 @@
       "witnesses": 0
     },
     {
+      "id": "JN1",
+      "slug": "join-viable",
+      "check": "the join returns rows at all",
+      "level": "n/a",
+      "gating": true,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "JN2",
+      "slug": "orphan-rows",
+      "check": "no left row is dropped by the join",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "JN3",
+      "slug": "key-normalisation",
+      "check": "no key fails to match on case or whitespace alone",
+      "level": "n/a",
+      "gating": true,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "JN4",
+      "slug": "parent-key-unique",
+      "check": "the right-hand key is unique",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "JN5",
+      "slug": "join-fanout",
+      "check": "the join does not multiply rows",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "JN6",
+      "slug": "key-type-drift",
+      "check": "both sides store the key the same way",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "JN7",
+      "slug": "totals-reconcile",
+      "check": "every parent total equals the sum of its children",
+      "level": "n/a",
+      "gating": true,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
       "id": "W1",
       "slug": "witness-coverage",
       "check": "witnesses kill the mutant scorers",
@@ -1171,7 +1262,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now d992bdfcfeaae493); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 364df9523c32101a); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine cf11e5de89c91221: meta-llama/llama-3.2-3b-instruct seed 7 (tool 0.37.0), meta-llama/llama-3.1-8b-instruct seed 7 (tool 0.37.0), mistralai/ministral-8b-2512 seed 7 (tool 0.37.0) and 1 more"

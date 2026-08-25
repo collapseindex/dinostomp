@@ -6,7 +6,7 @@
 
 **Everything in your eval gets stomped before it gets believed.**
 
-<sub>v0.62.0 · Apache-2.0 · engine `d992bdfcfeaae493` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.62.0 · Apache-2.0 · engine `364df9523c32101a` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 An eval is an instrument. Almost nobody checks the instrument.
 
@@ -25,15 +25,15 @@ Each of those is one entry in **[FINDINGS.md](FINDINGS.md)**, with the item id,
 the verbatim data and the command that reproduces it. Every `F` re-derives in
 seconds, offline, for free, using the command in the next section.
 
-**[FINDINGS.md](FINDINGS.md): 166 entries, all permanent, none deleted.**
+**[FINDINGS.md](FINDINGS.md): 168 entries, all permanent, none deleted.**
 
 | series | count | what it records |
 |---|--:|---|
 | **F** | 49 | findings in other people's evals |
-| **D** | 86 | defects in dinostomp itself |
+| **D** | 88 | defects in dinostomp itself |
 | **N** | 31 | negative results, recorded rather than dropped |
 
-**Eighty-six of the 166 are against this tool**, which is the number to
+**Eighty-eight of the 168 are against this tool**, which is the number to
 read first. A validator that only publishes other people's mistakes is telling
 you which mistakes it is willing to look for. Included there: the entry it
 retracted after its own killer control killed it ([N-013](FINDINGS.md#n-013)),
@@ -47,7 +47,7 @@ graded against an answer key somebody outside this repo wrote**
 against ciFAIR's hand-annotated CIFAR-10 duplicates, and
 [N-019](FINDINGS.md#n-019) against MT-Bench's human preference votes). All three
 produced the least flattering numbers in the file, which is the argument for
-more of them. Eighty-six self-found defects is still self-grading, and that
+more of them. Eighty-eight self-found defects is still self-grading, and that
 number moves when an outsider runs it rather than when the total goes up.
 [Break it, please](CONTRIBUTING.md#break-it-please).
 
@@ -76,7 +76,7 @@ One invariant runs under all of it: **nothing becomes evidence merely because an
 earlier stage said it was.** Summaries are recomputed from records, verdicts are
 re-scored from recorded text, and the engine hashes itself into its own output.
 
-Ninety-one checks, each negative-tested to prove it fires, most invisible until
+Ninety-eight checks, each negative-tested to prove it fires, most invisible until
 something breaks. Each stage above is a place the ledger has a receipt from:
 
 | stage | what goes wrong there |
@@ -191,9 +191,9 @@ BROKEN AT DATA SCOPE: 2 gated finding(s) in the dataset itself
 That is a real run against the real MMLU test split, and `mmlu-02178` is the
 subtraction item above: the answer is on its option list twice, so a model that
 computes it correctly picks the wrong letter half the time. Thirty-six of the
-ninety-one checks read data at rest, which is why this costs nothing.
+ninety-eight checks read data at rest, which is why this costs nothing.
 
-**Five minutes, for the other fifty-five.** They need evidence: outputs, a
+**Five minutes, for the other sixty-two.** They need evidence: outputs, a
 scorer, a ledger, a claim.
 
 ```bash
@@ -255,7 +255,7 @@ Four things then happen that you did not ask for, and they are the product:
   between seeds is a finding; another moving 11.5 points is not, if its sample
   is smaller. The battery does that arithmetic so nobody has to eyeball it.
 - **Coverage is stated, always.** `MECHANICALLY SOUND: no integrity findings,
-  full coverage (35 of 35 ran; 56 n/a of 91 declared)` is a different claim from
+  full coverage (35 of 35 ran; 63 n/a of 98 declared)` is a different claim from
   a green tick, and the difference is printed every time.
 - **Nothing is trusted downstream of the run.** Summaries are recomputed from
   records, verdicts are re-scored offline, and hand-editing either is a gated
@@ -327,6 +327,57 @@ A table that is not an eval reports at **table scope**: the eval checks are
 is a complete table. A file too small to profile is still refused, from this
 front door as from the other one, so nothing collects a clean bill of health it
 did not earn.
+
+## Two tables: the join, before you perform it
+
+A join is the one operation that fails **silently and in the flattering
+direction**. An inner join that drops rows does not raise, does not warn, and
+leaves a smaller, tidier dataset behind, and nobody audits a number for being
+too clean.
+
+```bash
+dinostomp join villagers.csv music.csv
+```
+
+```
+  join key: Favorite Song <-> Name   (inferred)  (99% of left rows covered; the right column identifies 100% of its own rows)
+
+  [warn] orphan-rows            3 of 391 left row(s) (0.8%) have a key that is not in the right table
+           - 'To The Edge' x3
+  [FAIL] key-normalisation      3 row(s) across 1 key value(s) fail to join ONLY because of case or whitespace
+           - 'To The Edge' would match 'To the Edge'
+  [ok]   parent-key-unique      the right key is unique across 98 value(s)
+  [ok]   join-fanout            391 left row(s) become 388 after an inner join (0.99x)
+
+BROKEN JOIN: 1 gated finding(s). Do not join these two files until this is resolved.
+```
+
+That is a real public dataset and a real defect, and it is the one this series
+was built to catch. One capital letter between `To The Edge` and `To the Edge`.
+Three villagers drop out of every per-song analysis, no exception is raised
+anywhere, and the finding that comes out the other side is not merely
+imprecise: those villagers appear to favour nothing. It was found by hand once,
+in [a case study](https://collapseindex.org/case-studies/acnh.html). Now it is
+found in a second.
+
+Seven checks read the relationship rather than either file:
+
+| check | catches |
+|---|---|
+| `join-viable` | an inner join that returns **nothing at all**: arithmetic, so it gates |
+| `orphan-rows` | rows the join drops, counted, because some orphans are ordinary |
+| `key-normalisation` | keys that fail to match on **case or whitespace alone**, and would match if tidied. Gates: nobody writes it two ways on purpose |
+| `parent-key-unique` | a lookup key that repeats, so the join is not the one-to-one it looks like |
+| `join-fanout` | how many rows come out versus went in. Every total after a fan-out is multiplied and nothing says so |
+| `key-type-drift` | the same key stored as text on one side and a number on the other: both correct alone, never equal |
+| `totals-reconcile` | a parent total against the sum of its own children. Gates, because it is arithmetic |
+
+**The key is inferred, printed, and refused when it is not obvious.** A join
+performed on the wrong column does not error, it answers, so the tool ranks
+candidates by coverage **times** how well the right-hand column identifies its
+own rows, and when the best one is merely an overlap it names the candidates
+and stops. Pass `--left-key` and `--right-key` to decide yourself, and
+`--reconcile parent=child` to check a total against its detail.
 
 ## More you can ask of a dataset
 
@@ -455,7 +506,7 @@ At 24 items an UNPAIRED comparison resolves gaps down to about 40%.
 Then item difficulty and discrimination, hardest first, with who missed each one
 and the most common wrong answer. Then accuracy sliced by every metadata field
 the items carry, which on MMLU is accuracy by subject. Then cost and tokens,
-summed from the records. Then the claims, then all ninety-one checks, then the
+summed from the records. Then the claims, then all ninety-eight checks, then the
 receipts and the provenance.
 
 Three rules hold that section together:
@@ -658,7 +709,7 @@ extension is named, versioned and hashed in the report, so a `SOUND` is always a
 claim about a specific set of code.
 
 The full contract, including why an extension is trusted when a stranger's pod
-is not, is in **[METHODOLOGY.md](METHODOLOGY.md)** along with all ninety-one
+is not, is in **[METHODOLOGY.md](METHODOLOGY.md)** along with all ninety-eight
 checks and why each one exists.
 
 ## In CI
@@ -716,7 +767,7 @@ measures the intended construct: NOT ESTABLISHED BY DINOSTOMP
 That is a constant. There is no flag and no code path that sets it to anything
 else, and a test walks the source to keep it that way. This battery checks
 mechanical integrity; construct validity is argued, not computed, and a trivial,
-mis-aimed, or saturated eval can pass every check here. Ninety-one is not a
+mis-aimed, or saturated eval can pass every check here. Ninety-eight is not a
 number that bounds the ways an eval can be invalid.
 
 **The self-tests are not independent validation.** 102 of 102 caught means every
@@ -744,7 +795,7 @@ the tool names them.
 
 - **[AUTHORING.md](AUTHORING.md)** — writing a spec, or having a model write one: the schema contract and the self-correction loop
 - **[FINDINGS.md](FINDINGS.md)** — what it found, in MMLU, GSM8K, TruthfulQA, and in itself
-- **[METHODOLOGY.md](METHODOLOGY.md)** — the ninety-one checks, the pod format, the philosophy, the self-audit
+- **[METHODOLOGY.md](METHODOLOGY.md)** — the ninety-eight checks, the pod format, the philosophy, the self-audit
 - **[SECURITY.md](SECURITY.md)** — pod code, untrusted model output, money, what this does not do
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — the entry fee for a new check is a planted defect, not an argument
 - **[findings.json](findings.json)** — the ledger as data: versioned, validated against [docs/findings.schema.json](docs/findings.schema.json) before it is written
@@ -753,7 +804,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`d992bdfcfeaae493c8844a76d92b79d6911871924f31d59e61a71202edf07331`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`364df9523c32101a278eb78c7d0911d9cb952d3e9bd4ac935d9b3b8a3873c321`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 
@@ -762,7 +813,7 @@ fee for a new check and the rules a patch may not remove. [Apache-2.0](LICENSE).
 
 <sub>Built and maintained by one person, unfunded. If it caught something in your
 eval, [sponsorship](https://github.com/sponsors/collapseindex) buys time to keep
-pointing it at real benchmarks and publishing what it finds, including the eighty-six
+pointing it at real benchmarks and publishing what it finds, including the eighty-eight
   findings against itself. Adversarial pods and bug reports are worth more than
 money and are always free:
 [break it, please](CONTRIBUTING.md#break-it-please).</sub>
