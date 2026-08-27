@@ -422,6 +422,16 @@ mechanical, reproducible count: 90 exact duplicates (question, options and key
 identical) in a 3,000-item slice, from one command, with the 22 false positives
 of D-005 removed.
 
+**Composition, checked 2026-08-27 against `cais/mmlu` revision `c30699e`.** The 90
+are not mostly within-subject repeats. 78 of them are questions that appear verbatim
+in both `clinical_knowledge` and `college_medicine` (the example above, `mmlu-00488`
+and `mmlu-01258`, is one such pair); 12 are duplicates inside a single subject. The
+double weight is real for a pooled score over the slice, which is what this
+benchmark computes, and does not affect per-subject accuracy. Over the full 14,042-row
+split the same check finds 105 later copies: 78 cross-subject, all that one subject
+pair, and 27 within-subject. The full list, with the reproduce script, is in
+`benchmarks/mmlu/ISSUE_DRAFT.md`.
+
 ### F-004
 **TruthfulQA · an item passable by restating the question**
 `answer-leak` (S2) · 2026-08-09 · confirmed, scoped
