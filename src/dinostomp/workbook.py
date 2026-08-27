@@ -154,31 +154,114 @@ def load_sheets(path: str | Path) -> list[Sheet]:
     return sheets
 
 
+def _table_regions(wb, sheet_name: str | None) -> list[dict]:
+    """Every defined Excel Table, most data rows first.
+
+    A workbook that defines Tables has already told us exactly where its data
+    is. Guessing that row 1 of sheet 1 is the header ignores that declaration,
+    and in any workbook with a title or an input block above the data it audits
+    the garnish and reports the file clean.
+    """
+    from openpyxl.utils import range_boundaries
+
+    regions: list[dict] = []
+    for name in wb.sheetnames:
+        if sheet_name and name != sheet_name:
+            continue
+        ws = wb[name]
+        # `ws.tables.items()` yields (name, ref-string), not Table objects.
+        # Indexing by key is what gives back the object with totalsRowCount.
+        for table_name in list(getattr(ws, "tables", None) or {}):
+            table = ws.tables[table_name]
+            try:
+                min_col, min_row, max_col, max_row = range_boundaries(table.ref)
+            except (ValueError, TypeError):
+                continue
+            # A totals row is an aggregate, not an observation. Auditing it as
+            # data invents a duplicate, a type drift, or a sentinel in every
+            # workbook that has one.
+            max_row -= int(getattr(table, "totalsRowCount", 0) or 0)
+            has_header = int(getattr(table, "headerRowCount", 1) or 0) > 0
+            first_data = min_row + 1 if has_header else min_row
+            if max_row < first_data:
+                continue
+            regions.append({
+                "sheet": name, "table": table_name, "ref": table.ref,
+                "min_col": min_col, "max_col": max_col, "header_row": min_row if has_header else None,
+                "first_data": first_data, "max_row": max_row,
+                "n_rows": max_row - first_data + 1,
+            })
+    # Most rows wins: the G checks are about hygiene across observations, so the
+    # table with the most of them is the one worth reading. Width breaks ties,
+    # then workbook order, so the choice is deterministic.
+    regions.sort(key=lambda r: (-r["n_rows"], -(r["max_col"] - r["min_col"]),
+                                wb.sheetnames.index(r["sheet"]), r["table"]))
+    return regions
+
+
 def sheet_rows(path: str | Path, sheet_name: str | None = None) -> tuple[list[dict], list[str]]:
-    """The first worksheet as rows of {header: value}, for the G checks.
+    """One worksheet region as rows of {header: value}, for the G checks.
+
+    Prefers a defined Excel Table, because a workbook that declares one has
+    named its own data region and does not need to be guessed at. Falls back to
+    row 1 of the first sheet only when there is no Table to read.
 
     Notes are returned rather than printed, because a caller that hides which
-    sheet it read is a caller reporting on a file the user did not open.
+    region it read is a caller reporting on a file the user did not open.
     """
     openpyxl = _require()
-    wb = openpyxl.load_workbook(Path(path), data_only=True, read_only=True)
+    # Not read_only: `ws.tables` is unavailable in that mode, and the table
+    # definitions are the whole point of this pass. MAX_SHEET_CELLS is the guard.
+    wb = openpyxl.load_workbook(Path(path), data_only=True, read_only=False)
     notes: list[str] = []
     try:
+        sheets_note = (f"workbook has {len(wb.sheetnames)} sheet(s) "
+                       f"({', '.join(wb.sheetnames[:5])})")
+        regions = _table_regions(wb, sheet_name)
+        empty: list[str] = []
+        for rank, region in enumerate(regions):
+            ws = wb[region["sheet"]]
+            if ws.max_row * max(1, ws.max_column) > MAX_SHEET_CELLS:
+                empty.append(f"{region['table']} (over the cell cap)")
+                continue
+            # A candidate's own notes are held back until it is accepted, so a
+            # rejected table cannot leave a header warning behind describing a
+            # region nobody read.
+            local: list[str] = []
+            rows = _rows_from_region(ws, region, local)
+            # A table of uncalculated formulas declares rows and holds no data.
+            # Ranking on the DECLARED height hands the audit to a summary page
+            # whose every cell reads None, and the caller sees an empty dataset
+            # while a full log sits unread on the next sheet.
+            if not rows and rank < len(regions) - 1:
+                empty.append(f"{region['table']} ({region['n_rows']} rows, all empty)")
+                continue
+            note = (f"{sheets_note}; read table {region['table']!r} on sheet "
+                    f"{region['sheet']!r} ({region['ref']}) for the value checks. "
+                    f"Structure checks read every sheet")
+            others = [f"{r['table']} ({r['n_rows']} rows)"
+                      for r in regions if r is not region][:4]
+            if others:
+                note += (f". {len(regions) - 1} other table(s) were NOT read by the value "
+                         f"checks: {', '.join(others)}")
+            if empty:
+                note += f". Skipped as holding no values: {', '.join(empty)}"
+            return rows, notes + [note] + local
+
         name = sheet_name or wb.sheetnames[0]
-        if len(wb.sheetnames) > 1:
-            notes.append(f"workbook has {len(wb.sheetnames)} sheets "
-                         f"({', '.join(wb.sheetnames[:5])}); read {name!r} for the value checks, "
-                         f"structure checks read all of them")
         ws = wb[name]
+        if ws.max_row * max(1, ws.max_column) > MAX_SHEET_CELLS:
+            return [], notes + [f"{sheets_note}; sheet {name!r} is over the "
+                                f"{MAX_SHEET_CELLS:,}-cell cap and was not read"]
+        notes.append(f"{sheets_note}; NO defined tables, so row 1 of {name!r} was assumed to be "
+                     f"the header for the value checks. If a title or an input block sits above "
+                     f"the data, that assumption is wrong and these findings describe the wrong "
+                     f"rows. Define the range as a Table (Ctrl+T) and re-run")
         rows_iter = ws.iter_rows(values_only=True)
         header = next(rows_iter, None)
         if header is None:
             return [], notes + ["sheet is empty"]
-        columns = [str(h).strip() if h is not None else f"column_{i + 1}"
-                   for i, h in enumerate(header)]
-        blank_headers = sum(1 for h in header if h is None)
-        if blank_headers:
-            notes.append(f"{blank_headers} column(s) have no header and were named by position")
+        columns = _column_names(header, notes)
         rows = []
         for values in rows_iter:
             if values is None or all(v is None for v in values):
@@ -187,6 +270,34 @@ def sheet_rows(path: str | Path, sheet_name: str | None = None) -> tuple[list[di
         return rows, notes
     finally:
         wb.close()
+
+
+def _column_names(header, notes: list[str]) -> list[str]:
+    columns = [str(h).strip() if h is not None else f"column_{i + 1}"
+               for i, h in enumerate(header)]
+    blank = sum(1 for h in header if h is None)
+    if blank:
+        notes.append(f"{blank} column(s) have no header and were named by position")
+    return columns
+
+
+def _rows_from_region(ws, region: dict, notes: list[str]) -> list[dict]:
+    min_col, max_col = region["min_col"], region["max_col"]
+
+    def cells(row: int) -> tuple:
+        return tuple(ws.cell(row=row, column=c).value for c in range(min_col, max_col + 1))
+
+    if region["header_row"] is not None:
+        columns = _column_names(cells(region["header_row"]), notes)
+    else:
+        columns = [f"column_{i + 1}" for i in range(max_col - min_col + 1)]
+    rows = []
+    for r in range(region["first_data"], region["max_row"] + 1):
+        values = cells(r)
+        if all(v is None for v in values):
+            continue
+        rows.append({columns[i]: v for i, v in enumerate(values) if i < len(columns)})
+    return rows
 
 
 def _is_formula(value: Any) -> bool:

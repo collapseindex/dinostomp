@@ -2,6 +2,25 @@
 
 ### Unreleased
 
+- **The value checks now read the workbook's own declared data region.**
+  Pointed at a payroll workbook with a date-input block above the table,
+  `sheet_rows` took row 1 of sheet 1 as the header, audited nine rows of
+  chrome, ignored three defined Excel Tables, and closed with `MECHANICALLY
+  SOUND` on a region that was not the data ([D-089]). Selection now prefers a
+  defined Table (most rows wins, totals row excluded), and the row-1 fallback
+  is disclosed in the report rather than assumed in silence.
+- **The report says which sheet and table it read.** The note naming it was
+  built, stored in `_WORKBOOK_NOTES`, and never retrieved by anything;
+  `dataset.workbook_notes` was dead code and `lint_dataset` overwrote the
+  notes wholesale ([D-090]). Had it printed, D-089 would have been visible on
+  the first run instead of found by hand. Read notes now lead the context and
+  name every table the value checks did NOT read.
+- **Table selection takes the first candidate that holds values, not the
+  tallest one.** Ranking by declared height handed the audit to a calculated
+  summary page whose every cell was an uncalculated formula, and reported the
+  file empty while a full log sat unread one sheet away ([D-091]). Skipped
+  candidates are named in the report with the reason.
+
 - **Seven new checks read the JOIN between two tables: the `JN` series, and a
   `dinostomp join` command.** A join is the one operation that fails silently
   AND in the flattering direction: an inner join that drops rows raises

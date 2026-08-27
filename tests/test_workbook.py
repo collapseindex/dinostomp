@@ -185,3 +185,156 @@ def test_a_csv_marks_the_workbook_checks_not_applicable(tmp_path):
         finding = next(f for f in report["findings"] if f["id"] == cid)
         assert finding["level"] == "n/a", finding
         assert "xlsx" in finding["detail"]
+
+
+# --- which region of the workbook the value checks actually read -------------
+#
+# Every G-series finding is ABOUT a region, and until the fix below dinostomp
+# picked that region by assuming row 1 of sheet 1 was the header. Real business
+# workbooks put a title, a date input or a note above the table, so the value
+# checks audited the garnish and then printed a clean bill of health on it. A
+# workbook that defines Tables has already declared where its data is.
+
+
+def build_with_preamble(tmp_path, name="preamble.xlsx"):
+    """A sheet shaped like every real one: an input block above a real Table."""
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Payroll"
+    ws["A1"], ws["B1"] = "Week start", "2026-08-24"
+    ws["C1"] = "Change this date and everything below recalculates."
+    data = wb.create_sheet("Data")
+    data.append(["order_id", "vendor", "qty"])
+    for i in range(1, 8):
+        data.append([f"ORD-{i}", "Acme", i])
+    table = openpyxl.worksheet.table.Table(displayName="Orders", ref="A1:C8")
+    data.add_table(table)
+    path = tmp_path / name
+    wb.save(path)
+    return path
+
+
+def test_the_value_checks_read_the_defined_table_not_row_one_of_sheet_one(tmp_path):
+    """The defect this test exists for: the header row came from a title block
+    on another sheet, so the columns audited were not the data's columns."""
+    _, report = audit(build_with_preamble(tmp_path))
+    _, _, ctx = lint_dataset(build_with_preamble(tmp_path, name="again.xlsx"))
+    rows, notes = workbook.sheet_rows(build_with_preamble(tmp_path, name="rows.xlsx"))
+
+    assert [sorted(r) for r in rows[:1]] == [["order_id", "qty", "vendor"]]
+    assert len(rows) == 7
+    assert "Week start" not in {k for r in rows for k in r}
+    assert any("Orders" in n and "Data" in n for n in notes), notes
+    assert any("Orders" in n for n in ctx["notes"]), ctx["notes"]
+
+
+def test_the_report_says_which_region_it_read(tmp_path):
+    """A report that does not name the sheet and table it audited is a report
+    the reader cannot check. The note was previously built and discarded."""
+    _, _, ctx = lint_dataset(build_with_preamble(tmp_path))
+    joined = " ".join(ctx["notes"])
+    assert "'Orders'" in joined and "'Data'" in joined and "A1:C8" in joined
+
+
+def test_without_a_table_the_row_one_assumption_is_disclosed(tmp_path):
+    """Falling back is fine. Falling back silently is what caused the defect."""
+    path = tmp_path / "flat.xlsx"
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+    ws.append(CLEAN_HEADER)
+    for row in CLEAN_ROWS:
+        ws.append(list(row))
+    wb.save(path)
+    _, notes = workbook.sheet_rows(path)
+    joined = " ".join(notes)
+    assert "NO defined tables" in joined and "row 1" in joined
+    assert "wrong" in joined and "Ctrl+T" in joined
+
+
+def test_a_totals_row_is_not_audited_as_an_observation(tmp_path):
+    """A table's totals row is an aggregate. Reading it as data invents a type
+    drift or a duplicate in every workbook that has one."""
+    path = tmp_path / "totals.xlsx"
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Data"
+    ws.append(["order_id", "vendor", "qty"])
+    for i in range(1, 8):
+        ws.append([f"ORD-{i}", "Acme", i])
+    ws.append(["Total", None, 28])
+    table = openpyxl.worksheet.table.Table(displayName="Orders", ref="A1:C9")
+    table.totalsRowCount = 1
+    ws.add_table(table)
+    wb.save(path)
+    rows, _ = workbook.sheet_rows(path)
+    assert len(rows) == 7
+    assert "Total" not in {r["order_id"] for r in rows}
+
+
+def test_the_widest_table_loses_to_the_one_with_more_rows(tmp_path):
+    """Hygiene checks are about observations, so row count decides. A wide
+    summary table must not outrank the narrow log it summarises."""
+    path = tmp_path / "two.xlsx"
+    wb = openpyxl.Workbook()
+    summary = wb.active
+    summary.title = "Summary"
+    summary.append(["a", "b", "c", "d", "e", "f", "g"])
+    for i in range(3):
+        summary.append([i] * 7)
+    summary.add_table(openpyxl.worksheet.table.Table(displayName="Summary", ref="A1:G4"))
+    log = wb.create_sheet("Log")
+    log.append(["order_id", "qty"])
+    for i in range(1, 21):
+        log.append([f"ORD-{i}", i])
+    log.add_table(openpyxl.worksheet.table.Table(displayName="Log", ref="A1:B21"))
+    wb.save(path)
+    rows, notes = workbook.sheet_rows(path)
+    assert len(rows) == 20
+    assert sorted(rows[0]) == ["order_id", "qty"]
+    assert any("were NOT read" in n and "Summary" in n for n in notes), notes
+
+
+def test_a_table_of_uncalculated_formulas_loses_to_a_shorter_table_with_data(tmp_path):
+    """D-091. Ranking on DECLARED height handed the audit to a summary page whose
+    every cell reads None, and the caller saw an empty dataset while a longer log
+    sat unread on the next sheet."""
+    path = tmp_path / "calc.xlsx"
+    wb = openpyxl.Workbook()
+    summary = wb.active
+    summary.title = "Summary"
+    summary.append(["technician", "owed"])
+    for i in range(2, 22):                       # 20 rows, all formulas
+        summary.cell(row=i, column=1, value=f"=Data!A{i}")
+        summary.cell(row=i, column=2, value=f"=SUM(Data!B:B)*{i}")
+    summary.add_table(openpyxl.worksheet.table.Table(displayName="Summary", ref="A1:B21"))
+    log = wb.create_sheet("Data")
+    log.append(["order_id", "qty"])
+    for i in range(1, 15):                       # 14 rows, real values
+        log.append([f"ORD-{i}", i])
+    log.add_table(openpyxl.worksheet.table.Table(displayName="Log", ref="A1:B15"))
+    wb.save(path)
+
+    rows, notes = workbook.sheet_rows(path)
+    assert len(rows) == 14, notes
+    assert sorted(rows[0]) == ["order_id", "qty"]
+    joined = " ".join(notes)
+    assert "'Log'" in joined and "Skipped as holding no values" in joined
+    assert "Summary" in joined
+
+
+def test_an_all_empty_workbook_still_reports_the_table_it_settled_on(tmp_path):
+    """The last candidate is used even when it is empty, because returning
+    nothing with no explanation is how D-091 looked from the outside."""
+    path = tmp_path / "hollow.xlsx"
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Only"
+    ws.append(["a", "b"])
+    for i in range(2, 6):
+        ws.cell(row=i, column=1, value=f"=1+{i}")
+    ws.add_table(openpyxl.worksheet.table.Table(displayName="Hollow", ref="A1:B5"))
+    wb.save(path)
+    rows, notes = workbook.sheet_rows(path)
+    assert rows == []
+    assert any("'Hollow'" in n for n in notes), notes

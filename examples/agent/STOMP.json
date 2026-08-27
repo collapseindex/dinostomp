@@ -1254,7 +1254,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 364df9523c32101a); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 8103c0f36819fa19); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine 050e2f343915e1b9: agent-grounded seed 42 (tool 0.57.1), agent-lazy seed 42 (tool 0.57.1), agent-narrow seed 42 (tool 0.57.1) and 1 more"

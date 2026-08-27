@@ -64,7 +64,7 @@ from dinostomp.extensions import discover, run_extensions
 from dinostomp.dataset import (DATA_SUFFIXES, build_items, infer_mapping,
                                leak_candidates, looks_like_dataset, read_rows,
                                repair_items, sniff_separator, target_is_classlike,
-                               unrepairable_findings)
+                               unrepairable_findings, workbook_notes)
 from dinostomp import modality, perceptual, results as results_mod
 from dinostomp.fingerprint import engine_fingerprint
 from dinostomp.spec import Issue, jsonl_lines, load_spec, spec_sha256, validate_obj
@@ -4181,7 +4181,14 @@ def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
                             message="dataset is empty; an empty dataset must never look green")], context
     context["n_rows"] = len(rows)
 
+    # Which region of a workbook was read decides what every finding below is
+    # ABOUT. Carried first, and never overwritten by the mapping notes, because
+    # a report that does not say which sheet and table it audited is a report
+    # the reader cannot check.
+    read_notes = workbook_notes(path)
+
     mapping, notes, issues = infer_mapping(rows, field_overrides)
+    notes = read_notes + notes
     context["mapping"], context["notes"] = mapping, notes
     if issues:
         # No question/answer columns. For an eval dataset that is a dead end and

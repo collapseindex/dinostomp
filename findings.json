@@ -6,13 +6,13 @@
   "tool": {
     "name": "dinostomp",
     "version": "0.62.0",
-    "engine": "364df9523c32101a278eb78c7d0911d9cb952d3e9bd4ac935d9b3b8a3873c321"
+    "engine": "8103c0f36819fa19185921f3803621875da480022cffcce651bbc6d6a61b809c"
   },
   "counts": {
     "F": 49,
-    "D": 88,
+    "D": 91,
     "N": 31,
-    "total": 168
+    "total": 171
   },
   "series": {
     "F": "other people's evals",
@@ -948,6 +948,57 @@
       "status_class": "confirmed",
       "anchor": "#d-088",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-088"
+    },
+    {
+      "id": "D-089",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "The value checks audited row 1 of sheet 1 and called the wrong region clean",
+      "summary": "the value checks read row 1 of sheet 1, ignored three declared tables, and called an input block clean",
+      "subject": "dinostomp",
+      "check_label": "`workbook region selection`",
+      "checks": [],
+      "date": "2026-08-26",
+      "date_iso": "2026-08-26",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-089",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-089"
+    },
+    {
+      "id": "D-090",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "The report never said which sheet it had read, and the note that said so was dead code",
+      "summary": "the note saying which sheet was audited was built, stored, and never read by anything",
+      "subject": "dinostomp",
+      "check_label": "`workbook disclosure`",
+      "checks": [],
+      "date": "2026-08-26",
+      "date_iso": "2026-08-26",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-090",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-090"
+    },
+    {
+      "id": "D-091",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "The fix for D-089 ranked tables by declared height and picked one with no data in it",
+      "summary": "the fix for D-089 ranked tables by declared height and chose one whose every cell was an uncalculated formula",
+      "subject": "dinostomp",
+      "check_label": "`workbook region selection`",
+      "checks": [],
+      "date": "2026-08-26",
+      "date_iso": "2026-08-26",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-091",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-091"
     },
     {
       "id": "F-018",
