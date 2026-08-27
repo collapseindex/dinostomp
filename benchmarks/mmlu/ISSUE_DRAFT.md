@@ -1,9 +1,10 @@
 # Issue draft
 
-Target: Community tab of `cais/mmlu` on Hugging Face. `hendrycks/test` on GitHub only
-after the original CSVs have been checked (the Berkeley host was unreachable when this
-was drafted, so whether the overlap below is in the source tarball or in the
-conversion is not yet established).
+Target: `hendrycks/test` on GitHub (the source) and the Community tab of `cais/mmlu`
+on Hugging Face. The Berkeley tarball itself was unreachable on 2026-08-27, but three
+independent conversions of it on the Hub (`cais/mmlu`, `lighteval/mmlu`,
+`tasksource/mmlu`) agree on every count and string below, so the defects are in the
+source data, not in any one conversion.
 
 Drafted 2026-08-27 from `cais/mmlu`, config `all`, split `test`, 14,042 rows, revision
 `c30699e8356da336a370243923dbaf21066bb9fe`, `datasets` 4.5.0. Not yet filed.
@@ -167,3 +168,8 @@ print("non-keyed repeated option:", repeated)                                 # 
 
 Indices are positions in the `all` config's test split at the pinned revision; if the
 dataset is revised, match on the strings above.
+
+Cross-check: the 78 shared questions, the four items in section 3 (identical option
+strings and answer indices), and the 11 College Physics copies are also present in
+`lighteval/mmlu` and `tasksource/mmlu`, which were converted from the original tarball
+separately from `cais/mmlu`.
