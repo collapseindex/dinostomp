@@ -389,6 +389,17 @@ letter half the time. Two more of the same shape: `mmlu-01941` offers
 
 Reproduce: `dinostomp stomp benchmarks/mmlu/eval.yaml`, item `mmlu-02178`.
 
+**Prior art, checked 2026-08-27.** The error class is not new: *Are We Done with
+MMLU?* (Gema et al., [arXiv:2406.04127](https://arxiv.org/abs/2406.04127), June
+2024) hand-annotated MMLU and names `multiple_correct_answers` as a category, and
+MMLU-Redux 2.0 carries those labels. The question itself was circulating in public
+evaluation artifacts by February 2024 with 687 recorded as the answer. What a
+public-web search did not turn up is any earlier report that this item's keyed
+answer appears at two option positions. So the claim this ledger makes is the
+narrow one: the exact defect was not previously located, not that nobody could have
+seen it. See [F-018](#f-018) for the run against Redux's own annotations, where two
+further duplicated-key items sit under a human label of `ok`.
+
 ### F-003
 **MMLU · 90 duplicate rows in the first 3000**
 `dup-questions` (S1) · 2026-08-09 · confirmed
@@ -402,6 +413,14 @@ marathon running is:"* over `['strength.', 'power.', 'stride length.',
 This is what survived [D-005](#d-005). Before that fix the count was inflated by
 22 items that shared a stem but had different options, which are not duplicates
 at all.
+
+**Prior art, checked 2026-08-27.** That MMLU contains duplicated questions was
+reported first by *Are We Done with MMLU?* ([arXiv:2406.04127](https://arxiv.org/abs/2406.04127)),
+which found roughly 20% of the College Physics subset duplicated by hand
+annotation. This entry does not claim the discovery. Its contribution is the
+mechanical, reproducible count: 90 exact duplicates (question, options and key
+identical) in a 3,000-item slice, from one command, with the 22 false positives
+of D-005 removed.
 
 ### F-004
 **TruthfulQA · an item passable by restating the question**
