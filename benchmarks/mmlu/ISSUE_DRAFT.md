@@ -1,17 +1,17 @@
 # Issue draft
 
 Target: `hendrycks/test` on GitHub (the source) and the Community tab of `cais/mmlu`
-on Hugging Face. The Berkeley tarball itself was unreachable on 2026-08-27, but three
-independent conversions of it on the Hub (`cais/mmlu`, `lighteval/mmlu`,
-`tasksource/mmlu`) agree on every count and string below, so the defects are in the
-source data, not in any one conversion.
+on Hugging Face. The Berkeley tarball itself was unreachable on 2026-08-27. The same
+counts and strings reproduce in three separately hosted conversions (`cais/mmlu`,
+`lighteval/mmlu`, `tasksource/mmlu`), which is strong evidence they originate upstream
+rather than in any one conversion.
 
 Drafted 2026-08-27 from `cais/mmlu`, config `all`, split `test`, 14,042 rows, revision
 `c30699e8356da336a370243923dbaf21066bb9fe`, `datasets` 4.5.0. Not yet filed.
 
 ---
 
-**Title:** Test split: 78 questions shared verbatim between clinical_knowledge and college_medicine, 27 within-subject exact duplicates, and three repeated-keyed-option items not flagged by MMLU-Redux 2.0
+**Title:** Test split: 78 cross-subject exact overlaps (clinical_knowledge / college_medicine), 27 within-subject duplicates, and three repeated-keyed-option items not identified by MMLU-Redux 2.0 (two labelled `ok`, one unsampled)
 
 ## What this reports
 
@@ -21,10 +21,13 @@ so every count below is a lower bound. Three things:
 1. **78 questions appear verbatim in both `clinical_knowledge` and `college_medicine`**
    (same question string, same four options, same answer index). That is 78 of
    `college_medicine`'s 173 rows (45%) and 78 of `clinical_knowledge`'s 265 (29%).
-   Per-subject accuracy is unaffected; the pooled 14,042-row average, which is the
-   number usually reported as "MMLU", counts each of those 78 questions twice.
+   Within each subject each shared item occurs once, so per-subject accuracy is
+   unaffected. In the reference `hendrycks/test` evaluator, overall accuracy is
+   `np.mean(np.concatenate(all_cors))` (`evaluate.py`, line 133), the mean over all
+   test rows, so each of these 78 underlying questions contributes twice to that
+   aggregate.
 2. **27 rows exactly duplicate an earlier row in the same subject.** All 27 groups are
-   pairs. `college_physics` 11 (22 of its 102 rows are in a pair, 91 distinct
+   pairs. `college_physics` 11 (22 of its 102 rows, 21.6%, are in a pair; 91 distinct
    questions), `high_school_psychology` 11, `public_relations` 2,
    `elementary_mathematics` 1, `professional_psychology` 1, `us_foreign_policy` 1.
 3. **Three items whose keyed answer string appears at two option positions that
@@ -54,24 +57,24 @@ no other subject pair shares a verbatim question. Two examples, by test-split in
   "With an increasing number of sprints the:"
 ```
 
-The full list of 78 index pairs prints from the script below.
+The script below prints all 78 index pairs.
 
 ## 2. Within-subject exact duplicates
 
 | subject | rows | later copies | rows in a pair | distinct questions |
 |---|---|---|---|---|
-| college_physics | 102 | 11 | 22 (22%) | 91 |
-| high_school_psychology | 545 | 11 | 22 (4%) | 534 |
-| public_relations | 110 | 2 | 4 (4%) | 108 |
-| elementary_mathematics | 378 | 1 | 2 (1%) | 377 |
-| professional_psychology | 612 | 1 | 2 (0%) | 611 |
-| us_foreign_policy | 100 | 1 | 2 (2%) | 99 |
+| college_physics | 102 | 11 | 22 (21.6%) | 91 |
+| high_school_psychology | 545 | 11 | 22 (4.0%) | 534 |
+| public_relations | 110 | 2 | 4 (3.6%) | 108 |
+| elementary_mathematics | 378 | 1 | 2 (0.5%) | 377 |
+| professional_psychology | 612 | 1 | 2 (0.3%) | 611 |
+| us_foreign_policy | 100 | 1 | 2 (2.0%) | 99 |
 | **total** | | **27** | **54** | |
 
-Not counted: 51 cases where the same subject repeats a question stem with a
-different option set (mostly `astronomy`; option wording differs, so they are
-variants, not duplicates). There are no rows with the same question and options and
-a different answer index.
+Not counted, and reported by the script as a check: 51 cases where the same subject
+repeats a question stem with a different option set (mostly `astronomy`; option wording
+differs, so they are variants, not duplicates), and 0 rows with the same question and
+options but a different answer index.
 
 ## 3. Items whose keyed answer appears at two option positions
 
@@ -159,6 +162,18 @@ print("cross-subject pairs:", len(cross),
                                               # 78, all (clinical_knowledge, college_medicine)
 per_subject = collections.Counter(rows[v[0]]["subject"] for v in dups_sub)
 print("within-subject by subject:", per_subject.most_common())
+print("cross-subject index pairs:")
+for a, b in sorted(cross):
+    print(f"  {a} ({rows[a]['subject']}) = {b} ({rows[b]['subject']})")
+
+# side counts named in the text
+stems = collections.defaultdict(set)
+answers = collections.defaultdict(set)
+for r in rows:
+    stems[(r["subject"], r["question"])].add(tuple(r["choices"]))
+    answers[(r["question"], tuple(r["choices"]))].add(r["answer"])
+print("same subject and stem, different options:", sum(len(v) > 1 for v in stems.values()))   # 51
+print("same question and options, different answer:", sum(len(v) > 1 for v in answers.values()))  # 0
 
 double_keyed = [i for i, r in enumerate(rows) if r["choices"].count(keyed(r)) >= 2]
 print("keyed answer at two positions:", double_keyed)                        # [2178, 4021, 6494, 13601]
