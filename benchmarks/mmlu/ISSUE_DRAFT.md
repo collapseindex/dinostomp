@@ -15,15 +15,16 @@ Drafted 2026-08-27 from `cais/mmlu`, config `all`, split `test`, 14,042 rows, re
 
 ## What this reports
 
-A mechanical pass over the full 14,042-row test split, exact string equality only,
-so every count below is a lower bound. Three things:
+A mechanical pass over the full 14,042-row test split. All overlap and duplicate
+checks use exact string equality, so they are conservative with respect to
+paraphrased, normalised, or semantically equivalent items. Three things:
 
 1. **78 questions appear verbatim in both `clinical_knowledge` and `college_medicine`**
    (same question string, same four options, same answer index). That is 78 of
    `college_medicine`'s 173 rows (45%) and 78 of `clinical_knowledge`'s 265 (29%).
    Within each subject each shared item occurs once, so per-subject accuracy is
    unaffected. In the reference `hendrycks/test` evaluator, overall accuracy is
-   `np.mean(np.concatenate(all_cors))` (`evaluate.py`, line 133), the mean over all
+   `np.mean(np.concatenate(all_cors))` (`evaluate.py`), the mean over all
    test rows, so each of these 78 underlying questions contributes twice to that
    aggregate.
 2. **27 rows exactly duplicate an earlier row in the same subject.** All 27 groups are
@@ -36,10 +37,12 @@ so every count below is a lower bound. Three things:
    A fourth, `high_school_macroeconomics`, Redux already labels
    `multiple_correct_answers` and is listed only for completeness.
 
-Prior work, so the scope is clear. MMLU-Redux (Gema et al., 2024, arXiv:2406.04127)
-hand-annotated 100 questions per subject; its taxonomy has a `multiple_correct_answers`
-category, and Appendix I notes for College Physics that "some questions (approximately
-20%) were duplicated". The 22% in item 2 reproduces that figure. `hendrycks/test`
+Prior work, so the scope is clear. The original MMLU-Redux (Gema et al., 2024,
+arXiv:2406.04127) manually annotated 100 questions in each of 30 subjects; MMLU-Redux
+2.0 extends this to 100 questions in each of all 57 subjects. Its taxonomy has a
+`multiple_correct_answers` category, and Appendix I notes for College Physics that
+"some questions (approximately 20%) were duplicated". The 21.6% in item 2 closely
+matches that figure. `hendrycks/test`
 issue #21 (January 2024) reported three repeated answer options in the validation
 split, one of them the keyed answer. Neither covers the cross-subject overlap in item
 1, the full-split within-subject count in item 2, or the three test-split items in
@@ -48,7 +51,8 @@ item 3.
 ## 1. Cross-subject overlap
 
 All 78 groups are pairs and every pair is `clinical_knowledge` with `college_medicine`;
-no other subject pair shares a verbatim question. Two examples, by test-split index:
+no other subject pair shares an exact full item under this key (question, four
+options, answer index). Two examples, by test-split index:
 
 ```
 488 (clinical_knowledge) = 1258 (college_medicine)
@@ -61,7 +65,7 @@ The script below prints all 78 index pairs.
 
 ## 2. Within-subject exact duplicates
 
-| subject | rows | later copies | rows in a pair | distinct questions |
+| subject | rows | later copies | rows in a pair | distinct exact items |
 |---|---|---|---|---|
 | college_physics | 102 | 11 | 22 (21.6%) | 91 |
 | high_school_psychology | 545 | 11 | 22 (4.0%) | 534 |
@@ -130,8 +134,9 @@ Five further items repeat a non-keyed option string and so have three real choic
 If the split stays frozen for comparability with published numbers, publish this list
 next to the dataset so evaluators can dedup at load time and decide how to handle the
 clinical_knowledge / college_medicine overlap in pooled scores. Otherwise: drop the 27
-later copies, re-key or remove the four items in section 3, and decide which subject
-the 78 shared questions belong to.
+later copies; for the four items in section 3, correct or deduplicate the option
+list and adjust the key if necessary, or remove them; and decide which subject the 78
+shared items belong to.
 
 ## Reproduce
 
@@ -184,7 +189,6 @@ print("non-keyed repeated option:", repeated)                                 # 
 Indices are positions in the `all` config's test split at the pinned revision; if the
 dataset is revised, match on the strings above.
 
-Cross-check: the 78 shared questions, the four items in section 3 (identical option
-strings and answer indices), and the 11 College Physics copies are also present in
-`lighteval/mmlu` and `tasksource/mmlu`, which were converted from the original tarball
-separately from `cais/mmlu`.
+Cross-check: the 78 shared items, the four items in section 3 (identical option
+strings and answer indices), and the 11 College Physics duplicate pairs are also
+present in `lighteval/mmlu` and `tasksource/mmlu`.
