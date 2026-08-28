@@ -400,6 +400,11 @@ narrow one: the exact defect was not previously located, not that nobody could h
 seen it. See [F-018](#f-018) for the run against Redux's own annotations, where two
 further duplicated-key items sit under a human label of `ok`.
 
+**Filed 2026-08-27** as [hendrycks/test#29](https://github.com/hendrycks/test/issues/29)
+and [cais/mmlu discussion #35](https://huggingface.co/datasets/cais/mmlu/discussions/35),
+with the full-split counts and a pinned-revision reproduce script
+(`benchmarks/mmlu/ISSUE_DRAFT.md`).
+
 ### F-003
 **MMLU · 90 duplicate rows in the first 3000**
 `dup-questions` (S1) · 2026-08-09 · confirmed
@@ -431,6 +436,11 @@ benchmark computes, and does not affect per-subject accuracy. Over the full 14,0
 split the same check finds 105 later copies: 78 cross-subject, all that one subject
 pair, and 27 within-subject. The full list, with the reproduce script, is in
 `benchmarks/mmlu/ISSUE_DRAFT.md`.
+
+**Filed 2026-08-27** as [hendrycks/test#29](https://github.com/hendrycks/test/issues/29)
+and [cais/mmlu discussion #35](https://huggingface.co/datasets/cais/mmlu/discussions/35),
+with the full-split counts and a pinned-revision reproduce script
+(`benchmarks/mmlu/ISSUE_DRAFT.md`).
 
 ### F-004
 **TruthfulQA · an item passable by restating the question**

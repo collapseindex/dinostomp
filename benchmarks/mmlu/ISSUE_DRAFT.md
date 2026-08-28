@@ -7,7 +7,9 @@ counts and strings reproduce in three separately hosted conversions (`cais/mmlu`
 rather than in any one conversion.
 
 Drafted 2026-08-27 from `cais/mmlu`, config `all`, split `test`, 14,042 rows, revision
-`c30699e8356da336a370243923dbaf21066bb9fe`, `datasets` 4.5.0. Not yet filed.
+`c30699e8356da336a370243923dbaf21066bb9fe`, `datasets` 4.5.0. Filed 2026-08-27:
+https://github.com/hendrycks/test/issues/29 and
+https://huggingface.co/datasets/cais/mmlu/discussions/35
 
 ---
 
