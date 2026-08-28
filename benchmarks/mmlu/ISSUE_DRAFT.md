@@ -29,7 +29,7 @@ paraphrased, normalised, or semantically equivalent items. Three things:
    aggregate.
 2. **27 rows exactly duplicate an earlier row in the same subject.** All 27 groups are
    pairs. `college_physics` 11 (22 of its 102 rows, 21.6%, are in a pair; 91 distinct
-   questions), `high_school_psychology` 11, `public_relations` 2,
+   exact items), `high_school_psychology` 11, `public_relations` 2,
    `elementary_mathematics` 1, `professional_psychology` 1, `us_foreign_policy` 1.
 3. **Three items whose keyed answer string appears at two option positions that
    MMLU-Redux 2.0 did not flag.** Two are in Redux 2.0's sample and labelled `ok`
@@ -85,7 +85,7 @@ options but a different answer index.
 Rows verbatim; `answer` is the 0-based index the dataset keys. Under index- or
 letter-based scoring, two identical responses receive different correctness labels
 depending only on which of the two positions is selected; under text-matched scoring
-the item has three real choices. Redux 2.0 status was checked on 2026-08-27 against
+the item has three distinct option strings. Redux 2.0 status was checked on 2026-08-27 against
 `edinburgh-dawg/mmlu-redux-2.0` by matching on the question string within the subject
 config.
 
@@ -125,7 +125,7 @@ answer:   3
 (The runs of spaces are non-breaking spaces, U+00A0, in the source; options 0 and 3
 are equal as strings.)
 
-Five further items repeat a non-keyed option string and so have three real choices:
+Five further items repeat a non-keyed option string and therefore contain only three distinct option strings:
 389 (`business_ethics`), 1941 (`electrical_engineering`), 3119 (`high_school_chemistry`),
 4835 (`high_school_physics`), 13134 (`public_relations`).
 
