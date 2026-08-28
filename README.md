@@ -102,17 +102,28 @@ bidding under the existing pressure and velocity requirements, so on 28 April
 1964 the Army approved loading M193 with Olin Mathieson's **WC 846** ball powder
 instead.
 
-The spec did not change. The component passed it. But WC 846 ran higher gas port
-pressure and left carbon fouling, and gas port pressure is what drives the
-rifle's cyclic rate. A property nobody was measuring moved, because it belonged
-to the *composition* rather than to either part.
+The ammunition specification did not change, and the propellant passed it. The
+rifle did not stay inside its own: WC 846 ran higher gas port pressure and left
+carbon fouling, gas port pressure is what drives the rifle's cyclic rate, and
+the Army's later test comparison recorded the ball-propellant lot as giving "a
+high port pressure, a higher cyclic rate, a greater malfunction rate, greater
+fouling" than the IMR lot. The propellant tests had not measured that variable
+at all: "Weapon cyclic rate was not considered in these tests," and it "was
+not measured at Aberdeen Proving Ground in the engineer design test of
+propellants conducted during this period." A property nobody was measuring
+moved, because it belonged to the *composition* rather than to either part.
 
-**The signal was not missed. It was explained away.** Colt observed the increased
-cyclic rate in March 1964. In April, Colt's senior product engineer wrote in an
-internal report that the higher gas port pressures were "in no way harmful to
-the AR-15" and would lead to "more positive functioning of the rifle." The
-Ichord Committee later recommended withdrawing WC 846 and chrome-lining
-chambers.
+**The signal was not missed. It was explained away, and then waived.** Colt's
+representative told the Joint Technical Coordinating Committee on 24-25 March
+1964 that WC 846 "increased the cyclic rate above that required by
+specifications." In April, Colt's senior product engineer wrote in an internal
+report that the higher gas port pressures were "in no way harmful to the AR-15"
+and would lead to "more positive functioning of the rifle." In April and May
+1964 two Requests for Waivers went in to accept rifles with cyclic rates up to
+900 rounds per minute, and in June 1964 Colt requested and received one. The
+project manager, the Panel records, "felt that the cyclic rate problem was
+caused by rifle quality control." The Ichord Committee later recommended
+withdrawing WC 846 and chrome-lining chambers.
 
 That second part is why this repo keeps [a ledger of its own
 defects](FINDINGS.md) and records which *direction* each error ran in. "Higher
@@ -125,13 +136,26 @@ your judge is fine, your model is fine, your aggregation is fine, and **the
 number they produce together is not therefore trustworthy**. That is the claim
 this tool exists to stop you from making by default.
 
-<sub>Verified against [American Rifleman](https://www.americanrifleman.org/content/u-s-m16/)
-and [Daniel Watters' commentary](https://www.thefirearmblog.com/blog/2015/01/09/jim-sullivan-m16-vietnam/);
-primary source is the [1968 Report of the M16 Rifle Review Panel](https://apps.dtic.mil/sti/tr/pdf/ADA953116.pdf).
-Two claims often repeated with this story are deliberately absent because they
-could not be checked against a primary source: that the 1964 propellant tests
-omitted cyclic-rate measurement, and a specific ball-versus-stick round count
-for Vietnam.</sub>
+<sub>Sources, checked 2026-08-28 against the primary record. The 28 April 1964
+propellant change and the port-pressure/cyclic-rate relationship:
+[American Rifleman](https://www.americanrifleman.org/content/u-s-m16/). The
+test comparison of ball and IMR lots: *Report of the M16 Rifle Review Panel*
+(1968), [Vol. 7, Reliability](https://apps.dtic.mil/sti/tr/pdf/ADA953116.pdf),
+p. 6-79. "Weapon cyclic rate was not considered in these tests," the Aberdeen
+omission, the April-May 1964 waiver requests and the June 1964 waiver to 900
+rounds per minute: [Vol. 1, History](https://apps.dtic.mil/sti/tr/pdf/ADA953110.pdf),
+pp. D-2 and D-9. The 24-25 March 1964 notice to the JTCC and the project
+manager's view that the problem was rifle quality control: Vol. 1, the Panel's
+comments on Ichord Subcommittee findings 15 and 16. The Colt "in no way
+harmful" / "more positive functioning" quotation is from
+[Daniel Watters' commentary](https://www.thefirearmblog.com/blog/2015/01/09/jim-sullivan-m16-vietnam/),
+citing an internal April 1964 Colt report by Foster Sturtevant; it does not
+appear in the Panel volumes checked (1, 5, 7) and is carried here as a
+secondary-source quotation. One claim often repeated with this story remains
+deliberately absent because it has not been checked against a primary source:
+a specific ball-versus-stick round count for Vietnam. An earlier version of
+this note listed the omitted cyclic-rate measurement as unverified; it is now
+verified above.</sub>
 
 </details>
 
