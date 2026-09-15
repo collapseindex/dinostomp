@@ -105,3 +105,10 @@ NOTES.local.md
 # Judge verdict caches: reproducible by re-running validate.py with a key,
 # and not evidence anybody should trust without re-deriving.
 extensions/*/validation-cache*.json
+
+# Publish only the curated README artwork, keeping other data private.
+!/data/
+/data/*
+!/data/exports/
+/data/exports/*
+!/data/exports/readme/

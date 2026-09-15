@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+- **2026-09-15, README presentation:** animated pixel dinosaur banner with a still
+  alternative, dino architecture graphic, and a quicker product introduction.
+  Clarifies comparison limits and corrects a stale findings denominator.
+
 - **The value checks now read the workbook's own declared data region.**
   Pointed at a payroll workbook with a date-input block above the table,
   `sheet_rows` took row 1 of sheet 1 as the header, audited nine rows of

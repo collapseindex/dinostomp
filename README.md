@@ -1,14 +1,67 @@
-<p align="center">
-  <img src="docs/dinostomp.png" alt="dinostomp" width="360">
-</p>
+<!-- pixel-banner:start -->
+![A mint pixel dinosaur stomps beside DinoStomp's name while evidence checkpoints light up.](data/exports/readme/20260915_120000_readme_pixel-dino_1200x360_s42.gif)
+
+[View the still banner](data/exports/readme/20260915_120000_readme_pixel-dino_1200x360_s42.png)
+<!-- pixel-banner:end -->
 
 # 🦖 dinostomp
 
-**Everything in your eval gets stomped before it gets believed.**
+**Stomp the eval. Trust the evidence.**
 
 <sub>v0.62.0 · Apache-2.0 · engine `8103c0f36819fa19` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
-An eval is an instrument. Almost nobody checks the instrument.
+**Find broken data, misleading scorers, and unsupported benchmark claims before you trust the score.**
+
+dinostomp is a local-first verification layer for AI evaluations. Audit a dataset
+with one command, or build an eval pod and check the evidence from inputs to
+final claim. Use it alongside your existing harness, or use its built-in runner.
+
+[Quick start](#quick-start) · [Architecture](#how-it-works) · [Real findings](#what-it-found) · [CI integration](#in-ci) · [Limits](#before-you-trust-it)
+
+## Quick start
+
+Python 3.10+. From a local clone:
+
+```bash
+pip install -e .
+dinostomp stomp mydata.csv
+```
+
+The data audit runs locally, with no API key or model calls. Start with your own
+CSV or JSONL file. See [installation](#install) for package and optional extras.
+
+| Bring | Get back |
+|---|---|
+| A dataset | Findings about duplicates, leakage, key bias, and other data defects |
+| An eval pod with run evidence | Checks on scorers, records, noise, and claims |
+| A CI pipeline | A machine-readable report and a failing exit code for gated findings |
+
+**Coverage travels with the verdict.** Skipped or unavailable checks stay visible.
+A mechanically sound result does not establish that an eval measures what you intended.
+
+## How it works
+
+![Six dinosaur checkpoints follow items, runner, records, scorer, aggregate, and claim. Each checks a different boundary; the final report includes findings, coverage, and a scoped verdict.](data/exports/readme/20260915_120000_readme_pixel-dino_architecture_1200x850_s42.png)
+
+Items flow through the runner into records, scoring, aggregation, and a claim.
+dinostomp checks each boundary: data defects, spend and coverage, record integrity,
+scorer witnesses, statistical noise, and whether the evidence supports the claim.
+Summaries are recomputed from records and verdicts are re-scored from recorded text.
+
+**One folder keeps the eval together:** its spec, items, and run receipts.
+See [the pod](#the-pod-one-folder-one-eval) and [authoring guide](AUTHORING.md).
+
+## Build an eval
+
+```bash
+dinostomp new my-eval
+dinostomp plan my-eval/eval.yaml    # preview power, cost, and witnesses
+dinostomp run my-eval/eval.yaml
+dinostomp stomp my-eval/eval.yaml
+```
+
+Configure your target before running. Live providers can make network calls and
+incur model costs; the plan previews the run before that happens.
 
 ## What it found
 
@@ -23,7 +76,7 @@ those professional licensing examinations:
 
 Each of those is one entry in **[FINDINGS.md](FINDINGS.md)**, with the item id,
 the verbatim data and the command that reproduces it. Every `F` re-derives in
-seconds, offline, for free, using the command in the next section.
+seconds, offline, for free, using the reproduction command attached to each finding.
 
 **[FINDINGS.md](FINDINGS.md): 171 entries, all permanent, none deleted.**
 
@@ -41,7 +94,7 @@ the loader bug that manufactured a finding about a driving test
 ([D-039](FINDINGS.md#d-039)), and a defect in the findings feed itself
 ([D-040](FINDINGS.md#d-040)).
 
-One caveat belongs up here rather than at the bottom: **three of the 159 were
+One caveat belongs up here rather than at the bottom: **three entries were
 graded against an answer key somebody outside this repo wrote**
 ([N-012](FINDINGS.md#n-012) against MMLU-Redux, [N-017](FINDINGS.md#n-017)
 against ciFAIR's hand-annotated CIFAR-10 duplicates, and
@@ -58,26 +111,14 @@ The same ledger as data, versioned and validated against
 jq '.findings[] | select(.series=="F" and .status_class=="confirmed") | .subject' findings.json
 ```
 
-## What it is
-
-dinostomp is a **verification layer for AI evaluations**. Not another harness:
-it checks every boundary an eval's evidence crosses, including the ones in
-somebody else's harness.
-
-```
-   items  ──▶  runner  ──▶  records  ──▶  scorer  ──▶  aggregate  ──▶  claim
-     │           │            │             │             │             │
-   data       spend,       integrity,    witnesses,     noise,       evidence
-  checks     coverage      truncation,   mutation      seeds,       required by
-                           drift          gauntlet     phrasing     the claim
-```
+## What gets checked
 
 One invariant runs under all of it: **nothing becomes evidence merely because an
 earlier stage said it was.** Summaries are recomputed from records, verdicts are
 re-scored from recorded text, and the engine hashes itself into its own output.
 
 Ninety-eight checks, each negative-tested to prove it fires, most invisible until
-something breaks. Each stage above is a place the ledger has a receipt from:
+something breaks. The ledger records concrete failures at these boundaries:
 
 | stage | what goes wrong there |
 |---|---|
@@ -88,9 +129,17 @@ something breaks. Each stage above is a place the ledger has a receipt from:
 | **your claim** | a published claim the evidence cannot support: a pod claiming 80% accuracy and a 20-point win, handed evidence for one model at 75%, goes `BROKEN` |
 | **this tool** | the auditor drifting, and nobody noticing: a `CLEAN` report computed over runs from two different engines |
 
-## Why your harness did not catch any of that
+## Where it fits
 
-**Harnesses run evaluations. They do not read them.**
+Keep the harness you like. dinostomp focuses on the integrity of the evaluation
+and its evidence, complementing tools used to run and track experiments.
+Its own runner is an option, not a requirement for a dataset audit.
+
+The repository includes a historical [cross-tool documentation audit](trials/CROSSTOOL.md).
+It is a dated comparison, not a statement of competitors' current capabilities.
+
+<details>
+<summary>Read the original comparison, rationale, and limitations</summary>
 
 <details>
 <summary>The M16 had this exact problem in 1964, and it is the clearest version of it</summary>
@@ -165,7 +214,7 @@ promptfoo and Braintrust. Their coverage concentrates in run mechanics,
 provenance and regression tracking, which they do well. The families about
 whether the benchmark itself measures anything are near-empty across **all six**:
 
-| nobody checks this by default | what it looks like when it bites |
+| gaps recorded in the documentation audit | what it looks like when it bites |
 |---|---|
 | duplicate / contradictory items | DROP ships 86 duplicated questions, 37 keyed to different accepted answers |
 | answers leaking into their own prompt | the question contains its own key |
@@ -183,8 +232,8 @@ of the tools is exactly where credit goes missing: lm-eval ships default standar
 errors and an unconditional provenance echo. Inspect has typed logs with a
 published schema and a per-sample cost limit enforced *before* the call. HELM
 offers radical artifact transparency and the only surfaced contamination
-registry. openai/evals PR-gates smoke evals on contributions. promptfoo is the
-strongest CI gating substrate. Braintrust has immutable experiments and always-on
+registry. openai/evals PR-gates smoke evals on contributions. promptfoo has
+CI gating capabilities. Braintrust has immutable experiments and always-on
 dataset versioning. dinostomp does none of those, and it is a layer over your
 harness rather than a replacement for it.
 
@@ -192,6 +241,8 @@ harness rather than a replacement for it.
 date, so a blank means *not found in the docs that day*, never *the tool cannot
 do this*. Docs lag code everywhere, including here. Two families are marked
 unaudited rather than scored, because an open question is not a low score.
+
+</details>
 
 ## Two ways in
 
