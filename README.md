@@ -8,7 +8,7 @@
 
 **Stomp the eval. Trust the evidence.**
 
-<sub>v0.62.0 · Apache-2.0 · engine `8103c0f36819fa19` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.62.0 · Apache-2.0 · engine `7d29117a95a20258` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 **Find broken data, misleading scorers, and unsupported benchmark claims before you trust the score.**
 
@@ -600,6 +600,16 @@ Three rules hold that section together:
 - **Nothing in Results can gate.** A hard item is not a defect and an expensive
   model is not a defect. Findings come from the checks; this describes.
 
+**The report is also the contract a viewer reads.** Every finding carries its
+`stage` (`data`, `runner`, `records`, `scorer`, `aggregate`, `claim`, `tool`),
+assigned in the engine per check and never guessed from an id prefix. The gating
+dataset checks carry `refs`: a bounded sample of the exact item ids behind the
+finding and the field it is about, so a reader opens the item rather than
+parsing an example string. The report carries `reproduce`, the command that
+re-derives it, built from the flags the engine was actually given. A UI may
+group, filter and open what is there. It may not invent evidence the engine did
+not emit.
+
 ## When the input is a file: images and audio
 
 A text eval carries its input in the dataset. A vision or audio eval carries a
@@ -885,7 +895,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`8103c0f36819fa19185921f3803621875da480022cffcce651bbc6d6a61b809c`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`7d29117a95a20258660ed3d9dee8fe63edf16ea60758dfc9e43564acb49bd852`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

@@ -27,6 +27,7 @@ import math
 import unicodedata
 from itertools import combinations
 import re
+import shlex
 from collections import Counter
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -397,6 +398,81 @@ SLUGS = {
 BY_SLUG = {v: k for k, v in SLUGS.items()}
 
 
+# Which BOUNDARY of the pipeline each check reads. The README draws six:
+# items -> runner -> records -> scorer -> aggregate -> claim, and one more for
+# the engine itself. A viewer groups findings by this. It is assigned here, per
+# check id, and never derived from the id prefix by a reader, because the
+# prefixes are historical (R holds runner, records, scorer and aggregate checks)
+# and a mapping a frontend guesses is a mapping nobody tests.
+STAGE_NAMES = ("data", "runner", "records", "scorer", "aggregate", "claim", "tool")
+STAGES: dict[str, str] = {
+    **{f"S{i}": "data" for i in range(1, 22)},
+    **{f"G{i}": "data" for i in range(1, 12)},
+    **{f"XL{i}": "data" for i in range(1, 7)},
+    **{f"JN{i}": "data" for i in range(1, 8)},
+    # the act of running: what was spent, what was covered, what came back at all
+    "R1": "runner", "R3": "runner", "R10": "runner", "R11": "runner",
+    "R17": "runner", "R18": "runner", "R20": "runner",
+    # what a record is allowed to contain, and what a trajectory is
+    "R4": "records", "R5": "records", "R6": "records", "R21": "records",
+    **{f"T{i}": "records" for i in range(1, 9)},
+    # whether the scorer, or the judge standing in for one, can be trusted
+    "W1": "scorer", "W2": "scorer", "W3": "scorer", "W4": "scorer",
+    "R2": "scorer", "R8": "scorer", "R12": "scorer", "R16": "scorer", "R22": "scorer",
+    "J1": "scorer", "J2": "scorer", "J3": "scorer", "J4": "scorer",
+    # the number, and whether noise or a shortcut could have produced it
+    "R7": "aggregate", "R9": "aggregate", "R13": "aggregate", "R14": "aggregate",
+    "R15": "aggregate",
+    **{f"P{i}": "aggregate" for i in range(1, 15) if i != 6},
+    # what the evidence entitles anyone to say
+    "C1": "claim", "P6": "claim",
+    # the auditor is an input to its own verdicts
+    "R19": "tool",
+}
+
+# A finding's `refs` are a SAMPLE of the units behind it, bounded so a report
+# over a million rows stays a report. `witnesses` carries the count.
+MAX_REFS = 32
+
+
+def _item_ref(item: dict, field_name: str, note: str | None = None) -> dict:
+    ref = {"kind": "item", "id": str(item["id"]), "field": field_name}
+    if note:
+        ref["note"] = note
+    return ref
+
+
+def reproduce_command(name: str, *, field_overrides: dict | None = None,
+                      separator: str | None = None,
+                      references: dict | None = None) -> str:
+    """The `stomp` invocation that re-derives a dataset report, from the flags
+    the engine was actually given. Only what the user passed is echoed: a
+    sniffed separator or an inferred mapping is re-inferred the same way on
+    re-run, and printing it as if it had been passed would misstate the call."""
+    parts = ["dinostomp", "stomp", shlex.quote(name)]
+    for k, v in sorted((field_overrides or {}).items()):
+        if v in (None, ""):
+            continue  # cli.py passes every key, None for the flags not given
+        parts += [f"--{k}-field", shlex.quote(str(v))]
+    if separator:
+        parts += ["--separator", shlex.quote(separator)]
+    for ref in (references or {}):
+        parts += ["--against", shlex.quote(Path(ref).name)]
+    return " ".join(parts)
+
+
+def join_command(left: str, right: str, left_key: str, right_key: str,
+                 reconcile: list[str] | None = None) -> str:
+    """The `join` invocation that re-derives a join report. Keys are always
+    pinned, inferred or not: an inferred key is a choice this run made, and a
+    re-run should be told it rather than allowed to choose differently."""
+    parts = ["dinostomp", "join", shlex.quote(left), shlex.quote(right),
+             "--left-key", shlex.quote(left_key), "--right-key", shlex.quote(right_key)]
+    for pair in reconcile or []:
+        parts += ["--reconcile", shlex.quote(pair)]
+    return " ".join(parts)
+
+
 # Which checks each SCOPE is answerable for. A verdict is only as broad as the
 # evidence it was given, and saying so is cheaper than an asterisk.
 GRID_CHECKS = {f"G{i}" for i in range(1, 12)}
@@ -581,6 +657,7 @@ class Finding:
     witnesses: int = 0
     examples: list[str] = field(default_factory=list)
     evidence: dict = field(default_factory=dict)
+    refs: list[dict] = field(default_factory=list)
 
     @property
     def slug(self) -> str:
@@ -590,6 +667,7 @@ class Finding:
         out = {
             "id": self.id,
             "slug": self.slug,
+            "stage": STAGES[self.id],
             "check": self.check,
             "level": self.level,
             "gating": self.gating,
@@ -600,6 +678,8 @@ class Finding:
             out["examples"] = self.examples[:8]
         if self.evidence:
             out["evidence"] = self.evidence
+        if self.refs:
+            out["refs"] = self.refs[:MAX_REFS]
         return out
 
 
@@ -610,7 +690,7 @@ class Reporter:
         self.findings: dict[str, Finding] = {}
 
     def check(self, cid: str, ok: bool, detail: str, n: int, examples: list[str] | None = None,
-              evidence: dict | None = None) -> None:
+              evidence: dict | None = None, refs: list[dict] | None = None) -> None:
         # A check the evidence contract already disqualified must not be
         # revived by a later pass computing a vacuous pass over zero rows.
         if self.findings.get(cid) is not None and self.findings[cid].level == "skip"                 and self.findings[cid].evidence.get("missing_evidence"):
@@ -621,7 +701,8 @@ class Reporter:
         gating = GATING[cid]
         level = "pass" if ok else ("fail" if gating else "warn")
         self.findings[cid] = Finding(cid, NAMES[cid], level, gating, detail, n,
-                                     list(examples or []), dict(evidence or {}))
+                                     list(examples or []), dict(evidence or {}),
+                                     list(refs or []))
 
     def skip(self, cid: str, reason: str, missing: list | None = None) -> None:
         # A contract skip already named the MISSING FIELD. A later skip from the
@@ -644,7 +725,8 @@ class Reporter:
     def report(self, target: str, *, inputs: dict | None = None, runs: list[dict] | None = None,
                entitled_claims: list[str] | None = None, power: dict | None = None,
                scope: str = "pod", extensions: list[dict] | None = None,
-               loaded_extensions: list | None = None) -> dict:
+               loaded_extensions: list | None = None,
+               reproduce: str | None = None) -> dict:
         # Any declared check never reached is a skip: coverage self-audit.
         # Except one that this SCOPE cannot answer at all, which is `n/a` and
         # leaves the denominator. The distinction matters: a pod audit never
@@ -705,6 +787,9 @@ class Reporter:
             "tool": "dinostomp",
             "version": dinostomp.__version__,
             "target": target,
+            # The command that made this. A pod report is `stomp <spec>` from
+            # the pod; dataset and join reports pass the flags they were given.
+            "reproduce": reproduce or f"dinostomp stomp {shlex.quote(target)}",
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "thresholds": {k: {"value": float(v), "source": "default",
                                "provenance": threshold_provenance(k)[0],
@@ -966,12 +1051,15 @@ def _duplicate_option_checks(rep: Reporter, choice_items: list[dict]) -> None:
     if case_only:
         detail += (f" ({len(case_only)} differing only in case or spacing, where exactly one "
                    f"pair collapses; a wider collapse is treated as case carrying the content)")
-    rep.check("S5", not dup_opts, detail, n=len(choice_items), examples=dup_opts)
+    by_id = {str(i["id"]): i for i in choice_items}
+    rep.check("S5", not dup_opts, detail, n=len(choice_items), examples=dup_opts,
+              refs=[_item_ref(by_id[x], "choices") for x in dup_opts[:MAX_REFS]])
 
     # S6: target among choices
     keyless = [str(i["id"]) for i in choice_items if not any(t in i["choices"] for t in _targets_of(i))]
     rep.check("S6", not keyless, f"{len(keyless)} item(s) whose target is not among their choices",
-              n=len(choice_items), examples=keyless)
+              n=len(choice_items), examples=keyless,
+              refs=[_item_ref(by_id[x], "target") for x in keyless[:MAX_REFS]])
 
     # S18: two options that are the SAME NUMBER written differently.
     #
@@ -1173,10 +1261,18 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
     choice_items = [i for i in items if "choices" in i]
 
     # S1: duplicate items (question, plus options when it has them)
-    counts = Counter(_item_key(i) for i in items)
-    dups = [q for q, c in counts.items() if c > 1]
+    groups: dict[str, list[dict]] = {}
+    for i in items:
+        groups.setdefault(_item_key(i), []).append(i)
+    dups = [q for q, members in groups.items() if len(members) > 1]
+    dup_refs: list[dict] = []
+    for g, q in enumerate(dups, 1):
+        if len(dup_refs) >= MAX_REFS:
+            break
+        for member in groups[q]:
+            dup_refs.append(_item_ref(member, "input", f"duplicate group {g} of {len(dups)}"))
     rep.check("S1", not dups, f"{len(dups)} duplicated question(s) among {len(items)}",
-              n=len(items), examples=[d[:80] for d in dups])
+              n=len(items), examples=[d[:80] for d in dups], refs=dup_refs)
 
     # S19: items that are the same question wearing a different ENCODING. S1 is
     # exact (casefold plus whitespace), so two copies that differ only by a smart
@@ -1222,9 +1318,18 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
     by_q: dict[str, set] = {}
     for i in items:
         by_q.setdefault(_item_key(i), set()).add(tuple(sorted(_targets_of(i))))
-    contra = [q[:80] for q, targets in by_q.items() if len(targets) > 1]
+    contra_keys = [q for q, targets in by_q.items() if len(targets) > 1]
+    contra = [q[:80] for q in contra_keys]
+    contra_refs: list[dict] = []
+    for g, q in enumerate(contra_keys, 1):
+        if len(contra_refs) >= MAX_REFS:
+            break
+        for member in groups.get(q, []):
+            contra_refs.append(_item_ref(member, "target",
+                                         f"conflicting group {g} of {len(contra_keys)}: "
+                                         f"keyed {' | '.join(sorted(_targets_of(member)))}"))
     rep.check("S7", not contra, f"{len(contra)} question(s) appear with conflicting targets",
-              n=len(items), examples=contra)
+              n=len(items), examples=contra, refs=contra_refs)
 
     # S20: is the answer key SKEWED toward one value? A benchmark where 65% of
     # the answers are "yes" hands a model that always says "yes" a 65% score for
@@ -1305,6 +1410,7 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
                               and (len(label_targets) <= THRESHOLDS["global_label_max"]
                                    or reuse >= THRESHOLDS["label_reuse_min"]))
         leaks = []
+        leak_items: list[dict] = []
         for i in ([] if freeform_label_set else text_items):
             q = _norm(i["input"])
             own = {_norm(t) for t in _targets_of(i) if len(t) >= THRESHOLDS["min_leak_len"]}
@@ -1340,6 +1446,7 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
             leaked = next(t for t in own if _word_in(t, q))
             leaks.append(f"{i['id']}: target {leaked!r} appears in its question "
                          f"(only {others_present} other answer-space value(s) present)")
+            leak_items.append(i)
 
         # Multiple-choice stems get their OWN leak rule, because the free-form
         # rule cannot see them: an MCQ item carries `choices`, so it never enters
@@ -1375,6 +1482,7 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
                 continue  # the stem names a distractor too: a passage, not a leak
             choice_leaks.append(f"{i['id']}: correct option {hit[0]!r} appears in the stem "
                                 f"and no distractor does")
+            leak_items.append(i)
 
         if freeform_label_set and not choice_items:
             shown = sorted(repr(t) for t in label_targets)
@@ -1394,7 +1502,8 @@ def _item_checks(rep: Reporter, items: list[dict], *, tabular: bool = False) -> 
             scanned = (0 if freeform_label_set else len(text_items)) + len(choice_items)
             rep.check("S2", not found,
                       f"{len(found)} of {scanned} item(s) leak their answer into the question",
-                      n=scanned, examples=found)
+                      n=scanned, examples=found,
+                      refs=[_item_ref(i, "input") for i in leak_items[:MAX_REFS]])
 
     if not choice_items:
         for cid in ("S3", "S4", "S5", "S6", "S9", "S18"):
@@ -3960,7 +4069,8 @@ def _dataset_extensions(path: Path, use_extensions: bool) -> tuple[list, list, l
     return loaded, findings, problems + run_problems
 
 
-def _extension_only_report(path: Path, reason: str, loaded: list, ext_findings: list) -> dict:
+def _extension_only_report(path: Path, reason: str, loaded: list, ext_findings: list,
+                           reproduce: str | None = None) -> dict:
     """A report for a file the core could not read but an extension could.
 
     Every core check is a skip carrying the reason, so coverage states plainly
@@ -3972,7 +4082,7 @@ def _extension_only_report(path: Path, reason: str, loaded: list, ext_findings: 
     for cid, *_ in CHECKS:
         rep.skip(cid, reason)
     return rep.report(path.name, inputs={"data_sha256": spec_sha256(path)}, scope="data",
-                      extensions=ext_findings, loaded_extensions=loaded)
+                      extensions=ext_findings, loaded_extensions=loaded, reproduce=reproduce)
 
 
 def _table_checks(rep: Reporter, rows: list[dict], path: Path) -> None:
@@ -4039,7 +4149,8 @@ def _table_checks(rep: Reporter, rows: list[dict], path: Path) -> None:
             rep.check(cid, ok, detail, n=n, examples=examples, evidence=evidence)
 
 
-def _table_only_report(path: Path, rows: list[dict], reason: str) -> dict:
+def _table_only_report(path: Path, rows: list[dict], reason: str,
+                       reproduce: str | None = None) -> dict:
     """A table that is not an eval still gets a real audit, at table scope.
 
     The alternative, and the old behaviour, was to refuse the file entirely
@@ -4052,7 +4163,8 @@ def _table_only_report(path: Path, rows: list[dict], reason: str) -> dict:
     for cid, *_ in CHECKS:
         if cid not in TABLE_CHECKS and cid not in rep.findings:
             rep.not_applicable(cid, reason)
-    return rep.report(path.name, inputs={"data_sha256": spec_sha256(path)}, scope="table")
+    return rep.report(path.name, inputs={"data_sha256": spec_sha256(path)}, scope="table",
+                      reproduce=reproduce)
 
 
 
@@ -4138,7 +4250,9 @@ def lint_join(left_path: str | Path, right_path: str | Path, *,
                         inputs={"left_sha256": spec_sha256(paths[0]),
                                 "right_sha256": spec_sha256(paths[1]),
                                 "left_key": key.left, "right_key": key.right},
-                        scope="join")
+                        scope="join",
+                        reproduce=join_command(paths[0].name, paths[1].name, key.left, key.right,
+                                               reconcile))
     return report, [], context
 
 def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
@@ -4174,7 +4288,7 @@ def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
                 f"the core could not read this file ({issues[0].message}); "
                 f"{len(claimed)} finding(s) came from extensions that stream it")
             return _extension_only_report(path, issues[0].message, loaded,
-                                          ext_findings), issues, context
+                                          ext_findings, reproduce=reproduce_command(path.name, field_overrides=field_overrides, separator=separator, references=references)), issues, context
         return None, issues, context
     if not rows:
         return None, [Issue(loc=str(path), check="data",
@@ -4199,7 +4313,7 @@ def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
             notes.append(f"no eval mapping in this file, so no core check ran; "
                          f"{len(claimed)} finding(s) came from extensions")
             return _extension_only_report(path, issues[0].message, loaded,
-                                          ext_findings), issues, context
+                                          ext_findings, reproduce=reproduce_command(path.name, field_overrides=field_overrides, separator=separator, references=references)), issues, context
         # A MISPARSED file is still a dead end, and must stay one. When the
         # delimiter guard has fired, the "table" in memory is a fiction: one
         # column holding whole rows as strings. Auditing that fiction would
@@ -4231,7 +4345,7 @@ def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
                      f"Auditing this as a plain table instead: structure, types and "
                      f"hygiene. Pass --input-field/--target-field to audit it as an eval.")
         context["scope"] = "table"
-        return _table_only_report(path, rows, reason), issues, context
+        return _table_only_report(path, rows, reason, reproduce=reproduce_command(path.name, field_overrides=field_overrides, separator=separator, references=references)), issues, context
 
     # Tabular audit: synthesize the question from the feature values so the
     # duplicate-row and id checks still have an "item" to read, while the raw
@@ -4301,7 +4415,8 @@ def lint_dataset(data_path: str | Path, *, field_overrides: dict | None = None,
     rep.not_applicable("S8", "a contamination canary is a convention for data you author; "
                              "a dataset audit does not expect one")
 
-    report = rep.report(path.name, inputs={"data_sha256": spec_sha256(path)}, scope="data")
+    report = rep.report(path.name, inputs={"data_sha256": spec_sha256(path)}, scope="data",
+                        reproduce=reproduce_command(path.name, field_overrides=field_overrides, separator=separator, references=references))
     report["dataset"] = {"rows": len(rows), "items": len(items), "mapping": mapping,
                          "separator": sep}
     context["items"] = items

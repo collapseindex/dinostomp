@@ -284,9 +284,11 @@
         "scope": {
           "enum": [
             "data",
+            "table",
+            "join",
             "pod"
           ],
-          "description": "How much this verdict is answerable for. A data-scoped audit read the dataset at rest and nothing else; the checks needing a scorer or a run are OUT OF SCOPE rather than missing."
+          "description": "How much this verdict is answerable for. `data` read a dataset at rest; `table` read a grid with no eval semantics; `join` read the relationship between two tables; `pod` read the dataset, the scorer and every run on disk. Checks a scope cannot answer are OUT OF SCOPE (n/a) rather than missing."
         }
       }
     },
@@ -343,9 +345,65 @@
             "type": "string",
             "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
             "description": "Stable human-readable name for this check. An API: renaming one breaks --only flags and saved reports, so it is a MAJOR change."
+          },
+          "stage": {
+            "enum": [
+              "data",
+              "runner",
+              "records",
+              "scorer",
+              "aggregate",
+              "claim",
+              "tool"
+            ],
+            "description": "Which boundary of the pipeline this check reads: items -> runner -> records -> scorer -> aggregate -> claim, plus the engine itself. Assigned by the engine per check id; a viewer groups by it and never derives it from the id prefix."
+          },
+          "refs": {
+            "type": "array",
+            "maxItems": 32,
+            "description": "A bounded sample of the units behind this finding, each addressable by id, so a reader can open the exact item or record. `witnesses` is the full count; this is never the full list.",
+            "items": {
+              "type": "object",
+              "required": [
+                "kind"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "item",
+                    "record",
+                    "run",
+                    "file",
+                    "model",
+                    "claim"
+                  ]
+                },
+                "id": {
+                  "type": "string",
+                  "description": "item id, record id, model name, or claim text"
+                },
+                "path": {
+                  "type": "string",
+                  "description": "file path relative to the pod, when the unit is a file or lives in one"
+                },
+                "field": {
+                  "type": "string",
+                  "description": "which field of the unit the finding is about, e.g. `input`, `choices`, `target`, `output`"
+                },
+                "note": {
+                  "type": "string",
+                  "description": "one short line of context, e.g. `duplicate group 3 of 12`"
+                }
+              }
+            }
           }
         }
       }
+    },
+    "reproduce": {
+      "type": "string",
+      "description": "The command that re-derives this report, run from the directory holding the target. Engine-generated from the invocation, never inferred by a reader: there is no narrower per-finding command, so a viewer shows this one."
     }
   }
 }

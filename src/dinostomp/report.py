@@ -35,6 +35,7 @@ BADGE_COLORS = {
 
 MD_NAME = "STOMP.md"
 JSON_NAME = "STOMP.json"
+MD_REFS_SHOWN = 8  # refs listed per receipt in STOMP.md; the JSON carries up to MAX_REFS
 BADGE_NAME = "stomp-badge.svg"
 
 
@@ -271,7 +272,13 @@ def render_markdown(report: dict) -> str:
     lines.extend(check_table([f for f in report["findings"] if not f["gating"]]))
     lines.append("")
 
-    with_receipts = [f for f in report["findings"] if f.get("examples") or f.get("evidence")]
+    if report.get("reproduce"):
+        lines.append(f"Re-derive this report from the directory holding the target: "
+                     f"`{report['reproduce']}`")
+        lines.append("")
+
+    with_receipts = [f for f in report["findings"]
+                     if f.get("examples") or f.get("evidence") or f.get("refs")]
     if with_receipts:
         lines.append("### Receipts")
         lines.append("")
@@ -280,6 +287,12 @@ def render_markdown(report: dict) -> str:
             lines.append("")
             for ex in f.get("examples", []):
                 lines.append(f"- {ex}")
+            refs = f.get("refs") or []
+            if refs:
+                shown = ", ".join(f"`{r.get('id') or r.get('path') or '?'}`" for r in refs[:MD_REFS_SHOWN])
+                more = len(refs) - MD_REFS_SHOWN
+                kinds = "/".join(sorted({r["kind"] for r in refs}))
+                lines.append(f"- refs ({kinds}): {shown}" + (f" (+{more} more in STOMP.json)" if more > 0 else ""))
             if f.get("evidence"):
                 lines.append(f"- evidence: `{json.dumps(f['evidence'], sort_keys=True)}`")
             lines.append("")

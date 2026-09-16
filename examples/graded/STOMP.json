@@ -2,6 +2,7 @@
   "tool": "dinostomp",
   "version": "0.62.0",
   "target": "eval.yaml",
+  "reproduce": "dinostomp stomp eval.yaml",
   "thresholds": {
     "position_margin": {
       "value": 0.2,
@@ -643,6 +644,7 @@
     {
       "id": "S1",
       "slug": "dup-questions",
+      "stage": "data",
       "check": "questions are unique",
       "level": "pass",
       "gating": true,
@@ -652,6 +654,7 @@
     {
       "id": "S2",
       "slug": "answer-leak",
+      "stage": "data",
       "check": "no answer leaks into its own question",
       "level": "pass",
       "gating": true,
@@ -661,6 +664,7 @@
     {
       "id": "S3",
       "slug": "position-bias",
+      "stage": "data",
       "check": "gold answer does not favour an option position",
       "level": "n/a",
       "gating": false,
@@ -670,6 +674,7 @@
     {
       "id": "S4",
       "slug": "length-bias",
+      "stage": "data",
       "check": "gold answer is not systematically the longest option",
       "level": "n/a",
       "gating": false,
@@ -679,6 +684,7 @@
     {
       "id": "S5",
       "slug": "dup-options",
+      "stage": "data",
       "check": "no option offered twice in one item",
       "level": "n/a",
       "gating": true,
@@ -688,6 +694,7 @@
     {
       "id": "S6",
       "slug": "target-not-offered",
+      "stage": "data",
       "check": "every target is among its choices",
       "level": "n/a",
       "gating": true,
@@ -697,6 +704,7 @@
     {
       "id": "S7",
       "slug": "conflicting-keys",
+      "stage": "data",
       "check": "no identical question with contradictory targets",
       "level": "pass",
       "gating": true,
@@ -706,6 +714,7 @@
     {
       "id": "S8",
       "slug": "canary-present",
+      "stage": "data",
       "check": "a contamination canary travels with the data",
       "level": "pass",
       "gating": false,
@@ -715,6 +724,7 @@
     {
       "id": "S9",
       "slug": "surface-shortcut",
+      "stage": "data",
       "check": "no surface feature predicts the gold answer",
       "level": "n/a",
       "gating": false,
@@ -724,6 +734,7 @@
     {
       "id": "S10",
       "slug": "canary-regurgitated",
+      "stage": "data",
       "check": "no model reproduces the contamination canary",
       "level": "n/a",
       "gating": false,
@@ -733,6 +744,7 @@
     {
       "id": "S11",
       "slug": "corpus-overlap",
+      "stage": "data",
       "check": "no item already appears in a reference dataset",
       "level": "n/a",
       "gating": false,
@@ -742,6 +754,7 @@
     {
       "id": "S12",
       "slug": "asset-drift",
+      "stage": "data",
       "check": "every referenced asset resolves and still hashes the same",
       "level": "n/a",
       "gating": true,
@@ -751,6 +764,7 @@
     {
       "id": "S13",
       "slug": "label-in-path",
+      "stage": "data",
       "check": "no asset's own path gives away its label",
       "level": "n/a",
       "gating": true,
@@ -760,6 +774,7 @@
     {
       "id": "S14",
       "slug": "split-leak",
+      "stage": "data",
       "check": "no asset appears in two splits",
       "level": "n/a",
       "gating": true,
@@ -769,6 +784,7 @@
     {
       "id": "S15",
       "slug": "near-dup-assets",
+      "stage": "data",
       "check": "no near-duplicate assets",
       "level": "n/a",
       "gating": false,
@@ -778,6 +794,7 @@
     {
       "id": "S16",
       "slug": "authorship-circularity",
+      "stage": "data",
       "check": "the eval is not authored in a circle",
       "level": "warn",
       "gating": false,
@@ -796,6 +813,7 @@
     {
       "id": "S17",
       "slug": "target-leak",
+      "stage": "data",
       "check": "no single column all but determines the target",
       "level": "n/a",
       "gating": false,
@@ -805,6 +823,7 @@
     {
       "id": "S18",
       "slug": "numeric-dup-options",
+      "stage": "data",
       "check": "no two options are the same number written differently",
       "level": "n/a",
       "gating": false,
@@ -814,6 +833,7 @@
     {
       "id": "S19",
       "slug": "lookalike-questions",
+      "stage": "data",
       "check": "no two items are the same question in different encodings",
       "level": "pass",
       "gating": false,
@@ -823,6 +843,7 @@
     {
       "id": "S20",
       "slug": "key-skew",
+      "stage": "data",
       "check": "the answer key is not dominated by one value",
       "level": "n/a",
       "gating": false,
@@ -832,6 +853,7 @@
     {
       "id": "S21",
       "slug": "rows-audited",
+      "stage": "data",
       "check": "the audit covers the rows it was given",
       "level": "pass",
       "gating": true,
@@ -848,6 +870,7 @@
     {
       "id": "G1",
       "slug": "cell-hygiene",
+      "stage": "data",
       "check": "no cell carries edge whitespace or invisible characters",
       "level": "n/a",
       "gating": false,
@@ -857,6 +880,7 @@
     {
       "id": "G2",
       "slug": "dup-rows",
+      "stage": "data",
       "check": "rows are unique",
       "level": "n/a",
       "gating": true,
@@ -866,6 +890,7 @@
     {
       "id": "G3",
       "slug": "dup-keys",
+      "stage": "data",
       "check": "no identifier column repeats a value",
       "level": "n/a",
       "gating": false,
@@ -875,6 +900,7 @@
     {
       "id": "G4",
       "slug": "numeric-string",
+      "stage": "data",
       "check": "no digit-string column has leading zeros a conversion would destroy",
       "level": "n/a",
       "gating": false,
@@ -884,6 +910,7 @@
     {
       "id": "G5",
       "slug": "date-format",
+      "stage": "data",
       "check": "no date column mixes formats or reads both ways",
       "level": "n/a",
       "gating": false,
@@ -893,6 +920,7 @@
     {
       "id": "G6",
       "slug": "type-drift",
+      "stage": "data",
       "check": "no numeric column is contaminated with text",
       "level": "n/a",
       "gating": false,
@@ -902,6 +930,7 @@
     {
       "id": "G7",
       "slug": "sentinel-values",
+      "stage": "data",
       "check": "no value stands in for missing without saying so",
       "level": "n/a",
       "gating": false,
@@ -911,6 +940,7 @@
     {
       "id": "G8",
       "slug": "category-collapse",
+      "stage": "data",
       "check": "no category column splits one label across spellings",
       "level": "n/a",
       "gating": false,
@@ -920,6 +950,7 @@
     {
       "id": "G9",
       "slug": "percent-scale",
+      "stage": "data",
       "check": "no rate column mixes fraction and percent scales",
       "level": "n/a",
       "gating": false,
@@ -929,6 +960,7 @@
     {
       "id": "G10",
       "slug": "formatted-numbers",
+      "stage": "data",
       "check": "no numeric column stores symbols or separators",
       "level": "n/a",
       "gating": false,
@@ -938,6 +970,7 @@
     {
       "id": "G11",
       "slug": "near-dup-rows",
+      "stage": "data",
       "check": "no rows are duplicates once case and whitespace stop counting",
       "level": "n/a",
       "gating": false,
@@ -947,6 +980,7 @@
     {
       "id": "XL1",
       "slug": "pasted-constant",
+      "stage": "data",
       "check": "no constant is pasted inside a formula column",
       "level": "n/a",
       "gating": false,
@@ -956,6 +990,7 @@
     {
       "id": "XL2",
       "slug": "formula-error",
+      "stage": "data",
       "check": "no error value is saved in the workbook",
       "level": "n/a",
       "gating": true,
@@ -965,6 +1000,7 @@
     {
       "id": "XL3",
       "slug": "hidden-cells",
+      "stage": "data",
       "check": "nothing an aggregate counts is hidden from the reader",
       "level": "n/a",
       "gating": false,
@@ -974,6 +1010,7 @@
     {
       "id": "XL4",
       "slug": "merged-cells",
+      "stage": "data",
       "check": "no merged range flattens a row on import",
       "level": "n/a",
       "gating": false,
@@ -983,6 +1020,7 @@
     {
       "id": "XL5",
       "slug": "range-short",
+      "stage": "data",
       "check": "every column aggregate covers its own column",
       "level": "n/a",
       "gating": true,
@@ -992,6 +1030,7 @@
     {
       "id": "XL6",
       "slug": "uncalculated",
+      "stage": "data",
       "check": "every formula has been calculated",
       "level": "n/a",
       "gating": false,
@@ -1001,6 +1040,7 @@
     {
       "id": "JN1",
       "slug": "join-viable",
+      "stage": "data",
       "check": "the join returns rows at all",
       "level": "n/a",
       "gating": true,
@@ -1010,6 +1050,7 @@
     {
       "id": "JN2",
       "slug": "orphan-rows",
+      "stage": "data",
       "check": "no left row is dropped by the join",
       "level": "n/a",
       "gating": false,
@@ -1019,6 +1060,7 @@
     {
       "id": "JN3",
       "slug": "key-normalisation",
+      "stage": "data",
       "check": "no key fails to match on case or whitespace alone",
       "level": "n/a",
       "gating": true,
@@ -1028,6 +1070,7 @@
     {
       "id": "JN4",
       "slug": "parent-key-unique",
+      "stage": "data",
       "check": "the right-hand key is unique",
       "level": "n/a",
       "gating": false,
@@ -1037,6 +1080,7 @@
     {
       "id": "JN5",
       "slug": "join-fanout",
+      "stage": "data",
       "check": "the join does not multiply rows",
       "level": "n/a",
       "gating": false,
@@ -1046,6 +1090,7 @@
     {
       "id": "JN6",
       "slug": "key-type-drift",
+      "stage": "data",
       "check": "both sides store the key the same way",
       "level": "n/a",
       "gating": false,
@@ -1055,6 +1100,7 @@
     {
       "id": "JN7",
       "slug": "totals-reconcile",
+      "stage": "data",
       "check": "every parent total equals the sum of its children",
       "level": "n/a",
       "gating": true,
@@ -1064,6 +1110,7 @@
     {
       "id": "W1",
       "slug": "witness-coverage",
+      "stage": "scorer",
       "check": "witnesses kill the mutant scorers",
       "level": "skip",
       "gating": false,
@@ -1073,6 +1120,7 @@
     {
       "id": "W2",
       "slug": "surface-form",
+      "stage": "scorer",
       "check": "a correct answer survives its surface form",
       "level": "skip",
       "gating": false,
@@ -1082,6 +1130,7 @@
     {
       "id": "W3",
       "slug": "graded-witness",
+      "stage": "scorer",
       "check": "a graded scorer witnesses its gradation",
       "level": "skip",
       "gating": true,
@@ -1091,6 +1140,7 @@
     {
       "id": "W4",
       "slug": "scorer-fit",
+      "stage": "scorer",
       "check": "an exact scorer is not graded against prose answers",
       "level": "n/a",
       "gating": false,
@@ -1100,6 +1150,7 @@
     {
       "id": "C1",
       "slug": "claim-evidence",
+      "stage": "claim",
       "check": "every typed claim's evidence requirements hold",
       "level": "n/a",
       "gating": true,
@@ -1109,6 +1160,7 @@
     {
       "id": "R1",
       "slug": "input-drift",
+      "stage": "runner",
       "check": "runs match the spec, data, and scorer on disk (no drift)",
       "level": "pass",
       "gating": true,
@@ -1118,6 +1170,7 @@
     {
       "id": "R2",
       "slug": "witness-replay",
+      "stage": "scorer",
       "check": "the witness gate replays clean",
       "level": "skip",
       "gating": true,
@@ -1127,6 +1180,7 @@
     {
       "id": "R3",
       "slug": "spend-ledger",
+      "stage": "runner",
       "check": "ledger spend agrees with the manifest and the spec cap",
       "level": "pass",
       "gating": true,
@@ -1136,6 +1190,7 @@
     {
       "id": "R4",
       "slug": "record-integrity",
+      "stage": "records",
       "check": "every run record is schema-valid, unique, and its manifest's own",
       "level": "pass",
       "gating": true,
@@ -1145,6 +1200,7 @@
     {
       "id": "R5",
       "slug": "truncation-credit",
+      "stage": "records",
       "check": "truncated outputs are never credited",
       "level": "pass",
       "gating": true,
@@ -1154,6 +1210,7 @@
     {
       "id": "R6",
       "slug": "uncheckable-rate",
+      "stage": "records",
       "check": "uncheckable rate is sane",
       "level": "pass",
       "gating": false,
@@ -1166,6 +1223,7 @@
     {
       "id": "R7",
       "slug": "above-guessing",
+      "stage": "aggregate",
       "check": "accuracy is distinguishable from guessing",
       "level": "skip",
       "gating": false,
@@ -1175,6 +1233,7 @@
     {
       "id": "R8",
       "slug": "verdict-rederive",
+      "stage": "scorer",
       "check": "recorded verdicts re-score identically",
       "level": "skip",
       "gating": true,
@@ -1184,6 +1243,7 @@
     {
       "id": "R9",
       "slug": "summary-rederive",
+      "stage": "aggregate",
       "check": "summaries match their run records",
       "level": "pass",
       "gating": true,
@@ -1193,6 +1253,7 @@
     {
       "id": "R10",
       "slug": "run-scope",
+      "stage": "runner",
       "check": "runs cover the spec's declared scope, nothing foreign",
       "level": "pass",
       "gating": false,
@@ -1202,6 +1263,7 @@
     {
       "id": "R11",
       "slug": "selection-coverage",
+      "stage": "runner",
       "check": "records cover exactly the seeded selection",
       "level": "pass",
       "gating": true,
@@ -1211,6 +1273,7 @@
     {
       "id": "R12",
       "slug": "scorer-escape",
+      "stage": "scorer",
       "check": "no model selectively escapes the scorer",
       "level": "pass",
       "gating": false,
@@ -1226,6 +1289,7 @@
     {
       "id": "R13",
       "slug": "blind-solvable",
+      "stage": "aggregate",
       "check": "the eval is not solvable blind",
       "level": "n/a",
       "gating": false,
@@ -1235,6 +1299,7 @@
     {
       "id": "R14",
       "slug": "response-collapse",
+      "stage": "aggregate",
       "check": "no model collapses onto one answer",
       "level": "pass",
       "gating": false,
@@ -1244,6 +1309,7 @@
     {
       "id": "R15",
       "slug": "input-blind",
+      "stage": "aggregate",
       "check": "each model beats its own blind baseline",
       "level": "n/a",
       "gating": false,
@@ -1253,6 +1319,7 @@
     {
       "id": "R16",
       "slug": "scorer-artifact",
+      "stage": "scorer",
       "check": "failed answers do not contain the reference",
       "level": "skip",
       "gating": false,
@@ -1262,6 +1329,7 @@
     {
       "id": "R17",
       "slug": "nothing-scoreable",
+      "stage": "runner",
       "check": "every model produced something scoreable",
       "level": "pass",
       "gating": true,
@@ -1271,6 +1339,7 @@
     {
       "id": "R18",
       "slug": "billing-mismatch",
+      "stage": "runner",
       "check": "billed output tokens match the recorded text",
       "level": "n/a",
       "gating": false,
@@ -1280,10 +1349,11 @@
     {
       "id": "R19",
       "slug": "engine-drift",
+      "stage": "tool",
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "2 of 2 run(s) were produced by a different engine than the one auditing them (now 8103c0f36819fa19); re-run to get numbers this report can stand behind",
+      "detail": "2 of 2 run(s) were produced by a different engine than the one auditing them (now 7d29117a95a20258); re-run to get numbers this report can stand behind",
       "witnesses": 2,
       "examples": [
         "engine bdf9d65d922fbdd1: dry-strong seed 42 (tool 0.61.0), dry-up seed 42 (tool 0.61.0)"
@@ -1297,6 +1367,7 @@
     {
       "id": "R20",
       "slug": "repeat-ties",
+      "stage": "runner",
       "check": "repeated items reached a verdict",
       "level": "n/a",
       "gating": false,
@@ -1306,6 +1377,7 @@
     {
       "id": "R21",
       "slug": "graded-range",
+      "stage": "records",
       "check": "graded scores stay in range",
       "level": "pass",
       "gating": true,
@@ -1315,6 +1387,7 @@
     {
       "id": "R22",
       "slug": "numeric-miss",
+      "stage": "scorer",
       "check": "no failed answer numerically equals its target",
       "level": "pass",
       "gating": false,
@@ -1324,6 +1397,7 @@
     {
       "id": "T1",
       "slug": "forbidden-tool",
+      "stage": "records",
       "check": "no forbidden tool is called",
       "level": "n/a",
       "gating": true,
@@ -1333,6 +1407,7 @@
     {
       "id": "T2",
       "slug": "required-tool",
+      "stage": "records",
       "check": "every required tool is actually called",
       "level": "n/a",
       "gating": true,
@@ -1342,6 +1417,7 @@
     {
       "id": "T3",
       "slug": "trajectory-shape",
+      "stage": "records",
       "check": "trajectories are well-formed",
       "level": "n/a",
       "gating": true,
@@ -1351,6 +1427,7 @@
     {
       "id": "T4",
       "slug": "answer-grounding",
+      "stage": "records",
       "check": "passing answers are grounded in tool evidence",
       "level": "n/a",
       "gating": false,
@@ -1360,6 +1437,7 @@
     {
       "id": "T5",
       "slug": "trace-underreport",
+      "stage": "records",
       "check": "no model under-reports its trajectory",
       "level": "n/a",
       "gating": false,
@@ -1369,6 +1447,7 @@
     {
       "id": "T6",
       "slug": "redundant-calls",
+      "stage": "records",
       "check": "tool calls are not redundant",
       "level": "n/a",
       "gating": false,
@@ -1378,6 +1457,7 @@
     {
       "id": "T7",
       "slug": "answer-grounding-causal",
+      "stage": "records",
       "check": "passing answers CHANGE when their evidence is withheld",
       "level": "n/a",
       "gating": false,
@@ -1387,6 +1467,7 @@
     {
       "id": "T8",
       "slug": "trace-observed",
+      "stage": "records",
       "check": "the trajectory was observed, not self-reported",
       "level": "n/a",
       "gating": false,
@@ -1396,6 +1477,7 @@
     {
       "id": "J1",
       "slug": "judge-agreement",
+      "stage": "scorer",
       "check": "the judge agrees with cases whose answer is known",
       "level": "n/a",
       "gating": false,
@@ -1405,6 +1487,7 @@
     {
       "id": "J2",
       "slug": "judge-bias",
+      "stage": "scorer",
       "check": "the judge is invariant to content-free perturbations",
       "level": "n/a",
       "gating": false,
@@ -1414,6 +1497,7 @@
     {
       "id": "J3",
       "slug": "judge-consistency",
+      "stage": "scorer",
       "check": "the judge agrees with itself on identical input",
       "level": "n/a",
       "gating": false,
@@ -1423,6 +1507,7 @@
     {
       "id": "J4",
       "slug": "judge-self-preference",
+      "stage": "scorer",
       "check": "the judge does not favour its own family",
       "level": "n/a",
       "gating": false,
@@ -1432,6 +1517,7 @@
     {
       "id": "P1",
       "slug": "fleet-reliability",
+      "stage": "aggregate",
       "check": "fleet score totals are reliable (KR-20)",
       "level": "skip",
       "gating": false,
@@ -1441,6 +1527,7 @@
     {
       "id": "P2",
       "slug": "item-discrimination",
+      "stage": "aggregate",
       "check": "no item anti-correlates with fleet skill",
       "level": "skip",
       "gating": false,
@@ -1450,6 +1537,7 @@
     {
       "id": "P3",
       "slug": "dead-weight",
+      "stage": "aggregate",
       "check": "dead-weight items stay a minority",
       "level": "skip",
       "gating": false,
@@ -1459,6 +1547,7 @@
     {
       "id": "P4",
       "slug": "matrix-complete",
+      "stage": "aggregate",
       "check": "every model was asked the same items",
       "level": "pass",
       "gating": true,
@@ -1468,6 +1557,7 @@
     {
       "id": "P5",
       "slug": "unanimous-wrong",
+      "stage": "aggregate",
       "check": "no unanimous identical wrong answers",
       "level": "skip",
       "gating": false,
@@ -1477,6 +1567,7 @@
     {
       "id": "P6",
       "slug": "ordering-noise",
+      "stage": "claim",
       "check": "entitled ordering claims are separated beyond sampling noise",
       "level": "n/a",
       "gating": false,
@@ -1486,6 +1577,7 @@
     {
       "id": "P7",
       "slug": "ceiling-floor",
+      "stage": "aggregate",
       "check": "the fleet is not pinned at a ceiling or floor",
       "level": "pass",
       "gating": false,
@@ -1499,6 +1591,7 @@
     {
       "id": "P8",
       "slug": "dynamic-range",
+      "stage": "aggregate",
       "check": "the eval separates the fleet (dynamic range)",
       "level": "pass",
       "gating": false,
@@ -1511,6 +1604,7 @@
     {
       "id": "P9",
       "slug": "order-stability",
+      "stage": "aggregate",
       "check": "answers survive re-ordering the options",
       "level": "n/a",
       "gating": false,
@@ -1520,6 +1614,7 @@
     {
       "id": "P10",
       "slug": "seed-stability",
+      "stage": "aggregate",
       "check": "the number survives changing the seed",
       "level": "n/a",
       "gating": false,
@@ -1529,6 +1624,7 @@
     {
       "id": "P11",
       "slug": "prompt-stability",
+      "stage": "aggregate",
       "check": "the number survives re-phrasing the instruction",
       "level": "n/a",
       "gating": false,
@@ -1538,6 +1634,7 @@
     {
       "id": "P12",
       "slug": "ranking-stability",
+      "stage": "aggregate",
       "check": "the fleet ORDERING survives re-phrasing the instruction",
       "level": "n/a",
       "gating": false,
@@ -1547,6 +1644,7 @@
     {
       "id": "P13",
       "slug": "construct-dimensionality",
+      "stage": "aggregate",
       "check": "the fleet varies on one axis, not a blend of abilities",
       "level": "skip",
       "gating": false,
@@ -1556,6 +1654,7 @@
     {
       "id": "P14",
       "slug": "subskill-discriminant",
+      "stage": "aggregate",
       "check": "declared subskills actually separate in the responses",
       "level": "n/a",
       "gating": false,

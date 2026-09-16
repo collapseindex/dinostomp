@@ -2,6 +2,25 @@
 
 ### Unreleased
 
+- **Report contract for a viewer: `stage`, `refs`, `reproduce`.** Every finding
+  now names the pipeline boundary it reads (`data`, `runner`, `records`, `scorer`,
+  `aggregate`, `claim`, `tool`), assigned per check id in the engine and never
+  derived from the id prefix by a reader. The five gating dataset checks (S1,
+  S2, S5, S6, S7) emit `refs`: a bounded sample (32) of the exact item ids
+  behind the finding, with the field the finding is about, so a viewer opens the
+  item instead of parsing an 80-character example string. The report carries
+  `reproduce`, the command that re-derives it, built from the invocation the
+  engine actually received (field overrides, separator, `--against`, join keys),
+  because there is no narrower per-finding command and a reader must not be
+  handed an invented one. `STOMP.md` prints both, so the markdown names what the
+  JSON names. All additive; old reports still validate.
+- **Fixed: `summary.scope` in the report schema listed `data` and `pod` while
+  the engine has emitted `table` and `join` since the table and join series
+  shipped.** Nothing validated a report on write, so a table or join report was
+  schema-invalid and nobody was told. The enum now matches `SCOPE_CHECKS`, a
+  test asserts the two agree, and table and join reports are validated in the
+  suite.
+
 - **2026-09-16, README:** the official music video, *dinostomp stomp mydata
   csv*, embedded as a clickable thumbnail under the intro. GitHub renders no
   iframes, so it is a linked image, and the image test already skips remote
