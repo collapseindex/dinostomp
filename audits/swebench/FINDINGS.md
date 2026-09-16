@@ -5,6 +5,7 @@
     files   swebench/harness/grading.py, swebench/harness/log_parsers/python.py
     data    princeton-nlp/SWE-bench (HuggingFace)
     run     2026-08-13, 0 API calls, 0 Docker, $0.00
+    filed   https://github.com/SWE-bench/SWE-bench/issues/660 (2026-09-16)
 
 SWE-bench is the one target with BOTH a public dataset and a public grading
 harness, so it is auditable end to end. It is also the most-studied benchmark in

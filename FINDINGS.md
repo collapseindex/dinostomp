@@ -883,6 +883,10 @@ PART A first proves the rig reproduces shipped behaviour in both directions and
 aborts if it cannot. The audited repository is third-party and is not vendored;
 the audit clones the pinned commit above.
 
+
+**Filed 2026-09-16** as [JailbreakBench/jailbreakbench#50](https://github.com/JailbreakBench/jailbreakbench/issues/50), re-verified that day against
+upstream `main` before filing. Audit script and write-up: `audits/jailbreakbench/`.
+
 ---
 
 ### F-031
@@ -912,6 +916,10 @@ The same substring design, with a broader list that includes `"However"`,
 `aisafetylab/evaluation/scorers/pattern_scorer.py`, so this is a family
 convention rather than one project's slip.
 
+
+**Filed 2026-09-16** as [JailbreakBench/jailbreakbench#50](https://github.com/JailbreakBench/jailbreakbench/issues/50), re-verified that day against
+upstream `main` before filing. Audit script and write-up: `audits/jailbreakbench/`.
+
 ---
 
 ### F-032
@@ -939,6 +947,10 @@ separable from the paid path, which is exactly why stubbing the transport finds
 these for nothing. Compare [D-025](#d-025) on our own scorer defaults and
 [F-014](#f-014) on a judge moved by stated confidence.
 
+
+**Filed 2026-09-16** as [JailbreakBench/jailbreakbench#50](https://github.com/JailbreakBench/jailbreakbench/issues/50), re-verified that day against
+upstream `main` before filing. Audit script and write-up: `audits/jailbreakbench/`.
+
 ---
 
 ### F-033
@@ -964,6 +976,10 @@ success. Reproduced with 0 API calls in `audits/aisafetylab/`, whose PART A
 scores conforming output correctly before the defects count. Compare
 [F-032](#f-032) on the same failure-not-separable-from-the-paid-path pattern.
 
+
+**Filed 2026-09-16** as [thu-coai/AISafetyLab#6](https://github.com/thu-coai/AISafetyLab/issues/6), re-verified that day against
+upstream `main` before filing. Audit script and write-up: `audits/aisafetylab/`.
+
 ---
 
 ### F-034
@@ -978,6 +994,10 @@ character `2` appears anywhere in the reply, so a judge that writes
 substring-anywhere family as [F-031](#f-031); `three_class` is
 `raise NotImplementedError`.
 
+
+**Filed 2026-09-16** as [thu-coai/AISafetyLab#6](https://github.com/thu-coai/AISafetyLab/issues/6), re-verified that day against
+upstream `main` before filing. Audit script and write-up: `audits/aisafetylab/`.
+
 ---
 
 ### F-035
@@ -990,8 +1010,14 @@ error, is replaced by the harmful QUERY and then scored, and since a bare
 request rarely contains a refusal phrase it returns `1` (safe). The
 empty-generation case is silently mislabelled as a safe non-jailbreak. The same
 file ships the `PatternScorer` substring list (F-031 with a broader vocabulary,
-including `"However"`) and a `PrefixMatchScorer` with a `targets=[]` mutable
-default.
+34 entries including bare `"However"`). Corrected 2026-09-16 on re-verification
+against upstream `main`: `PrefixMatchScorer`, noted here previously as being in
+this file, is in `prefixmatch_scorer.py`, and its `targets=[]` default is never
+mutated, so it is a lint nit rather than a defect. It is not counted.
+
+
+**Filed 2026-09-16** as [thu-coai/AISafetyLab#6](https://github.com/thu-coai/AISafetyLab/issues/6), re-verified that day against
+upstream `main` before filing. Audit script and write-up: `audits/aisafetylab/`.
 
 ---
 
@@ -1045,6 +1071,10 @@ positives in long responses"*. Same substring-anywhere family as [F-031](#f-031)
 [F-034](#f-034), [F-036](#f-036), now in a fourth independent repository.
 Reproduced with 0 API calls in `audits/garak/`.
 
+
+**Filed 2026-09-16** as [NVIDIA/garak#2197](https://github.com/NVIDIA/garak/issues/2197), re-verified that day against
+upstream `main` before filing. Audit script and write-up: `audits/garak/`.
+
 ---
 
 ### F-038
@@ -1061,6 +1091,10 @@ built for exactly this, used one file over in `shields.py`. Same name-vs-behavio
 gap as [F-031](#f-031). Recorded alongside a note that PyRIT could not be audited:
 the `Azure/PyRIT` branch cloned at audit time held documentation only, no Python
 source.
+
+
+**Filed 2026-09-16** as [NVIDIA/garak#2197](https://github.com/NVIDIA/garak/issues/2197), re-verified that day against
+upstream `main` before filing. Audit script and write-up: `audits/garak/`.
 
 ---
 
@@ -1088,6 +1122,10 @@ family: this is dataset-construction noise in gold labels, closest to
 [F-028](#f-028)-style key defects. The wider, publicly known SWE-bench data
 issues (solution leakage, weak tests, the reason SWE-bench Verified exists) are
 deliberately NOT re-reported here.
+
+
+**Filed 2026-09-16** as [SWE-bench/SWE-bench#660](https://github.com/SWE-bench/SWE-bench/issues/660), re-verified that day against
+upstream `main` before filing. Audit script and write-up: `audits/swebench/`.
 
 ---
 

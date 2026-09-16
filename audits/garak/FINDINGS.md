@@ -4,6 +4,7 @@
     commit  b1e0101a177981cc423455448fd745be88b87916
     files   garak/detectors/{base,mitigation,shields}.py
     run     2026-08-12, 0 API calls, $0.00
+    filed   https://github.com/NVIDIA/garak/issues/2197 (2026-09-16)
 
 garak's real `StringDetector.detect` is imported from `base.py` and run
 unmodified; the substring lists are extracted verbatim from `mitigation.py`. Only

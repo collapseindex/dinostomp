@@ -4,6 +4,7 @@
     commit  3fd15737dee5c6858466162d6a68e6cb6f996b27
     files   aisafetylab/evaluation/scorers/{prompted_llm,overrefusal,pattern}_scorer.py
     run     2026-08-12, 0 API calls, $0.00
+    filed   https://github.com/thu-coai/AISafetyLab/issues/6 (2026-09-16)
 
 Every scorer is imported from the repo and run unmodified. The model backends,
 loguru, tqdm and torch are stubbed, so the parse layer executes while nothing
@@ -83,8 +84,13 @@ contains a refusal phrase. The empty-generation case, common under truncation or
 an API error, is silently mislabelled as a safe non-jailbreak.
 
 Same file also carries the `PatternScorer` substring list (mirrors F-031 with a
-broader vocabulary including `"However"`, `"OpenAI"`, `"unethical"`), and
-`PrefixMatchScorer` takes a `targets=[]` mutable default argument.
+broader vocabulary): 34 entries, matched anywhere, including bare `"However"`,
+`"OpenAI"` and `"unethical"`.
+
+Corrected 2026-09-16, re-verified against upstream `main`: an earlier version of
+this section placed `PrefixMatchScorer` in this file. It is in
+`prefixmatch_scorer.py`, and its `targets=[]` default is never mutated, so it is
+a lint nit rather than a defect. It is not counted.
 
 ## Honest scoping
 

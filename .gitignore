@@ -112,3 +112,11 @@ extensions/*/validation-cache*.json
 !/data/exports/
 /data/exports/*
 !/data/exports/readme/
+
+# Publish only the reviewed NVIDIA structural receipt, not raw audit data.
+!/data/exports/nvidia-audit/
+/data/exports/nvidia-audit/*
+!/data/exports/nvidia-audit/20260915_structural_verification.json
+
+# issue drafts: staging text for upstream filings, not part of the repo
+ISSUE_DRAFT.md

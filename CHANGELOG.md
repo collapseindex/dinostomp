@@ -2,6 +2,18 @@
 
 ### Unreleased
 
+- **2026-09-16, upstream filings:** F-030..F-035, F-037, F-038 and F-039 filed
+  with their subjects: garak (NVIDIA/garak#2197), SWE-bench
+  (SWE-bench/SWE-bench#660), JailbreakBench (JailbreakBench/jailbreakbench#50)
+  and AISafetyLab (thu-coai/AISafetyLab#6). Every claim was re-verified against
+  upstream `main` on the filing date, not against the pinned audit commit.
+  Two corrections came out of that pass: `PrefixMatchScorer` is in
+  `prefixmatch_scorer.py` rather than `pattern_scorer.py`, and its `targets=[]`
+  default is never mutated, so it is no longer carried as a defect; and the
+  JailbreakBench `POSITIVE_ANSWER` defects are attributed to L110, the shared
+  check, with L130 and L146 as the subclass constants. Issue drafts are
+  gitignored staging text.
+
 - **2026-09-15, NVIDIA audit review:** integrate direct-Parquet structural
   observations and a reproducible verifier; qualify the initial sharded audit
   after finding option/stem contamination and delimiter ambiguity.
