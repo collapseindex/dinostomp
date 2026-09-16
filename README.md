@@ -868,6 +868,8 @@ the tool names them.
 
 ## Docs
 
+- **[NVIDIA validation-data audit](audits/nemotron-knowledge-mcqa/FINDINGS.md)**: direct-source structural checks, reproduction script, and corrections to the initial audit.
+
 - **[AUTHORING.md](AUTHORING.md)** — writing a spec, or having a model write one: the schema contract and the self-correction loop
 - **[FINDINGS.md](FINDINGS.md)** — what it found, in MMLU, GSM8K, TruthfulQA, and in itself
 - **[METHODOLOGY.md](METHODOLOGY.md)** — the ninety-eight checks, the pod format, the philosophy, the self-audit

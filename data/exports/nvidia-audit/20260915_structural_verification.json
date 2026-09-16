@@ -1,0 +1,83 @@
+{
+  "source_file": "validation.parquet",
+  "sha256": "b2dfb9ee23cfa28162d7f00ae142c7562ea5bbf17e3e7519b0d6a4141aee21a9",
+  "method": "Direct Parquet fields; no prompt-stem reconstruction or string separator.",
+  "counts": {
+    "rows": 68553,
+    "benchmark_prompt_type_rows": 68553,
+    "all_nonempty_option_texts_appear_in_rendered_prompt": 68399,
+    "expected_answer_not_in_nonempty_option_keys": 608,
+    "items_with_pipe_inside_option_text": 619,
+    "exact_duplicate_option_text_items": 459,
+    "only_nonempty_option_key_is_A": 223,
+    "only_A_present_but_expected_answer_is_other": 173,
+    "repeated_uuid_after_first_global": 9
+  },
+  "example_uuids": {
+    "expected_answer_not_in_nonempty_option_keys": [
+      "d2a04913-711f-57e0-b76e-4e94557a04b5",
+      "c343547e-b5ca-5428-8e7c-83400f881e13",
+      "39fb69fd-6319-5f57-8d3a-a93ff84d3a62",
+      "7502eba3-7d45-5281-9b12-4fb04a252ab3",
+      "fc9b8e84-c5f1-5834-9a59-36d474485100",
+      "46ea9532-ee72-5cae-b10e-1e65272b706a",
+      "ec105b1e-826f-5fe1-b551-8e02def7d0e9",
+      "7f7f353c-19cd-5320-b7df-1e8c3bd4a23a"
+    ],
+    "items_with_pipe_inside_option_text": [
+      "b340f095-ff9b-5737-b206-34323ec68b25",
+      "8c7eb06a-1184-5caa-a0ff-b8c60ec8934b",
+      "ec370bbe-6726-5342-8fd8-0ed29dcc1bb7",
+      "57aeca46-5f96-5a4f-9dfe-8e9832916a19",
+      "1e0ef164-c2a7-5ecc-91c9-2a5feb882084",
+      "0761d6e1-e28e-5946-b139-dd19e0f87277",
+      "7daa5a44-618e-57a8-aef1-45e782f062f0",
+      "9cd9a0c3-e514-5a42-abae-49f88c76aa9f"
+    ],
+    "exact_duplicate_option_text_items": [
+      "0794eb73-854e-5602-8ccb-81c75db52339",
+      "ae50e30e-e71e-5308-ba1c-20155abdc4ae",
+      "8253f94b-8a94-5a8c-bd19-c4d22ccf1a86",
+      "0c5d3933-5aea-5187-92d1-afca712e0123",
+      "e9da4cb4-f3a8-5552-bf70-5ac2d13a7034",
+      "473d6e86-c22a-5950-a354-e47b5dc04db6",
+      "9f89a13c-ee7b-5273-936f-126b0855cc51",
+      "e353dc5b-fd3c-594c-a224-46dbc0820fb6"
+    ],
+    "only_nonempty_option_key_is_A": [
+      "fc9b8e84-c5f1-5834-9a59-36d474485100",
+      "0e3c5396-0d4f-506f-af04-7738d191c66e",
+      "7fa77536-b41b-5f43-aeac-5f1c8f2c2a3f",
+      "c60e4421-9b24-5595-a9a1-e44627122b5b",
+      "f78f6cfd-cf2e-5153-ae04-d80f94a27116",
+      "1bb4d764-862c-5a77-866a-745e0ac6c2d6",
+      "6c808e26-2ff8-5387-adda-adda63dae28a",
+      "5d0c3d34-d254-5171-bde4-b33066cb1137"
+    ],
+    "only_A_present_but_expected_answer_is_other": [
+      "fc9b8e84-c5f1-5834-9a59-36d474485100",
+      "0e3c5396-0d4f-506f-af04-7738d191c66e",
+      "c60e4421-9b24-5595-a9a1-e44627122b5b",
+      "f78f6cfd-cf2e-5153-ae04-d80f94a27116",
+      "6c808e26-2ff8-5387-adda-adda63dae28a",
+      "5d0c3d34-d254-5171-bde4-b33066cb1137",
+      "fd2474c9-f2c8-5250-a84d-e02c270ba65f",
+      "1d2c2d01-cdd1-5dd6-9427-1a818b64f8aa"
+    ],
+    "repeated_uuid_after_first_global": [
+      "0738b0e0-d1b5-5fc7-b485-9c432ef436f7",
+      "6cb2b6c6-cbc1-503e-abc3-34741740178e",
+      "aeed137c-db93-5a08-ab96-f32e15d8a951",
+      "51760a52-a9be-52dd-b394-22a85c7a881e",
+      "aaf39da7-69d5-5297-b523-ce4f4f7f2527",
+      "73cda65e-99a6-531b-84bf-24043d8ceff1",
+      "9e349115-12fd-5520-b971-c63dd9a24604",
+      "446891a9-172b-5703-aba8-33fde321b9fc"
+    ]
+  },
+  "limits": [
+    "Validation artifact only; no training or model behavior claims.",
+    "Exact duplicate text is a structural observation, not semantic adjudication.",
+    "Missing option keys do not imply an unanswerable rendered prompt."
+  ]
+}

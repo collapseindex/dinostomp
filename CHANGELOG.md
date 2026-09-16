@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+- **2026-09-15, NVIDIA audit review:** integrate direct-Parquet structural
+  observations and a reproducible verifier; qualify the initial sharded audit
+  after finding option/stem contamination and delimiter ambiguity.
+
 - **2026-09-15, README presentation:** animated pixel dinosaur banner with a still
   alternative, dino architecture graphic, and a quicker product introduction.
   Clarifies comparison limits and corrects a stale findings denominator.
