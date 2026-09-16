@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+- **2026-09-16, README:** the official music video, *dinostomp stomp mydata
+  csv*, embedded as a clickable thumbnail under the intro. GitHub renders no
+  iframes, so it is a linked image, and the image test already skips remote
+  sources.
+
 - **2026-09-16, upstream filings:** F-030..F-035, F-037, F-038 and F-039 filed
   with their subjects: garak (NVIDIA/garak#2197), SWE-bench
   (SWE-bench/SWE-bench#660), JailbreakBench (JailbreakBench/jailbreakbench#50)

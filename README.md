@@ -18,6 +18,10 @@ final claim. Use it alongside your existing harness, or use its built-in runner.
 
 [Quick start](#quick-start) · [Architecture](#how-it-works) · [Real findings](#what-it-found) · [CI integration](#in-ci) · [Limits](#before-you-trust-it)
 
+<a href="https://www.youtube.com/watch?v=t9FGLue12UM"><img src="https://img.youtube.com/vi/t9FGLue12UM/maxresdefault.jpg" alt="A kid in a dinosaur onesie stomps through a city of collapsing EVALS, SCORES and CHECKS billboards. The official dinostomp music video." width="560"></a>
+
+<sub>The official music video: [*dinostomp stomp mydata csv*](https://www.youtube.com/watch?v=t9FGLue12UM). Trust the score? Nah. Trust the evidence.</sub>
+
 ## Quick start
 
 Python 3.10+. From a local clone:
