@@ -10,6 +10,14 @@
   "wrong" pages name the right target; it reads 14.9% where a blank page reads
   5.0%. `audits/jevlike/` carries the pod, the checkpoint and the leak
   measurement.
+- **Fixed: option labels overflowed past Z (D-097).** `render_choices` labelled
+  option 27 with `[` and option 59 with a control character. Labels now follow
+  spreadsheet column order (A..Z, AA..), from the one `col_letter` the XL
+  checks already used.
+- **`params.reasoning_effort` (D-098).** A reasoning model asked for a one-word
+  answer spent all 256 output tokens thinking and returned an empty string,
+  billed in full. Specs can now cap it (`none` to `high`); openai and
+  openrouter receive it in their own shapes.
 
 ### v0.63.0 (2026-09-17)
 

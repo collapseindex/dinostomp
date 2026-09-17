@@ -6,13 +6,13 @@
   "tool": {
     "name": "dinostomp",
     "version": "0.63.0",
-    "engine": "e389083f8c95bc545b242b2fc2f66b3a9be024d61153da196e51689b2aa8719c"
+    "engine": "28bbac03bc6fc06bc21c78ba1d6fcfe0a4777e29a6b645a85e84580ebaafaca8"
   },
   "counts": {
     "F": 51,
-    "D": 96,
+    "D": 98,
     "N": 34,
-    "total": 181
+    "total": 183
   },
   "series": {
     "F": "other people's evals",
@@ -1139,6 +1139,40 @@
       "status_class": "confirmed",
       "anchor": "#d-096",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-096"
+    },
+    {
+      "id": "D-097",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "The rendered option block ran out of letters at option 27 and out of printable characters at option 59",
+      "summary": "the rendered option block labelled option 27 with `[` and option 59 with a control character on menus that run to 64; labels now follow spreadsheet column order",
+      "subject": "dinostomp",
+      "check_label": "`render_choices`",
+      "checks": [],
+      "date": "2026-09-17",
+      "date_iso": "2026-09-17",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-097",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-097"
+    },
+    {
+      "id": "D-098",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "A reasoning model spent every output token thinking, returned nothing, and was billed for all of it",
+      "summary": "a reasoning model spent all 256 output tokens thinking, returned an empty string and was billed in full; `params.reasoning_effort` now caps it",
+      "subject": "dinostomp",
+      "check_label": "`openrouter provider`",
+      "checks": [],
+      "date": "2026-09-17",
+      "date_iso": "2026-09-17",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-098",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-098"
     },
     {
       "id": "F-019",

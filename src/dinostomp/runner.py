@@ -31,6 +31,7 @@ from dinostomp.runlog import Budget, BudgetExceeded, Cost, RunLog, price_call, r
 from dinostomp.scorers import make_scorer, run_witnesses
 from dinostomp.spec import Issue, jsonl_lines, load_spec, spec_sha256
 from dinostomp.templates import DEFAULT_FRAMINGS, FRAMINGS_BY_NAME, framed_input
+from dinostomp.workbook import col_letter
 
 
 # Exit codes, also used by the CLI:
@@ -231,8 +232,13 @@ def render_options(item: dict, order: list) -> str:
 
     The letters stay in the block because their POSITIONS are what the probe
     varies. Only the answer format is text.
+
+    Labels run A..Z, then AA, AB, ... in spreadsheet column order, the same
+    scheme the workbook checks use. `chr(65 + i)` walked past Z into
+    punctuation at option 27 and into control characters at option 59, so a
+    long menu shipped a block whose tail no model could label (D-097).
     """
-    block = "\n".join(f"{chr(65 + i)}. {c}" for i, c in enumerate(order))
+    block = "\n".join(f"{col_letter(i + 1)}. {c}" for i, c in enumerate(order))
     return (f"{item['input']}\n\n{block}\n\n"
             "Answer with exactly one of the options above, copied verbatim.")
 

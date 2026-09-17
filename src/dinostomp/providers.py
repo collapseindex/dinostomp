@@ -210,6 +210,15 @@ class OpenAICompatProvider(HttpProvider):
     provider_name = "openai"
     URL = "https://api.openai.com/v1/chat/completions"
 
+    @staticmethod
+    def _set_reasoning(payload: dict, effort: str) -> None:
+        """How much hidden reasoning a reasoning model may spend before it
+        answers. Without a cap a one-word answer can spend the whole
+        max_tokens on reasoning and return an empty string with
+        finish_reason=length, billed in full (D-098). OpenAI's field is
+        top-level; OpenRouter nests it, see the subclass."""
+        payload["reasoning_effort"] = effort
+
     def complete(self, item: dict, seed: int, params: dict) -> Completion:
         system, messages = _as_messages(item["input"])
         if system:
@@ -221,6 +230,8 @@ class OpenAICompatProvider(HttpProvider):
         }
         if "temperature" in params:
             payload["temperature"] = params["temperature"]
+        if "reasoning_effort" in params:
+            self._set_reasoning(payload, str(params["reasoning_effort"]))
         headers = {"content-type": "application/json", "authorization": f"Bearer {self.key}"}
         data = self._request(self.URL, headers, payload)
         try:
@@ -241,6 +252,10 @@ class OpenAICompatProvider(HttpProvider):
 class OpenRouterProvider(OpenAICompatProvider):
     provider_name = "openrouter"
     URL = "https://openrouter.ai/api/v1/chat/completions"
+
+    @staticmethod
+    def _set_reasoning(payload: dict, effort: str) -> None:
+        payload["reasoning"] = {"effort": effort}
 
 
 PROVIDERS = {

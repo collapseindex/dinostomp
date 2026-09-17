@@ -285,6 +285,16 @@
             "max_tokens": {
               "type": "integer",
               "minimum": 1
+            },
+            "reasoning_effort": {
+              "enum": [
+                "none",
+                "minimal",
+                "low",
+                "medium",
+                "high"
+              ],
+              "description": "Cap on a reasoning model's hidden thinking before it answers. Sent as `reasoning_effort` to openai and as `reasoning.effort` to openrouter; other providers ignore it. Without it a one-word answer can spend the whole max_tokens on reasoning, return an empty string with finish_reason=length, and be billed in full."
             }
           }
         }

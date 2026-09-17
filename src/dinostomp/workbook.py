@@ -319,7 +319,7 @@ def _is_formula(value: Any) -> bool:
     return isinstance(value, str) and value.startswith("=")
 
 
-def _col_letter(index: int) -> str:
+def col_letter(index: int) -> str:
     letters = ""
     while index > 0:
         index, rem = divmod(index - 1, 26)
@@ -363,7 +363,7 @@ def check_formula_errors(sheets: list[Sheet]) -> Result:
                 if len(examples) < MAX_EXAMPLES:
                     formula = sheet.formulas.get((row, col))
                     shown = f" from {formula}" if _is_formula(formula) else ""
-                    examples.append(f"{sheet.name}!{_col_letter(col)}{row}: {text} "
+                    examples.append(f"{sheet.name}!{col_letter(col)}{row}: {text} "
                                     f"({ERROR_VALUES[text]}){shown}")
     if not total:
         return True, "no error values in any sheet", cells, [], {}
@@ -412,7 +412,7 @@ def check_short_ranges(sheets: list[Sheet]) -> Result:
                     continue  # a rectangular range is not a column claim
                 target = (sheet.name, _col_index(c1))
                 covered[target].update(range(min(r1, r2), max(r1, r2) + 1))
-                aggregates[target].append((f"{_col_letter(col)}{row}", value))
+                aggregates[target].append((f"{col_letter(col)}{row}", value))
     if not aggregates:
         return (True, "no column aggregates to check", n_formulas, [],
                 {"not_applicable": "this workbook has no column aggregate to check; "
@@ -446,14 +446,14 @@ def check_short_ranges(sheets: list[Sheet]) -> Result:
         ref, formula = aggregates[(sheet_name, col)][0]
         shown = ", ".join(str(r) for r in sorted(missed)[:5])
         examples.append(f"{sheet_name}!{ref} = {formula} excludes populated "
-                        f"{_col_letter(col)} row(s) {shown}"
+                        f"{col_letter(col)} row(s) {shown}"
                         f"{' and more' if len(missed) > 5 else ''}")
     total_missed = sum(len(v) for v in orphans.values())
     return (False, f"{len(orphans)} aggregate range(s) stop above the last populated row of "
                    f"their own column, excluding {total_missed} row(s) from a total that "
                    f"presents itself as complete",
             n_formulas, examples,
-            {"orphans": {f"{s}!{_col_letter(c)}": sorted(v) for (s, c), v in orphans.items()}})
+            {"orphans": {f"{s}!{col_letter(c)}": sorted(v) for (s, c), v in orphans.items()}})
 
 
 def check_pasted_constants(sheets: list[Sheet]) -> Result:
@@ -482,7 +482,7 @@ def check_pasted_constants(sheets: list[Sheet]) -> Result:
                          if r in span and not _is_formula(v) and str(v).strip() != ""]
             for row, value in constants[:4]:
                 hits[sheet.name].append(
-                    f"{_col_letter(col)}{row} = {value!r} sits inside a formula column "
+                    f"{col_letter(col)}{row} = {value!r} sits inside a formula column "
                     f"({len(formulas)} formulas, rows {min(rows_with_formula)}"
                     f"-{max(rows_with_formula)})")
     total = sum(len(v) for v in hits.values())
@@ -564,7 +564,7 @@ def check_uncalculated(sheets: list[Sheet]) -> Result:
             if sheet.values.get((row, col)) is None:
                 hits[sheet.name] += 1
                 if len(examples) < MAX_EXAMPLES:
-                    examples.append(f"{sheet.name}!{_col_letter(col)}{row} = {value} "
+                    examples.append(f"{sheet.name}!{col_letter(col)}{row} = {value} "
                                     f"has no cached result")
     if not n_formulas:
         return (True, "no formulas in this workbook", 0, [],
