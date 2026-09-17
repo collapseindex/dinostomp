@@ -70,6 +70,14 @@ and the reason is mechanical:
   page, 5.8%. A random permutation within the batch would leak 7.2%; a
   permutation across the split, or a blanked context, would not leak at all.
 
+On the same 1,000 sampled items, in their original order, Jevlike's evaluator
+reads informed 29.8% (identical to the dinostomp run) and shuffled-context
+11.7%; the leak on that subset is 17.9%, lower than the full split's 39.4%
+because sampling one row in four breaks the runs of same-target neighbours.
+The blank-page run is 5.0% either way. So the four numbers that belong on one
+picture, all on identical items: uniform 3.6%, no page 5.0%, their control
+11.7%, informed 29.8%.
+
 The control therefore measures "the model given the right target and a wrong
 page" for two rows in five, and the number it prints is the model's real
 lift understated: 27.0 against 14.9 reads as twelve points of signal, when

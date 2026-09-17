@@ -1480,8 +1480,13 @@ dinostomp examinee and run under `--probe blind`, the page replaced by an
 uninformative stub and the menu kept, reads 5.0% [0.04, 0.07] on 1,000
 seeded items, against a 3.6% uniform floor. Informed, it reads 29.8%
 [0.270, 0.327] on the sample and 27.0% on the full split under Jevlike's
-evaluator. So the model's lift over no page is about 22 to 25 points, and the
-control reports it as about 12.
+evaluator. On the same 1,000 items, their evaluator reads 29.8% informed (identical to
+the dinostomp run) and 11.7% shuffled, with the leak at 17.9% on that
+subset because sampling breaks the runs of same-target neighbours; the
+blank-page run is 5.0% either way. So the model's lift over no page is
+about 25 points, and the control reports it as 12 to 18 depending on how
+many neighbours share a target, which is a property of file order, not of
+the model.
 
 **Direction: against the model, in the control's favour.** A control that
 hands the model the answer's most useful feature two times in five is not a
