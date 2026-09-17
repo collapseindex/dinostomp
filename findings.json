@@ -6,13 +6,13 @@
   "tool": {
     "name": "dinostomp",
     "version": "0.62.0",
-    "engine": "8a32940674d7d75d094549c2e31c3129efe6eb444f2164800b68d57315de9055"
+    "engine": "a15114a82452fc7fd0eb2c5c5592d5c4cc9d31552dcf3925d585cce0297fa81e"
   },
   "counts": {
     "F": 49,
-    "D": 91,
-    "N": 31,
-    "total": 171
+    "D": 92,
+    "N": 32,
+    "total": 173
   },
   "series": {
     "F": "other people's evals",
@@ -1020,6 +1020,23 @@
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-018"
     },
     {
+      "id": "D-092",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "XL6 called 36 calculated formulas \"never calculated\" because their answer was blank",
+      "summary": "XL6 reported 36 calculated formulas as never calculated because their answer was the empty string, which openpyxl reads as the same None as no result; the cell type tag now tells them apart",
+      "subject": "dinostomp",
+      "check_label": "`uncalculated` (XL6)",
+      "checks": [],
+      "date": "2026-09-17",
+      "date_iso": "2026-09-17",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-092",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-092"
+    },
+    {
       "id": "F-019",
       "series": "F",
       "series_name": "other people's evals",
@@ -1497,6 +1514,23 @@
       "status_class": "measured",
       "anchor": "#n-031",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-031"
+    },
+    {
+      "id": "N-032",
+      "series": "N",
+      "series_name": "negative results",
+      "title": "The Reinhart-Rogoff spreadsheet error cannot be reproduced from any public file",
+      "summary": "the working spreadsheet holding the L30:L44 error was never public; the HAP archive's RR.xls has 3,637 formulas and no averaging sheet, so range-short has nothing to run on, and the README anecdote is not a reproduction",
+      "subject": "Reinhart-Rogoff",
+      "check_label": "`range-short` (XL5)",
+      "checks": [],
+      "date": "2026-09-17",
+      "date_iso": "2026-09-17",
+      "date_precision": "day",
+      "status": "negative",
+      "status_class": "negative",
+      "anchor": "#n-032",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-032"
     },
     {
       "id": "N-021",

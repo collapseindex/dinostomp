@@ -91,6 +91,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-090](#d-090) | dinostomp | the note saying which sheet was audited was built, stored, and never read by anything | confirmed, fixed |
 | [D-091](#d-091) | dinostomp | the fix for D-089 ranked tables by declared height and chose one whose every cell was an uncalculated formula | confirmed, fixed |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
+| [D-092](#d-092) | dinostomp | XL6 reported 36 calculated formulas as never calculated because their answer was the empty string, which openpyxl reads as the same None as no result; the cell type tag now tells them apart | confirmed, fixed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
 | [F-021](#f-021) | MATH-500 | 2 problems whose answer is written in the question | confirmed, scoped |
@@ -117,6 +118,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-024](#n-024) | StrongREJECT | the autograder fails safe (bounded groups, nan on no-match): the counterexample to F-030..F-036 | confirmed |
 | [N-020](#n-020) | public HF datasets | pilot sweep: 27% carry a gating finding, and the audit refused to guess a mapping on 37% | measured, pilot |
 | [N-031](#n-031) | CUDA-Agent-Ops-6K | CUDA Agent's decontamination holds under an independent instrument (0 of 6,000 overlap KernelBench); the control shows a size-retuned copy is invisible at jaccard 0.993 | measured |
+| [N-032](#n-032) | Reinhart-Rogoff | the working spreadsheet holding the L30:L44 error was never public; the HAP archive's RR.xls has 3,637 formulas and no averaging sheet, so range-short has nothing to run on, and the README anecdote is not a reproduction | negative |
 | [N-021](#n-021) | dinocorpus | the corpus now varies shape, not just class, and the covered arm drops to 98% | measured |
 | [N-007](#n-007) | lm-eval-harness log | both reported metrics re-derive from the raw log-probs | negative |
 | [N-008](#n-008) | dinostomp | an even `run.repeats` reported p-squared, not p | measured, fixed |
@@ -266,13 +268,13 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [F-048](#f-048), [F-049](#f-049), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [F-048](#f-048), [F-049](#f-049), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-032](#n-032), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [D-080](#d-080), [D-081](#d-081), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-085](#d-085), [D-086](#d-086), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078), [D-079](#d-079) |
+| dinostomp | [D-080](#d-080), [D-081](#d-081), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-085](#d-085), [D-086](#d-086), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078), [D-079](#d-079) |
 | dinocorpus | [N-021](#n-021), [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | AISafetyLab | [F-033](#f-033), [F-034](#f-034), [F-035](#f-035) |
 | CUDA-Agent-Ops-6K | [F-047](#f-047), [F-048](#f-048), [N-031](#n-031) |
@@ -324,6 +326,7 @@ at fault.
 | QASC, AG News | [N-030](#n-030) |
 | QuaRTz | [F-027](#f-027) |
 | RACE | [F-022](#f-022) |
+| Reinhart-Rogoff | [N-032](#n-032) |
 | six dataset pairs | [N-004](#n-004) |
 | SNLI, SST-2 | [N-027](#n-027) |
 | SQuAD v2 | [F-042](#f-042) |
@@ -1734,6 +1737,47 @@ Reproduce with `python benchmarks/mmlu-redux/compare.py`.
 
 ---
 
+### D-092
+**XL6 called 36 calculated formulas "never calculated" because their answer was blank**
+`uncalculated` (XL6) · 2026-09-17 · confirmed, fixed
+
+Found by pointing the table audit at the closest public thing to the
+Reinhart-Rogoff working spreadsheet ([N-032](#n-032)): `RR.xls` from Herndon,
+Ash and Pollin's replication archive, converted to `.xlsx` and stomped. XL6
+warned that 36 of its 3,637 formulas "have never been calculated while the rest
+have". Every one of the 36 is `=IF(Dn/40.3399=0,"",Dn/40.3399)` on the Belgium
+sheet, in rows where column D is empty. They had been calculated. The answer was
+the empty string.
+
+Excel stores that result as `<c t="str"><f>...</f><v/></c>`: a string-typed cell
+whose value element is present and empty. openpyxl reads an empty `<v/>` as
+`None`, and the loader treated `None` in the value pass as "no cached result",
+which is also exactly what a formula Excel has never touched looks like. The two
+states are different on disk and identical after the library has read them,
+except for one thing: the cell's type tag, `str` for a stored string result and
+`n` for nothing at all. The loader now reads the tag and records `""` as the
+cached value, and XL6 is unchanged.
+
+Direction: **against the file**. A clean workbook was reported as carrying 36
+defects, in the one XL check whose whole point is to name a state that
+value-only readers cannot see. A check that cannot tell "blank answer" from "no
+answer" is making the same mistake it exists to catch.
+
+Two tests, built by editing the XML after `openpyxl` saves (it cannot write
+cached values): one formula given a numeric result and another given a
+string-typed empty result must pass XL6; the same file without the `t="str"`
+tag must still warn `1 of 2`, which is the partial-cache case XL6 is for.
+
+Reproduce: the archive is
+[WP322HAP-RR-GITD-code-2013-05-17.zip](https://peri.umass.edu/images/WP322HAP-RR-GITD-code-2013-05-17.zip)
+(sha256 `93900259e271c96f654bb61a2808f7eeb12320103a3fb092ee239859ee23d95c`); `RR.xls` inside it (sha256 `412159493d34d8c72aaec0a40dcfa99a5f38aab57dcd2f409184f9c3a162a547`) is a legacy binary
+workbook that openpyxl cannot open, so it was saved as `.xlsx` by Excel 2013
+with calculation left automatic, and `dinostomp stomp RR.xlsx` was run before
+and after the fix. Before: `uncalculated` warns on 36 of 3,637. After: all
+3,637 carry a cached result.
+
+---
+
 ### F-019
 **LogiQA · 8 items with a duplicated option, and 3 offer the same option four times**
 `dup-options` (S5) · 2026-08-09 · confirmed
@@ -2481,6 +2525,48 @@ counts as contamination and which their 0.9 AST threshold could never fire on
 compares a released training set against a public benchmark, which is not the
 same as auditing what a model was trained on. Reproduce: `python
 audits/cuda-agent/audit.py --kernelbench <clone>` (leg 2).
+
+---
+
+### N-032
+**The Reinhart-Rogoff spreadsheet error cannot be reproduced from any public file**
+`range-short` (XL5) · 2026-09-17 · negative
+
+The README uses Reinhart and Rogoff's `AVERAGE(L30:L44)` over a column whose
+data ran to row 49 as the clearest instance of what `range-short` catches. The
+natural demonstration is to run the check on the actual workbook. That
+demonstration is not possible, and this entry records why, so the anecdote is
+never mistaken for a reproduction.
+
+The working spreadsheet, `Public_debt-ratios_advanced.xlsx`, was supplied by
+Carmen Reinhart to Herndon, Ash and Pollin on 4 April 2013 and was not released
+by either side. HAP's archive ships `RR.xls`, described in its readme as their
+edit of that file. It carries twenty country sheets and no averaging sheet, so
+the range the error lived in is not present in any form. Reinhart and Rogoff's
+own data page, as archived on 16 March 2013 before the critique, offered the
+same four country-by-country debt workbooks that Reinhart's site hosts today;
+none is the working file. Checked here, not assumed: the Wayback snapshot's
+links, the archive's file list, and the sheet names.
+
+So no claim is made that dinostomp would have caught it. The check was not
+run on the file, because the file does not exist in public.
+
+What the public files do contain, put through the table audit:
+
+- `RR.xls` (20 sheets, 3,637 formulas; readme says "only cells that contain
+  values and not formulas", which its own contents contradict):
+  `pasted-constant` finds 67 year labels typed over `=B84+1` chains from 1913
+  onward across 19 sheets, benign; `uncalculated` produced a false alarm that
+  is [D-092](#d-092). Nothing gates.
+- The four Reinhart workbooks (`7_data.xls`, `18_data.xls`, `19_data.xls`,
+  `20_data.xls`, 2,837 formulas between them): header-row whitespace, a
+  citation line sitting in a numeric column, merged title rows, two more typed
+  year labels. Nothing worth a finding, and nothing a reader of the numbers
+  would be misled by.
+
+Recorded as a negative because it is the honest shape of the story: the most
+famous spreadsheet error in economics is not available to be checked, and the
+one public artifact near it broke the tool rather than the other way round.
 
 ---
 
@@ -5639,8 +5725,8 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 16 (F-001 to F-004, F-008 to F-013, F-041 to F-046) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **31** |
-| defects in dinostomp itself (**D**) | **91** |
+| negative results, recorded rather than dropped (**N**) | **32** |
+| defects in dinostomp itself (**D**) | **92** |
 
 Ninety-one to forty-nine. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to

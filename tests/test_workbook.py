@@ -159,6 +159,63 @@ def test_xl6_warns_when_only_some_formulas_are_uncalculated():
     assert "STALE" in detail, "the check must say what it does NOT claim to detect"
 
 
+def _partially_cached(tmp_path, *, string_result: bool):
+    """openpyxl cannot write cached values, so the XML is edited after the
+    save: A2 gets a cached number, A3 gets either an empty-string RESULT
+    (`t="str"`, the shape Excel writes for `=T(5)`) or no result at all."""
+    import zipfile
+
+    import openpyxl
+
+    src = tmp_path / "src.xlsx"
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Data"
+    ws["A1"] = 5
+    ws["A2"] = "=A1*2"
+    ws["A3"] = "=T(A1)"
+    wb.save(src)
+    out = tmp_path / ("string_result.xlsx" if string_result else "no_result.xlsx")
+    with zipfile.ZipFile(src) as zin, zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as zout:
+        for item in zin.infolist():
+            data = zin.read(item.filename)
+            if item.filename == "xl/worksheets/sheet1.xml":
+                xml = data.decode("utf-8")
+                assert '<c r="A2"><f>A1*2</f><v></v></c>' in xml, xml
+                xml = xml.replace('<c r="A2"><f>A1*2</f><v></v></c>',
+                                  '<c r="A2"><f>A1*2</f><v>10</v></c>')
+                if string_result:
+                    assert '<c r="A3"><f>T(A1)</f><v></v></c>' in xml, xml
+                    xml = xml.replace('<c r="A3"><f>T(A1)</f><v></v></c>',
+                                      '<c r="A3" t="str"><f>T(A1)</f><v></v></c>')
+                data = xml.encode("utf-8")
+            zout.writestr(item, data)
+    return out
+
+
+def test_xl6_does_not_call_an_empty_string_result_uncalculated(tmp_path):
+    """D-092: `=IF(D2/40.3399=0,"",D2/40.3399)` on a blank D2 evaluates to "",
+    and Excel stores that as a string result with an empty value element.
+    openpyxl reads it as None, the same None as a formula never calculated,
+    and XL6 flagged 36 such cells in the Reinhart-Rogoff data file as never
+    calculated. They were calculated; the answer was blank."""
+    sheets = workbook.load_sheets(_partially_cached(tmp_path, string_result=True))
+    ok, detail, n, examples, _ = workbook.check_uncalculated(sheets)
+    assert ok is True, detail
+    assert n == 2 and "all 2 formula(s) carry a cached result" in detail
+    assert examples == []
+
+
+def test_xl6_still_warns_when_the_result_is_genuinely_absent(tmp_path):
+    """The control for the test above: same file, no `t="str"` tag, so A3 has
+    no result of any kind. That is the partial-cache case XL6 exists for."""
+    sheets = workbook.load_sheets(_partially_cached(tmp_path, string_result=False))
+    ok, detail, _, examples, _ = workbook.check_uncalculated(sheets)
+    assert ok is False
+    assert "1 of 2" in detail
+    assert any("A3" in e for e in examples)
+
+
 def test_the_xl_series_skips_loudly_without_openpyxl(tmp_path, monkeypatch):
     """The Pillow rule, applied to workbooks: a check that cannot see must
     never read as a check that saw nothing wrong."""

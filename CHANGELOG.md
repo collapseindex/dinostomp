@@ -2,6 +2,14 @@
 
 ### Unreleased
 
+- **Fixed: XL6 called a formula whose answer is the empty string "never
+  calculated" (D-092).** Excel stores `=IF(x=0,"",x)` on a blank `x` as a
+  string-typed cell with an empty value element; openpyxl reads that as `None`,
+  the same `None` as a formula never calculated. The loader now reads the type
+  tag and records `""` as a cached result. Found by stomping the Reinhart-Rogoff
+  replication archive; the famous `L30:L44` error itself cannot be reproduced
+  from any public file, recorded as N-032.
+
 - **Refs carry an `excerpt`.** Each ref now holds a bounded glimpse (200
   characters) of the field it points at: the question, the option list joined
   with ` | `, or the key. Emitted by the engine per ref, so a viewer can show

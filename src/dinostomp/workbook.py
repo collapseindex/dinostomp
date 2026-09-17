@@ -143,6 +143,16 @@ def load_sheets(path: str | Path) -> list[Sheet]:
                 for cell in row:
                     if cell.value is not None:
                         values[(cell.row, cell.column)] = cell.value
+                    elif cell.data_type == "str":
+                        # A formula whose cached RESULT is the empty string:
+                        # `=IF(x=0,"",x)` on a blank x. Excel stored it as
+                        # <c t="str"><v/></c>, which openpyxl reads back as
+                        # None, the same None as a cell never calculated at
+                        # all. The type tag is the only thing that tells them
+                        # apart. Without this, XL6 called 36 calculated cells
+                        # in the Reinhart-Rogoff data file "never calculated"
+                        # (D-092).
+                        values[(cell.row, cell.column)] = ""
             hidden_rows = {i for i, d in ws_f.row_dimensions.items() if d.hidden}
             hidden_cols = {k for k, d in ws_f.column_dimensions.items() if d.hidden}
             merged = [str(r) for r in ws_f.merged_cells.ranges]
