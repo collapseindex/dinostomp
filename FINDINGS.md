@@ -78,6 +78,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-048](#f-048) | CUDA-Agent-Ops-6K | 550 of 5,929 rows (9.3%) declare an operator absent from their own code, mostly dimensionality swaps (ConvTranspose1d declared, ConvTranspose3d written) | confirmed, minor |
 | [F-049](#f-049) | CUDA Agent reward harness | the anti-reward-hacking guard patches `dir(F)`, so 11 of 13 routes to a torch operator survive it, including any name imported before it runs | confirmed, scoped |
 | [F-050](#f-050) | Damodaran ctryprem (Jan 2026) | a saved `#REF!` and a neighbour-row misreference in an auxiliary block on the CDS sheet, plus 229 by-design `#N/A`; the published premiums do not read that block | confirmed, no downstream effect |
+| [F-051](#f-051) | Jevlike (Wikispeedia) | the shuffled-context control rolls within a batch on a target-bucketed, path-ordered split, so 39.4% of partners name the same target; it reads 14.9% where a blank-page run reads 5.0% | confirmed |
 | [F-029](#f-029) | ASDiv | one word problem present twice | confirmed, minor |
 | [D-080](#d-080) | dinostomp | the number reader rejected every value over 999, producing a false alarm and a miss from one pattern | confirmed, fixed |
 | [D-081](#d-081) | dinostomp | a category check measured distinctness on raw values, so the defect it looks for hid it | confirmed, fixed |
@@ -125,6 +126,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-031](#n-031) | CUDA-Agent-Ops-6K | CUDA Agent's decontamination holds under an independent instrument (0 of 6,000 overlap KernelBench); the control shows a size-retuned copy is invisible at jaccard 0.993 | measured |
 | [N-032](#n-032) | Reinhart-Rogoff | the working spreadsheet holding the L30:L44 error was never public; the HAP archive's RR.xls has 3,637 formulas and no averaging sheet, so range-short has nothing to run on, and the README anecdote is not a reproduction | negative |
 | [N-033](#n-033) | SEC FSDS 2026q2 | pre.txt joins sub.txt on adsh with 785,490 of 785,490 rows matched, one to one; sub.txt carries only filer-address hygiene | negative |
+| [N-034](#n-034) | Jevlike (Wikispeedia) | a from-scratch one-pass scorer mounted as an examinee: informed 29.8%, blind 5.0%, floor 3.6%; S1/S7/S2 gate at data scope but the majority-vote ceiling is 96.2% | negative |
 | [N-021](#n-021) | dinocorpus | the corpus now varies shape, not just class, and the covered arm drops to 98% | measured |
 | [N-007](#n-007) | lm-eval-harness log | both reported metrics re-derive from the raw log-probs | negative |
 | [N-008](#n-008) | dinostomp | an even `run.repeats` reported p-squared, not p | measured, fixed |
@@ -252,7 +254,7 @@ at fault.
 | `R7` | [D-002](#d-002) |
 | `R8` | [N-007](#n-007) |
 | `R13` | [D-006](#d-006) |
-| `R15` | [D-006](#d-006) |
+| `R15` | [F-051](#f-051), [N-034](#n-034), [D-006](#d-006) |
 | `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
 | `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-044](#f-044), [F-045](#f-045), [F-046](#f-046), [F-047](#f-047), [F-029](#f-029), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
@@ -289,6 +291,7 @@ at fault.
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
 | four models | [N-005](#n-005), [N-006](#n-006) |
 | garak | [F-037](#f-037), [F-038](#f-038) |
+| Jevlike (Wikispeedia) | [F-051](#f-051), [N-034](#n-034) |
 | MMLU | [F-002](#f-002), [F-003](#f-003) |
 | MT-Bench / LLM-as-judge | [N-019](#n-019), [N-022](#n-022) |
 | SciQ | [F-010](#f-010), [F-013](#f-013) |
@@ -1452,6 +1455,45 @@ Reproduce: `audits/damodaran-ctryprem/`. The file is a legacy `.xls`, which
 openpyxl cannot open; `convert_xls.py` there saves it as `.xlsx` through an
 installed Excel (LibreOffice headless does the same), then
 `dinostomp stomp ctryprem.xlsx`.
+
+---
+
+### F-051
+**Jevlike's shuffled-context control pairs two menus in five with a page that names the same target, so it reads 14.9% where a blank page reads 5.0%**
+`input-blind` (R15) · 2026-09-17 · confirmed
+
+[Jevlike](https://github.com/vinnylarouge/jevlike) (`94f5fd1`, an open
+reimplementation of TypeSafe's one-pass Jev scorer) prints a shuffled-context
+control from its evaluator: each menu is scored against a wrong page, and a
+useful model should beat it. The control is `context.roll(1, dims=0)` inside
+each batch of 64, so the wrong page is the page of the row before. On the
+Wikispeedia split its own script builds, rows are bucketed by target article
+and written in path order: 314 targets over 4,373 test rows, up to 149 rows
+per target. Measured with `audits/jevlike/control_leak.py`: **39.4% of
+shuffled partners carry the same `Target article:` line**, the most
+informative line in the context; 5.8% are the same current page; a random
+permutation within the batch would leak 7.2%.
+
+On a checkpoint trained here from scratch (three epochs, CPU, seed 42), the
+control reads 14.9% top-1 on the full split. The same checkpoint mounted as a
+dinostomp examinee and run under `--probe blind`, the page replaced by an
+uninformative stub and the menu kept, reads 5.0% [0.04, 0.07] on 1,000
+seeded items, against a 3.6% uniform floor. Informed, it reads 29.8%
+[0.270, 0.327] on the sample and 27.0% on the full split under Jevlike's
+evaluator. So the model's lift over no page is about 22 to 25 points, and the
+control reports it as about 12.
+
+**Direction: against the model, in the control's favour.** A control that
+hands the model the answer's most useful feature two times in five is not a
+stricter test; it is a different test with a reassuring name. The README's
+"about 8% for shuffled and random-encoder controls" was measured on a
+checkpoint not available here and is not re-derived; the evaluator and the
+split are the same, so the direction of the bias is.
+
+Fix, stated for the maintainer rather than made here: permute contexts across
+the whole evaluation set rather than within a batch, or blank the context, and
+report both, since they answer different questions ("wrong page" against "no
+page"). Reproduction: `audits/jevlike/`.
 
 ---
 
@@ -2792,6 +2834,43 @@ handful of `N/A`, `NONE`, `NIL` and `.` stand in for missing addresses; and
 city and suite lines split by case (`HOUSTON` and `Houston`, 1,623 labels
 collapsing to 1,604). Filer-supplied address text, not registry data, and not
 worth a line beyond this one.
+
+---
+
+### N-034
+**A from-scratch Jev-like scorer beats its own blind run by 25 points on Wikispeedia, and the data gates that fire do not explain the number**
+`input-blind` (R15) · 2026-09-17 · negative
+
+The examinee half of the audit beside [F-051](#f-051). A Jev-like model's
+whole job is to extract signal from the option menu, which is the thing an
+eval rewards by accident, so it is the model class most worth pointing this
+battery at. Mounted as a `python` examinee (one forward pass per item, argmax
+option text as the answer, the probability vector recorded as evidence and
+asserted on by nothing), on 1,000 seeded items of the Wikispeedia test split:
+informed 29.8% [0.270, 0.327], blind 5.0% [0.04, 0.07], uniform floor 3.6%,
+median 46 options per item. R7, R13 and R15 all pass: the eval is not menu-
+solvable, and the page is where the score comes from.
+
+The verdict is nonetheless `BROKEN`, at data scope, by construction of the
+task. Each row is one step of one human path, so two people at the same page
+with the same menu who clicked differently are two rows with one question and
+two keys: S1 finds 305 duplicated states, S7 finds 131 with conflicting keys
+covering 356 items (8.1%), and S2 finds 17 items whose clicked link's title
+appears as a whole word in the article excerpt while no other link's does
+("wrist watch", "watch battery" for *Watch*). All three are real. Their
+effect is the number the report does not print and this entry does: the
+majority-vote ceiling those conflicts impose is 96.2% on the split and 96.5%
+on the sample. A 30% score is not explained by a 96% ceiling. Position and
+length bias do not fire; the builder's seeded shuffle of the menu does its
+job.
+
+What is not claimed: anything about Jevlike's quality as a model, one
+checkpoint of three epochs being one checkpoint; and anything paired, the
+blind and informed runs being separate runs on the same items (at n=1,000 an
+unpaired comparison resolves about 6 points, and this gap is 25). Recorded as
+a negative because it is the clean half: the model is doing the thing, the
+eval is measuring it, and the interesting defect was in the control, not in
+either of them.
 
 ---
 
@@ -5946,11 +6025,11 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **50** |
+| findings in other people's evals (**F**) | **51** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 16 (F-001 to F-004, F-008 to F-013, F-041 to F-046) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **33** |
+| negative results, recorded rather than dropped (**N**) | **34** |
 | defects in dinostomp itself (**D**) | **96** |
 
 Ninety-one to forty-nine. That ratio is the useful number to publish, and it is the

@@ -9,10 +9,10 @@
     "engine": "e389083f8c95bc545b242b2fc2f66b3a9be024d61153da196e51689b2aa8719c"
   },
   "counts": {
-    "F": 50,
+    "F": 51,
     "D": 96,
-    "N": 33,
-    "total": 179
+    "N": 34,
+    "total": 181
   },
   "series": {
     "F": "other people's evals",
@@ -784,6 +784,25 @@
       "status_class": "confirmed",
       "anchor": "#f-050",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-050"
+    },
+    {
+      "id": "F-051",
+      "series": "F",
+      "series_name": "other people's evals",
+      "title": "Jevlike's shuffled-context control pairs two menus in five with a page that names the same target, so it reads 14.9% where a blank page reads 5.0%",
+      "summary": "the shuffled-context control rolls within a batch on a target-bucketed, path-ordered split, so 39.4% of partners name the same target; it reads 14.9% where a blank-page run reads 5.0%",
+      "subject": "Jevlike (Wikispeedia)",
+      "check_label": "`input-blind` (R15)",
+      "checks": [
+        "R15"
+      ],
+      "date": "2026-09-17",
+      "date_iso": "2026-09-17",
+      "date_precision": "day",
+      "status": "confirmed",
+      "status_class": "confirmed",
+      "anchor": "#f-051",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-051"
     },
     {
       "id": "F-029",
@@ -1633,6 +1652,25 @@
       "status_class": "negative",
       "anchor": "#n-033",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-033"
+    },
+    {
+      "id": "N-034",
+      "series": "N",
+      "series_name": "negative results",
+      "title": "A from-scratch Jev-like scorer beats its own blind run by 25 points on Wikispeedia, and the data gates that fire do not explain the number",
+      "summary": "a from-scratch one-pass scorer mounted as an examinee: informed 29.8%, blind 5.0%, floor 3.6%; S1/S7/S2 gate at data scope but the majority-vote ceiling is 96.2%",
+      "subject": "Jevlike (Wikispeedia)",
+      "check_label": "`input-blind` (R15)",
+      "checks": [
+        "R15"
+      ],
+      "date": "2026-09-17",
+      "date_iso": "2026-09-17",
+      "date_precision": "day",
+      "status": "negative",
+      "status_class": "negative",
+      "anchor": "#n-034",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-034"
     },
     {
       "id": "N-021",

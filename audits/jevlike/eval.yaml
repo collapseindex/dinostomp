@@ -1,0 +1,31 @@
+name: jevlike-wikispeedia
+version: 0.1.0
+question: "Does a one-pass Jev-like scorer, trained from scratch on Wikispeedia next-click data, choose the human's next link from the page and the menu, rather than from the menu alone?"
+
+entitled_claims:
+  - "Exact-match next-click accuracy with a 95% interval on a seeded 1,000-item sample of the Wikispeedia test split, for one from-scratch checkpoint."
+  - "How far that number sits above the same checkpoint's blind run, where the page is withheld and only the menu is shown."
+
+# The test split, converted one to one from Jevlike's JSONL:
+#   context -> input, options -> choices, options[label] -> target.
+data: {path: items.jsonl, format: jsonl}
+
+# One examinee: the checkpoint next to this spec, loaded once. The entrypoint
+# file is hashed into every manifest; edit it after a run and the verdict goes
+# BROKEN until you re-run.
+models:
+  - {provider: python, model: jevlike-scratch-3ep, entrypoint: examinee.py:run}
+
+# The scorer is exact match on the option TEXT, so the target is invariant
+# under any presentation and R8 can re-score every record offline.
+scorer:
+  kind: exact
+  witnesses:
+    - {output: "Atlantic Ocean", target: "Atlantic Ocean", expect: pass}
+    - {output: "atlantic ocean", target: "Atlantic Ocean", expect: fail, why: "case matters; kills the case-blind mutant"}
+    - {output: "Atlantic", target: "Atlantic Ocean", expect: fail, why: "a prefix is not the option"}
+    - {output: "The answer is Atlantic Ocean", target: "Atlantic Ocean", expect: fail, why: "wrappers are not bare answers"}
+    - {output: "not Atlantic Ocean", target: "Atlantic Ocean", expect: fail, why: "negation must not be credited"}
+    - {output: "Atlantic  Ocean", target: "Atlantic Ocean", expect: fail, why: "a doubled space is a different option string; kills the space-blind mutant"}
+
+run: {n: 1000, seed: 42, budget_usd: 0}

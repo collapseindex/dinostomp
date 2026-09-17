@@ -1,5 +1,16 @@
 # Changelog
 
+### Unreleased
+
+- **Jevlike audited as a one-pass examinee (F-051, N-034).** A from-scratch
+  Jev-like scorer mounted through the `python` provider on Wikispeedia
+  next-click data: informed 29.8%, blind 5.0%, uniform floor 3.6%, so the
+  page is where the score comes from. Jevlike's own shuffled-context control
+  rolls within a batch on a target-bucketed, path-ordered split, so 39.4% of
+  "wrong" pages name the right target; it reads 14.9% where a blank page reads
+  5.0%. `audits/jevlike/` carries the pod, the checkpoint and the leak
+  measurement.
+
 ### v0.63.0 (2026-09-17)
 
 - **Fixed: dinostomp was never on PyPI (D-095).** The v0.62.0 publish run
