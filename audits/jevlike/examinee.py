@@ -43,13 +43,22 @@ def run(item: dict, ctx: dict) -> dict:
     with torch.no_grad():
         probabilities = model(batch).softmax(-1)[0, :len(options)].cpu().tolist()
     best = max(range(len(options)), key=lambda i: probabilities[i])
-    # The probability vector rides along as evidence. dinostomp records it
-    # verbatim and asserts nothing about it; the answer is the option text.
+    # The WHOLE probability vector rides along as evidence, option by option,
+    # recorded before any check that reads it exists. A trajectory result is
+    # stored as a string (capped at 4,000 characters by the target rail), so
+    # it is written as JSON rather than left to repr(), and anyone can parse
+    # it back. dinostomp asserts nothing about it; the answer is the option text.
+    import json
+
+    evidence = {
+        "top": options[best],
+        "p_top": round(probabilities[best], 6),
+        "p_target": round(probabilities[options.index(item["target"])], 6)
+        if item.get("target") in options else None,
+        "distribution": {o: round(p, 6) for o, p in zip(options, probabilities)},
+    }
     return {
         "output": options[best],
         "trajectory": [{"tool": "score_options", "args": {"n_options": len(options)},
-                        "result": {"top": options[best], "p_top": round(probabilities[best], 4),
-                                   "p_target": round(probabilities[options.index(item["target"])], 4)
-                                   if item.get("target") in options else None},
-                        "ok": True}],
+                        "result": json.dumps(evidence, ensure_ascii=False), "ok": True}],
     }

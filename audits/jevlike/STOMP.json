@@ -2406,12 +2406,12 @@
     "spec_sha256": "0abe0f974be7a1a1adba67d2085ce58fe8690834bc084fa921173c423a4e8fcd",
     "data_sha256": "8423ec7c5c9693d451f46b6f153f52262d3b01ec736efe53aaf9cd164cd6ae18",
     "target_sha256": {
-      "jevlike-scratch-3ep": "6821d9d3a56508da2c0146aa466733d4878d40b0f4d8b4f0b69948d204079043"
+      "jevlike-scratch-3ep": "4b39b66e855147ba8863394a5d95ef2ed8e7d9abaeb2984624db6cbe63526c02"
     }
   },
   "runs": [
     {
-      "run_file": "20260917_103339_jevlike-wikispeedia_jevlike-scratch-3ep_n1000_s42.jsonl",
+      "run_file": "20260917_104902_jevlike-wikispeedia_jevlike-scratch-3ep_n1000_s42.jsonl",
       "model": "jevlike-scratch-3ep",
       "model_reported": "jevlike-scratch-3ep",
       "provider": "python",

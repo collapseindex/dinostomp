@@ -91,10 +91,17 @@ different test with a flattering name.
 - The blind and informed runs are unpaired (separate runs on the same 1,000
   items); at n=1,000 an unpaired comparison resolves gaps of about 6 points,
   and this one is 25.
-- The probability vector is recorded in every trajectory as evidence
-  (`p_top`, `p_target`) and asserted on by nothing. A check family that reads
-  it, mass split across S18-equivalent options, confidence under a blanked
-  context, is the natural next thing and is not built.
+- The whole probability vector, option by option, is recorded in every
+  trajectory (`data/runs/*.jsonl`; each step's `result` is a JSON string with
+  `top`, `p_top`, `p_target` and a `distribution` map, under the target rail's
+  4,000-character cap on every record) as evidence and asserted on by nothing. It was captured before any check that reads it was
+  designed, and the records are committed and hashed here for that reason: a
+  check family built later (calibration, mass split across S18-equivalent
+  options, divergence between the informed and blind distributions) can be
+  tested against numbers it could not have shaped.
+- `items.jsonl` (4,374 lines with the canary, built one to one from Jevlike's
+  test split) is not committed for size; its SHA-256 is in every run
+  manifest as `data_sha256`, and `build_pod.py` regenerates it byte for byte.
 
 ## Reproduce
 

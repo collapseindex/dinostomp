@@ -282,7 +282,7 @@ Re-derive this report from the directory holding the target: `dinostomp stomp ev
 
 | run file | model | reported as | provider | dry | seed | records | uncheckable |
 |---|---|---|---|---|---:|---:|---:|
-| 20260917_103339_jevlike-wikispeedia_jevlike-scratch-3ep_n1000_s42.jsonl | jevlike-scratch-3ep | (same) | python | no | 42 | 1000 | 0 |
+| 20260917_104902_jevlike-wikispeedia_jevlike-scratch-3ep_n1000_s42.jsonl | jevlike-scratch-3ep | (same) | python | no | 42 | 1000 | 0 |
 
 ## Provenance
 
@@ -290,7 +290,7 @@ Re-derive this report from the directory holding the target: `dinostomp stomp ev
 - statistical power: at n=1000 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~6% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `0abe0f974be7a1a1adba67d2085ce58fe8690834bc084fa921173c423a4e8fcd`
 - data_sha256: `8423ec7c5c9693d451f46b6f153f52262d3b01ec736efe53aaf9cd164cd6ae18`
-- target_sha256: `{'jevlike-scratch-3ep': '6821d9d3a56508da2c0146aa466733d4878d40b0f4d8b4f0b69948d204079043'}`
+- target_sha256: `{'jevlike-scratch-3ep': '4b39b66e855147ba8863394a5d95ef2ed8e7d9abaeb2984624db6cbe63526c02'}`
 - thresholds: all defaults
 - reproducibility tiers, stated honestly: local inputs hash-pinned (spec, data, scorer); requests reproducible given each manifest's environment envelope; hosted-model immutability UNKNOWN unless the provider exposes a pinned revision (the runs table records what each provider claims answered)
 - raw report: [STOMP.json](STOMP.json) (both files omit volatile fields, so an unchanged pod re-reports to identical bytes; run manifests carry the timestamps)
