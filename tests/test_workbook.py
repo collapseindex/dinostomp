@@ -213,6 +213,7 @@ def _partially_cached(tmp_path, *, string_result: bool):
     """openpyxl cannot write cached values, so the XML is edited after the
     save: A2 gets a cached number, A3 gets either an empty-string RESULT
     (`t="str"`, the shape Excel writes for `=T(5)`) or no result at all."""
+    import re
     import zipfile
 
     import openpyxl
@@ -231,6 +232,10 @@ def _partially_cached(tmp_path, *, string_result: bool):
             data = zin.read(item.filename)
             if item.filename == "xl/worksheets/sheet1.xml":
                 xml = data.decode("utf-8")
+                # openpyxl with lxml writes an empty element as `<v />`; the
+                # pure-python writer as `<v></v>`. Same file, two spellings;
+                # CI had one and the author's machine the other.
+                xml = re.sub(r"<v\s*/>", "<v></v>", xml)
                 assert '<c r="A2"><f>A1*2</f><v></v></c>' in xml, xml
                 xml = xml.replace('<c r="A2"><f>A1*2</f><v></v></c>',
                                   '<c r="A2"><f>A1*2</f><v>10</v></c>')
