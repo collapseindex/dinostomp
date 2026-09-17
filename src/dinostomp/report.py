@@ -210,6 +210,13 @@ def render_markdown(report: dict) -> str:
     lines.append("")
     lines.append(_verdict_line(report))
     lines.append("")
+    # The constant the CLI prints on every verdict. The markdown is the artifact
+    # that travels furthest, so it carries the sentence the verdict cannot exist
+    # without: a mechanically sound eval can still measure nothing.
+    cv = report.get("construct_validity") or {}
+    if cv.get("measures_the_intended_construct"):
+        lines.append(f"measures the intended construct: **{cv['measures_the_intended_construct']}**")
+        lines.append("")
 
     runs = report.get("runs") or []
     if runs and all(r["dry_run"] for r in runs):

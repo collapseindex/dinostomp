@@ -435,8 +435,31 @@ STAGES: dict[str, str] = {
 MAX_REFS = 32
 
 
+# A ref's excerpt is the text a reader needs to recognise the item without
+# opening the dataset: the question, the option list, the key. Bounded, because
+# refs are a sample and an excerpt is a glimpse; the dataset is the record.
+EXCERPT_CHARS = 200
+
+
+def _excerpt(item: dict, field_name: str) -> str | None:
+    if field_name == "choices" and isinstance(item.get("choices"), list):
+        text = " | ".join(str(c) for c in item["choices"])
+    elif field_name == "target":
+        text = " | ".join(sorted(_targets_of(item)))
+    else:
+        value = item.get(field_name)
+        text = value if isinstance(value, str) else (json.dumps(value) if value is not None else "")
+    text = " ".join(text.split())
+    if not text:
+        return None
+    return text if len(text) <= EXCERPT_CHARS else text[:EXCERPT_CHARS - 1] + "\u2026"
+
+
 def _item_ref(item: dict, field_name: str, note: str | None = None) -> dict:
     ref = {"kind": "item", "id": str(item["id"]), "field": field_name}
+    excerpt = _excerpt(item, field_name)
+    if excerpt:
+        ref["excerpt"] = excerpt
     if note:
         ref["note"] = note
     return ref

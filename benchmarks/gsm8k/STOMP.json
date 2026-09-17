@@ -1,7 +1,8 @@
 {
   "tool": "dinostomp",
-  "version": "0.61.0",
+  "version": "0.62.0",
   "target": "eval.yaml",
+  "reproduce": "dinostomp stomp eval.yaml",
   "thresholds": {
     "position_margin": {
       "value": 0.2,
@@ -45,6 +46,12 @@
       "provenance": "judgment",
       "basis": "2 characters before a target is long enough to 'appear' in a question"
     },
+    "dropped_rows_max": {
+      "value": 0.01,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "1% of a file being unauditable is the line between housekeeping and a structural problem. Empirical basis: all 31 fetched benchmark corpora drop ZERO rows, so any material drop is unusual rather than routine"
+    },
     "near_dup_bits": {
       "value": 5.0,
       "source": "default",
@@ -86,6 +93,24 @@
       "source": "default",
       "provenance": "judgment",
       "basis": "3 models before unanimity is a word worth using"
+    },
+    "min_fleet_dimension": {
+      "value": 6.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "6 examinees before a second axis is worth asking after; dimensionality needs more spread than reliability does"
+    },
+    "dimension_margin": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "calibrated",
+      "basis": "measured: at 0.10 above the fixed-margins null, 0/10 false alarms on unidimensional fleets and 0/10 misses on 2- and 3-cluster specialised fleets, at 6, 8 and 10 examinees"
+    },
+    "min_items_per_subskill": {
+      "value": 5.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "5 items per declared subskill before its within-group coherence is more than noise"
     },
     "min_items_psycho": {
       "value": 5.0,
@@ -159,6 +184,12 @@
       "provenance": "judgment",
       "basis": "author judgment; no derivation or calibration on record"
     },
+    "target_leak_nmi": {
+      "value": 0.5,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "0.5 normalized mutual information: a column that resolves half the target's entropy is worth a human's eye. A candidate, not a verdict; only the author knows if it exists at predict time"
+    },
     "collapse_margin": {
       "value": 0.3,
       "source": "default",
@@ -225,6 +256,30 @@
       "provenance": "judgment",
       "basis": "author judgment; no derivation or calibration on record"
     },
+    "prose_answer_words": {
+      "value": 6.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "6 words at the median: a proper noun or a canonical title rarely runs longer, a sentence-length free-text answer almost always does, so this is where exact match stops testing capability and starts testing wording. A candidate, not a verdict"
+    },
+    "key_skew_margin": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "0.10 above a balanced key's 1/k: enough that always guessing the majority answer is a real strategy, not the parity a well-built key aims for. A candidate for the author's eye, not a defect; a real base rate can be skewed"
+    },
+    "global_label_max": {
+      "value": 3.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "author judgment; no derivation or calibration on record"
+    },
+    "label_reuse_min": {
+      "value": 10.0,
+      "source": "default",
+      "provenance": "judgment",
+      "basis": "10 items per distinct answer on average: a classification set reuses its few labels heavily (emotion is ~333), open QA does not (TriviaQA is ~2), so this is where a small answer space stops being per-item keys and becomes a label vocabulary S2 should not read as leakage"
+    },
     "ungrounded_max": {
       "value": 0.1,
       "source": "default",
@@ -269,9 +324,9 @@
     }
   },
   "coverage": {
-    "declared_total": 61,
-    "declared": 37,
-    "ran": 31,
+    "declared_total": 98,
+    "declared": 43,
+    "ran": 36,
     "skipped": [
       {
         "id": "S10",
@@ -296,6 +351,10 @@
       {
         "id": "P12",
         "reason": "no template probe on disk; run `dinostomp run <spec> --probe template` to unlock"
+      },
+      {
+        "id": "P13",
+        "reason": "4 model(s) x 294 common item(s); need 6+ models and 5+ items to unlock"
       }
     ],
     "not_applicable": [
@@ -340,8 +399,128 @@
         "reason": "no item carries an `input_ref`; nothing points at a file"
       },
       {
+        "id": "S16",
+        "reason": "no provenance declared, so authorship is not described. Declaring who wrote the items, keys, scorer, and witnesses lets this surface a model sitting on both sides of a loop (e.g. keying its own questions)"
+      },
+      {
+        "id": "S17",
+        "reason": "an eval pod's items are questions and answers, not a feature table; the single-column leak scan is for a raw tabular dataset audit"
+      },
+      {
+        "id": "S18",
+        "reason": "no multiple-choice items in this dataset"
+      },
+      {
+        "id": "G1",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G2",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G3",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G4",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G5",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G6",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G7",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G8",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G9",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G10",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "G11",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "XL1",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "XL2",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "XL3",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "XL4",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "XL5",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "XL6",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "JN1",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "JN2",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "JN3",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "JN4",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "JN5",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "JN6",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "JN7",
+        "reason": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)"
+      },
+      {
+        "id": "W3",
+        "reason": "this scorer does not emit intermediate partial credit, so there is no gradation to witness"
+      },
+      {
+        "id": "W4",
+        "reason": "the scorer does not compare bare strings, so it is not the exact-match-on-prose mismatch this looks for"
+      },
+      {
         "id": "R20",
         "reason": "no run on disk repeats an item; a single pass per item cannot tie"
+      },
+      {
+        "id": "R21",
+        "reason": "no record carries a graded value"
       },
       {
         "id": "T1",
@@ -394,13 +573,17 @@
       {
         "id": "P6",
         "reason": "no entitled claim asserts a model ordering"
+      },
+      {
+        "id": "P14",
+        "reason": "no item declares a `subskill`; there is no partition to test"
       }
     ]
   },
   "summary": {
     "fail": 2,
     "warn": 3,
-    "skip": 6,
+    "skip": 7,
     "verdict": "broken",
     "scope": "pod"
   },
@@ -413,6 +596,7 @@
     {
       "id": "S1",
       "slug": "dup-questions",
+      "stage": "data",
       "check": "questions are unique",
       "level": "pass",
       "gating": true,
@@ -422,15 +606,17 @@
     {
       "id": "S2",
       "slug": "answer-leak",
+      "stage": "data",
       "check": "no answer leaks into its own question",
       "level": "pass",
       "gating": true,
-      "detail": "0 of 1319 free-form item(s) leak their answer",
+      "detail": "0 of 1319 item(s) leak their answer into the question",
       "witnesses": 1319
     },
     {
       "id": "S3",
       "slug": "position-bias",
+      "stage": "data",
       "check": "gold answer does not favour an option position",
       "level": "n/a",
       "gating": false,
@@ -440,6 +626,7 @@
     {
       "id": "S4",
       "slug": "length-bias",
+      "stage": "data",
       "check": "gold answer is not systematically the longest option",
       "level": "n/a",
       "gating": false,
@@ -449,6 +636,7 @@
     {
       "id": "S5",
       "slug": "dup-options",
+      "stage": "data",
       "check": "no option offered twice in one item",
       "level": "n/a",
       "gating": true,
@@ -458,6 +646,7 @@
     {
       "id": "S6",
       "slug": "target-not-offered",
+      "stage": "data",
       "check": "every target is among its choices",
       "level": "n/a",
       "gating": true,
@@ -467,6 +656,7 @@
     {
       "id": "S7",
       "slug": "conflicting-keys",
+      "stage": "data",
       "check": "no identical question with contradictory targets",
       "level": "pass",
       "gating": true,
@@ -476,6 +666,7 @@
     {
       "id": "S8",
       "slug": "canary-present",
+      "stage": "data",
       "check": "a contamination canary travels with the data",
       "level": "pass",
       "gating": false,
@@ -485,6 +676,7 @@
     {
       "id": "S9",
       "slug": "surface-shortcut",
+      "stage": "data",
       "check": "no surface feature predicts the gold answer",
       "level": "n/a",
       "gating": false,
@@ -494,6 +686,7 @@
     {
       "id": "S10",
       "slug": "canary-regurgitated",
+      "stage": "data",
       "check": "no model reproduces the contamination canary",
       "level": "skip",
       "gating": false,
@@ -503,6 +696,7 @@
     {
       "id": "S11",
       "slug": "corpus-overlap",
+      "stage": "data",
       "check": "no item already appears in a reference dataset",
       "level": "n/a",
       "gating": false,
@@ -512,6 +706,7 @@
     {
       "id": "S12",
       "slug": "asset-drift",
+      "stage": "data",
       "check": "every referenced asset resolves and still hashes the same",
       "level": "n/a",
       "gating": true,
@@ -521,6 +716,7 @@
     {
       "id": "S13",
       "slug": "label-in-path",
+      "stage": "data",
       "check": "no asset's own path gives away its label",
       "level": "n/a",
       "gating": true,
@@ -530,6 +726,7 @@
     {
       "id": "S14",
       "slug": "split-leak",
+      "stage": "data",
       "check": "no asset appears in two splits",
       "level": "n/a",
       "gating": true,
@@ -539,6 +736,7 @@
     {
       "id": "S15",
       "slug": "near-dup-assets",
+      "stage": "data",
       "check": "no near-duplicate assets",
       "level": "n/a",
       "gating": false,
@@ -546,8 +744,321 @@
       "witnesses": 0
     },
     {
+      "id": "S16",
+      "slug": "authorship-circularity",
+      "stage": "data",
+      "check": "the eval is not authored in a circle",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no provenance declared, so authorship is not described. Declaring who wrote the items, keys, scorer, and witnesses lets this surface a model sitting on both sides of a loop (e.g. keying its own questions)",
+      "witnesses": 0
+    },
+    {
+      "id": "S17",
+      "slug": "target-leak",
+      "stage": "data",
+      "check": "no single column all but determines the target",
+      "level": "n/a",
+      "gating": false,
+      "detail": "an eval pod's items are questions and answers, not a feature table; the single-column leak scan is for a raw tabular dataset audit",
+      "witnesses": 0
+    },
+    {
+      "id": "S18",
+      "slug": "numeric-dup-options",
+      "stage": "data",
+      "check": "no two options are the same number written differently",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no multiple-choice items in this dataset",
+      "witnesses": 0
+    },
+    {
+      "id": "S19",
+      "slug": "lookalike-questions",
+      "stage": "data",
+      "check": "no two items are the same question in different encodings",
+      "level": "pass",
+      "gating": false,
+      "detail": "0 group(s) of items are the same question in different encodings",
+      "witnesses": 1319
+    },
+    {
+      "id": "S20",
+      "slug": "key-skew",
+      "stage": "data",
+      "check": "the answer key is not dominated by one value",
+      "level": "pass",
+      "gating": false,
+      "detail": "the answer key is not dominated by one value (modal 3% of 351 answers)",
+      "witnesses": 1319,
+      "evidence": {
+        "modal_share": 0.03,
+        "n_distinct": 351,
+        "modal_value": "5"
+      }
+    },
+    {
+      "id": "S21",
+      "slug": "rows-audited",
+      "stage": "data",
+      "check": "the audit covers the rows it was given",
+      "level": "pass",
+      "gating": true,
+      "detail": "0 of 1319 row(s) were dropped: the pod loader refuses a dataset it cannot read whole, so every row in the file reached the audit",
+      "witnesses": 1319,
+      "evidence": {
+        "rows_read": 1319,
+        "rows_dropped": 0,
+        "rows_audited": 1319,
+        "dropped_share": 0.0,
+        "gate": 0.01
+      }
+    },
+    {
+      "id": "G1",
+      "slug": "cell-hygiene",
+      "stage": "data",
+      "check": "no cell carries edge whitespace or invisible characters",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G2",
+      "slug": "dup-rows",
+      "stage": "data",
+      "check": "rows are unique",
+      "level": "n/a",
+      "gating": true,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G3",
+      "slug": "dup-keys",
+      "stage": "data",
+      "check": "no identifier column repeats a value",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G4",
+      "slug": "numeric-string",
+      "stage": "data",
+      "check": "no digit-string column has leading zeros a conversion would destroy",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G5",
+      "slug": "date-format",
+      "stage": "data",
+      "check": "no date column mixes formats or reads both ways",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G6",
+      "slug": "type-drift",
+      "stage": "data",
+      "check": "no numeric column is contaminated with text",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G7",
+      "slug": "sentinel-values",
+      "stage": "data",
+      "check": "no value stands in for missing without saying so",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G8",
+      "slug": "category-collapse",
+      "stage": "data",
+      "check": "no category column splits one label across spellings",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G9",
+      "slug": "percent-scale",
+      "stage": "data",
+      "check": "no rate column mixes fraction and percent scales",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G10",
+      "slug": "formatted-numbers",
+      "stage": "data",
+      "check": "no numeric column stores symbols or separators",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "G11",
+      "slug": "near-dup-rows",
+      "stage": "data",
+      "check": "no rows are duplicates once case and whitespace stop counting",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "XL1",
+      "slug": "pasted-constant",
+      "stage": "data",
+      "check": "no constant is pasted inside a formula column",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "XL2",
+      "slug": "formula-error",
+      "stage": "data",
+      "check": "no error value is saved in the workbook",
+      "level": "n/a",
+      "gating": true,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "XL3",
+      "slug": "hidden-cells",
+      "stage": "data",
+      "check": "nothing an aggregate counts is hidden from the reader",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "XL4",
+      "slug": "merged-cells",
+      "stage": "data",
+      "check": "no merged range flattens a row on import",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "XL5",
+      "slug": "range-short",
+      "stage": "data",
+      "check": "every column aggregate covers its own column",
+      "level": "n/a",
+      "gating": true,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "XL6",
+      "slug": "uncalculated",
+      "stage": "data",
+      "check": "every formula has been calculated",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "JN1",
+      "slug": "join-viable",
+      "stage": "data",
+      "check": "the join returns rows at all",
+      "level": "n/a",
+      "gating": true,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "JN2",
+      "slug": "orphan-rows",
+      "stage": "data",
+      "check": "no left row is dropped by the join",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "JN3",
+      "slug": "key-normalisation",
+      "stage": "data",
+      "check": "no key fails to match on case or whitespace alone",
+      "level": "n/a",
+      "gating": true,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "JN4",
+      "slug": "parent-key-unique",
+      "stage": "data",
+      "check": "the right-hand key is unique",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "JN5",
+      "slug": "join-fanout",
+      "stage": "data",
+      "check": "the join does not multiply rows",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "JN6",
+      "slug": "key-type-drift",
+      "stage": "data",
+      "check": "both sides store the key the same way",
+      "level": "n/a",
+      "gating": false,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
+      "id": "JN7",
+      "slug": "totals-reconcile",
+      "stage": "data",
+      "check": "every parent total equals the sum of its children",
+      "level": "n/a",
+      "gating": true,
+      "detail": "out of scope for a pod audit (the dataset, the scorer, and every run on disk)",
+      "witnesses": 0
+    },
+    {
       "id": "W1",
       "slug": "witness-coverage",
+      "stage": "scorer",
       "check": "witnesses kill the mutant scorers",
       "level": "pass",
       "gating": false,
@@ -569,8 +1080,54 @@
       }
     },
     {
+      "id": "W2",
+      "slug": "surface-form",
+      "stage": "scorer",
+      "check": "a correct answer survives its surface form",
+      "level": "pass",
+      "gating": false,
+      "detail": "0 surface form(s) lose a correct answer and 0 credit a decoy, of 6 applicable",
+      "witnesses": 6,
+      "evidence": {
+        "baseline_form": "labelled",
+        "held": [
+          "trailing-punctuation",
+          "surrounding-whitespace",
+          "markdown-emphasis",
+          "label-case",
+          "keyword-in-prose",
+          "reasoning-prefix"
+        ],
+        "not_applicable": [
+          "answer-case",
+          "decoy-in-working"
+        ]
+      }
+    },
+    {
+      "id": "W3",
+      "slug": "graded-witness",
+      "stage": "scorer",
+      "check": "a graded scorer witnesses its gradation",
+      "level": "n/a",
+      "gating": true,
+      "detail": "this scorer does not emit intermediate partial credit, so there is no gradation to witness",
+      "witnesses": 0
+    },
+    {
+      "id": "W4",
+      "slug": "scorer-fit",
+      "stage": "scorer",
+      "check": "an exact scorer is not graded against prose answers",
+      "level": "n/a",
+      "gating": false,
+      "detail": "the scorer does not compare bare strings, so it is not the exact-match-on-prose mismatch this looks for",
+      "witnesses": 0
+    },
+    {
       "id": "C1",
       "slug": "claim-evidence",
+      "stage": "claim",
       "check": "every typed claim's evidence requirements hold",
       "level": "pass",
       "gating": true,
@@ -580,6 +1137,7 @@
     {
       "id": "R1",
       "slug": "input-drift",
+      "stage": "runner",
       "check": "runs match the spec, data, and scorer on disk (no drift)",
       "level": "fail",
       "gating": true,
@@ -599,6 +1157,7 @@
     {
       "id": "R2",
       "slug": "witness-replay",
+      "stage": "scorer",
       "check": "the witness gate replays clean",
       "level": "pass",
       "gating": true,
@@ -608,6 +1167,7 @@
     {
       "id": "R3",
       "slug": "spend-ledger",
+      "stage": "runner",
       "check": "ledger spend agrees with the manifest and the spec cap",
       "level": "pass",
       "gating": true,
@@ -617,6 +1177,7 @@
     {
       "id": "R4",
       "slug": "record-integrity",
+      "stage": "records",
       "check": "every run record is schema-valid, unique, and its manifest's own",
       "level": "pass",
       "gating": true,
@@ -626,6 +1187,7 @@
     {
       "id": "R5",
       "slug": "truncation-credit",
+      "stage": "records",
       "check": "truncated outputs are never credited",
       "level": "fail",
       "gating": true,
@@ -645,6 +1207,7 @@
     {
       "id": "R6",
       "slug": "uncheckable-rate",
+      "stage": "records",
       "check": "uncheckable rate is sane",
       "level": "pass",
       "gating": false,
@@ -657,6 +1220,7 @@
     {
       "id": "R7",
       "slug": "above-guessing",
+      "stage": "aggregate",
       "check": "accuracy is distinguishable from guessing",
       "level": "pass",
       "gating": false,
@@ -678,6 +1242,7 @@
     {
       "id": "R8",
       "slug": "verdict-rederive",
+      "stage": "scorer",
       "check": "recorded verdicts re-score identically",
       "level": "pass",
       "gating": true,
@@ -687,6 +1252,7 @@
     {
       "id": "R9",
       "slug": "summary-rederive",
+      "stage": "aggregate",
       "check": "summaries match their run records",
       "level": "pass",
       "gating": true,
@@ -696,6 +1262,7 @@
     {
       "id": "R10",
       "slug": "run-scope",
+      "stage": "runner",
       "check": "runs cover the spec's declared scope, nothing foreign",
       "level": "pass",
       "gating": false,
@@ -705,6 +1272,7 @@
     {
       "id": "R11",
       "slug": "selection-coverage",
+      "stage": "runner",
       "check": "records cover exactly the seeded selection",
       "level": "pass",
       "gating": true,
@@ -714,6 +1282,7 @@
     {
       "id": "R12",
       "slug": "scorer-escape",
+      "stage": "scorer",
       "check": "no model selectively escapes the scorer",
       "level": "pass",
       "gating": false,
@@ -731,6 +1300,7 @@
     {
       "id": "R13",
       "slug": "blind-solvable",
+      "stage": "aggregate",
       "check": "the eval is not solvable blind",
       "level": "skip",
       "gating": false,
@@ -740,6 +1310,7 @@
     {
       "id": "R14",
       "slug": "response-collapse",
+      "stage": "aggregate",
       "check": "no model collapses onto one answer",
       "level": "pass",
       "gating": false,
@@ -749,6 +1320,7 @@
     {
       "id": "R15",
       "slug": "input-blind",
+      "stage": "aggregate",
       "check": "each model beats its own blind baseline",
       "level": "skip",
       "gating": false,
@@ -758,6 +1330,7 @@
     {
       "id": "R16",
       "slug": "scorer-artifact",
+      "stage": "scorer",
       "check": "failed answers do not contain the reference",
       "level": "warn",
       "gating": false,
@@ -772,6 +1345,7 @@
     {
       "id": "R17",
       "slug": "nothing-scoreable",
+      "stage": "runner",
       "check": "every model produced something scoreable",
       "level": "pass",
       "gating": true,
@@ -781,6 +1355,7 @@
     {
       "id": "R18",
       "slug": "billing-mismatch",
+      "stage": "runner",
       "check": "billed output tokens match the recorded text",
       "level": "pass",
       "gating": false,
@@ -798,10 +1373,11 @@
     {
       "id": "R19",
       "slug": "engine-drift",
+      "stage": "tool",
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "12 of 12 run(s) were produced by a different engine than the one auditing them (now 7fe879a3183bfcfe); re-run to get numbers this report can stand behind",
+      "detail": "12 of 12 run(s) were produced by a different engine than the one auditing them (now 8a32940674d7d75d); re-run to get numbers this report can stand behind",
       "witnesses": 12,
       "examples": [
         "engine 0c79d2fabc826532: meta-llama/llama-3.2-3b-instruct seed 23 (tool 0.29.0)",
@@ -829,6 +1405,7 @@
     {
       "id": "R20",
       "slug": "repeat-ties",
+      "stage": "runner",
       "check": "repeated items reached a verdict",
       "level": "n/a",
       "gating": false,
@@ -836,8 +1413,29 @@
       "witnesses": 0
     },
     {
+      "id": "R21",
+      "slug": "graded-range",
+      "stage": "records",
+      "check": "graded scores stay in range",
+      "level": "n/a",
+      "gating": true,
+      "detail": "no record carries a graded value",
+      "witnesses": 0
+    },
+    {
+      "id": "R22",
+      "slug": "numeric-miss",
+      "stage": "scorer",
+      "check": "no failed answer numerically equals its target",
+      "level": "pass",
+      "gating": false,
+      "detail": "0 of 361 numeric-target failure(s) equal their target as a number; the scorer may be rejecting a correct value in the wrong form",
+      "witnesses": 361
+    },
+    {
       "id": "T1",
       "slug": "forbidden-tool",
+      "stage": "records",
       "check": "no forbidden tool is called",
       "level": "n/a",
       "gating": true,
@@ -847,6 +1445,7 @@
     {
       "id": "T2",
       "slug": "required-tool",
+      "stage": "records",
       "check": "every required tool is actually called",
       "level": "n/a",
       "gating": true,
@@ -856,6 +1455,7 @@
     {
       "id": "T3",
       "slug": "trajectory-shape",
+      "stage": "records",
       "check": "trajectories are well-formed",
       "level": "n/a",
       "gating": true,
@@ -865,6 +1465,7 @@
     {
       "id": "T4",
       "slug": "answer-grounding",
+      "stage": "records",
       "check": "passing answers are grounded in tool evidence",
       "level": "n/a",
       "gating": false,
@@ -874,6 +1475,7 @@
     {
       "id": "T5",
       "slug": "trace-underreport",
+      "stage": "records",
       "check": "no model under-reports its trajectory",
       "level": "n/a",
       "gating": false,
@@ -883,6 +1485,7 @@
     {
       "id": "T6",
       "slug": "redundant-calls",
+      "stage": "records",
       "check": "tool calls are not redundant",
       "level": "n/a",
       "gating": false,
@@ -892,6 +1495,7 @@
     {
       "id": "T7",
       "slug": "answer-grounding-causal",
+      "stage": "records",
       "check": "passing answers CHANGE when their evidence is withheld",
       "level": "n/a",
       "gating": false,
@@ -901,6 +1505,7 @@
     {
       "id": "T8",
       "slug": "trace-observed",
+      "stage": "records",
       "check": "the trajectory was observed, not self-reported",
       "level": "n/a",
       "gating": false,
@@ -910,6 +1515,7 @@
     {
       "id": "J1",
       "slug": "judge-agreement",
+      "stage": "scorer",
       "check": "the judge agrees with cases whose answer is known",
       "level": "n/a",
       "gating": false,
@@ -919,6 +1525,7 @@
     {
       "id": "J2",
       "slug": "judge-bias",
+      "stage": "scorer",
       "check": "the judge is invariant to content-free perturbations",
       "level": "n/a",
       "gating": false,
@@ -928,6 +1535,7 @@
     {
       "id": "J3",
       "slug": "judge-consistency",
+      "stage": "scorer",
       "check": "the judge agrees with itself on identical input",
       "level": "n/a",
       "gating": false,
@@ -937,6 +1545,7 @@
     {
       "id": "J4",
       "slug": "judge-self-preference",
+      "stage": "scorer",
       "check": "the judge does not favour its own family",
       "level": "n/a",
       "gating": false,
@@ -946,6 +1555,7 @@
     {
       "id": "P1",
       "slug": "fleet-reliability",
+      "stage": "aggregate",
       "check": "fleet score totals are reliable (KR-20)",
       "level": "pass",
       "gating": false,
@@ -960,6 +1570,7 @@
     {
       "id": "P2",
       "slug": "item-discrimination",
+      "stage": "aggregate",
       "check": "no item anti-correlates with fleet skill",
       "level": "pass",
       "gating": false,
@@ -976,6 +1587,7 @@
     {
       "id": "P3",
       "slug": "dead-weight",
+      "stage": "aggregate",
       "check": "dead-weight items stay a minority",
       "level": "pass",
       "gating": false,
@@ -990,6 +1602,7 @@
     {
       "id": "P4",
       "slug": "matrix-complete",
+      "stage": "aggregate",
       "check": "every model was asked the same items",
       "level": "pass",
       "gating": true,
@@ -999,6 +1612,7 @@
     {
       "id": "P5",
       "slug": "unanimous-wrong",
+      "stage": "aggregate",
       "check": "no unanimous identical wrong answers",
       "level": "pass",
       "gating": false,
@@ -1008,6 +1622,7 @@
     {
       "id": "P6",
       "slug": "ordering-noise",
+      "stage": "claim",
       "check": "entitled ordering claims are separated beyond sampling noise",
       "level": "n/a",
       "gating": false,
@@ -1017,6 +1632,7 @@
     {
       "id": "P7",
       "slug": "ceiling-floor",
+      "stage": "aggregate",
       "check": "the fleet is not pinned at a ceiling or floor",
       "level": "pass",
       "gating": false,
@@ -1030,6 +1646,7 @@
     {
       "id": "P8",
       "slug": "dynamic-range",
+      "stage": "aggregate",
       "check": "the eval separates the fleet (dynamic range)",
       "level": "pass",
       "gating": false,
@@ -1042,6 +1659,7 @@
     {
       "id": "P9",
       "slug": "order-stability",
+      "stage": "aggregate",
       "check": "answers survive re-ordering the options",
       "level": "skip",
       "gating": false,
@@ -1051,6 +1669,7 @@
     {
       "id": "P10",
       "slug": "seed-stability",
+      "stage": "aggregate",
       "check": "the number survives changing the seed",
       "level": "warn",
       "gating": false,
@@ -1084,6 +1703,7 @@
     {
       "id": "P11",
       "slug": "prompt-stability",
+      "stage": "aggregate",
       "check": "the number survives re-phrasing the instruction",
       "level": "skip",
       "gating": false,
@@ -1093,10 +1713,31 @@
     {
       "id": "P12",
       "slug": "ranking-stability",
+      "stage": "aggregate",
       "check": "the fleet ORDERING survives re-phrasing the instruction",
       "level": "skip",
       "gating": false,
       "detail": "no template probe on disk; run `dinostomp run <spec> --probe template` to unlock",
+      "witnesses": 0
+    },
+    {
+      "id": "P13",
+      "slug": "construct-dimensionality",
+      "stage": "aggregate",
+      "check": "the fleet varies on one axis, not a blend of abilities",
+      "level": "skip",
+      "gating": false,
+      "detail": "4 model(s) x 294 common item(s); need 6+ models and 5+ items to unlock",
+      "witnesses": 0
+    },
+    {
+      "id": "P14",
+      "slug": "subskill-discriminant",
+      "stage": "aggregate",
+      "check": "declared subskills actually separate in the responses",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no item declares a `subskill`; there is no partition to test",
       "witnesses": 0
     }
   ],
@@ -1271,6 +1912,8 @@
         "n_passes": 305,
         "n_failures": 55,
         "accuracy": 0.8472,
+        "partial_score": null,
+        "n_graded": 0,
         "ci95": [
           0.806,
           0.881
@@ -1300,6 +1943,8 @@
         "n_passes": 146,
         "n_failures": 180,
         "accuracy": 0.4479,
+        "partial_score": null,
+        "n_graded": 0,
         "ci95": [
           0.395,
           0.502
@@ -1329,6 +1974,8 @@
         "n_passes": 310,
         "n_failures": 50,
         "accuracy": 0.8611,
+        "partial_score": null,
+        "n_graded": 0,
         "ci95": [
           0.822,
           0.893
@@ -1358,6 +2005,8 @@
         "n_passes": 284,
         "n_failures": 76,
         "accuracy": 0.7889,
+        "partial_score": null,
+        "n_graded": 0,
         "ci95": [
           0.744,
           0.828
@@ -1384,6 +2033,8 @@
       "mean_accuracy": 0.7363,
       "min_accuracy": 0.4479,
       "max_accuracy": 0.8611,
+      "mean_partial_score": null,
+      "n_models_graded": 0,
       "spread": 0.4132,
       "kr20": 0.988,
       "n_all_right": 100,

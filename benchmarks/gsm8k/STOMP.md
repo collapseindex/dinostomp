@@ -1,6 +1,8 @@
 # 🦖 stomp report: eval.yaml
 
-**BROKEN**: 2 gated finding(s) (31 of 37 ran; 24 n/a of 61 declared)
+**BROKEN**: 2 gated finding(s) (36 of 43 ran; 55 n/a of 98 declared)
+
+measures the intended construct: **NOT ESTABLISHED BY DINOSTOMP**
 
 ## Results
 
@@ -88,13 +90,21 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | | check | witnesses | detail |
 |---|---|---:|---|
 | ok | questions are unique | 1319 | 0 duplicated question(s) among 1319 |
-| ok | no answer leaks into its own question | 1319 | 0 of 1319 free-form item(s) leak their answer |
+| ok | no answer leaks into its own question | 1319 | 0 of 1319 item(s) leak their answer into the question |
 | n/a | no option offered twice in one item | 0 | no multiple-choice items in this dataset |
 | n/a | every target is among its choices | 0 | no multiple-choice items in this dataset |
 | ok | no identical question with contradictory targets | 1319 | 0 question(s) appear with conflicting targets |
 | n/a | every referenced asset resolves and still hashes the same | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | no asset's own path gives away its label | 0 | no item carries an `input_ref`; nothing points at a file |
 | n/a | no asset appears in two splits | 0 | no item carries an `input_ref`; nothing points at a file |
+| ok | the audit covers the rows it was given | 1319 | 0 of 1319 row(s) were dropped: the pod loader refuses a dataset it cannot read whole, so every row in the file reached the audit |
+| n/a | rows are unique | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no error value is saved in the workbook | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | every column aggregate covers its own column | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | the join returns rows at all | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no key fails to match on case or whitespace alone | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | every parent total equals the sum of its children | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | a graded scorer witnesses its gradation | 0 | this scorer does not emit intermediate partial credit, so there is no gradation to witness |
 | ok | every typed claim's evidence requirements hold | 12 | 4 of 4 typed claim(s) supported across 12 evidence requirement(s) (no multiplicity correction across 4 claims) |
 | **FAIL** | runs match the spec, data, and scorer on disk (no drift) | 12 | 12 of 12 run(s) no longer match the spec, data, or scorer on disk |
 | ok | the witness gate replays clean | 18 | replayed 6 witness(es): 6 behaved; 12 run manifest(s) checked |
@@ -105,6 +115,7 @@ Facts, not heuristics: a failure here means something is mechanically wrong (a d
 | ok | summaries match their run records | 12 | 0 summary discrepanc(ies) across 12 run(s) |
 | ok | records cover exactly the seeded selection | 12 | 0 of 12 run(s) do not cover their seeded selection |
 | ok | every model produced something scoreable | 4 | 0 of 4 model(s) produced nothing scoreable |
+| n/a | graded scores stay in range | 0 | no record carries a graded value |
 | n/a | no forbidden tool is called | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | every required tool is actually called | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | trajectories are well-formed | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -123,7 +134,32 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | no model reproduces the contamination canary | 0 | no canary probe on disk; run `dinostomp run <spec> --probe canary` to ask whether a model has already read this dataset |
 | n/a | no item already appears in a reference dataset | 0 | no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot. |
 | n/a | no near-duplicate assets | 0 | no item carries an `input_ref`; nothing points at a file |
+| n/a | the eval is not authored in a circle | 0 | no provenance declared, so authorship is not described. Declaring who wrote the items, keys, scorer, and witnesses lets this surface a model sitting on both sides of a loop (e.g. keying its own questions) |
+| n/a | no single column all but determines the target | 0 | an eval pod's items are questions and answers, not a feature table; the single-column leak scan is for a raw tabular dataset audit |
+| n/a | no two options are the same number written differently | 0 | no multiple-choice items in this dataset |
+| ok | no two items are the same question in different encodings | 1319 | 0 group(s) of items are the same question in different encodings |
+| ok | the answer key is not dominated by one value | 1319 | the answer key is not dominated by one value (modal 3% of 351 answers) |
+| n/a | no cell carries edge whitespace or invisible characters | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no identifier column repeats a value | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no digit-string column has leading zeros a conversion would destroy | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no date column mixes formats or reads both ways | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no numeric column is contaminated with text | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no value stands in for missing without saying so | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no category column splits one label across spellings | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no rate column mixes fraction and percent scales | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no numeric column stores symbols or separators | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no rows are duplicates once case and whitespace stop counting | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no constant is pasted inside a formula column | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | nothing an aggregate counts is hidden from the reader | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no merged range flattens a row on import | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | every formula has been calculated | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | no left row is dropped by the join | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | the right-hand key is unique | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | the join does not multiply rows | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
+| n/a | both sides store the key the same way | 0 | out of scope for a pod audit (the dataset, the scorer, and every run on disk) |
 | ok | witnesses kill the mutant scorers | 4 | 0 of 4 applicable mutant scorer(s) survive the witness suite |
+| ok | a correct answer survives its surface form | 6 | 0 surface form(s) lose a correct answer and 0 credit a decoy, of 6 applicable |
+| n/a | an exact scorer is not graded against prose answers | 0 | the scorer does not compare bare strings, so it is not the exact-match-on-prose mismatch this looks for |
 | ok | uncheckable rate is sane | 1440 | 2% of 1440 record(s) are uncheckable |
 | ok | accuracy is distinguishable from guessing | 4 | 0 of 4 model(s) score no better than guessing; fleet spans 45% to 86% vs chance ~3% (modal target floor) |
 | ok | runs cover the spec's declared scope, nothing foreign | 12 | 0 run(s) outside the spec's declared scope |
@@ -133,8 +169,9 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | warn | failed answers do not contain the reference | 4 | 3 of 4 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | ok | billed output tokens match the recorded text | 4 | 0 of 4 model(s) report far more output tokens than their recorded text accounts for (expected for hidden-reasoning models; otherwise check your invoice) |
-| warn | the runs were produced by this engine | 12 | 12 of 12 run(s) were produced by a different engine than the one auditing them (now 7fe879a3183bfcfe); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 12 | 12 of 12 run(s) were produced by a different engine than the one auditing them (now 8a32940674d7d75d); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
+| ok | no failed answer numerically equals its target | 361 | 0 of 361 numeric-target failure(s) equal their target as a number; the scorer may be rejecting a correct value in the wrong form |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | tool calls are not redundant | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -155,12 +192,31 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | warn | the number survives changing the seed | 4 | 2 of 4 model(s) move between seeds by more than the item sample explains; that much of the headline number belongs to the seed |
 | skip | the number survives re-phrasing the instruction | 0 | no template probe on disk; run `dinostomp run <spec> --probe template` to unlock |
 | skip | the fleet ORDERING survives re-phrasing the instruction | 0 | no template probe on disk; run `dinostomp run <spec> --probe template` to unlock |
+| skip | the fleet varies on one axis, not a blend of abilities | 0 | 4 model(s) x 294 common item(s); need 6+ models and 5+ items to unlock |
+| n/a | declared subskills actually separate in the responses | 0 | no item declares a `subskill`; there is no partition to test |
+
+Re-derive this report from the directory holding the target: `dinostomp stomp eval.yaml`
 
 ### Receipts
 
+<details><summary>[ok] the answer key is not dominated by one value</summary>
+
+- evidence: `{"modal_share": 0.03, "modal_value": "5", "n_distinct": 351}`
+
+</details>
+<details><summary>[ok] the audit covers the rows it was given</summary>
+
+- evidence: `{"dropped_share": 0.0, "gate": 0.01, "rows_audited": 1319, "rows_dropped": 0, "rows_read": 1319}`
+
+</details>
 <details><summary>[ok] witnesses kill the mutant scorers</summary>
 
 - evidence: `{"killed": ["always-pass", "always-fail", "prefix-lenient", "uncheckable-credit"], "not_applicable": ["case-blind", "space-blind", "substring-lenient", "negation-blind"]}`
+
+</details>
+<details><summary>[ok] a correct answer survives its surface form</summary>
+
+- evidence: `{"baseline_form": "labelled", "held": ["trailing-punctuation", "surrounding-whitespace", "markdown-emphasis", "label-case", "keyword-in-prose", "reasoning-prefix"], "not_applicable": ["answer-case", "decoy-in-working"]}`
 
 </details>
 <details><summary>[FAIL] runs match the spec, data, and scorer on disk (no drift)</summary>
@@ -279,7 +335,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 
 ## Provenance
 
-- tool: dinostomp 0.61.0
+- tool: dinostomp 0.62.0
 - statistical power: at n=120 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~18% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `e4434ae46b201444323f04e3a651d6aeb0e163130067bc83e14cd5fef649a39a`
 - data_sha256: `168ff4314b8164161ce2f6137ca4b2a3805c5509ad5a89152a6b3d3c090371cc`

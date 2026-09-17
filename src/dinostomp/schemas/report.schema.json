@@ -394,6 +394,11 @@
                 "note": {
                   "type": "string",
                   "description": "one short line of context, e.g. `duplicate group 3 of 12`"
+                },
+                "excerpt": {
+                  "type": "string",
+                  "maxLength": 200,
+                  "description": "A bounded glimpse of the field the ref points at (the question, the option list joined with ` | `, the key), so a viewer can show what the item says. The dataset is the record; this is not."
                 }
               }
             }

@@ -2,6 +2,18 @@
 
 ### Unreleased
 
+- **Refs carry an `excerpt`.** Each ref now holds a bounded glimpse (200
+  characters) of the field it points at: the question, the option list joined
+  with ` | `, or the key. Emitted by the engine per ref, so a viewer can show
+  what an item says without opening the dataset or inferring anything. Schema
+  and contract tests updated; a test plants a 2000-character question and
+  checks the bound.
+- **Fixed: `STOMP.md` never carried `measures the intended construct: NOT
+  ESTABLISHED BY DINOSTOMP`**, although the CLI, the JSON and the README all say
+  every report does. It does now, under the verdict line.
+- The HTML viewer that briefly lived here moved to its own repository. The
+  engine keeps the report contract it renders from.
+
 - **Report contract for a viewer: `stage`, `refs`, `reproduce`.** Every finding
   now names the pipeline boundary it reads (`data`, `runner`, `records`, `scorer`,
   `aggregate`, `claim`, `tool`), assigned per check id in the engine and never

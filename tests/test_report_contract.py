@@ -90,6 +90,26 @@ def test_gating_dataset_checks_emit_item_refs(tmp_path):
         assert all(r["id"] in known for r in refs), f"{cid} names an id that is not in the dataset"
         assert ids <= {r["id"] for r in refs}, (cid, refs)
         assert all(r["field"] == field for r in refs), cid
+        assert all(r.get("excerpt") for r in refs), f"{cid} refs carry a glimpse of the field"
+    s5 = finding(report, "S5")["refs"][0]
+    assert s5["excerpt"] == " | ".join(items[1]["choices"]), "the option list, as offered"
+    s6 = finding(report, "S6")["refs"][0]
+    assert s6["excerpt"] == "not-offered", "the key that is not on the list"
+    assert validate_obj(report, "report") == []
+
+
+def test_excerpts_are_bounded(tmp_path):
+    from dinostomp.lint import EXCERPT_CHARS
+
+    items = choice_items()
+    long = "word " * 400
+    items.append(dict(items[0], id="dup-of-c0", input=long))
+    items[0]["input"] = long
+    report, issues, _ = lint_dataset(write_jsonl(tmp_path / "d.jsonl", items))
+    assert report is not None, issues
+    for r in finding(report, "S1")["refs"]:
+        assert len(r["excerpt"]) <= EXCERPT_CHARS
+        assert r["excerpt"].endswith("…")
     assert validate_obj(report, "report") == []
 
 
