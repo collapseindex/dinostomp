@@ -1495,6 +1495,9 @@ the whole evaluation set rather than within a batch, or blank the context, and
 report both, since they answer different questions ("wrong page" against "no
 page"). Reproduction: `audits/jevlike/`.
 
+
+**Filed 2026-09-17** as [vinnylarouge/jevlike#1](https://github.com/vinnylarouge/jevlike/issues/1), the repository's first issue, with the leak script, the checkpoint and both run records linked. Audit: `audits/jevlike/`.
+
 ---
 
 ### F-029
