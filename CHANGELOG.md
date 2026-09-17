@@ -8,8 +8,8 @@
   page is where the score comes from. Jevlike's own shuffled-context control
   rolls within a batch on a target-bucketed, path-ordered split, so 39.4% of
   "wrong" pages name the right target; it reads 14.9% where a blank page reads
-  5.0%. `audits/jevlike/` carries the pod, the checkpoint and the leak
-  measurement.
+  5.0%. `audits/jevlike/` carries the pod and the checkpoint; the leak
+  script and its picture were removed after `122b708` and live there.
 - **Fixed: option labels overflowed past Z (D-097).** `render_choices` labelled
   option 27 with `[` and option 59 with a control character. Labels now follow
   spreadsheet column order (A..Z, AA..), from the one `col_letter` the XL

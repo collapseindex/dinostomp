@@ -1472,7 +1472,9 @@ useful model should beat it. The control is `context.roll(1, dims=0)` inside
 each batch of 64, so the wrong page is the page of the row before. On the
 Wikispeedia split its own script builds, rows are bucketed by target article
 and written in path order: 314 targets over 4,373 test rows, up to 149 rows
-per target. Measured with `audits/jevlike/control_leak.py`: **39.4% of
+per target. Measured with `control_leak.py` as committed at `122b708` (the
+script and its picture were removed from `audits/jevlike/` afterwards and
+live in that commit): **39.4% of
 shuffled partners carry the same `Target article:` line**, the most
 informative line in the context; 5.8% are the same current page; a random
 permutation within the batch would leak 7.2%.
@@ -1501,7 +1503,7 @@ split are the same, so the direction of the bias is.
 Fix, stated for the maintainer rather than made here: permute contexts across
 the whole evaluation set rather than within a batch, or blank the context, and
 report both, since they answer different questions ("wrong page" against "no
-page"). Reproduction: `audits/jevlike/`.
+page"). Reproduction: `audits/jevlike/` at `122b708`.
 
 
 **Filed 2026-09-17** as [vinnylarouge/jevlike#1](https://github.com/vinnylarouge/jevlike/issues/1), the repository's first issue, with the leak script, the checkpoint and both run records linked. Audit: `audits/jevlike/`.

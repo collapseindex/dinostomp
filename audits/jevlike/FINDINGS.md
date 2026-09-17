@@ -7,10 +7,12 @@
                 CPU, seed 42, best validation NLL 3.150, about nine minutes
     runs        2026-09-17, four arms x (informed, blind), 6,000 hosted calls, $0.19
 
-Ledger entries [F-051](../../FINDINGS.md#f-051), [N-034](../../FINDINGS.md#n-034),
+Ledger entries [N-034](../../FINDINGS.md#n-034) and
 [N-035](../../FINDINGS.md#n-035), and two defects the hosted arms found in
 dinostomp itself, [D-097](../../FINDINGS.md#d-097) and
-[D-098](../../FINDINGS.md#d-098).
+[D-098](../../FINDINGS.md#d-098). The control-leak material that used to sit
+here ([F-051](../../FINDINGS.md#f-051)) was removed; it is in the history at
+`122b708`.
 
 A Jev-like model takes a context and a list of options and returns one
 probability per option in a single pass. Its whole job is to extract signal
@@ -125,45 +127,6 @@ billed in full ([D-098](../../FINDINGS.md#d-098)); the spec gained
 `params.reasoning_effort`. Both fixed before the paid run, both in the
 engine's own ledger.
 
-## The control is the finding
-
-Jevlike's evaluator prints a shuffled-context control: each menu scored
-against a *wrong* page, on the reasoning that a useful model should beat it.
-On this checkpoint the control reads **14.9%** top-1. The blind run above,
-with **no** page, reads **5.0%**. Those should be close, and they are not,
-and the reason is mechanical:
-
-- The control is `context.roll(1, dims=0)` inside each batch of 64: every
-  menu is paired with the page of the row before it.
-- The test split is bucketed by target article (all rows for one target land
-  in one split) and written in path order. 314 targets cover 4,373 rows; the
-  largest target has 149 rows.
-- So the "wrong" page is the page of a neighbour, and neighbours share
-  targets: **39.4% of shuffled partners carry the same `Target article:`
-  line**, which is the most informative line in the context. Same current
-  page, 5.8%. A random permutation within the batch would leak 7.2%; a
-  permutation across the split, or a blanked context, would not leak at all.
-
-On the same 1,000 sampled items, in their original order, Jevlike's evaluator
-reads informed 29.8% (identical to the dinostomp run) and shuffled-context
-11.7%; the leak on that subset is 17.9%, lower than the full split's 39.4%
-because sampling one row in four breaks the runs of same-target neighbours.
-The blank-page run is 5.0% either way. So the four numbers that belong on one
-picture, all on identical items: uniform 3.6%, no page 5.0%, their control
-11.7%, informed 29.8%.
-
-The control therefore measures "the model given the right target and a wrong
-page" for two rows in five, and the number it prints is the model's real
-lift understated: 27.0 against 14.9 reads as twelve points of signal, when
-27.0 against 5.0 is twenty-two. The README's "about 8% for shuffled and
-random-encoder controls" was measured on a different checkpoint and is not
-re-derived here; the mechanism is the same evaluator and the same split, so
-the direction of the bias is.
-
-Direction: **against the model, in the control's favour.** A control that
-leaks the answer's most useful feature is not a stricter test; it is a
-different test with a flattering name.
-
 ## Honest scoping
 
 - One checkpoint, trained here, three epochs. Nothing is claimed about
@@ -192,13 +155,11 @@ different test with a flattering name.
   test split) is not committed for size; its SHA-256 is in every run
   manifest as `data_sha256`, and `build_pod.py` regenerates it byte for byte.
 
-## Pictures
+## Picture
 
-`control_leak.png` (from `chart.py`): the four one-pass numbers on identical
-items, uniform / no page / their control / informed. `four_models.png` (from
-`models_chart.py`): the four arms with and without the page. Both scripts
-carry their numbers typed from this file, so a picture cannot drift from the
-text without somebody noticing.
+`four_models.png` (from `models_chart.py`): the four arms with and without
+the page. The script carries its numbers typed from this file, so the picture
+cannot drift from the text without somebody noticing.
 
 ## Reproduce
 
@@ -211,7 +172,6 @@ cp <dinostomp>/audits/jevlike/{examinee.py,eval.yaml,score.py,wikispeedia.pt} <p
 export OPENROUTER_API_KEY=...                      # three hosted arms; about $0.20 for both sweeps
 cd <pod> && dinostomp run eval.yaml && dinostomp run eval.yaml --probe blind
 dinostomp report eval.yaml --trust-code
-python <dinostomp>/audits/jevlike/control_leak.py <jevlike>/data/wikispeedia/jsonl/test.jsonl
 ```
 
 `wikispeedia.pt` is the checkpoint used here (168 KB), so the one-pass arm
