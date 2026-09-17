@@ -1,0 +1,40 @@
+{
+  "tool_version": "0.63.0",
+  "tool_sha256": "e389083f8c95bc545b242b2fc2f66b3a9be024d61153da196e51689b2aa8719c",
+  "spec_name": "jevlike-wikispeedia",
+  "spec_version": "0.1.0",
+  "spec_sha256": "0abe0f974be7a1a1adba67d2085ce58fe8690834bc084fa921173c423a4e8fcd",
+  "data_sha256": "8423ec7c5c9693d451f46b6f153f52262d3b01ec736efe53aaf9cd164cd6ae18",
+  "provider": "python",
+  "model": "jevlike-scratch-3ep",
+  "seed": 42,
+  "n_items": 1000,
+  "repeats": 1,
+  "dry_run": false,
+  "budget_cap_usd": 0.0,
+  "rate_in_per_mtok": 0.0,
+  "rate_out_per_mtok": 0.0,
+  "witness_report": {
+    "n_witnesses": 6,
+    "n_behaved": 6,
+    "verdict": "validated"
+  },
+  "env": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "dinostomp": "0.63.0",
+      "jsonschema": "4.25.1",
+      "PyYAML": "6.0.2"
+    }
+  },
+  "started_at": "2026-09-17T10:49:02.206875+00:00",
+  "status": "complete",
+  "target_sha256": "4b39b66e855147ba8863394a5d95ef2ed8e7d9abaeb2984624db6cbe63526c02",
+  "trajectory_source": "self_reported",
+  "model_reported": "jevlike-scratch-3ep",
+  "spend_usd": 0.0,
+  "spend_source": "metered",
+  "finished_at": "2026-09-17T10:49:08.864069+00:00",
+  "run_file": "20260917_104902_jevlike-wikispeedia_jevlike-scratch-3ep_n1000_s42.jsonl"
+}

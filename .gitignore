@@ -11,6 +11,12 @@ data/
 !examples/*/data/**
 !benchmarks/*/data/
 !benchmarks/*/data/**
+# An audit pod's RUN RECORDS are the receipt the audit stands on, so they
+# survive the blanket rule too; only runs/, so anything an audit downloads
+# into data/ stays out. audits/jevlike carries 2,000 records this way.
+!audits/*/data/
+!audits/*/data/runs/
+!audits/*/data/runs/**
 .DS_Store
 
 # Secrets: never committed, in any repo, ever. API keys live in the
