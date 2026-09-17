@@ -77,6 +77,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-047](#f-047) | CUDA-Agent-Ops-6K | 352 of 6,000 synthesised training samples are byte-identical repeats, leaving 5,648 distinct; the pipeline's own AST similarity was pointed only outward | confirmed, minor |
 | [F-048](#f-048) | CUDA-Agent-Ops-6K | 550 of 5,929 rows (9.3%) declare an operator absent from their own code, mostly dimensionality swaps (ConvTranspose1d declared, ConvTranspose3d written) | confirmed, minor |
 | [F-049](#f-049) | CUDA Agent reward harness | the anti-reward-hacking guard patches `dir(F)`, so 11 of 13 routes to a torch operator survive it, including any name imported before it runs | confirmed, scoped |
+| [F-050](#f-050) | Damodaran ctryprem (Jan 2026) | a saved `#REF!` and a neighbour-row misreference in an auxiliary block on the CDS sheet, plus 229 by-design `#N/A`; the published premiums do not read that block | confirmed, no downstream effect |
 | [F-029](#f-029) | ASDiv | one word problem present twice | confirmed, minor |
 | [D-080](#d-080) | dinostomp | the number reader rejected every value over 999, producing a false alarm and a miss from one pattern | confirmed, fixed |
 | [D-081](#d-081) | dinostomp | a category check measured distinctness on raw values, so the defect it looks for hid it | confirmed, fixed |
@@ -92,6 +93,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-091](#d-091) | dinostomp | the fix for D-089 ranked tables by declared height and chose one whose every cell was an uncalculated formula | confirmed, fixed |
 | [F-018](#f-018) | MMLU-Redux 2.0 | two verbatim double-keyed items the human annotators marked `ok` | confirmed |
 | [D-092](#d-092) | dinostomp | XL6 reported 36 calculated formulas as never calculated because their answer was the empty string, which openpyxl reads as the same None as no result; the cell type tag now tells them apart | confirmed, fixed |
+| [D-093](#d-093) | dinostomp | XL5 gated on two stacked-table layouts, reaching past a blank row into an unrelated table; an aggregate's obligation is now bounded to its contiguous block | confirmed, fixed |
+| [D-094](#d-094) | dinostomp | a chart sheet raised inside the structure loader and every XL check reported skipped | confirmed, fixed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
 | [F-021](#f-021) | MATH-500 | 2 problems whose answer is written in the question | confirmed, scoped |
@@ -119,6 +122,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-020](#n-020) | public HF datasets | pilot sweep: 27% carry a gating finding, and the audit refused to guess a mapping on 37% | measured, pilot |
 | [N-031](#n-031) | CUDA-Agent-Ops-6K | CUDA Agent's decontamination holds under an independent instrument (0 of 6,000 overlap KernelBench); the control shows a size-retuned copy is invisible at jaccard 0.993 | measured |
 | [N-032](#n-032) | Reinhart-Rogoff | the working spreadsheet holding the L30:L44 error was never public; the HAP archive's RR.xls has 3,637 formulas and no averaging sheet, so range-short has nothing to run on, and the README anecdote is not a reproduction | negative |
+| [N-033](#n-033) | SEC FSDS 2026q2 | pre.txt joins sub.txt on adsh with 785,490 of 785,490 rows matched, one to one; sub.txt carries only filer-address hygiene | negative |
 | [N-021](#n-021) | dinocorpus | the corpus now varies shape, not just class, and the covered arm drops to 98% | measured |
 | [N-007](#n-007) | lm-eval-harness log | both reported metrics re-derive from the raw log-probs | negative |
 | [N-008](#n-008) | dinostomp | an even `run.repeats` reported p-squared, not p | measured, fixed |
@@ -268,13 +272,13 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [F-048](#f-048), [F-049](#f-049), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-032](#n-032), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [F-048](#f-048), [F-049](#f-049), [F-050](#f-050), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [D-093](#d-093), [D-094](#d-094), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-032](#n-032), [N-033](#n-033), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [D-080](#d-080), [D-081](#d-081), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-085](#d-085), [D-086](#d-086), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078), [D-079](#d-079) |
+| dinostomp | [D-080](#d-080), [D-081](#d-081), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-085](#d-085), [D-086](#d-086), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [D-093](#d-093), [D-094](#d-094), [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078), [D-079](#d-079) |
 | dinocorpus | [N-021](#n-021), [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | AISafetyLab | [F-033](#f-033), [F-034](#f-034), [F-035](#f-035) |
 | CUDA-Agent-Ops-6K | [F-047](#f-047), [F-048](#f-048), [N-031](#n-031) |
@@ -299,6 +303,7 @@ at fault.
 | CNN/DailyMail | [F-045](#f-045) |
 | CommonsenseQA | [F-008](#f-008) |
 | CUDA Agent reward harness | [F-049](#f-049) |
+| Damodaran ctryprem (Jan 2026) | [F-050](#f-050) |
 | DeepSWE v1.1 | [N-025](#n-025) |
 | dinostomp-aei | [D-050](#d-050) |
 | DROP | [F-020](#f-020) |
@@ -327,6 +332,7 @@ at fault.
 | QuaRTz | [F-027](#f-027) |
 | RACE | [F-022](#f-022) |
 | Reinhart-Rogoff | [N-032](#n-032) |
+| SEC FSDS 2026q2 | [N-033](#n-033) |
 | six dataset pairs | [N-004](#n-004) |
 | SNLI, SST-2 | [N-027](#n-027) |
 | SQuAD v2 | [F-042](#f-042) |
@@ -1402,6 +1408,51 @@ enough).
 
 ---
 
+### F-050
+**Damodaran's country risk premium workbook saves a `#REF!` and a neighbour-row misreference in a block nothing reads**
+`formula-error` (XL2) · 2026-09-17 · confirmed, no downstream effect
+
+`ctryprem.xls`, the January 2026 update of Aswath Damodaran's country equity
+risk premiums (NYU Stern; served with `Last-Modified` 27 Jan 2026, sha256
+`66135df68bc4c8830830a29f9017f848968d85712ff7ba2627c8355d04fae784`), is
+probably the most-downloaded finance workbook on the internet: eighteen sheets,
+11,291 formulas, and the source of the premiums that valuation courses and
+practitioners copy into their own models. XL2 gates on it: 230 saved error
+values.
+
+229 are `#N/A`, and those are by design: `VLOOKUP`s for countries with no
+sovereign CDS return an error rather than the `"NA"` string the rest of the
+workbook uses for missing, so sixteen countries' CDS-based premiums read as
+errors to anything importing the sheet. Worth knowing before you `read_excel`
+it; not a mistake.
+
+One is not by design. On `10-year CDS Spreads`, an auxiliary block in
+columns H:J lists countries with their spread and their spread net of
+Switzerland. Row 91 (Romania) reads `=IF(#REF!="NA","NA",IF(#REF!<$I$103,0,#REF!-$I$103))`:
+a deleted reference, saved. The row beneath it (Russia, J92) reads `I91`, the
+row above, so Russia's "net of Swiss" value in that block is Romania's spread
+minus the Swiss one, 0.0197. Every other row in the column reads its own.
+
+**What it costs a reader: nothing, as far as the published numbers go, and the
+entry says so.** The premiums that leave the workbook come from column D of
+that sheet (`=IF(C="NA","NA",IF(C>$C$139,C-$C$139,0))`, computed correctly from
+column C), reached by 315 `VLOOKUP`s on `$A$2:$D$158`. No formula anywhere in
+the workbook reads columns H, I or J of that sheet. The block is scratch that
+shipped. So this is a saved error and a wrong cell in a published artifact,
+found by a check that exists to find exactly that, with no effect on any
+number anyone copies out. Both halves are stated because a finding that
+implied the premiums were wrong would be the more shareable one, and false.
+
+Two more XL5 gates fired on this workbook and both were the tool's fault:
+[D-093](#d-093).
+
+Reproduce: `audits/damodaran-ctryprem/`. The file is a legacy `.xls`, which
+openpyxl cannot open; `convert_xls.py` there saves it as `.xlsx` through an
+installed Excel (LibreOffice headless does the same), then
+`dinostomp stomp ctryprem.xlsx`.
+
+---
+
 ### F-029
 **ASDiv · one word problem present twice**
 `dup-questions` (S1) · 2026-08-11 · confirmed, minor
@@ -1775,6 +1826,67 @@ workbook that openpyxl cannot open, so it was saved as `.xlsx` by Excel 2013
 with calculation left automatic, and `dinostomp stomp RR.xlsx` was run before
 and after the fix. Before: `uncalculated` warns on 36 of 3,637. After: all
 3,637 carry a cached result.
+
+---
+
+### D-093
+**XL5 gated twice on a workbook whose only fault was stacking two tables in one column**
+`range-short` (XL5) · 2026-09-17 · confirmed, fixed
+
+Found on [F-050](#f-050)'s workbook. `Relative Equity Volatility!B7 =
+AVERAGE(B2:B6)` is the mean of five annual volatilities in a summary block at
+the top of the sheet; row 8 is blank; row 9 begins the source notes and then
+1,265 rows of daily index closes in the same column. XL5 reported the average
+as "excluding 1,265 rows from a total that presents itself as complete". On
+`Regional Weighted Averages`, `B32 = SUM(B2:B31)` is the Africa subtotal in a
+stack of regional subtotals that between them cover every country row, which
+the check already understood; it then reached past two blank rows into the
+weighted-average tables at rows 170, 183 and 197 and gated on those.
+
+The rule was "every populated row below the range, in this column, that no
+aggregate covers". The rows past a blank row are not below the range in any
+sense the sheet's author would recognise; they are a different table. The
+rule is now bounded to the contiguous block: the walk down from the range
+stops at the first row that is blank across the whole sheet. Not blank in
+that column alone, because a missing value inside a table is not a table
+boundary, and stopping there would hide the rows beneath it. Formula cells
+are skipped as before.
+
+Direction: **against the file**, twice, on a gating check, on a workbook a
+great many people would have recognised as ordinary. The Reinhart-Rogoff
+column was contiguous from L30 to L49 and is still gated; a test pins that a
+missing value in the aggregated column with the rest of its row populated
+does not end the table.
+
+---
+
+### D-094
+**A chart sheet took every XL check down with it**
+`workbook structure` · 2026-09-17 · confirmed, fixed
+
+`histretSP.xls`, Damodaran's historical returns workbook (served with
+`Last-Modified` 24 Aug 2026, sha256
+`28b8110916a15a4dcc11c87c6422510704608ddedcdfa67a1298abdc22e49c69`), has 24
+sheets, five of them charts. The structure loader indexed each sheet by name
+and read `max_row` off it; a chart sheet has no cells and no `max_row`, so the
+loader raised, and the report said:
+
+```
+[skip] 6 core check(s), all for the same reason: could not read the workbook
+       structure: AttributeError: 'Chartsheet' object has no attribute 'max_row'
+INCOMPLETE AT DATA SCOPE: 6 check(s) could not run
+```
+
+Skipping loudly was the right behaviour for a loader that cannot read a file.
+It was the wrong outcome here, because the file was readable and the six
+checks had 6,056 formulas to look at. The loader now steps over any sheet
+without cells, and the fallback region picker does the same, so a workbook
+with charts is audited as the workbook it is.
+
+Direction: **silence**. Not a false alarm and not a false pass: six checks
+declined to run on a file that carried everything they needed. The verdict
+said INCOMPLETE rather than SOUND, which is the design working, and it is
+still a defect that a chart on sheet three switches off the auditor.
 
 ---
 
@@ -2567,6 +2679,40 @@ What the public files do contain, put through the table audit:
 Recorded as a negative because it is the honest shape of the story: the most
 famous spreadsheet error in economics is not available to be checked, and the
 one public artifact near it broke the tool rather than the other way round.
+
+---
+
+### N-033
+**SEC's Financial Statement Data Set joins cleanly: 785,490 presentation rows, every one matches exactly one filing**
+`join-viable` (JN1) · 2026-09-17 · negative
+
+The 2026 Q2 release of the SEC's Financial Statement Data Sets (sha256
+`d7c815395cd420cfbe09b29dbae73a45406c5d0652d5ae1859ae11ea2e22df77`, 60 MB) is
+four tab-separated tables meant to be joined on `adsh`, the accession number.
+`pre.txt` (785,490 rows) against `sub.txt` (7,714 filings), keys stated:
+
+```
+[ok]   join-viable          785490 of 785490 left row(s) find a match
+[ok]   orphan-rows          every one of 785490 left row(s) matches a right row
+[ok]   key-normalisation    0 orphan value(s) are genuinely absent
+[ok]   parent-key-unique    the right key is unique across 7714 value(s)
+[ok]   join-fanout          785490 left row(s) become 785490 after an inner join (1.00x)
+[ok]   key-type-drift       both keys are text
+JOIN SOUND
+```
+
+Recorded because a clean join on a release this size is the result the JN
+series should produce on a well-run registry, and saying so is the control for
+the times it does not. `num.txt` (3.6 million rows, 600 MB) was not joined;
+the audit loads a table into memory and that one is a different budget.
+
+`sub.txt` on its own: five warnings, none a defect. Leading zeros in `sic`,
+`zipba`, `zipma`, `ein` and `fye` are correct as text and the check says so;
+ZIP+4 values and hyphen-trailing ZIPs read as text in a numeric column; a
+handful of `N/A`, `NONE`, `NIL` and `.` stand in for missing addresses; and
+city and suite lines split by case (`HOUSTON` and `Houston`, 1,623 labels
+collapsing to 1,604). Filer-supplied address text, not registry data, and not
+worth a line beyond this one.
 
 ---
 
@@ -5721,12 +5867,12 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **49** |
+| findings in other people's evals (**F**) | **50** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 16 (F-001 to F-004, F-008 to F-013, F-041 to F-046) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **32** |
-| defects in dinostomp itself (**D**) | **92** |
+| negative results, recorded rather than dropped (**N**) | **33** |
+| defects in dinostomp itself (**D**) | **94** |
 
 Ninety-one to forty-nine. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to

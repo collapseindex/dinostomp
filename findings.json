@@ -6,13 +6,13 @@
   "tool": {
     "name": "dinostomp",
     "version": "0.62.0",
-    "engine": "a15114a82452fc7fd0eb2c5c5592d5c4cc9d31552dcf3925d585cce0297fa81e"
+    "engine": "0393bc9098b92ed5f67b5a0c2f4293c1e35077bd923e03940f7b8d7ea1a3eac9"
   },
   "counts": {
-    "F": 49,
-    "D": 92,
-    "N": 32,
-    "total": 173
+    "F": 50,
+    "D": 94,
+    "N": 33,
+    "total": 177
   },
   "series": {
     "F": "other people's evals",
@@ -769,6 +769,23 @@
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-049"
     },
     {
+      "id": "F-050",
+      "series": "F",
+      "series_name": "other people's evals",
+      "title": "Damodaran's country risk premium workbook saves a `#REF!` and a neighbour-row misreference in a block nothing reads",
+      "summary": "a saved `#REF!` and a neighbour-row misreference in an auxiliary block on the CDS sheet, plus 229 by-design `#N/A`; the published premiums do not read that block",
+      "subject": "Damodaran ctryprem (Jan 2026)",
+      "check_label": "`formula-error` (XL2)",
+      "checks": [],
+      "date": "2026-09-17",
+      "date_iso": "2026-09-17",
+      "date_precision": "day",
+      "status": "confirmed, no downstream effect",
+      "status_class": "confirmed",
+      "anchor": "#f-050",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-050"
+    },
+    {
       "id": "F-029",
       "series": "F",
       "series_name": "other people's evals",
@@ -1035,6 +1052,40 @@
       "status_class": "confirmed",
       "anchor": "#d-092",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-092"
+    },
+    {
+      "id": "D-093",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "XL5 gated twice on a workbook whose only fault was stacking two tables in one column",
+      "summary": "XL5 gated on two stacked-table layouts, reaching past a blank row into an unrelated table; an aggregate's obligation is now bounded to its contiguous block",
+      "subject": "dinostomp",
+      "check_label": "`range-short` (XL5)",
+      "checks": [],
+      "date": "2026-09-17",
+      "date_iso": "2026-09-17",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-093",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-093"
+    },
+    {
+      "id": "D-094",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "A chart sheet took every XL check down with it",
+      "summary": "a chart sheet raised inside the structure loader and every XL check reported skipped",
+      "subject": "dinostomp",
+      "check_label": "`workbook structure`",
+      "checks": [],
+      "date": "2026-09-17",
+      "date_iso": "2026-09-17",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-094",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-094"
     },
     {
       "id": "F-019",
@@ -1531,6 +1582,23 @@
       "status_class": "negative",
       "anchor": "#n-032",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-032"
+    },
+    {
+      "id": "N-033",
+      "series": "N",
+      "series_name": "negative results",
+      "title": "SEC's Financial Statement Data Set joins cleanly: 785,490 presentation rows, every one matches exactly one filing",
+      "summary": "pre.txt joins sub.txt on adsh with 785,490 of 785,490 rows matched, one to one; sub.txt carries only filer-address hygiene",
+      "subject": "SEC FSDS 2026q2",
+      "check_label": "`join-viable` (JN1)",
+      "checks": [],
+      "date": "2026-09-17",
+      "date_iso": "2026-09-17",
+      "date_precision": "day",
+      "status": "negative",
+      "status_class": "negative",
+      "anchor": "#n-033",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-033"
     },
     {
       "id": "N-021",

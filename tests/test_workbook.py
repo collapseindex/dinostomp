@@ -97,6 +97,56 @@ def test_xl5_stays_quiet_when_subtotals_between_them_cover_everything(tmp_path):
     assert levels["XL5"] == "pass", detail_for(report, "XL5")
 
 
+def test_xl5_ignores_a_separate_table_below_a_blank_row(tmp_path):
+    """D-093: a summary block with its own aggregate, a blank row, then an
+    unrelated table in the same column. Damodaran's country-risk workbook has
+    exactly this shape twice, and XL5 gated on both. An aggregate owes nothing
+    past a row that is blank across the sheet."""
+    levels, report = audit(build(tmp_path, formulas={
+        "C8": "=SUM(C2:C7)",
+        "A10": "region", "C10": "headcount",
+        "A11": "north", "C11": 40,
+        "A12": "south", "C12": 55}))
+    assert levels["XL5"] == "pass", detail_for(report, "XL5")
+
+
+def test_xl5_does_not_treat_a_missing_value_as_the_end_of_the_table(tmp_path):
+    """The boundary is a row blank across the SHEET. A blank cell in the
+    aggregated column, with the rest of its row populated, is a missing value
+    inside the table, and the rows beneath it are still owed."""
+    rows = [list(r) for r in CLEAN_ROWS]
+    rows[2][2] = None                      # row 4: qty missing, order id present
+    levels, report = audit(build(tmp_path, rows=rows, formulas={"C9": "=SUM(C2:C3)"}))
+    assert levels["XL5"] == "fail", detail_for(report, "XL5")
+    examples = next(f["examples"] for f in report["findings"] if f["id"] == "XL5")
+    assert any("5" in e and "6" in e and "7" in e for e in examples), examples
+
+
+def test_a_chart_sheet_does_not_take_the_structure_checks_down(tmp_path):
+    """D-094: a workbook with a chart sheet raised inside the loader
+    (`'Chartsheet' object has no attribute 'max_row'`) and every XL check
+    reported skipped. Damodaran's historical-returns workbook has five."""
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Orders"
+    ws.append(CLEAN_HEADER)
+    for row in CLEAN_ROWS:
+        ws.append(list(row))
+    # An EMPTY chart sheet is not round-trippable by openpyxl itself; a real
+    # chart is what a real workbook carries.
+    from openpyxl.chart import BarChart, Reference
+
+    chart = BarChart()
+    chart.add_data(Reference(ws, min_col=3, min_row=1, max_row=len(CLEAN_ROWS) + 1),
+                   titles_from_data=True)
+    wb.create_chartsheet("Chart").add_chart(chart)
+    path = tmp_path / "charts.xlsx"
+    wb.save(path)
+    levels, report = audit(path)
+    skipped = {cid for cid in WORKBOOK_CHECKS if levels.get(cid) == "skip"}
+    assert not skipped, {cid: detail_for(report, cid) for cid in skipped}
+
+
 def test_xl2_gates_on_a_saved_error_value(tmp_path):
     """A `#REF!` is a calculation that failed and was then saved and reported."""
     levels, report = audit(build(tmp_path, formulas={"D8": "#REF!"}))

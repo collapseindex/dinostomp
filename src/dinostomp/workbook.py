@@ -132,6 +132,10 @@ def load_sheets(path: str | Path) -> list[Sheet]:
     try:
         for name in wb_f.sheetnames:
             ws_f, ws_v = wb_f[name], wb_v[name]
+            if not hasattr(ws_f, "iter_rows"):
+                # A chart sheet has no cells. Indexing it as a worksheet raised
+                # and took every XL check down with it (D-094).
+                continue
             if ws_f.max_row * max(1, ws_f.max_column) > MAX_SHEET_CELLS:
                 continue
             formulas, values = {}, {}
@@ -258,7 +262,8 @@ def sheet_rows(path: str | Path, sheet_name: str | None = None) -> tuple[list[di
                 note += f". Skipped as holding no values: {', '.join(empty)}"
             return rows, notes + [note] + local
 
-        name = sheet_name or wb.sheetnames[0]
+        name = sheet_name or next((n for n in wb.sheetnames if hasattr(wb[n], "iter_rows")),
+                                  wb.sheetnames[0])
         ws = wb[name]
         if ws.max_row * max(1, ws.max_column) > MAX_SHEET_CELLS:
             return [], notes + [f"{sheets_note}; sheet {name!r} is over the "
@@ -380,6 +385,15 @@ def check_short_ranges(sheets: list[Sheet]) -> Result:
     The false positive to avoid is the legitimate subtotal, so a row is only
     orphaned if NO aggregate over that column covers it. A block of subtotals
     that between them cover every row reports nothing.
+
+    The second false positive (D-093) is the stacked sheet: a five-row summary
+    with its own AVERAGE, a blank row, then an unrelated table sharing the
+    column. The aggregate owes nothing to rows past a blank row, so its
+    obligation is bounded to the contiguous block below its range, where the
+    boundary is a row blank across the WHOLE sheet, not just in that column: a
+    missing value inside a table is not a table boundary, and treating it as
+    one would hide the rows beneath it. The Reinhart-Rogoff column was
+    contiguous, and is still gated.
     """
     covered: dict[tuple[str, int], set[int]] = defaultdict(set)
     aggregates: dict[tuple[str, int], list[tuple[str, str]]] = defaultdict(list)
@@ -408,16 +422,20 @@ def check_short_ranges(sheets: list[Sheet]) -> Result:
     for target, rows_covered in covered.items():
         sheet = next(s for s in sheets if s.name == target[0])
         populated = sheet.populated_rows_in_column(target[1])
+        rows_with_anything = {r for (r, _c), v in sheet.formulas.items()
+                              if v is not None and str(v).strip() != ""}
         # Only rows BELOW the range are the defect: a header above it is normal,
-        # and so is a label row. The aggregate's own cell never counts.
-        floor = min(rows_covered)
-        missed = {r for r in populated if r > max(rows_covered)}
+        # and so is a label row. The walk stops at the first row that is blank
+        # across the sheet (the table ended) and skips formula cells (another
+        # aggregate, or a derived column, is not an uncounted record).
+        missed: set[int] = set()
+        r = max(rows_covered) + 1
+        while r in rows_with_anything:
+            if r in populated and not _is_formula(sheet.formulas[(r, target[1])]):
+                missed.add(r)
+            r += 1
         missed -= {int(ref[1:]) for ref, _ in aggregates[target]
                    if ref[1:].isdigit()}
-        missed = {r for r in missed
-                  if sheet.formulas.get((r, target[1])) is not None
-                  and not _is_formula(sheet.formulas[(r, target[1])])}
-        del floor
         if missed:
             orphans[target] = missed
     if not orphans:

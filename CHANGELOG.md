@@ -2,6 +2,15 @@
 
 ### Unreleased
 
+- **Fixed: XL5 gated on stacked tables (D-093); a chart sheet switched off
+  the XL series (D-094).** Both found by stomping Damodaran's country-risk and
+  historical-returns workbooks. An aggregate's obligation is now bounded to
+  the contiguous block below its range (boundary: a row blank across the
+  sheet), and the loader steps over sheets that have no cells. The
+  country-risk workbook also yielded F-050, a saved `#REF!` in a block nothing
+  reads; the SEC Financial Statement Data Set joined cleanly at 785k rows,
+  N-033.
+
 - **Fixed: XL6 called a formula whose answer is the empty string "never
   calculated" (D-092).** Excel stores `=IF(x=0,"",x)` on a blank `x` as a
   string-typed cell with an empty value element; openpyxl reads that as `None`,
