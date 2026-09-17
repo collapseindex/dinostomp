@@ -887,6 +887,9 @@ the audit clones the pinned commit above.
 **Filed 2026-09-16** as [JailbreakBench/jailbreakbench#50](https://github.com/JailbreakBench/jailbreakbench/issues/50), re-verified that day against
 upstream `main` before filing. Audit script and write-up: `audits/jailbreakbench/`.
 
+
+**Re-scored 2026-09-17** by an outside, pre-registered study, [Threadborne/eval-sensitivity](https://github.com/Threadborne/eval-sensitivity) at `a88bce1`, pre-registration v1.5 (SHA-256 `7f2bd31b`), which re-judged the published JailbreakBench artifacts under the shipped and the corrected parser across six judge models, then scored the judges against 300 human labels. This defect governs the Llama Guard 1 path, whose labels are stored in the artifacts without the raw judge output, so the corrected condition could not be re-derived there and no effect size attaches to this entry. The study's headline number is under [F-032](#f-032).
+
 ---
 
 ### F-031
@@ -920,6 +923,9 @@ convention rather than one project's slip.
 **Filed 2026-09-16** as [JailbreakBench/jailbreakbench#50](https://github.com/JailbreakBench/jailbreakbench/issues/50), re-verified that day against
 upstream `main` before filing. Audit script and write-up: `audits/jailbreakbench/`.
 
+
+**Re-scored 2026-09-17** by an outside, pre-registered study, [Threadborne/eval-sensitivity](https://github.com/Threadborne/eval-sensitivity) at `a88bce1`, pre-registration v1.5 (SHA-256 `7f2bd31b`), which re-judged the published JailbreakBench artifacts under the shipped and the corrected parser across six judge models, then scored the judges against 300 human labels. The study repairs the substring half of this defect and leaves the phrase-list coverage half unrepaired as a declared non-dial, a sharper reading than the one above. The string classifier is not one of the leaderboard's judges, so no effect size attaches to this entry. The headline number is under [F-032](#f-032).
+
 ---
 
 ### F-032
@@ -950,6 +956,9 @@ these for nothing. Compare [D-025](#d-025) on our own scorer defaults and
 
 **Filed 2026-09-16** as [JailbreakBench/jailbreakbench#50](https://github.com/JailbreakBench/jailbreakbench/issues/50), re-verified that day against
 upstream `main` before filing. Audit script and write-up: `audits/jailbreakbench/`.
+
+
+**Re-scored 2026-09-17** by an outside, pre-registered study, [Threadborne/eval-sensitivity](https://github.com/Threadborne/eval-sensitivity) at `a88bce1`, pre-registration v1.5 (SHA-256 `7f2bd31b`), which re-judged the published JailbreakBench artifacts under the shipped and the corrected parser across six judge models, then scored the judges against 300 human labels. Mistral-7B answers `Unsafe.` with a capital U on 534 of its 1,637 replies, and the shipped parser scores every one of them as not jailbroken. Repairing it moves Mistral's Kendall tau against the shipped Llama-3-70B ranking from 0.31 to 0.64, its accuracy against the human labels from 0.693 to 0.737, and its recall from 0.73 to 0.98. The reference judge itself agrees with the humans 90.7% of the time, best of the nine on the table: the parser was broken; the choice of judge was not. Counts and rates checked here against the committed `analysis/calibration_report.json` and `results.jsonl` on 2026-09-17; the study's own caveats (a later-registered hypothesis, a 20% unparseable rate under the corrected parser for Mistral) are in its changelog.
 
 ---
 
