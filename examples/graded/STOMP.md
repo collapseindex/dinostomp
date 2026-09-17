@@ -133,7 +133,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 2 | 2 of 2 run(s) were produced by a different engine than the one auditing them (now 0393bc9098b92ed5); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 2 | 2 of 2 run(s) were produced by a different engine than the one auditing them (now e389083f8c95bc54); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | no failed answer numerically equals its target | 3 | 0 of 3 numeric-target failure(s) equal their target as a number; the scorer may be rejecting a correct value in the wrong form |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -210,7 +210,7 @@ Re-derive this report from the directory holding the target: `dinostomp stomp ev
 
 ## Provenance
 
-- tool: dinostomp 0.62.0
+- tool: dinostomp 0.63.0
 - statistical power: at n=6 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~81% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `35626b7ae79877606eaba59e952b7ae071b03ae1d60b3420cf1dbec092191c2e`
 - data_sha256: `0b56432c320054896104625b1a31ce453976ad63564baa96c5571ce414c9b623`

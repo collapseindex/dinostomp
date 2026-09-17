@@ -16,16 +16,21 @@ without a judge.
 ## The number that matters
 
 ```
-DINOCORPUS dev: dinostomp 0.57.1
+DINOCORPUS dev: dinostomp 0.63.0
 
   recall, classes it has a check for   100.0% of 72
-  recall, classes it does NOT            4.9% of 81
-    of which name the planted item       0.0%
-  false alarms on clean instances       15.7% of 51
+  recall, classes it does NOT          14.8% of 81
+    of which name the planted item     11.1%
+  false alarms on clean instances      15.7% of 51
 ```
 
 **Nine of the twenty-one defect classes have no corresponding check**, planted on
-purpose, and dinostomp finds none of them. That is the point. A benchmark whose
+purpose. As of 0.63.0 dinostomp finds one of them, `multiple-correct`, because
+the planter writes the second correct option as the same number in another
+spelling and S18 `numeric-dup-options`, written for
+[F-002](../FINDINGS.md#f-002), sees exactly that; the semantic form of the
+class, two genuinely different correct answers, is still invisible, and the
+other eight stay at zero ([D-096](../FINDINGS.md#d-096)). That is the point. A benchmark whose
 author scores 100% measures the author, and the blind-spot arm is what stops
 this being a marketing asset.
 

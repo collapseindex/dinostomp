@@ -1,6 +1,22 @@
 # Changelog
 
-### Unreleased
+### v0.63.0 (2026-09-17)
+
+- **Fixed: dinostomp was never on PyPI (D-095).** The v0.62.0 publish run
+  failed `invalid-publisher` (pending publisher not registered) and sat unread
+  for thirty-five days while the README said `pip install dinostomp` and the
+  Action defaulted to installing from PyPI. The publisher is registered and
+  this release is published. The Action no longer depends on the index: with
+  `version` unset it installs the git ref it was invoked at.
+- **dinocorpus re-scored under this engine (D-096).** The published scorecards
+  were twenty commits stale. S18 now clears the planted form of
+  `multiple-correct` (dev blind-spot recall 4.9% to 14.8%, strict 0% to
+  11.1%); the S2 label-set exemption costs three yes/no leaks on the shapes
+  split (covered recall 98% to 95%). Both READMEs re-quoted.
+- **Report contract for a viewer** (`stage`, `refs` with `excerpt`,
+  `reproduce`), the `summary.scope` enum fix, the D-092/D-093/D-094 workbook
+  fixes, and the findings below, all landed since v0.62.0 and are listed in
+  the entries that follow.
 
 - **Fixed: XL5 gated on stacked tables (D-093); a chart sheet switched off
   the XL series (D-094).** Both found by stomping Damodaran's country-risk and

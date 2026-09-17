@@ -1,6 +1,6 @@
 {
   "tool": "dinostomp",
-  "version": "0.62.0",
+  "version": "0.63.0",
   "target": "eval.yaml",
   "reproduce": "dinostomp stomp eval.yaml",
   "thresholds": {

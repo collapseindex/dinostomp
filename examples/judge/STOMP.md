@@ -151,7 +151,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | ok | failed answers do not contain the reference | 3 | 0 of 3 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now 0393bc9098b92ed5); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 4 | 4 of 4 run(s) were produced by a different engine than the one auditing them (now e389083f8c95bc54); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | n/a | no failed answer numerically equals its target | 0 | no failed record has a numeric target, so there is no numeric-equivalent miss to look for |
 | n/a | passing answers are grounded in tool evidence | 0 | no python target reported a trajectory and no trajectory policy is declared; this pod is not an agent eval |
@@ -274,7 +274,7 @@ Re-derive this report from the directory holding the target: `dinostomp stomp ev
 
 ## Provenance
 
-- tool: dinostomp 0.62.0
+- tool: dinostomp 0.63.0
 - statistical power: at n=26 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~39% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `414280db41465402b15aef657631b3c41dea335c4b29ee7de348d500cdc5c58d`
 - data_sha256: `ceb8609c45e8daed58a6ca30757e45bbce202303e6cb1c8324b741d2e11b24d4`

@@ -1,10 +1,10 @@
 {
   "n_scored": 252,
-  "recall_overall": 0.5873,
+  "recall_overall": 0.6455,
   "recall_covered": 1.0,
   "n_covered": 108,
-  "recall_blind_spot": 0.037,
-  "recall_blind_spot_strict": 0.0,
+  "recall_blind_spot": 0.1728,
+  "recall_blind_spot_strict": 0.1111,
   "n_blind_spot": 81,
   "false_alarm_rate_on_clean": 0.0635,
   "n_clean": 63,
@@ -51,7 +51,7 @@
     },
     "multiple-correct": {
       "n": 9,
-      "recall": 0.0
+      "recall": 1.0
     },
     "near-duplicate-asset": {
       "n": 9,
@@ -91,10 +91,10 @@
     },
     "wrong-key": {
       "n": 9,
-      "recall": 0.0
+      "recall": 0.2222
     }
   },
-  "detector": "dinostomp 0.62.0",
+  "detector": "dinostomp 0.63.0",
   "split": "heldout-assets-2026-08b",
   "answered": 252,
   "labels_sha256": "acf88203a1b36dec79a9b6cdacb38096088b52d85214d752d5a42f41c8fca507"

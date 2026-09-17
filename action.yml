@@ -25,9 +25,12 @@ inputs:
     required: false
     default: "true"
   version:
-    description: "Version spec passed to pip, e.g. 'dinostomp==0.30.0'. Pin it."
+    description: >-
+      Version spec passed to pip, e.g. 'dinostomp==0.63.0'. Leave it unset to
+      install the same git ref this Action was invoked at, which needs no
+      package index and cannot drift from the Action's own version.
     required: false
-    default: "dinostomp"
+    default: ""
 
 outputs:
   verdict:
@@ -45,7 +48,11 @@ runs:
 
     - name: install dinostomp
       shell: bash
-      run: pip install "${{ inputs.version }}"
+      # An empty `version` installs the ref the Action itself was pinned at.
+      # The default used to be the bare PyPI name, and dinostomp was not on
+      # PyPI, so the documented block failed at this step for anyone who tried
+      # it (D-095). The fallback cannot fail that way.
+      run: pip install "${{ inputs.version != '' && inputs.version || format('git+https://github.com/collapseindex/dinostomp@{0}', github.action_ref) }}"
 
     - name: record the engine that produced this verdict
       shell: bash

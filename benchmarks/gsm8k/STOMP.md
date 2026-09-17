@@ -169,7 +169,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | warn | failed answers do not contain the reference | 4 | 3 of 4 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | ok | billed output tokens match the recorded text | 4 | 0 of 4 model(s) report far more output tokens than their recorded text accounts for (expected for hidden-reasoning models; otherwise check your invoice) |
-| warn | the runs were produced by this engine | 12 | 12 of 12 run(s) were produced by a different engine than the one auditing them (now 0393bc9098b92ed5); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 12 | 12 of 12 run(s) were produced by a different engine than the one auditing them (now e389083f8c95bc54); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | no failed answer numerically equals its target | 361 | 0 of 361 numeric-target failure(s) equal their target as a number; the scorer may be rejecting a correct value in the wrong form |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
@@ -335,7 +335,7 @@ Re-derive this report from the directory holding the target: `dinostomp stomp ev
 
 ## Provenance
 
-- tool: dinostomp 0.62.0
+- tool: dinostomp 0.63.0
 - statistical power: at n=120 items, an UNPAIRED comparison (worst case p=0.5) resolves gaps down to ~18% accuracy (80% power, two-sided alpha 0.05); the paired bootstrap behind P6/C1 resolves smaller gaps when model errors overlap
 - spec_sha256: `e4434ae46b201444323f04e3a651d6aeb0e163130067bc83e14cd5fef649a39a`
 - data_sha256: `168ff4314b8164161ce2f6137ca4b2a3805c5509ad5a89152a6b3d3c090371cc`

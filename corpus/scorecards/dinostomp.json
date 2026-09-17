@@ -1,10 +1,10 @@
 {
   "n_scored": 204,
-  "recall_overall": 0.4967,
+  "recall_overall": 0.549,
   "recall_covered": 1.0,
   "n_covered": 72,
-  "recall_blind_spot": 0.0494,
-  "recall_blind_spot_strict": 0.0,
+  "recall_blind_spot": 0.1481,
+  "recall_blind_spot_strict": 0.1111,
   "n_blind_spot": 81,
   "false_alarm_rate_on_clean": 0.1569,
   "n_clean": 51,
@@ -43,7 +43,7 @@
     },
     "multiple-correct": {
       "n": 9,
-      "recall": 0.1111
+      "recall": 1.0
     },
     "no-correct-option": {
       "n": 9,
@@ -78,7 +78,7 @@
       "recall": 0.1111
     }
   },
-  "detector": "dinostomp 0.62.0",
+  "detector": "dinostomp 0.63.0",
   "split": "dev",
   "answered": 204,
   "labels_sha256": "021a18f2265b78018b24a428ee05c783659e6f60dc6a941b1b9ac4b925037e91"

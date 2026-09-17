@@ -95,6 +95,8 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-092](#d-092) | dinostomp | XL6 reported 36 calculated formulas as never calculated because their answer was the empty string, which openpyxl reads as the same None as no result; the cell type tag now tells them apart | confirmed, fixed |
 | [D-093](#d-093) | dinostomp | XL5 gated on two stacked-table layouts, reaching past a blank row into an unrelated table; an aggregate's obligation is now bounded to its contiguous block | confirmed, fixed |
 | [D-094](#d-094) | dinostomp | a chart sheet raised inside the structure loader and every XL check reported skipped | confirmed, fixed |
+| [D-095](#d-095) | dinostomp | the README said `pip install dinostomp` and the Action defaulted to PyPI while the package was never published: the one publish run failed `invalid-publisher` and nobody read it | confirmed, fixed |
+| [D-096](#d-096) | dinostomp | the dinocorpus scorecards were twenty commits stale under an unmoved version string; re-scoring showed S18 clears the planted form of `multiple-correct` and the S2 label-set rule costs three yes/no leaks on the shapes split | confirmed, fixed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
 | [F-021](#f-021) | MATH-500 | 2 problems whose answer is written in the question | confirmed, scoped |
@@ -272,13 +274,13 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [F-048](#f-048), [F-049](#f-049), [F-050](#f-050), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [D-093](#d-093), [D-094](#d-094), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-032](#n-032), [N-033](#n-033), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [F-048](#f-048), [F-049](#f-049), [F-050](#f-050), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [D-093](#d-093), [D-094](#d-094), [D-095](#d-095), [D-096](#d-096), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-032](#n-032), [N-033](#n-033), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [D-080](#d-080), [D-081](#d-081), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-085](#d-085), [D-086](#d-086), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [D-093](#d-093), [D-094](#d-094), [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078), [D-079](#d-079) |
+| dinostomp | [D-080](#d-080), [D-081](#d-081), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-085](#d-085), [D-086](#d-086), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [D-093](#d-093), [D-094](#d-094), [D-095](#d-095), [D-096](#d-096), [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078), [D-079](#d-079) |
 | dinocorpus | [N-021](#n-021), [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | AISafetyLab | [F-033](#f-033), [F-034](#f-034), [F-035](#f-035) |
 | CUDA-Agent-Ops-6K | [F-047](#f-047), [F-048](#f-048), [N-031](#n-031) |
@@ -1887,6 +1889,83 @@ Direction: **silence**. Not a false alarm and not a false pass: six checks
 declined to run on a file that carried everything they needed. The verdict
 said INCOMPLETE rather than SOUND, which is the design working, and it is
 still a defect that a chart on sheet three switches off the auditor.
+
+---
+
+### D-095
+**The README said `pip install dinostomp`, the Action installed from PyPI by default, and dinostomp was never on PyPI**
+`release plumbing` · 2026-09-17 · confirmed, fixed
+
+Found by building `dinostomp-mcp`, whose `pip install` could not resolve
+`dinostomp>=0.62.0`. `pypi.org/pypi/dinostomp/json` is a 404. `publish.yml`
+publishes on a GitHub Release through Trusted Publishing, and the one release,
+v0.62.0 on 2026-08-13, failed at the token exchange with `invalid-publisher`:
+the pending publisher had never been registered on pypi.org, so PyPI had no
+claim to match. The failed run sat in the Actions tab for thirty-five days.
+Meanwhile the README's install section said "On PyPI: `pip install
+dinostomp`", and `action.yml` defaulted `version` to the bare name `dinostomp`,
+so the copy-pasteable Action block in the README, the one under a paragraph
+about copy-pasteable blocks that fail being a credibility wound, failed at
+`pip install` for anyone who used it.
+
+Direction: **against the reader**, at the front door. No verdict was wrong;
+nobody could get far enough to see one.
+
+Two fixes, and they are deliberately independent. The publisher is registered
+and v0.63.0 is published, so the README sentence is true again. And the Action
+no longer depends on the index: with `version` unset it installs the git ref
+it was itself invoked at, which needs no package index and cannot drift from
+the Action's own version. Passing `version: "dinostomp==0.63.0"` still
+installs from PyPI for anyone who wants that.
+
+What no test caught, and why: the README claim is about an external service,
+and the consistency checker does not use the network on purpose. The honest
+guard is procedural, not automated: a release is not done until the publish
+run is green and the package resolves, and that is now the last line of the
+release checklist rather than an assumption.
+
+---
+
+### D-096
+**The published dinocorpus scorecards were twenty commits stale under a version string that never moved**
+`dinocorpus scorecards` · 2026-09-17 · confirmed, fixed
+
+The five scorecards in `corpus/scorecards/` said `dinostomp 0.62.0`. The engine
+that produced them predates S17 to S21, W4, R22, the G, XL and JN series and
+the S2 label-set exemption, all of which landed after the v0.62.0 tag with the
+version string left alone. So the stamp was true of the package and false of
+the code, and the consistency check that compares the stamp to the package
+version passed because both were wrong together. Found by cutting v0.63.0,
+which bumped the string and made the check fail for the first time.
+
+Re-scoring all five splits moved two classes, and both movements are real:
+
+- **`multiple-correct`, 1 of 9 to 9 of 9 on dev, and to all of them on every
+  split.** S18 `numeric-dup-options` (added for [F-002](#f-002), after the
+  tag) catches the form the planter writes: the second correct option is the
+  same number in another spelling. The corpus README said dinostomp "finds none"
+  of the nine blind-spot classes. It finds this one in this form; the strict
+  rate, naming the planted item, is 11.1%. The class is a blind spot only in
+  its semantic form, two genuinely different correct answers, which is still
+  invisible. The README sentence is corrected; the taxonomy is not, because the
+  planter is what a planter for this class can mechanically be.
+- **`answer-leak` on `heldout-shapes-2026-08`, 12 of 12 to 9 of 12.** The three
+  misses are the `short-answer` shape: yes/no answer sets, where S2 is now
+  n/a by the label-set exemption (`436f89c`, `e58b283`, chosen on BoolQ so a
+  label word in a question is not called a leak). A leaked "yes" in a yes/no
+  set is undetectable by construction under that rule. Covered recall on the
+  shapes split is 95.0%, not the 98% quoted before; the preprint at its pinned
+  tag keeps the number it measured.
+
+Direction: **neither**. The stale scorecards flattered nothing in particular
+and hid nothing in particular; they described an engine that no longer
+existed, under a label that said it did. A benchmark whose scorecard is not the
+engine's is a benchmark measuring a ghost.
+
+Fix: re-scored, leaderboard regenerated, both READMEs re-quoted. The guard the
+version-stamp check cannot provide is procedural and is now on the release
+checklist: any change to `lint.py` re-scores the corpus before the numbers are
+quoted anywhere.
 
 ---
 
@@ -5872,7 +5951,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **33** |
-| defects in dinostomp itself (**D**) | **94** |
+| defects in dinostomp itself (**D**) | **96** |
 
 Ninety-one to forty-nine. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to

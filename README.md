@@ -8,7 +8,7 @@
 
 **Stomp the eval. Trust the evidence.**
 
-<sub>v0.62.0 · Apache-2.0 · engine `0393bc9098b92ed5` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.63.0 · Apache-2.0 · engine `e389083f8c95bc54` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 **Find broken data, misleading scorers, and unsupported benchmark claims before you trust the score.**
 
@@ -82,15 +82,15 @@ Each of those is one entry in **[FINDINGS.md](FINDINGS.md)**, with the item id,
 the verbatim data and the command that reproduces it. Every `F` re-derives in
 seconds, offline, for free, using the reproduction command attached to each finding.
 
-**[FINDINGS.md](FINDINGS.md): 177 entries, all permanent, none deleted.**
+**[FINDINGS.md](FINDINGS.md): 179 entries, all permanent, none deleted.**
 
 | series | count | what it records |
 |---|--:|---|
 | **F** | 50 | findings in other people's evals |
-| **D** | 94 | defects in dinostomp itself |
+| **D** | 96 | defects in dinostomp itself |
 | **N** | 33 | negative results, recorded rather than dropped |
 
-**Ninety-four of the 177 are against this tool**, which is the number to
+**Ninety-six of the 179 are against this tool**, which is the number to
 read first. A validator that only publishes other people's mistakes is telling
 you which mistakes it is willing to look for. Included there: the entry it
 retracted after its own killer control killed it ([N-013](FINDINGS.md#n-013)),
@@ -104,7 +104,7 @@ graded against an answer key somebody outside this repo wrote**
 against ciFAIR's hand-annotated CIFAR-10 duplicates, and
 [N-019](FINDINGS.md#n-019) against MT-Bench's human preference votes). All three
 produced the least flattering numbers in the file, which is the argument for
-more of them. Ninety-four self-found defects is still self-grading, and that
+more of them. Ninety-six self-found defects is still self-grading, and that
 number moves when an outsider runs it rather than when the total goes up.
 [Break it, please](CONTRIBUTING.md#break-it-please).
 
@@ -532,15 +532,16 @@ written rather than a judgement about it, so it needs no annotators and no
 judge.
 
 **Nine of its twenty-one defect classes have no corresponding check here, on
-purpose.** dinostomp finds none of them:
+purpose.** dinostomp finds one of them in the form the planter writes it, and
+none of the other eight ([D-096](FINDINGS.md#d-096)):
 
 ```
-DINOCORPUS dev: dinostomp 0.62.0
+DINOCORPUS dev: dinostomp 0.63.0
 
   recall, classes it has a check for   100.0% of 72
-  recall, classes it does NOT            4.9% of 81
-    of which name the planted item       0.0%
-  false alarms on clean instances       15.7% of 51
+  recall, classes it does NOT          14.8% of 81
+    of which name the planted item     11.1%
+  false alarms on clean instances      15.7% of 51
 ```
 
 The blind-spot classes are not exotic. *The keyed answer is simply wrong* and
@@ -813,7 +814,7 @@ dinostomp stomp evals/refusal/eval.yaml --json stomp-report.json
 The packaged Action is [action.yml](action.yml):
 
 ```yaml
-- uses: collapseindex/dinostomp@v0.62.0
+- uses: collapseindex/dinostomp@v0.63.0
   with:
     target: evals/refusal/eval.yaml
 ```
@@ -823,16 +824,17 @@ It fails the job on a gated finding and posts the findings as a PR comment.
 unattended pipeline must not accept thin coverage or import a stranger's Python
 because a default said so.
 
-It installs dinostomp from PyPI by default. To pin a git ref instead, pass
-`version:`:
+With `version` unset it installs the same git ref the Action was invoked at,
+so the block above works whether or not the package index has the release. To
+install from PyPI instead, pass a pip spec:
 
 ```yaml
-    version: "git+https://github.com/collapseindex/dinostomp@v0.62.0"
+    version: "dinostomp==0.63.0"
 ```
 
 That is stated rather than hidden because a copy-pasteable block that fails for
 the first person who tries it is a credibility wound in a document whose whole
-thesis is receipts.
+thesis is receipts. It did fail, for thirty-five days: [D-095](FINDINGS.md#d-095).
 
 `dinostomp report` also writes `stomp-badge.svg`, which carries the verdict and
 its coverage fraction together (`sound 57/57`) so a badge on a README cannot
@@ -895,7 +897,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`0393bc9098b92ed5f67b5a0c2f4293c1e35077bd923e03940f7b8d7ea1a3eac9`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`e389083f8c95bc545b242b2fc2f66b3a9be024d61153da196e51689b2aa8719c`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 
@@ -904,7 +906,7 @@ fee for a new check and the rules a patch may not remove. [Apache-2.0](LICENSE).
 
 <sub>Built and maintained by one person, unfunded. If it caught something in your
 eval, [sponsorship](https://github.com/sponsors/collapseindex) buys time to keep
-pointing it at real benchmarks and publishing what it finds, including the ninety-four
+pointing it at real benchmarks and publishing what it finds, including the ninety-six
   findings against itself. Adversarial pods and bug reports are worth more than
 money and are always free:
 [break it, please](CONTRIBUTING.md#break-it-please).</sub>
