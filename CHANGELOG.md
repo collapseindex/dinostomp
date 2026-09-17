@@ -18,6 +18,11 @@
   answer spent all 256 output tokens thinking and returned an empty string,
   billed in full. Specs can now cap it (`none` to `high`); openai and
   openrouter receive it in their own shapes.
+- **Three hosted models on the Jevlike items (N-035).** Same spec, same
+  1,000 items, informed and blind: Qwen3-30B-A3B ties the from-scratch one-pass
+  scorer at 29.8%, GPT-5.6 Luna reads 22.8%, Llama-3.1-8B 17.4%; every arm
+  clears its own blind run. Four seconds and $0 against 12 to 23 minutes and
+  $0.19 all in. Pod at v0.3.0 with a label-tolerant scorer; records committed.
 
 ### v0.63.0 (2026-09-17)
 

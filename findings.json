@@ -11,8 +11,8 @@
   "counts": {
     "F": 51,
     "D": 98,
-    "N": 34,
-    "total": 183
+    "N": 35,
+    "total": 184
   },
   "series": {
     "F": "other people's evals",
@@ -1173,6 +1173,25 @@
       "status_class": "confirmed",
       "anchor": "#d-098",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-098"
+    },
+    {
+      "id": "N-035",
+      "series": "N",
+      "series_name": "negative results",
+      "title": "Three hosted LLMs on the same 1,000 Wikispeedia items: a from-scratch one-pass scorer ties the 30B model, leads the frontier model by seven points and the 8B model by twelve, in four seconds for nothing",
+      "summary": "three hosted LLMs on the same 1,000 items: Qwen3-30B-A3B 29.8%, GPT-5.6 Luna 22.8%, Llama-3.1-8B 17.4% against the one-pass scorer's 29.8%; every arm clears its own blind run; 4 s and $0 against 12 to 23 minutes and 5 to 9 cents",
+      "subject": "Jevlike (Wikispeedia)",
+      "check_label": "`input-blind` (R15)",
+      "checks": [
+        "R15"
+      ],
+      "date": "2026-09-17",
+      "date_iso": "2026-09-17",
+      "date_precision": "day",
+      "status": "measured",
+      "status_class": "measured",
+      "anchor": "#n-035",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-035"
     },
     {
       "id": "F-019",

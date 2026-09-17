@@ -1,31 +1,62 @@
 name: jevlike-wikispeedia
-version: 0.1.0
-question: "Does a one-pass Jev-like scorer, trained from scratch on Wikispeedia next-click data, choose the human's next link from the page and the menu, rather than from the menu alone?"
+version: 0.3.0
+question: "On the same 1,000 Wikispeedia next-click items, does a one-pass Jev-like scorer trained from scratch choose the human's next link from the page and the menu, and how does it compare to three generating LLMs asked the same question, on accuracy, on the blind baseline, and on cost?"
 
 entitled_claims:
-  - "Exact-match next-click accuracy with a 95% interval on a seeded 1,000-item sample of the Wikispeedia test split, for one from-scratch checkpoint."
-  - "How far that number sits above the same checkpoint's blind run, where the page is withheld and only the menu is shown."
+  - "Exact-match next-click accuracy with a 95% interval on a seeded 1,000-item sample of the Wikispeedia test split, per model."
+  - "How far each model sits above its own blind run, where the page is withheld and only the menu is shown."
+  - "Cost and output tokens per model, summed from the records."
 
 # The test split, converted one to one from Jevlike's JSONL:
 #   context -> input, options -> choices, options[label] -> target.
-data: {path: items.jsonl, format: jsonl}
+# render_choices: dinostomp appends the option block to the prompt in an order
+# it owns, and asks for the option TEXT, so the target stays invariant under
+# any presentation and R8 can re-score every record offline. The Jev-like
+# examinee reads item["choices"] directly and its byte encoder sees the first
+# 192 bytes of the context, so the appended block never reaches it.
+# Menus here run to 64 options; labels go A..Z, AA..AL (D-097 fixed the
+# overflow past Z that v0.2.0 of this pod ran into).
+data: {path: items.jsonl, format: jsonl, render_choices: true}
 
-# One examinee: the checkpoint next to this spec, loaded once. The entrypoint
-# file is hashed into every manifest; edit it after a run and the verdict goes
-# BROKEN until you re-run.
 models:
+  # One-pass: the checkpoint next to this spec, loaded once. The entrypoint
+  # file is hashed into every manifest; edit it after a run and the verdict
+  # goes BROKEN until you re-run.
   - {provider: python, model: jevlike-scratch-3ep, entrypoint: examinee.py:run}
+  # Generating: two cheap LLMs, temperature 0, answering with the option text.
+  # Prices are USD per million tokens, as OpenRouter lists them on the run date.
+  - {provider: openrouter, model: meta-llama/llama-3.1-8b-instruct,
+     price_in: 0.05, price_out: 0.08, params: {temperature: 0, max_tokens: 64}}
+  - {provider: openrouter, model: qwen/qwen3-30b-a3b-instruct-2507,
+     price_in: 0.048, price_out: 0.193, params: {temperature: 0, max_tokens: 64}}
+  # A frontier model, so the comparison is not "one pass vs the weakest LLM".
+  # Prices from OpenRouter's listing on 2026-09-17. Without reasoning_effort
+  # the 2-item smoke run spent all 256 output tokens on hidden reasoning and
+  # returned empty strings (finish_reason=length), billed in full (D-098).
+  - {provider: openrouter, model: openai/gpt-5.6-luna,
+     price_in: 0.20, price_out: 1.20,
+     params: {temperature: 0, max_tokens: 256, reasoning_effort: none}}
 
-# The scorer is exact match on the option TEXT, so the target is invariant
-# under any presentation and R8 can re-score every record offline.
+# Exact match on the option TEXT, after stripping one copied menu label.
+# v0.2.0 used the built-in exact scorer and Llama copied the label on 109 of
+# its first 132 answers ("E. Japan"), scoring 1/132: a format result, not a
+# reading result. score.py strips a leading `<A-Z>{1,2}. ` once and stays
+# strict on everything else.
 scorer:
-  kind: exact
+  kind: python
+  code: score.py
   witnesses:
     - {output: "Atlantic Ocean", target: "Atlantic Ocean", expect: pass}
+    - {output: "B. Atlantic Ocean", target: "Atlantic Ocean", expect: pass, why: "a copied menu label is presentation, not the answer"}
+    - {output: "AB. Atlantic Ocean", target: "Atlantic Ocean", expect: pass, why: "two-letter labels past Z"}
     - {output: "atlantic ocean", target: "Atlantic Ocean", expect: fail, why: "case matters; kills the case-blind mutant"}
     - {output: "Atlantic", target: "Atlantic Ocean", expect: fail, why: "a prefix is not the option"}
     - {output: "The answer is Atlantic Ocean", target: "Atlantic Ocean", expect: fail, why: "wrappers are not bare answers"}
     - {output: "not Atlantic Ocean", target: "Atlantic Ocean", expect: fail, why: "negation must not be credited"}
     - {output: "Atlantic  Ocean", target: "Atlantic Ocean", expect: fail, why: "a doubled space is a different option string; kills the space-blind mutant"}
+    - {output: "", target: "Atlantic Ocean", expect: fail, why: "an empty answer is a fail, not a pass"}
+    - {output: "P", target: "Atlantic Ocean", expect: uncheckable, why: "a bare label cannot be mapped to text without the menu; counted, not credited"}
 
-run: {n: 1000, seed: 42, budget_usd: 0}
+# The cap is a hard stop enforced by the ledger; the plan below estimates well
+# under it. Two runs (informed, blind) x three paid models.
+run: {n: 1000, seed: 42, budget_usd: 1.00}

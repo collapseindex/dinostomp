@@ -1,0 +1,40 @@
+{
+  "tool_version": "0.63.0",
+  "tool_sha256": "28bbac03bc6fc06bc21c78ba1d6fcfe0a4777e29a6b645a85e84580ebaafaca8",
+  "spec_name": "jevlike-wikispeedia",
+  "spec_version": "0.3.0",
+  "spec_sha256": "b52f65156647245ed2aa273a6badf3e21f22dd33b463e69fcdfb9aebb8808820",
+  "data_sha256": "8423ec7c5c9693d451f46b6f153f52262d3b01ec736efe53aaf9cd164cd6ae18",
+  "scorer_sha256": "9976a9e63aa1b04303b309d5ae68202b4956a893c9176cc09842b662a646c8a8",
+  "provider": "openrouter",
+  "model": "openai/gpt-5.6-luna",
+  "seed": 42,
+  "n_items": 1000,
+  "repeats": 1,
+  "dry_run": false,
+  "budget_cap_usd": 1.0,
+  "rate_in_per_mtok": 0.2,
+  "rate_out_per_mtok": 1.2,
+  "witness_report": {
+    "n_witnesses": 10,
+    "n_behaved": 10,
+    "verdict": "validated"
+  },
+  "env": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "dinostomp": "0.63.0",
+      "jsonschema": "4.25.1",
+      "PyYAML": "6.0.2"
+    }
+  },
+  "started_at": "2026-09-17T13:23:30.325965+00:00",
+  "status": "complete",
+  "probe": "blind",
+  "model_reported": "openai/gpt-5.6-luna",
+  "spend_usd": 0.015822,
+  "spend_source": "metered",
+  "finished_at": "2026-09-17T13:38:00.245162+00:00",
+  "run_file": "20260917_132330_jevlike-wikispeedia_openai-gpt-5.6-luna_n1000-blindprobe_s42.jsonl"
+}

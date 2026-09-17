@@ -100,6 +100,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-096](#d-096) | dinostomp | the dinocorpus scorecards were twenty commits stale under an unmoved version string; re-scoring showed S18 clears the planted form of `multiple-correct` and the S2 label-set rule costs three yes/no leaks on the shapes split | confirmed, fixed |
 | [D-097](#d-097) | dinostomp | the rendered option block labelled option 27 with `[` and option 59 with a control character on menus that run to 64; labels now follow spreadsheet column order | confirmed, fixed |
 | [D-098](#d-098) | dinostomp | a reasoning model spent all 256 output tokens thinking, returned an empty string and was billed in full; `params.reasoning_effort` now caps it | confirmed, fixed |
+| [N-035](#n-035) | Jevlike (Wikispeedia) | three hosted LLMs on the same 1,000 items: Qwen3-30B-A3B 29.8%, GPT-5.6 Luna 22.8%, Llama-3.1-8B 17.4% against the one-pass scorer's 29.8%; every arm clears its own blind run; 4 s and $0 against 12 to 23 minutes and 5 to 9 cents | measured |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
 | [F-021](#f-021) | MATH-500 | 2 problems whose answer is written in the question | confirmed, scoped |
@@ -256,7 +257,7 @@ at fault.
 | `R7` | [D-002](#d-002) |
 | `R8` | [N-007](#n-007) |
 | `R13` | [D-006](#d-006) |
-| `R15` | [F-051](#f-051), [N-034](#n-034), [D-006](#d-006) |
+| `R15` | [F-051](#f-051), [N-035](#n-035), [N-034](#n-034), [D-006](#d-006) |
 | `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
 | `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-044](#f-044), [F-045](#f-045), [F-046](#f-046), [F-047](#f-047), [F-029](#f-029), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
@@ -290,10 +291,10 @@ at fault.
 | CUDA-Agent-Ops-6K | [F-047](#f-047), [F-048](#f-048), [N-031](#n-031) |
 | GSM8K | [F-005](#f-005), [F-006](#f-006), [F-007](#f-007) |
 | JailbreakBench | [F-030](#f-030), [F-031](#f-031), [F-032](#f-032) |
+| Jevlike (Wikispeedia) | [F-051](#f-051), [N-035](#n-035), [N-034](#n-034) |
 | Anthropic Economic Index | [F-026](#f-026), [N-018](#n-018) |
 | four models | [N-005](#n-005), [N-006](#n-006) |
 | garak | [F-037](#f-037), [F-038](#f-038) |
-| Jevlike (Wikispeedia) | [F-051](#f-051), [N-034](#n-034) |
 | MMLU | [F-002](#f-002), [F-003](#f-003) |
 | MT-Bench / LLM-as-judge | [N-019](#n-019), [N-022](#n-022) |
 | SciQ | [F-010](#f-010), [F-013](#f-013) |
@@ -2073,6 +2074,53 @@ sent as `reasoning_effort` to openai and as `reasoning.effort` to openrouter,
 ignored by the other providers; the schema pins the enum. With `none`, the
 same model answers in seven to eight tokens. Raising `max_tokens` instead
 would have moved the cost, not removed it.
+
+---
+
+### N-035
+**Three hosted LLMs on the same 1,000 Wikispeedia items: a from-scratch one-pass scorer ties the 30B model, leads the frontier model by seven points and the 8B model by twelve, in four seconds for nothing**
+`input-blind` (R15) · 2026-09-17 · measured
+
+The comparison half of [N-034](#n-034). Same spec, same seeded 1,000 items,
+same exact-match scorer on the option text, three hosted arms added through
+OpenRouter at temperature 0: informed and blind for each, 6,000 calls, $0.19.
+Accuracy on checkable output, unpaired, 95% Wilson intervals:
+
+```
+arm                                  with the page          menu only   checkable   wall      cost
+jevlike-scratch-3ep (one pass)       29.8%  [27.0, 32.7]    5.0%        1,000       4 s       $0.00
+qwen/qwen3-30b-a3b-instruct-2507     29.8%  [26.9, 32.8]    6.4%          913       22.5 min  $0.047
+openai/gpt-5.6-luna (reasoning off)  22.8%  [20.3, 25.5]    1.4%          994       17.9 min  $0.094
+meta-llama/llama-3.1-8b-instruct     17.4%  [15.1, 20.0]    3.4%          921       11.7 min  $0.048
+uniform floor                         3.6%
+```
+
+R15 passes for every arm: each clears its own blind run, so no arm is scoring
+off the menu. The hosted blind numbers sit at or under the floor because a
+menu with no page is a prompt these models mostly decline or default on: Luna
+returned an empty string on 659 of 1,000 blind items (a fail), Llama picked
+the first option 220 times, Qwen the last 108 times.
+
+What the numbers do and do not resolve. At n=1,000 an unpaired comparison
+resolves about 6 points: the one-pass model and Qwen are indistinguishable,
+the 7-point lead over Luna is borderline, the 12-point lead over Llama is
+not in doubt. The task is to predict what a *person* clicked next, which is
+not the same as choosing the best link, so a model that reads better does
+not automatically score higher. Llama and Qwen answered with a bare menu
+letter 79 and 87 times; the scorer never sees the menu and reports those as
+uncheckable. Mapped by hand through each item's own menu order, Qwen's
+letters were right 44 times (31.6% on all 1,000) and Llama's 14 (17.4%),
+Luna's 6 all wrong: the ordering does not move. Overlap: 31 items every arm
+got, 436 no arm got; the one-pass model and Qwen share 171 correct items of
+about 300 each.
+
+Recorded as measured, not as a finding against anyone: the eval is the same
+eval, the hosted models are stock, the prompt is dinostomp's rendering with
+nothing tuned, one sample per item. The paid arms did find two defects in
+this tool on the way ([D-097](#d-097), [D-098](#d-098)), both fixed before
+the run that produced these numbers. Records, manifests and the report are
+in `audits/jevlike/`, and `dinostomp verify` re-scores every record offline
+once `build_pod.py` has rebuilt the 12 MB `items.jsonl` that is not committed.
 
 ---
 
@@ -6094,7 +6142,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 16 (F-001 to F-004, F-008 to F-013, F-041 to F-046) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **34** |
+| negative results, recorded rather than dropped (**N**) | **35** |
 | defects in dinostomp itself (**D**) | **98** |
 
 Ninety-one to forty-nine. That ratio is the useful number to publish, and it is the
