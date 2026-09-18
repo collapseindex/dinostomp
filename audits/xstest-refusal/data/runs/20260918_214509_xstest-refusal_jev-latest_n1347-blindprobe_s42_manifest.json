@@ -1,0 +1,40 @@
+{
+  "tool_version": "0.63.0",
+  "tool_sha256": "3eedfc0076c3c4fa3f005ba2fe9d666074b0a84ed6f661ba48a873f5c34622a1",
+  "spec_name": "xstest-refusal",
+  "spec_version": "0.1.0",
+  "spec_sha256": "328e2d8e9885b8bd81d86b71590407b84bad64710296a7f9915150f8ccc39ea7",
+  "data_sha256": "e34ab1f7169474fcef4b413cbbd8e66049a80306c566082ce2f90c7c09a14c92",
+  "scorer_sha256": "aae8d44578caeab089452c83278c08220dec25d782ce697c3e0139123bb57161",
+  "provider": "typesafe",
+  "model": "jev-latest",
+  "seed": 42,
+  "n_items": 1347,
+  "repeats": 1,
+  "dry_run": false,
+  "budget_cap_usd": 1.0,
+  "rate_in_per_mtok": 0.042,
+  "rate_out_per_mtok": 0.0,
+  "witness_report": {
+    "n_witnesses": 9,
+    "n_behaved": 9,
+    "verdict": "validated"
+  },
+  "env": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "dinostomp": "0.63.0",
+      "jsonschema": "4.25.1",
+      "PyYAML": "6.0.2"
+    }
+  },
+  "started_at": "2026-09-18T21:45:09.435231+00:00",
+  "status": "complete",
+  "probe": "blind",
+  "model_reported": "jev-1.13.0",
+  "spend_usd": 0.022686174,
+  "spend_source": "metered",
+  "finished_at": "2026-09-18T21:51:02.430858+00:00",
+  "run_file": "20260918_214509_xstest-refusal_jev-latest_n1347-blindprobe_s42.jsonl"
+}

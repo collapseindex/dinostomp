@@ -105,6 +105,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-099](#d-099) | dinostomp | OpenRouter answered a rate limit with HTTP 200 and an `error` body; it parsed as an empty answer, scored wrong, never retried, and GPT-5.6 Luna read 21.9% with 1,379 of 1,933 records never reaching the model; error bodies now raise and 429/5xx retry | confirmed, fixed |
 | [N-036](#n-036) | onepass (BFCL v4 live) | first run of the calibration checks on four one-pass arms: ModernBERT-base ECE 0.033, MiniLM chooser 0.078, Jev 1.13 0.081, zero-shot MiniLM 0.194 (R23 warns: says 83%, delivers 63%); every arm's confidence ranks right over wrong (AUROC 0.73 to 0.87), Jev best | measured |
 | [N-037](#n-037) | Jev 1.13 as a judge | one yes/no question per grading, no reasoning text: 104 of 104 verdicts identical to the control judge on the capitals pod, J1 100% of 16 known cases, J2 zero flips over 96 content-free regrades, J3 zero self-contradictions; the witness gate refused the first rubric because Jev read `Franc` as France at 0.64, and one added sentence moved it to 0.04 | measured |
+| [N-038](#n-038) | XSTest v2 (as a refusal-judge test) | four judges against two human annotators on 1,347 completions: Jev 90.3% with ECE 0.028, XSTest's own string matcher 87.7%, Qwen3-30B 85.9%, Llama-3.1-8B 44.8% (65.4% read leniently) and refusing to grade 145 times; every blind run on the 57.7% floor; the humans' own disagreements are where Jev's confidence drops | measured |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
 | [F-021](#f-021) | MATH-500 | 2 problems whose answer is written in the question | confirmed, scoped |
@@ -285,7 +286,7 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [F-048](#f-048), [F-049](#f-049), [F-050](#f-050), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [D-093](#d-093), [D-094](#d-094), [D-095](#d-095), [D-096](#d-096), [D-097](#d-097), [D-098](#d-098), [D-099](#d-099), [N-037](#n-037), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-032](#n-032), [N-033](#n-033), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [F-048](#f-048), [F-049](#f-049), [F-050](#f-050), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [D-093](#d-093), [D-094](#d-094), [D-095](#d-095), [D-096](#d-096), [D-097](#d-097), [D-098](#d-098), [D-099](#d-099), [N-037](#n-037), [N-038](#n-038), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-032](#n-032), [N-033](#n-033), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
 
 ### By subject
 
@@ -358,6 +359,7 @@ at fault.
 | TruthfulQA | [F-004](#f-004) |
 | tweet_eval hate | [N-029](#n-029) |
 | XNLI (Russian), emotion | [N-028](#n-028) |
+| XSTest v2 (as a refusal-judge test) | [N-038](#n-038) |
 
 <!-- XREF:END -->
 
@@ -2302,6 +2304,68 @@ of a lookup, and its probability rides on every record so R23/R24 can be
 asked of a judge the same way they are asked of an examinee. One pod, 26
 items, a rubric about spelling; the safety pods, where a judge decides
 whether a response is a refusal, are the next place to point it.
+
+---
+
+### N-038
+**A refusal judge held to human labels: Jev beats XSTest's own string matcher by 2.6 points and is calibrated to within 3, a 30B model does not beat the string matcher, and an 8B model refuses to grade 145 times**
+`R23`, `R24`, `R13`, `R15`, `R16` · 2026-09-18 · measured
+
+Every safety benchmark ends in a judge that reads a response and says
+whether the model refused. XSTest v2 (Röttger et al. 2024, CC-BY-4.0,
+`paul-rottger/xstest` at `d7bb5bd7`) ships what that judge should be graded
+against: completions from GPT-4, Llama-2 and Mistral on 450 prompts (half
+safe prompts that look unsafe, half unsafe contrasts), each labelled by two
+annotators as full compliance, full refusal or partial refusal. The pod
+(`audits/xstest-refusal/`) makes one item per completion, request and
+response in the input, the three labels as the menu, the annotators' final
+label as the target: 1,350 rows, 1,347 after the data audit caught three
+byte-identical completions (GPT-4 and Mistral wrote the same one sentence to
+v2-379, v2-388 and v2-389). Four judges, identical items, one sample each (cost is informed plus blind; Jev's at OpenRouter's listed rate, since TypeSafe publishes none):
+
+```
+judge                                  vs humans   blind    safe    unsafe   partial (80)   cost
+jev-latest (one choice question)       90.3%       57.7%    91.3%   89.2%    33.8%          $0.054 est.
+XSTest's string matcher (verbatim)     87.7%       57.7%    89.4%   85.5%     0.0%          $0
+Qwen3-30B-A3B (prompted)               85.9%       57.7%    88.2%   83.0%     8.7%          $0.018
+Llama-3.1-8B (prompted)                44.8%       57.7%    50.7%   37.3%     5.0%          $0.019
+always "compliance" (floor)            57.7%
+```
+
+Intervals are about 1.7 points either way at this n, so Jev over the string
+matcher is separated and not large, and Qwen is not separated from the
+string matcher at all. Every blind run sits on the floor (R13 passes): with
+request and response withheld, nobody can tell. `partial` is the hard
+column for everyone, and it is also the label the annotators disagreed on
+most.
+
+**Calibration.** Jev's probabilities hold up: ECE 0.028 (R23's bar is 0.10),
+mean confidence 93% against 90% accuracy, AUROC 0.83 at z 12.4 (R24). Acting
+only above 0.90 keeps 80% of the items at 96.7% agreement. The two
+annotators disagreed on 37 completions; Jev's median confidence is 1.00 on
+the 1,310 they agreed on and 0.75 on those 37, and 40% of its answers there
+fall under 0.70 against 7% elsewhere. The uncertainty lands where the humans'
+did. That is the usable part: at production scale nobody reads every
+verdict, and sorting by confidence puts the contested ones at the top.
+
+**Llama.** R7, R15 and R16 all fire on it, and they are right. 293 of its
+744 fails contain the correct label followed by an explanation the spec did
+not ask for; read leniently (first line, label stripped) it scores 65.4%,
+still under the string matcher. And 145 times it did not grade at all: "I
+can't provide information or guidance on..." about a completion it had been
+asked to classify. A safety judge that declines to look at unsafe content
+is a failure mode worth a line of its own, and it concentrates on the
+unsafe half (37.3%).
+
+Direction: **none against XSTest**; the labels held up and the pod's only
+data finding is the three duplicates, which are a property of three models
+agreeing, not of the dataset. What this records is how much a judge buys
+over a phrase list on a benchmark whose completions mostly open with stock
+refusal phrasing: 2.6 points from Jev, none from a 30B model, and a
+calibrated probability that the phrase list cannot give. R19 warns that the
+runs predate the current engine fingerprint; the engine changes since then
+are to the noul and judge paths and a new command, not to the choice path
+these runs used.
 
 ---
 
@@ -6323,7 +6387,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 16 (F-001 to F-004, F-008 to F-013, F-041 to F-046) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **37** |
+| negative results, recorded rather than dropped (**N**) | **38** |
 | defects in dinostomp itself (**D**) | **99** |
 
 Ninety-one to forty-nine. That ratio is the useful number to publish, and it is the

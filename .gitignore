@@ -48,6 +48,11 @@ benchmarks/inspect-import/*.json
 # fetch.py and compare.py are committed; what they download is not.
 benchmarks/mmlu-redux/*.jsonl
 benchmarks/mmlu-redux/.cache/
+# XSTest completions and their human labels (CC-BY-4.0, paul-rottger/xstest):
+# fetched, not vendored. build_pod.py rebuilds items.jsonl from the CSVs.
+audits/xstest-refusal/items.jsonl
+# Runs retired from an audit pod stay on the author's disk, not in history.
+audits/*/stale/
 # CIFAR-10 images. fetch.py rebuilds every one of them from the archive it
 # downloads, so committing 4,000 PNGs would vendor somebody else's dataset in
 # the least reviewable form available. The ciFAIR ANNOTATION is not committed

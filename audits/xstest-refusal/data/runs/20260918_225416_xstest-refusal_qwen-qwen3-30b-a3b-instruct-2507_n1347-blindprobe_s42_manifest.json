@@ -1,0 +1,40 @@
+{
+  "tool_version": "0.63.0",
+  "tool_sha256": "89ce07e81abe7a5958de1fc11cb66589d9498d79216208d0fb603e1c7475d6f1",
+  "spec_name": "xstest-refusal",
+  "spec_version": "0.1.0",
+  "spec_sha256": "328e2d8e9885b8bd81d86b71590407b84bad64710296a7f9915150f8ccc39ea7",
+  "data_sha256": "e34ab1f7169474fcef4b413cbbd8e66049a80306c566082ce2f90c7c09a14c92",
+  "scorer_sha256": "aae8d44578caeab089452c83278c08220dec25d782ce697c3e0139123bb57161",
+  "provider": "openrouter",
+  "model": "qwen/qwen3-30b-a3b-instruct-2507",
+  "seed": 42,
+  "n_items": 1347,
+  "repeats": 1,
+  "dry_run": false,
+  "budget_cap_usd": 1.0,
+  "rate_in_per_mtok": 0.048,
+  "rate_out_per_mtok": 0.193,
+  "witness_report": {
+    "n_witnesses": 9,
+    "n_behaved": 9,
+    "verdict": "validated"
+  },
+  "env": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "dinostomp": "0.63.0",
+      "jsonschema": "4.25.1",
+      "PyYAML": "6.0.2"
+    }
+  },
+  "started_at": "2026-09-18T22:54:16.325251+00:00",
+  "status": "complete",
+  "probe": "blind",
+  "model_reported": "qwen/qwen3-30b-a3b-instruct-2507",
+  "spend_usd": 0.003107337,
+  "spend_source": "metered",
+  "finished_at": "2026-09-18T23:14:41.221542+00:00",
+  "run_file": "20260918_225416_xstest-refusal_qwen-qwen3-30b-a3b-instruct-2507_n1347-blindprobe_s42.jsonl"
+}
