@@ -33,6 +33,12 @@
   option 27 with `[` and option 59 with a control character. Labels now follow
   spreadsheet column order (A..Z, AA..), from the one `col_letter` the XL
   checks already used.
+- **Fixed: an error body inside HTTP 200 scored as an empty answer (D-099).**
+  OpenRouter reports an upstream rate limit as a 200 with an `error` object
+  and no `choices`. That parsed as an empty completion, the scorer marked it
+  wrong, and GPT-5.6 Luna read 21.9% on route-live with 1,379 of 1,933
+  records never reaching the model. Error bodies now raise; 429 and the 5xx
+  set retry with the usual backoff, and anything else fails at once.
 - **`params.reasoning_effort` (D-098).** A reasoning model asked for a one-word
   answer spent all 256 output tokens thinking and returned an empty string,
   billed in full. Specs can now cap it (`none` to `high`); openai and

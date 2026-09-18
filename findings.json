@@ -6,13 +6,13 @@
   "tool": {
     "name": "dinostomp",
     "version": "0.63.0",
-    "engine": "900bd45288d103ce5266557136690a4227cb6e1469c6615d6c2032d50e75eae8"
+    "engine": "dda7b581036fec19c13fc05141558fda3e09e0fb1fb70e0b5da83985b3b8e7cb"
   },
   "counts": {
     "F": 52,
-    "D": 98,
+    "D": 99,
     "N": 35,
-    "total": 185
+    "total": 186
   },
   "series": {
     "F": "other people's evals",
@@ -1212,6 +1212,23 @@
       "status_class": "confirmed",
       "anchor": "#f-052",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-052"
+    },
+    {
+      "id": "D-099",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "A rate-limit error inside an HTTP 200 was scored as an empty answer: 1,379 of 1,933 records for one model were the provider's availability, not the model",
+      "summary": "OpenRouter answered a rate limit with HTTP 200 and an `error` body; it parsed as an empty answer, scored wrong, never retried, and GPT-5.6 Luna read 21.9% with 1,379 of 1,933 records never reaching the model; error bodies now raise and 429/5xx retry",
+      "subject": "dinostomp",
+      "check_label": "`openrouter provider`",
+      "checks": [],
+      "date": "2026-09-18",
+      "date_iso": "2026-09-18",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-099",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-099"
     },
     {
       "id": "F-019",

@@ -26,6 +26,9 @@ from typing import Any
 TIMEOUT_S = 60
 DEFAULT_MAX_TOKENS = 1024
 RETRIES = 3
+MAX_ERROR_CHARS = 300
+# Error codes worth another attempt when they arrive inside a 200 body.
+RETRYABLE_BODY_CODES = {408, 409, 425, 429, 500, 502, 503, 504, 520, 521, 522, 523, 524, 529}
 # 52x are Cloudflare-side failures in front of a provider; an OpenRouter
 # decisions call returned 520 mid-fleet on 2026-09-18 and stopped the run.
 RETRY_STATUSES = {408, 429, 500, 502, 503, 504, 520, 521, 522, 523, 524, 529}
@@ -39,7 +42,46 @@ ENV_KEYS = {
 
 
 class ProviderError(RuntimeError):
-    """A call that failed after retries. Message never contains credentials."""
+    """A call that failed after retries. Message never contains credentials.
+
+    `retryable` marks failures worth another attempt (a rate limit, an
+    overloaded upstream). Set by the caller that knows, read by the retry
+    loop in HttpProvider._request.
+    """
+
+    def __init__(self, message: str, *, retryable: bool = False):
+        super().__init__(message)
+        self.retryable = retryable
+
+
+def raise_for_error_body(data: Any, provider_name: str) -> None:
+    """Refuse a 200 that carries an error OBJECT instead of a completion.
+
+    Providers behind a gateway answer 200 with `{"error": {"code": 429, ...}}`
+    and no `choices` when an upstream model is rate-limited or overloaded.
+    Parsed as a completion that is indistinguishable from an empty answer: the
+    scorer records a wrong answer, the ledger records zero tokens and zero
+    cost, and the model's reported accuracy becomes the provider's
+    availability. The status-code retry never sees it, because the status is
+    200 (D-099).
+    """
+    if not isinstance(data, dict):
+        return
+    err = data.get("error")
+    if not err:
+        return
+    if isinstance(err, dict):
+        code = err.get("code")
+        message = str(err.get("message") or err)[:MAX_ERROR_CHARS]
+    else:
+        code, message = None, str(err)[:MAX_ERROR_CHARS]
+    try:
+        code = int(code)
+    except (TypeError, ValueError):
+        code = None
+    raise ProviderError(
+        f"{provider_name} returned an error body with HTTP 200: {code or 'no code'}: {message}",
+        retryable=code in RETRYABLE_BODY_CODES)
 
 
 @dataclass
@@ -154,13 +196,21 @@ class HttpProvider:
                 with urllib.request.urlopen(req, timeout=TIMEOUT_S) as resp:
                     text = resp.read().decode("utf-8", "replace")
                 try:
-                    return json.loads(text)
+                    data = json.loads(text)
                 except json.JSONDecodeError:
                     # A proxy/CDN returning HTML with status 200 must be a clean
                     # ProviderError, not a traceback after spend.
                     raise ProviderError(
                         f"{self.provider_name} returned a non-JSON body (starts {text[:80]!r})"
                     ) from None
+                try:
+                    raise_for_error_body(data, self.provider_name)
+                except ProviderError as exc:
+                    if not exc.retryable:
+                        raise
+                    last = str(exc)
+                else:
+                    return data
             except urllib.error.HTTPError as exc:
                 detail = ""
                 try:

@@ -102,6 +102,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-098](#d-098) | dinostomp | a reasoning model spent all 256 output tokens thinking, returned an empty string and was billed in full; `params.reasoning_effort` now caps it | confirmed, fixed |
 | [N-035](#n-035) | Jevlike (Wikispeedia) | three hosted LLMs on the same 1,000 items: Qwen3-30B-A3B 29.8%, GPT-5.6 Luna 22.8%, Llama-3.1-8B 17.4% against the one-pass scorer's 29.8%; every arm clears its own blind run; 4 s and $0 against 12 to 23 minutes and 5 to 9 cents | measured |
 | [F-052](#f-052) | BFCL v4 | one live request keyed to `rotateImageAction` in `live_multiple` and to "irrelevant" in `live_irrelevance` with the same menu, so nobody can score both; three exact duplicates inside `live_irrelevance` | confirmed |
+| [D-099](#d-099) | dinostomp | OpenRouter answered a rate limit with HTTP 200 and an `error` body; it parsed as an empty answer, scored wrong, never retried, and GPT-5.6 Luna read 21.9% with 1,379 of 1,933 records never reaching the model; error bodies now raise and 429/5xx retry | confirmed, fixed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
 | [F-021](#f-021) | MATH-500 | 2 problems whose answer is written in the question | confirmed, scoped |
@@ -280,13 +281,13 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [F-048](#f-048), [F-049](#f-049), [F-050](#f-050), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [D-093](#d-093), [D-094](#d-094), [D-095](#d-095), [D-096](#d-096), [D-097](#d-097), [D-098](#d-098), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-032](#n-032), [N-033](#n-033), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [F-048](#f-048), [F-049](#f-049), [F-050](#f-050), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [D-093](#d-093), [D-094](#d-094), [D-095](#d-095), [D-096](#d-096), [D-097](#d-097), [D-098](#d-098), [D-099](#d-099), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-032](#n-032), [N-033](#n-033), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
 
 ### By subject
 
 | subject | findings |
 |---|---|
-| dinostomp | [D-080](#d-080), [D-081](#d-081), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-085](#d-085), [D-086](#d-086), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [D-093](#d-093), [D-094](#d-094), [D-095](#d-095), [D-096](#d-096), [D-097](#d-097), [D-098](#d-098), [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078), [D-079](#d-079) |
+| dinostomp | [D-080](#d-080), [D-081](#d-081), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-085](#d-085), [D-086](#d-086), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [D-093](#d-093), [D-094](#d-094), [D-095](#d-095), [D-096](#d-096), [D-097](#d-097), [D-098](#d-098), [D-099](#d-099), [N-002](#n-002), [N-023](#n-023), [N-008](#n-008), [N-009](#n-009), [N-010](#n-010), [N-012](#n-012), [N-014](#n-014), [D-001](#d-001), [D-002](#d-002), [D-003](#d-003), [D-004](#d-004), [D-005](#d-005), [D-006](#d-006), [D-007](#d-007), [D-008](#d-008), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-012](#d-012), [D-013](#d-013), [D-014](#d-014), [D-015](#d-015), [D-016](#d-016), [D-017](#d-017), [D-018](#d-018), [D-019](#d-019), [D-020](#d-020), [D-021](#d-021), [D-022](#d-022), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-027](#d-027), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-031](#d-031), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-037](#d-037), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-041](#d-041), [D-042](#d-042), [D-043](#d-043), [D-044](#d-044), [D-046](#d-046), [D-048](#d-048), [D-049](#d-049), [D-051](#d-051), [D-052](#d-052), [D-053](#d-053), [D-055](#d-055), [D-056](#d-056), [D-057](#d-057), [D-058](#d-058), [D-059](#d-059), [D-060](#d-060), [D-061](#d-061), [D-062](#d-062), [D-063](#d-063), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-071](#d-071), [D-072](#d-072), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078), [D-079](#d-079) |
 | dinocorpus | [N-021](#n-021), [D-045](#d-045), [D-047](#d-047), [D-054](#d-054) |
 | AISafetyLab | [F-033](#f-033), [F-034](#f-034), [F-035](#f-035) |
 | CUDA-Agent-Ops-6K | [F-047](#f-047), [F-048](#f-048), [N-031](#n-031) |
@@ -2169,6 +2170,35 @@ and five irrelevance items, and "inverted logic" noted in irrelevance. That
 is a judged sample for scoring validity; this entry is a mechanical scan of
 every live selection row for structure. They do not overlap and they agree.
 https://epoch.ai/benchmarks/berkeley-function-calling-leaderboard/review
+
+---
+
+### D-099
+**A rate-limit error inside an HTTP 200 was scored as an empty answer: 1,379 of 1,933 records for one model were the provider's availability, not the model**
+`openrouter provider` · 2026-09-18 · confirmed, fixed
+
+The `onepass` route-live fleet, the `openai/gpt-5.6-luna` arm, reasoning off.
+It read 21.9%, under the 45.5% an arm earns by always answering `NONE`. 1,379
+of its 1,933 records had empty text, `finish_reason: stop`, zero input tokens
+and zero output tokens. Zero *input* tokens rules out the model: nothing was
+read. A direct call reproduced it. OpenRouter answered **HTTP 200** with
+`{"error": {"code": 429, "metadata": {"error_type": "rate_limit_exceeded"}}}`
+and no `choices`. The parser took the missing `choices` as an empty completion,
+the scorer marked it wrong, and the status-based retry never ran because the
+status was 200. The blind pass that was running at the time showed the same
+thing, 546 empty of 941, and was stopped.
+
+Direction: **against the model, silently.** The arm's accuracy became the
+upstream's rate limit, the ledger showed those calls as free, and nothing on
+the record looked like a failure: all 1,933 records were counted checkable,
+because an empty answer from a model that finished is a legitimate answer.
+
+Fix: `raise_for_error_body` runs on every parsed 200. An `error` object is a
+`ProviderError`, never a completion. Codes in `RETRYABLE_BODY_CODES` (429,
+the 5xx and Cloudflare 52x set) go back through the same backoff as a status
+retry, and any other code fails on the first attempt without spending retries.
+`tests/test_error_body.py` covers the rate-limited body, retry then success,
+a permanent 404 body, and the classification table.
 
 ---
 
@@ -6191,7 +6221,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **35** |
-| defects in dinostomp itself (**D**) | **98** |
+| defects in dinostomp itself (**D**) | **99** |
 
 Ninety-one to forty-nine. That ratio is the useful number to publish, and it is the
 one to expect from any validator meeting data it did not author. The reason to
