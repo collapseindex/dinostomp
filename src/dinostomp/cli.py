@@ -253,6 +253,7 @@ def cmd_run(args) -> int:
             price_in=args.price_in,
             price_out=args.price_out,
             probe=args.probe,
+            only_models=[m.strip() for m in args.models.split(",")] if args.models else None,
         )
     if outcome.exit_code == CANNOT_RUN:
         print("CANNOT RUN:")
@@ -1019,6 +1020,8 @@ def main(argv=None) -> int:
     p_run = sub.add_parser("run", help="run a spec")
     p_run.add_argument("spec")
     p_run.add_argument("--resume", help="existing run file to continue")
+    p_run.add_argument("--models", help="comma-separated model names: run only these arms of the "
+                       "spec (to finish a fleet that stopped early)")
     p_run.add_argument("--limit", type=int, help="cap the number of items")
     p_run.add_argument("--dry-run", action="store_true", help="force the offline dry provider")
     p_run.add_argument("--price-in", type=float, help="input rate, USD per MTok, for unpriced models")

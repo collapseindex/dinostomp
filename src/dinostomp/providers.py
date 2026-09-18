@@ -26,7 +26,9 @@ from typing import Any
 TIMEOUT_S = 60
 DEFAULT_MAX_TOKENS = 1024
 RETRIES = 3
-RETRY_STATUSES = {429, 500, 502, 503, 529}
+# 52x are Cloudflare-side failures in front of a provider; an OpenRouter
+# decisions call returned 520 mid-fleet on 2026-09-18 and stopped the run.
+RETRY_STATUSES = {408, 429, 500, 502, 503, 504, 520, 521, 522, 523, 524, 529}
 
 ENV_KEYS = {
     "anthropic": "ANTHROPIC_API_KEY",

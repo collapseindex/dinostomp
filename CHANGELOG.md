@@ -13,6 +13,14 @@
   Built for the `onepass` tool-routing pods, where it runs beside a local
   chooser and three hosted LLMs on identical items.
 
+- **`run --models a,b` finishes a fleet that stopped early.** When one
+  provider fails after retries the remaining arms are left unrun; re-running
+  the spec would pay for the finished arms again and `--resume` continues one
+  run only. The filter runs just the named arms under the same spec hash, so
+  the report pools them as one fleet. Found when a decisions call returned
+  HTTP 520 at item 1,223 of 1,933 and took three hosted arms down with it.
+  Cloudflare's 52x family is now retried alongside 429 and 5xx.
+
 - **Jevlike audited as a one-pass examinee (F-051, N-034).** A from-scratch
   Jev-like scorer mounted through the `python` provider on Wikispeedia
   next-click data: informed 29.8%, blind 5.0%, uniform floor 3.6%, so the

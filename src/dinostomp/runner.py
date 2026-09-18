@@ -758,6 +758,7 @@ def run_spec(
     price_in: float | None = None,
     price_out: float | None = None,
     probe: str | None = None,
+    only_models: list[str] | None = None,
     framing: str | None = None,
     provider_factory=make_provider,
 ) -> RunOutcome:
@@ -905,6 +906,17 @@ def run_spec(
     # otherwise turn "I cannot call this" into a full set of fabricated records
     # under the real model's name, which is the exact failure this tool exists to
     # object to.
+    if only_models:
+        # A fleet that stopped early (one provider failed after retries) leaves
+        # the remaining arms unrun; this runs just those, under the same spec,
+        # so the finished arms are not paid for twice.
+        wanted = set(only_models)
+        missing = sorted(wanted - {mc["model"] for mc in models})
+        if missing:
+            return RunOutcome(CANNOT_RUN, issues=[Issue(
+                loc="--models", check="run",
+                message=f"no model in this spec is named {', '.join(missing)}")])
+        models = [mc for mc in models if mc["model"] in wanted]
     foreign = sorted({mc["model"] for mc in models if mc["provider"] == "imported"})
     if foreign:
         return RunOutcome(CANNOT_RUN, issues=[Issue(
