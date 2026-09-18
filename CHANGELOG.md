@@ -23,6 +23,10 @@
   scorer at 29.8%, GPT-5.6 Luna reads 22.8%, Llama-3.1-8B 17.4%; every arm
   clears its own blind run. Four seconds and $0 against 12 to 23 minutes and
   $0.19 all in. Pod at v0.3.0 with a label-tolerant scorer; records committed.
+- **BFCL v4 live categories audited (F-052).** Building the `onepass`
+  tool-routing pods and stomping the items found one request keyed both to a
+  function and to "irrelevant" across two live categories with the same menu,
+  and three exact duplicates inside `live_irrelevance`.
 
 ### v0.63.0 (2026-09-17)
 

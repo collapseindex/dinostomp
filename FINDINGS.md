@@ -101,6 +101,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-097](#d-097) | dinostomp | the rendered option block labelled option 27 with `[` and option 59 with a control character on menus that run to 64; labels now follow spreadsheet column order | confirmed, fixed |
 | [D-098](#d-098) | dinostomp | a reasoning model spent all 256 output tokens thinking, returned an empty string and was billed in full; `params.reasoning_effort` now caps it | confirmed, fixed |
 | [N-035](#n-035) | Jevlike (Wikispeedia) | three hosted LLMs on the same 1,000 items: Qwen3-30B-A3B 29.8%, GPT-5.6 Luna 22.8%, Llama-3.1-8B 17.4% against the one-pass scorer's 29.8%; every arm clears its own blind run; 4 s and $0 against 12 to 23 minutes and 5 to 9 cents | measured |
+| [F-052](#f-052) | BFCL v4 | one live request keyed to `rotateImageAction` in `live_multiple` and to "irrelevant" in `live_irrelevance` with the same menu, so nobody can score both; three exact duplicates inside `live_irrelevance` | confirmed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
 | [F-021](#f-021) | MATH-500 | 2 problems whose answer is written in the question | confirmed, scoped |
@@ -260,13 +261,13 @@ at fault.
 | `R15` | [F-051](#f-051), [N-035](#n-035), [N-034](#n-034), [D-006](#d-006) |
 | `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
-| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-044](#f-044), [F-045](#f-045), [F-046](#f-046), [F-047](#f-047), [F-029](#f-029), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
+| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-044](#f-044), [F-045](#f-045), [F-046](#f-046), [F-047](#f-047), [F-029](#f-029), [F-052](#f-052), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
 | `S2` | [F-004](#f-004), [F-041](#f-041), [F-043](#f-043), [F-045](#f-045), [F-046](#f-046), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052), [D-058](#d-058) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-020](#n-020), [N-012](#n-012), [F-025](#f-025) |
 | `S6` | [D-053](#d-053), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066) |
-| `S7` | [F-027](#f-027), [F-028](#f-028), [F-041](#f-041), [F-042](#f-042), [F-044](#f-044), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-042](#d-042) |
+| `S7` | [F-027](#f-027), [F-028](#f-028), [F-041](#f-041), [F-042](#f-042), [F-044](#f-044), [F-052](#f-052), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-042](#d-042) |
 | `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015), [D-061](#d-061) |
 | `S10` | [N-006](#n-006) |
 | `S11` | [F-012](#f-012), [N-004](#n-004), [N-031](#n-031), [D-014](#d-014), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078) |
@@ -306,6 +307,7 @@ at fault.
 | AQuA-RAT | [F-023](#f-023) |
 | ARC, OpenBookQA, HellaSwag, WinoGrande | [N-003](#n-003) |
 | ASDiv | [F-029](#f-029) |
+| BFCL v4 | [F-052](#f-052) |
 | BoolQ | [F-040](#f-040) |
 | CIFAR-10 / ciFAIR | [N-017](#n-017) |
 | CNN/DailyMail | [F-045](#f-045) |
@@ -2123,6 +2125,42 @@ this tool on the way ([D-097](#d-097), [D-098](#d-098)), both fixed before
 the run that produced these numbers. Records, manifests and the report are
 in `audits/jevlike/`, and `dinostomp verify` re-scores every record offline
 once `build_pod.py` has rebuilt the 12 MB `items.jsonl` that is not committed.
+
+---
+
+### F-052
+**BFCL v4 · one live request is keyed to `rotateImageAction` in `live_multiple` and to "irrelevant" in `live_irrelevance` with the same five-function menu, and three requests appear twice inside `live_irrelevance`**
+`dup-questions` (S1), `conflicting-keys` (S7) · 2026-09-17 · confirmed
+
+Found while building the tool-routing pods for `onepass`: the BFCL v4
+selection categories (`live_multiple`, 1,053 items; `live_irrelevance`, 884
+items) converted one to one into dinostomp items with the menu of function
+names plus `NONE`, then `dinostomp stomp items.jsonl` on the result. Source:
+ShishirPatil/gorilla `main` at `6ea57973c7a6097fd7c5915698c54c17c5b1b6c8`,
+files under `berkeley-function-call-leaderboard/bfcl_eval/data/`.
+
+S7, one conflict. `live_multiple_262-125-1` and `live_irrelevance_565-173-0`
+carry the identical user turn, "turn it by 20 degree and freeze it to 40
+degree celsius", and the identical five-function menu (`flipImageAction`,
+`rotateImageAction`, `removeBackgroundAction`, `getRecommendationsAction`,
+`resizeImageAction`). The first is keyed to `rotateImageAction`; the second
+sits in the category whose key is "no function applies". A model that reads
+the request as a rotate call scores the first and misses the second; a model
+that abstains does the reverse. The pair is worth exactly one point to
+everyone, whatever they know.
+
+S1, three duplicates, all inside `live_irrelevance`: `194-32-7` / `195-32-8`
+("Hallo, ukuran XS tidak ada ya?", menu `user_authentication.login`),
+`211-34-0` / `212-34-1` ("yang cream kapan ready lagi kak", menu
+`ProductSearch.execute`), `219-34-8` / `220-34-9` ("Warna pink kapan restok
+kak", same menu). Same request, same menu, same key. Each counts twice.
+
+Direction: **noise, in both directions.** Four items in 1,937 move no
+leaderboard; the conflict is the one that matters, because it is the only
+kind of item that is unanswerable by construction, and `live_irrelevance` is
+the category the leaderboard treats as the safety signal. Not filed upstream
+yet; the reproduction is `python -m onepass.bfcl --split live` followed by
+`dinostomp stomp` on the output, or a direct diff of the two JSON lines.
 
 ---
 
@@ -6140,7 +6178,7 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **51** |
+| findings in other people's evals (**F**) | **52** |
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 16 (F-001 to F-004, F-008 to F-013, F-041 to F-046) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
