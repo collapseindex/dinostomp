@@ -206,6 +206,12 @@ def cmd_inspect(args) -> int:
     return 1 if flagged else 0
 
 
+def cmd_jev(args) -> int:
+    from dinostomp.questions import cmd_jev as run  # local: keeps `dinostomp --help` fast
+
+    return run(args)
+
+
 def cmd_fingerprint(args) -> int:
     """The engine's own hash, so a reader can confirm which bytes judged them."""
     value = engine_fingerprint()
@@ -1128,6 +1134,15 @@ def main(argv=None) -> int:
     p_plan.add_argument("--price-in", type=float, help="input rate, USD per MTok, for unpriced models")
     p_plan.add_argument("--price-out", type=float, help="output rate, USD per MTok, for unpriced models")
     p_plan.set_defaults(func=cmd_plan)
+
+    p_jev = sub.add_parser("jev", help="test a Jev question file: accuracy, threshold, calibration, blank-input prior, rewording")
+    p_jev.add_argument("file", help="a question file: question, examples, optional require")
+    p_jev.add_argument("--model", help="override the file's model (default jev-latest)")
+    p_jev.add_argument("--provider", default="typesafe", choices=["typesafe", "jev"],
+                       help="which door; either falls back to the other when only its key is set")
+    p_jev.add_argument("--no-rewording", action="store_true", help="skip the rewording calls")
+    p_jev.add_argument("--no-save", action="store_true", help="do not write the result under data/jev/")
+    p_jev.set_defaults(func=cmd_jev)
 
     args = parser.parse_args(argv)
     return args.func(args)

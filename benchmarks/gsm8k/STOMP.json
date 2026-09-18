@@ -1391,7 +1391,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "12 of 12 run(s) were produced by a different engine than the one auditing them (now 3eedfc0076c3c4fa); re-run to get numbers this report can stand behind",
+      "detail": "12 of 12 run(s) were produced by a different engine than the one auditing them (now 515b5e591d35d76e); re-run to get numbers this report can stand behind",
       "witnesses": 12,
       "examples": [
         "engine 0c79d2fabc826532: meta-llama/llama-3.2-3b-instruct seed 23 (tool 0.29.0)",

@@ -2,6 +2,15 @@
 
 ### Unreleased
 
+- **`dinostomp jev`: a Jev question tested like an if-statement.** One file
+  holds the question (noul or choice) and labelled examples; the command
+  reports accuracy with an interval, where to cut p(yes), coverage and
+  accuracy above 0.90, ECE against R23's bar, the blank-input prior against
+  R15's lift, flips under meaningless rewording, and the examples it got
+  wrong while sure. Every run is saved under `data/jev/` and compared with
+  the last run of the same question, so a model update is one printed line.
+  `require: {accuracy, flips}` makes it a CI gate (exit 1). Example in
+  `examples/jev-question/`.
 - **A decisions model as a judge, and `question: noul`.** `params.question:
   noul` asks Jev a yes/no question of the state; the output is a label (yes/no
   by default, `params.labels` to rename) and the probability rides on the

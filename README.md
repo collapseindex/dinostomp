@@ -8,7 +8,7 @@
 
 **Stomp the eval. Trust the evidence.**
 
-<sub>v0.63.0 · Apache-2.0 · engine `3eedfc0076c3c4fa` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.63.0 · Apache-2.0 · engine `515b5e591d35d76e` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 **Find broken data, misleading scorers, and unsupported benchmark claims before you trust the score.**
 
@@ -719,6 +719,50 @@ the trajectory checks. It cost **one** defect where the first cost five (N-011).
 An imported trace is labelled `foreign_observed`, never `harness_observed`: the
 exporting harness watched those calls, this engine did not.
 
+## A Jev question, tested like an if-statement
+
+TypeSafe's Jev answers a question about some text with a probability, and
+people call it from application code the way they would call an if-statement.
+`dinostomp jev` is the test for that if-statement: one file with the question
+and labelled examples, one command.
+
+```yaml
+# urgency.jev.yaml
+question:
+  type: noul
+  instructions: "Does this message need a human to act on it today?"
+require: {accuracy: 0.85, flips: 0}      # CI fails under these
+examples:
+  - {state: "Help! My payouts have been failing for 3 days.", expect: yes}
+  - {state: "Thanks, everything is working again!", expect: no}
+  # 20+ of these
+```
+
+```
+$ dinostomp jev urgency.jev.yaml
+urgency.jev.yaml | noul | jev-1.13.0 via typesafe | 24 examples
+
+  accuracy     100% (24 of 24)   95% interval 86% to 100%
+  threshold    p(yes) >= 0.50 gives 100%; no other cut does better on these examples
+  confident    at >= 0.90 it answers 96% of inputs, 100% of those right
+  calibration  ECE 0.062 (bar 0.10)
+  blank input  answers 'no' at 0.81; saying that to every example scores 50%; the model is +50 points from that
+  rewording    0 of 60 answer(s) flipped (whitespace, formatting, politeness)
+```
+
+What each line is for: the interval says how much your examples can tell you;
+the threshold line says where to cut p(yes); **blank input** is what the
+question answers with no text at all, so lopsided examples or a leaning
+question show up as a small gap; **rewording** changes nothing a reader
+would care about and must not flip an answer; anything the model got wrong
+*while sure* is listed first, because it is a wrong label or the question's
+blind spot. Every run is saved under `data/jev/` and compared with the last
+run of the same question, so when `jev-latest` moves to a new version, the
+change is one printed line (`jev-1.13.0 -> jev-1.14.0: accuracy 100% -> 90%,
+2 answer(s) changed`) rather than something your users find. Choice questions
+work the same way with `type: choice` and `criteria`. Your key, your machine;
+`TYPESAFE_API_KEY` or, failing that, `OPENROUTER_API_KEY`.
+
 ## Agents: audit the execution, not the diary
 
 Point a spec at pod-local Python and it mounts as an examinee, with the budget
@@ -897,7 +941,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`3eedfc0076c3c4fa3f005ba2fe9d666074b0a84ed6f661ba48a873f5c34622a1`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`515b5e591d35d76e0d78ee415524550d33e08489c6745007f6aa8571489b7e53`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

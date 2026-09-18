@@ -1,0 +1,45 @@
+# A Jev question, tested like an if-statement.
+#
+#   dinostomp jev examples/jev-question/urgency.jev.yaml
+#
+# The question is TypeSafe's own docs example ("Does this convey urgency?").
+# The examples are support messages written for this file: half need a
+# human now, half do not. `expect: yes` and `expect: no` are the labels.
+# Add your own; 20+ before the calibration line means much.
+
+question:
+  type: noul
+  instructions: "Does this message need a human to act on it today?"
+  criteria:
+    true: "something is broken, blocked, at risk, or costing the customer money right now"
+    false: "a question, a thank-you, feedback, or a request that can wait"
+
+require:
+  accuracy: 0.85      # CI fails under this
+  flips: 0            # and on any answer that flips under meaningless rewording
+
+examples:
+  - {state: "Help! My payouts have been failing for 3 days and payroll is tomorrow.", expect: yes}
+  - {state: "Our checkout page returns a 500 for every customer since the deploy an hour ago.", expect: yes}
+  - {state: "I was charged twice for the same order, please refund one of them.", expect: yes}
+  - {state: "Someone logged into my account from another country and changed my password.", expect: yes}
+  - {state: "The API key we use in production just stopped working, all requests return 401.", expect: yes}
+  - {state: "Our whole team is locked out of the dashboard and we have a client demo at 2pm.", expect: yes}
+  - {state: "Your webhook is sending duplicate order events and we are shipping everything twice.", expect: yes}
+  - {state: "The invoice you sent has the wrong bank details and it is due today.", expect: yes}
+  - {state: "Data export has been stuck at 0% since yesterday and our audit is this afternoon.", expect: yes}
+  - {state: "Customers are reporting they can see each other's order history.", expect: yes}
+  - {state: "My card was declined at renewal and the service shut off for all 40 of our users.", expect: yes}
+  - {state: "The mobile app crashes on launch for every Android user after today's update.", expect: yes}
+  - {state: "Thanks so much, everything is working again!", expect: no}
+  - {state: "Is there a way to change the color of the dashboard theme?", expect: no}
+  - {state: "Just wanted to say the new reporting feature is great.", expect: no}
+  - {state: "Could you add CSV export to the analytics page at some point?", expect: no}
+  - {state: "What are your support hours over the holidays?", expect: no}
+  - {state: "Can I get a copy of last year's invoices for our records when you have a moment?", expect: no}
+  - {state: "How do I invite a new teammate to our workspace?", expect: no}
+  - {state: "Do you offer a discount for nonprofits?", expect: no}
+  - {state: "The font on the settings page looks a bit small on my monitor.", expect: no}
+  - {state: "I'd like to update our company logo in the account profile.", expect: no}
+  - {state: "Any plans to support dark mode in the mobile app?", expect: no}
+  - {state: "Please remove my old email address from the newsletter list.", expect: no}
