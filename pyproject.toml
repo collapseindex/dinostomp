@@ -16,6 +16,11 @@ dependencies = [
     "PyYAML>=6.0",
 ]
 
+[project.urls]
+Homepage = "https://dinostomp.dev"
+Repository = "https://github.com/collapseindex/dinostomp"
+Findings = "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md"
+
 [project.optional-dependencies]
 dev = ["pytest>=7.0"]
 # Image DECODING, and nothing else. The core stays at two dependencies: an
