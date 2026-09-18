@@ -509,6 +509,7 @@ def run_canary_probe(
             provider = provider_factory(provider_name, model)
         except ProviderError as exc:
             return RunOutcome(CANNOT_RUN, issues=[Issue(loc="$.models", message=str(exc), check="provider")])
+        provider_name = getattr(provider, "provider_name", provider_name)   # the door in use
 
         log = RunLog(spec["name"], model, "canaryprobe", seed,
                      data_dir=(out_dir or base) / "data", resume_path=None)
@@ -629,7 +630,7 @@ def run_judge_probe(
     if witness_report.verdict != "validated":
         return RunOutcome(GATED, witness_failures=witness_report.failures)
 
-    judge_cfg = spec["scorer"]["judge"]
+    judge_cfg = {**spec["scorer"]["judge"], "provider": scorer.provider_name}   # the door in use
     rate_in, rate_out, rate_label = resolve_rates(
         judge_cfg["provider"], judge_cfg.get("model", ""), None, None,
         judge_cfg.get("price_in"), judge_cfg.get("price_out"))
@@ -969,6 +970,7 @@ def run_spec(
             provider = provider_factory(provider_name, model, **extra)
         except ProviderError as exc:
             return RunOutcome(CANNOT_RUN, issues=[Issue(loc="$.models", message=str(exc), check="provider")])
+        provider_name = getattr(provider, "provider_name", provider_name)   # the door in use
 
         params_tag = f"n{n}" + (f"-{probe}probe" if probe else "")
         if probe == "template":

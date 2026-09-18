@@ -360,8 +360,16 @@ class DecisionsProvider(HttpProvider):
     takes_choices = True
     QUESTION_KEY = "decision"
     DEFAULT_INSTRUCTIONS = "Choose the one option that answers the state."
+    # `params.question: noul` asks a yes/no question of the state instead of a
+    # choice over the menu. The answer is a probability of yes; the record's
+    # output is a label so any scorer can read it, and the probability rides in
+    # the trajectory as a two-way distribution so R23/R24 read it unchanged.
+    NOUL_LABELS = ("yes", "no")
+    NOUL_THRESHOLD = 0.5
 
     def complete(self, item: dict, seed: int, params: dict) -> Completion:
+        if str(params.get("question") or "choice") == "noul":
+            return self._noul(item, params)
         choices = item.get("choices")
         if not isinstance(choices, list) or len(choices) < 2:
             raise ProviderError(f"{self.provider_name} needs an item with at least two choices: {item.get('id')!r}")
@@ -380,8 +388,7 @@ class DecisionsProvider(HttpProvider):
                 "criteria": criteria,
             }},
         }
-        headers = {"content-type": "application/json", "authorization": f"Bearer {self.key}"}
-        data = self._request(self.URL, headers, payload)
+        data = self._request(self.URL, self._headers(), payload)
         try:
             answer = data["answers"][self.QUESTION_KEY]
             choice = str(answer["choice"])
@@ -408,6 +415,48 @@ class DecisionsProvider(HttpProvider):
                          "result": json.dumps(evidence, ensure_ascii=False), "ok": True}],
         )
 
+    def _headers(self) -> dict:
+        return {"content-type": "application/json", "authorization": f"Bearer {self.key}"}
+
+    def _noul(self, item: dict, params: dict) -> Completion:
+        """A yes/no question over the state. `params.instructions` is the
+        question, `params.criteria` optionally says what true and false mean,
+        `params.labels` names the two outputs (default yes/no), first is true."""
+        labels = params.get("labels") or list(self.NOUL_LABELS)
+        if not isinstance(labels, list) or len(labels) != 2:
+            raise ProviderError(f"{self.provider_name} noul labels must be two strings, got {labels!r}")
+        yes, no = str(labels[0]), str(labels[1])
+        question: dict[str, Any] = {"type": "noul",
+                                    "instructions": str(params.get("instructions") or "Is this true?")}
+        criteria = params.get("criteria")
+        if isinstance(criteria, dict):
+            question["criteria"] = {str(k): str(v) for k, v in criteria.items()}
+        state = item["input"] if isinstance(item["input"], (str, dict, list)) else str(item["input"])
+        payload = {"model": self.model, "state": state, "questions": {self.QUESTION_KEY: question}}
+        data = self._request(self.URL, self._headers(), payload)
+        try:
+            p_true = float(data["answers"][self.QUESTION_KEY]["noul"])
+            usage = data.get("usage") or {}
+            cost = usage.get("cost")
+        except (TypeError, AttributeError, ValueError, KeyError) as exc:
+            raise ProviderError(f"{self.provider_name} response had an unexpected shape: {exc}") from exc
+        if not 0.0 <= p_true <= 1.0:
+            raise ProviderError(f"{self.provider_name} returned a noul outside [0, 1]: {p_true}")
+        label = yes if p_true >= self.NOUL_THRESHOLD else no
+        evidence = {"top": label, "p_true": round(p_true, 6), "p_top": round(max(p_true, 1 - p_true), 6),
+                    "distribution": {yes: round(p_true, 6), no: round(1 - p_true, 6)}}
+        return Completion(
+            text=label,
+            finish_reason="stop",
+            input_tokens=int(usage.get("input_tokens") or 0),
+            output_tokens=int(usage.get("output_tokens") or 0),
+            raw_usage=usage,
+            model_reported=str(data.get("model") or ""),
+            cost_usd=float(cost) if cost is not None else None,
+            trajectory=[{"tool": "decisions.noul", "args": {"question": self.QUESTION_KEY},
+                         "result": json.dumps(evidence, ensure_ascii=False), "ok": True}],
+        )
+
 
 class TypeSafeProvider(DecisionsProvider):
     """The same decisions call on TypeSafe's own endpoint, `POST /v1/systemone`.
@@ -423,6 +472,30 @@ class TypeSafeProvider(DecisionsProvider):
 
     provider_name = "typesafe"
     URL = "https://api.typesafe.ai/v1/systemone"
+
+
+# The same model behind two doors. A spec that names one door runs on the
+# other when only the other's key is set, so a pod with a Jev arm or a Jev
+# judge is runnable by anyone holding either key. The door actually used is
+# what the manifest and every record say (`provider`), the spec's model name
+# stays as the arm's identity, and `model_reported` carries what answered.
+# Neither key: refused, naming both.
+DOORS = {"typesafe": "jev", "jev": "typesafe"}
+DOOR_MODELS = {"jev-latest": "typesafe/jev-1.13", "typesafe/jev-1.13": "jev-latest"}
+
+
+def resolve_door(provider: str, model: str) -> tuple[str, str, str | None]:
+    """(provider, model, note): the door to use given the keys in the
+    environment. The note is one line for the log when the door changed."""
+    other = DOORS.get(provider)
+    if other is None or os.environ.get(ENV_KEYS[provider]):
+        return provider, model, None
+    if not os.environ.get(ENV_KEYS[other]):
+        raise ProviderError(f"{ENV_KEYS[provider]} is not set and neither is {ENV_KEYS[other]}; "
+                            f"{provider} needs one door to Jev open. Refusing to run {provider}")
+    swapped = DOOR_MODELS.get(model, model)
+    return other, swapped, (f"{provider}: {ENV_KEYS[provider]} is not set; using the {other} door for "
+                            f"the same model ({model} -> {swapped}). The record says {other}")
 
 
 PROVIDERS = {
@@ -443,7 +516,14 @@ ZERO_RATE_PROVIDERS = frozenset({"dry", "python", "mediated"})
 def make_provider(provider: str, model: str, **kw):
     """Build an examinee. Extra kwargs are provider-specific (`python` targets
     need `entrypoint` and `base_dir`); the two-argument call still works, which
-    is what keeps every existing provider_factory stub valid."""
+    is what keeps every existing provider_factory stub valid.
+
+    A Jev door with no key falls back to the other door (see `resolve_door`);
+    the returned object's `provider_name` is the door in use and `door_note`
+    is the line to log, or None."""
+    provider, model, note = resolve_door(provider, model)
+    if note:
+        print(note)
     if provider == "python":
         from dinostomp.targets import PythonTarget  # local: targets imports Completion from here
 

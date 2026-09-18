@@ -2,6 +2,20 @@
 
 ### Unreleased
 
+- **A decisions model as a judge, and `question: noul`.** `params.question:
+  noul` asks Jev a yes/no question of the state; the output is a label (yes/no
+  by default, `params.labels` to rename) and the probability rides on the
+  trajectory as a two-way distribution, so R23/R24 read it unchanged. A judge
+  block naming `jev` or `typesafe` grades through one such question over the
+  fenced context, writes `p(PASS)=` ahead of the ruling into `judge_response`,
+  and goes through the witness gate and the J probes like any judge. First
+  run is N-037: verdict-for-verdict with the control judge, zero flips under
+  the gauntlet, gated once by a witness until the rubric said what it meant.
+- **Two doors, either key.** A spec naming `typesafe` runs on the `jev` door
+  when only `OPENROUTER_API_KEY` is set, and the reverse; the model id is
+  translated (`jev-latest` <-> `typesafe/jev-1.13`), the manifest and every
+  record say which door answered, and one line is printed. Neither key is a
+  refusal naming both.
 - **`provider: typesafe`: Jev on TypeSafe's own endpoint.** The same
   decisions call as `jev`, sent to `api.typesafe.ai/v1/systemone` with
   `TYPESAFE_API_KEY`; the record's provider says which door was used. The

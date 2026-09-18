@@ -33,6 +33,7 @@ one this project's own prior work found models obey over source.
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -85,6 +86,17 @@ PROMPT = (
 # and any later re-derivation honest. This RAISES the cost of injection; it does
 # not eliminate it, and nothing in a prompt can.
 FENCE_CHARS = 12
+
+# A decisions judge (Jev) does not write reasoning and cannot be asked for a
+# word. It is asked the rubric as a yes/no question over the same fenced
+# context, minus the instruction to reply, and answers with a probability.
+# The verdict is that probability against one half; the probability is
+# written into judge_response ahead of the ruling so the record still carries
+# the judge's basis and parse_verdict still reads the ruling.
+NOUL_PROMPT = PROMPT.replace(
+    "\n\nReply with your reasoning, then the single word PASS or FAIL on the last line.", "")
+NOUL_QUESTION = "Does the response between the markers satisfy the rubric against the reference answer?"
+NOUL_LABELS = ["PASS", "FAIL"]
 
 
 def fence_for(seed: int, rubric: str, output: str) -> str:
@@ -340,12 +352,21 @@ class JudgeScorer:
         judge_cfg = cfg["judge"]
         self.rubric = cfg.get("rubric") or "Mark PASS if the response means the same as the reference answer."
         self.provider_name = judge_cfg["provider"]
+        self.model = judge_cfg.get("model") or judge_cfg.get("entrypoint", "judge")
+        # A Jev judge runs on whichever door has a key (providers.resolve_door),
+        # decided here so the manifest stamps the door in use. Offline commands
+        # build this scorer with no key at all; that is not an error until a
+        # call is made, so a refusal here is swallowed and raised on first use.
+        try:
+            from dinostomp.providers import resolve_door
+            self.provider_name, self.model, _ = resolve_door(self.provider_name, self.model)
+        except ProviderError:
+            pass
         # Grading is not a creative task. Left to the provider default, a hosted
         # judge samples hot: the SAME 3B judge with the SAME witnesses was gated
         # on one run and passed on the next, which makes the gate itself a coin
         # flip. Temperature 0 unless the spec says otherwise.
         self.params = {"temperature": 0.0, **(judge_cfg.get("params") or {})}
-        self.model = judge_cfg.get("model") or judge_cfg.get("entrypoint", "judge")
         self.seed = 0
         self.last_response = ""
         self.calls = 0
@@ -384,10 +405,22 @@ class JudgeScorer:
         """
         return self.provider_name in ("dry", "python")
 
-    def prompt_for(self, output: str, target: Any) -> str:
+    def prompt_for(self, output: str, target: Any, template: str = PROMPT) -> str:
         wants = ", ".join(str(t) for t in target) if isinstance(target, list) else str(target)
-        return PROMPT.format(rubric=self.rubric, target=wants, output=output,
-                             fence=fence_for(self.seed, self.rubric, output))
+        return template.format(rubric=self.rubric, target=wants, output=output,
+                               fence=fence_for(self.seed, self.rubric, output))
+
+    def _grade_by_decision(self, provider, output: str, target: Any) -> tuple[str, bool]:
+        """One noul question to a decisions judge. Returns the text that goes on
+        the record: the probability of PASS, then the ruling on its own line."""
+        item = {"id": "judge", "input": self.prompt_for(output, target, NOUL_PROMPT), "target": target}
+        params = {**self.params, "question": "noul", "labels": NOUL_LABELS,
+                  "instructions": self.params.get("instructions") or NOUL_QUESTION}
+        completion: Completion = provider.complete(item, self.seed, params)
+        self.input_tokens += completion.input_tokens
+        self.output_tokens += completion.output_tokens
+        p_pass = json.loads(completion.trajectory[0]["result"])["p_true"]
+        return f"p(PASS)={p_pass:.4f}\n{completion.text}", False
 
     def __call__(self, output: str, target: Any) -> ScoreResult:
         truncated = None
@@ -404,6 +437,8 @@ class JudgeScorer:
                 text = self._fn(output, target, {"rubric": self.rubric, "model": self.model,
                                                  "seed": self.seed, "call": self.calls})
                 text = text if isinstance(text, str) else str(text)
+            elif getattr(self._ensure_provider(), "takes_choices", False):
+                text, truncated = self._grade_by_decision(self._provider, output, target)
             else:
                 item = {"id": "judge", "input": self.prompt_for(output, target), "target": target}
                 completion: Completion = self._ensure_provider().complete(item, self.seed, self.params)

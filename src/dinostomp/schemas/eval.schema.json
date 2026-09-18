@@ -618,10 +618,12 @@
             "anthropic",
             "openai",
             "openrouter",
+            "jev",
+            "typesafe",
             "dry",
             "python"
           ],
-          "description": "dry is the offline control judge (agrees with normalized exact match, no biases). python mounts a pod-local judge(output, target, ctx) -> str."
+          "description": "dry is the offline control judge (agrees with normalized exact match, no biases). python mounts a pod-local judge(output, target, ctx) -> str. jev and typesafe are a decisions judge: the rubric becomes one yes/no question over the fenced response, the verdict is its probability against one half, and that probability is recorded ahead of the ruling."
         },
         "model": {
           "type": "string",

@@ -94,8 +94,60 @@ def test_typesafe_is_the_same_call_on_the_direct_endpoint(monkeypatch):
     assert json.loads(completion.trajectory[0]["result"])["distribution"]["Atlantic Ocean"] == 0.9
 
 
-def test_typesafe_refuses_to_run_without_its_own_key(monkeypatch):
+def test_a_jev_door_without_its_key_falls_back_to_the_other_door(monkeypatch, capsys):
+    """Same model, two doors: a spec naming one runs on the other when only its
+    key is set, the object says which door it is, and the model id is translated."""
     monkeypatch.delenv("TYPESAFE_API_KEY", raising=False)
-    monkeypatch.setenv("OPENROUTER_API_KEY", "not-the-right-door")
-    with pytest.raises(ProviderError, match="TYPESAFE_API_KEY"):
+    monkeypatch.setenv("OPENROUTER_API_KEY", "openrouter-key")
+    provider = make_provider("typesafe", "jev-latest")
+    assert provider.provider_name == "jev" and provider.model == "typesafe/jev-1.13"
+    assert "TYPESAFE_API_KEY is not set" in capsys.readouterr().out
+
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    monkeypatch.setenv("TYPESAFE_API_KEY", "typesafe-key")
+    provider = make_provider("jev", "typesafe/jev-1.13")
+    assert provider.provider_name == "typesafe" and provider.model == "jev-latest"
+
+
+def test_no_door_at_all_is_refused_naming_both_keys(monkeypatch):
+    monkeypatch.delenv("TYPESAFE_API_KEY", raising=False)
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    with pytest.raises(ProviderError, match="TYPESAFE_API_KEY.*OPENROUTER_API_KEY"):
         make_provider("typesafe", "jev-latest")
+
+
+NOUL_REPLY = {"model": "jev-1.13.0", "answers": {"decision": {"type": "noul", "noul": 0.92}},
+              "usage": {"input_tokens": 40, "output_tokens": 3}}
+
+
+def test_noul_asks_a_yes_no_question_and_records_a_two_way_distribution(monkeypatch):
+    monkeypatch.setenv("TYPESAFE_API_KEY", "test-key")
+    seen = {}
+
+    def fake_request(self, url, headers, payload):
+        seen["payload"] = payload
+        return NOUL_REPLY
+
+    monkeypatch.setattr(DecisionsProvider, "_request", fake_request)
+    provider = make_provider("typesafe", "jev-latest")
+    item = {"id": "t1", "input": "Help! My payouts have been failing for 3 days.", "target": "yes"}
+    completion = provider.complete(item, 1, {"question": "noul", "instructions": "Does this convey urgency?",
+                                             "criteria": {"true": "urgent", "false": "routine"}})
+    q = seen["payload"]["questions"]["decision"]
+    assert q == {"type": "noul", "instructions": "Does this convey urgency?",
+                 "criteria": {"true": "urgent", "false": "routine"}}
+    assert "choices" not in seen["payload"] and seen["payload"]["state"] == item["input"]
+    assert completion.text == "yes"
+    ev = json.loads(completion.trajectory[0]["result"])
+    assert ev["p_true"] == 0.92 and ev["distribution"] == {"yes": 0.92, "no": 0.08}
+    assert completion.trajectory[0]["tool"] == "decisions.noul"
+
+
+def test_noul_labels_are_the_spec_s_and_the_threshold_is_one_half(monkeypatch):
+    monkeypatch.setenv("TYPESAFE_API_KEY", "test-key")
+    low = {**NOUL_REPLY, "answers": {"decision": {"type": "noul", "noul": 0.31}}}
+    monkeypatch.setattr(DecisionsProvider, "_request", lambda self, u, h, p: low)
+    completion = make_provider("typesafe", "jev-latest").complete(
+        {"id": "t", "input": "x", "target": "FAIL"}, 1, {"question": "noul", "labels": ["PASS", "FAIL"]})
+    assert completion.text == "FAIL"
+    assert json.loads(completion.trajectory[0]["result"])["distribution"] == {"PASS": 0.31, "FAIL": 0.69}

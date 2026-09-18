@@ -104,6 +104,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-052](#f-052) | BFCL v4 | one live request keyed to `rotateImageAction` in `live_multiple` and to "irrelevant" in `live_irrelevance` with the same menu, so nobody can score both; three exact duplicates inside `live_irrelevance` | confirmed |
 | [D-099](#d-099) | dinostomp | OpenRouter answered a rate limit with HTTP 200 and an `error` body; it parsed as an empty answer, scored wrong, never retried, and GPT-5.6 Luna read 21.9% with 1,379 of 1,933 records never reaching the model; error bodies now raise and 429/5xx retry | confirmed, fixed |
 | [N-036](#n-036) | onepass (BFCL v4 live) | first run of the calibration checks on four one-pass arms: ModernBERT-base ECE 0.033, MiniLM chooser 0.078, Jev 1.13 0.081, zero-shot MiniLM 0.194 (R23 warns: says 83%, delivers 63%); every arm's confidence ranks right over wrong (AUROC 0.73 to 0.87), Jev best | measured |
+| [N-037](#n-037) | Jev 1.13 as a judge | one yes/no question per grading, no reasoning text: 104 of 104 verdicts identical to the control judge on the capitals pod, J1 100% of 16 known cases, J2 zero flips over 96 content-free regrades, J3 zero self-contradictions; the witness gate refused the first rubric because Jev read `Franc` as France at 0.64, and one added sentence moved it to 0.04 | measured |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
 | [F-021](#f-021) | MATH-500 | 2 problems whose answer is written in the question | confirmed, scoped |
@@ -284,7 +285,7 @@ at fault.
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
 | `T7` | [N-009](#n-009) |
 | `T8` | [D-031](#d-031) |
-| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [F-048](#f-048), [F-049](#f-049), [F-050](#f-050), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [D-093](#d-093), [D-094](#d-094), [D-095](#d-095), [D-096](#d-096), [D-097](#d-097), [D-098](#d-098), [D-099](#d-099), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-032](#n-032), [N-033](#n-033), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
+| `(no check id)` | [F-015](#f-015), [F-017](#f-017), [F-026](#f-026), [F-030](#f-030), [F-031](#f-031), [F-032](#f-032), [F-033](#f-033), [F-034](#f-034), [F-035](#f-035), [F-036](#f-036), [F-037](#f-037), [F-038](#f-038), [F-039](#f-039), [F-048](#f-048), [F-049](#f-049), [F-050](#f-050), [D-082](#d-082), [D-083](#d-083), [D-084](#d-084), [D-087](#d-087), [D-088](#d-088), [D-089](#d-089), [D-090](#d-090), [D-091](#d-091), [D-092](#d-092), [D-093](#d-093), [D-094](#d-094), [D-095](#d-095), [D-096](#d-096), [D-097](#d-097), [D-098](#d-098), [D-099](#d-099), [N-037](#n-037), [N-015](#n-015), [N-002](#n-002), [N-018](#n-018), [N-026](#n-026), [N-027](#n-027), [N-028](#n-028), [N-029](#n-029), [N-030](#n-030), [N-025](#n-025), [N-024](#n-024), [N-032](#n-032), [N-033](#n-033), [N-021](#n-021), [N-010](#n-010), [N-011](#n-011), [N-013](#n-013), [N-014](#n-014), [N-016](#n-016), [D-009](#d-009), [D-010](#d-010), [D-011](#d-011), [D-013](#d-013), [D-018](#d-018), [D-019](#d-019), [D-021](#d-021), [D-023](#d-023), [D-024](#d-024), [D-025](#d-025), [D-026](#d-026), [D-028](#d-028), [D-029](#d-029), [D-030](#d-030), [D-032](#d-032), [D-033](#d-033), [D-034](#d-034), [D-035](#d-035), [D-036](#d-036), [D-038](#d-038), [D-039](#d-039), [D-040](#d-040), [D-045](#d-045), [D-047](#d-047), [D-048](#d-048), [D-049](#d-049), [D-050](#d-050), [D-051](#d-051), [D-054](#d-054), [D-055](#d-055), [D-057](#d-057), [D-060](#d-060), [D-062](#d-062), [D-063](#d-063), [D-067](#d-067), [D-068](#d-068), [D-069](#d-069), [D-070](#d-070), [D-072](#d-072) |
 
 ### By subject
 
@@ -327,6 +328,7 @@ at fault.
 | Inspect AI | [N-011](#n-011) |
 | Iranian driving test | [F-024](#f-024) |
 | iris | [F-001](#f-001) |
+| Jev 1.13 as a judge | [N-037](#n-037) |
 | llama-3.2-3b | [F-016](#f-016) |
 | LLM-as-judge | [N-013](#n-013) |
 | lm-eval-harness log | [N-007](#n-007) |
@@ -2247,6 +2249,59 @@ chooser under a quarter), and the baseline's 77.5% at the same floor is not
 a number to act on. The `onepass` README carries
 the same table computed independently (`onepass.table`) to the third
 decimal, which is the parity check on the check.
+
+---
+
+### N-037
+**A decisions model as a judge: Jev grades the capitals pod verdict-for-verdict with the control judge, survives every content-free perturbation, and obeys a one-sentence rubric change at the exact case the witness gate caught**
+`J1`, `J2`, `J3`, witness gate · 2026-09-18 · measured
+
+The judge rail asks a model for reasoning and a word. A decisions model
+writes neither, so `provider: jev` / `provider: typesafe` as a judge is asked
+the rubric as one noul question over the same fenced context (rubric,
+reference, the response between derived markers), and answers with a
+probability of PASS. The verdict is that probability against one half; the
+probability is written into `judge_response` ahead of the ruling, so R8 and
+`verify` re-derive the verdict offline exactly as they do for a text judge,
+and the J probes run unchanged.
+
+First run: `examples/judge`, 26 capital-city items, four bots that know the
+same facts and phrase them differently, with planted errors. TypeSafe's own
+endpoint, `jev-latest`, answering as `jev-1.13.0`.
+
+The witness gate fired first. With the pod's rubric as committed ("names the
+same country as the reference answer"), Jev passed `Franc` against `France`
+at p(PASS) 0.64, and the gate refused to run anything: the pod's witnesses
+say a truncated country is a different one. The other five witnesses were
+at 0.98, 0.98, 0.01, 0.02 and 0.03. One sentence appended to the rubric
+("the country must be spelled out in full; a truncated or misspelled name is
+a different answer") moved `Franc` to 0.04 and nothing else by more than
+0.01. A judge that reads a typo charitably is a defensible judge; a judge
+that stops when told to is a usable one.
+
+With that rubric, the pod and the probe:
+
+```
+                          control judge   jev-latest
+bot-bare                  84.6%           84.6%
+bot-wrapped               61.5%           61.5%
+bot-hedged                38.5%           38.5%
+bot-chatty                26.9%           26.9%
+verdicts identical        104 of 104
+J1 known cases            16 of 16 agree
+J2 content-free regrades  0 flips in 96 (verbosity, confidence, authority, markdown, whitespace, politeness)
+J3 identical input        0 contradictions in 16
+cost, pod plus probe      under one cent
+```
+
+Direction: **none to report.** The control judge is a deterministic
+normaliser built to be right on this pod; matching it is the bar, not a
+lead. What the entry establishes is narrower and worth having: a judge with
+no chain of thought clears the same gauntlet a text judge must, at the price
+of a lookup, and its probability rides on every record so R23/R24 can be
+asked of a judge the same way they are asked of an examinee. One pod, 26
+items, a rubric about spelling; the safety pods, where a judge decides
+whether a response is a refusal, are the next place to point it.
 
 ---
 
@@ -6268,7 +6323,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 16 (F-001 to F-004, F-008 to F-013, F-041 to F-046) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **36** |
+| negative results, recorded rather than dropped (**N**) | **37** |
 | defects in dinostomp itself (**D**) | **99** |
 
 Ninety-one to forty-nine. That ratio is the useful number to publish, and it is the

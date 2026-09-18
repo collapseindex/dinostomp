@@ -296,3 +296,78 @@ def test_a_hosted_judge_pod_lints_without_an_api_key(tmp_path, monkeypatch):
 
     from dinostomp.cli import main
     assert main(["plan", str(spec)]) == 0, "plan must never require a key or traceback"
+
+
+# --- a decisions judge --------------------------------------------------------
+
+
+class _NoulJudge:
+    """A fake decisions provider: PASS when the fenced response contains the
+    reference, with a probability that says how sure, so the record carries both."""
+    provider_name = "typesafe"
+    takes_choices = True
+    model = "jev-latest"
+
+    def __init__(self):
+        self.payloads = []
+
+    def complete(self, item, seed, params):
+        from dinostomp.providers import Completion
+        self.payloads.append((item, params))
+        state = item["input"]
+        target = str(item["target"])
+        import re
+        fence = re.search(r"<<<[0-9a-f]+>>>", state).group(0)
+        fenced = re.sub(r"[^A-Za-z ]", " ", state.split(fence)[-2])  # the block, not the markdown
+        names = target in fenced and f"not {target}" not in fenced
+        p = 0.93 if names else 0.12
+        label = params["labels"][0] if p >= 0.5 else params["labels"][1]
+        return Completion(text=label, finish_reason="stop", input_tokens=10, output_tokens=1,
+                          trajectory=[{"tool": "decisions.noul", "args": {},
+                                       "result": json.dumps({"p_true": p, "top": label}), "ok": True}])
+
+
+def test_a_decisions_judge_is_asked_one_noul_question_and_its_probability_is_on_the_record(tmp_path):
+    from dinostomp.judging import JudgeScorer, NOUL_LABELS, NOUL_QUESTION
+
+    fake = _NoulJudge()
+    scorer = JudgeScorer({"rubric": "Mark PASS if the response names the reference country.",
+                          "judge": {"provider": "typesafe", "model": "jev-latest"},
+                          "witnesses": WITNESSES}, tmp_path, provider_factory=lambda p, m: fake)
+    assert scorer("The answer is France.", "France").verdict == "pass"
+    assert scorer.last_response.startswith("p(PASS)=0.9300\n") and scorer.last_response.endswith("PASS")
+    assert scorer("Japan", "France").verdict == "fail"
+    assert scorer.last_response == "p(PASS)=0.1200\nFAIL"
+
+    item, params = fake.payloads[0]
+    assert params["question"] == "noul" and params["labels"] == NOUL_LABELS
+    assert params["instructions"] == NOUL_QUESTION
+    assert "Reply with your reasoning" not in item["input"], "a decisions model is not asked for words"
+    assert "France" in item["input"] and "<<<" in item["input"], "rubric, reference and fence still go in"
+
+    # the verdict re-derives offline from the recorded text, exactly like a text judge's
+    assert JudgeScorer.rescore_offline({"judge_response": scorer.last_response}).verdict == "fail"
+
+
+def test_a_decisions_judge_runs_the_gauntlet_and_passes_it(tmp_path, monkeypatch):
+    """The J probes need no change: a decisions judge that grades on content
+    survives the same content-free perturbations a text judge must."""
+    from dinostomp import judging
+
+    fake = _NoulJudge()
+    monkeypatch.setenv("TYPESAFE_API_KEY", "test-key")
+    monkeypatch.setattr("dinostomp.providers.make_provider", lambda p, m, **kw: fake)
+    monkeypatch.setattr("dinostomp.runner.make_provider", lambda p, m, **kw: fake)
+    spec = make_pod(tmp_path)
+    obj = yaml.safe_load(spec.read_text(encoding="utf-8"))
+    obj["scorer"]["judge"] = {"provider": "typesafe", "model": "jev-latest", "price_in": 0.042, "price_out": 0}
+    obj["run"]["budget_usd"] = 0.01           # a hosted judge is billed; the fake reports tokens
+    spec.write_text(yaml.safe_dump(obj), encoding="utf-8")
+    assert run_spec(spec).exit_code == OK
+    assert run_spec(spec, probe="judge").exit_code == OK
+    report, issues = lint_eval(spec)
+    assert report is not None, issues
+    assert level_of(report, "J1") == "pass" and level_of(report, "J2") == "pass", report["findings"]
+    probe = next(p for p in (tmp_path / "pod" / "data" / "runs").glob("*judgeprobe*.jsonl"))
+    rec = json.loads(probe.read_text(encoding="utf-8").splitlines()[0])
+    assert rec["provider"] == "typesafe" and rec["judge_response"].startswith("p(PASS)=")
