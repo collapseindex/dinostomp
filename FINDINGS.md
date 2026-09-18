@@ -2162,6 +2162,14 @@ the category the leaderboard treats as the safety signal. Not filed upstream
 yet; the reproduction is `python -m onepass.bfcl --split live` followed by
 `dinostomp stomp` on the output, or a direct diff of the two JSON lines.
 
+**Context, 2026-09-17:** Epoch AI's Benchmark Reviews initiative launched
+today with BFCL v4 rated Flawed (review dated 2026-09-10): 24 of 50 sampled
+tasks defective, the sample stratified across all categories with five live
+and five irrelevance items, and "inverted logic" noted in irrelevance. That
+is a judged sample for scoring validity; this entry is a mechanical scan of
+every live selection row for structure. They do not overlap and they agree.
+https://epoch.ai/benchmarks/berkeley-function-calling-leaderboard/review
+
 ---
 
 ### F-019
