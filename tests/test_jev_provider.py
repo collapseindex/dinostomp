@@ -67,3 +67,35 @@ def test_takes_choices_and_shuffle_permutes_the_menu():
     order = shuffled_choices(ITEM, 7)
     assert sorted(order) == sorted(ITEM["choices"]) and order != ITEM["choices"]
     assert shuffled_choices(ITEM, 7) == order, "deterministic per (item, seed)"
+
+
+def test_typesafe_is_the_same_call_on_the_direct_endpoint(monkeypatch):
+    """One class, two doors: the record's provider says which was used, and a
+    reply without `cost` leaves pricing to the spec's rates."""
+    monkeypatch.setenv("TYPESAFE_API_KEY", "test-key")
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    seen = {}
+
+    def fake_request(self, url, headers, payload):
+        seen["url"], seen["auth"], seen["payload"] = url, headers["authorization"], payload
+        direct = {**REPLY, "model": "jev-latest", "usage": {"input_tokens": 120, "output_tokens": 30}}
+        return direct
+
+    monkeypatch.setattr(DecisionsProvider, "_request", fake_request)
+    provider = make_provider("typesafe", "jev-latest")
+    assert provider.provider_name == "typesafe"
+    completion = provider.complete(ITEM, 42, {})
+    assert seen["url"] == "https://api.typesafe.ai/v1/systemone"
+    assert seen["auth"] == "Bearer test-key"
+    assert seen["payload"]["model"] == "jev-latest"
+    assert seen["payload"]["questions"]["decision"]["type"] == "choice"
+    assert completion.text == "Atlantic Ocean" and completion.cost_usd is None
+    assert completion.input_tokens == 120
+    assert json.loads(completion.trajectory[0]["result"])["distribution"]["Atlantic Ocean"] == 0.9
+
+
+def test_typesafe_refuses_to_run_without_its_own_key(monkeypatch):
+    monkeypatch.delenv("TYPESAFE_API_KEY", raising=False)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "not-the-right-door")
+    with pytest.raises(ProviderError, match="TYPESAFE_API_KEY"):
+        make_provider("typesafe", "jev-latest")

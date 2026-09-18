@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+- **`provider: typesafe`: Jev on TypeSafe's own endpoint.** The same
+  decisions call as `jev`, sent to `api.typesafe.ai/v1/systemone` with
+  `TYPESAFE_API_KEY`; the record's provider says which door was used. The
+  endpoint reports tokens and no cost, so the spec's rates price it. Model
+  `jev-latest` answered as `jev-1.13.0` on 2026-09-18.
 - **R23 `overconfident` and R24 `confidence-blind`: a reported probability
   held to the verdicts.** A one-pass model (the `jev` provider, a chooser, a
   loglikelihood ranker) puts a probability per option on the record as a

@@ -248,12 +248,13 @@
             "openai",
             "openrouter",
             "jev",
+            "typesafe",
             "dry",
             "python",
             "mediated",
             "imported"
           ],
-          "description": "jev is a decisions model (TypeSafe Jev via OpenRouter): the item's choices are the request, no prompt is rendered and no text is parsed; the record carries a probability per choice. dry is the offline deterministic provider: zero network, zero spend, always available. python mounts a pod-local callable (agent, RAG pipeline, workflow) on the target rail. imported declares a model this engine cannot call, whose evidence arrives via `dinostomp import`; `run` refuses it rather than inventing a way to produce the numbers itself. mediated mounts a pod-local agent whose TOOLS the harness holds, so the recorded trajectory is observed rather than self-reported; it takes answer(item, tools, ctx) and requires a top-level `tools` block. It is not a security sandbox and the docs say why."
+          "description": "jev is a decisions model (TypeSafe Jev via OpenRouter's decisions endpoint) and typesafe is the same call on TypeSafe's own /v1/systemone: the item's choices are the request, no prompt is rendered and no text is parsed; the record carries a probability per choice. dry is the offline deterministic provider: zero network, zero spend, always available. python mounts a pod-local callable (agent, RAG pipeline, workflow) on the target rail. imported declares a model this engine cannot call, whose evidence arrives via `dinostomp import`; `run` refuses it rather than inventing a way to produce the numbers itself. mediated mounts a pod-local agent whose TOOLS the harness holds, so the recorded trajectory is observed rather than self-reported; it takes answer(item, tools, ctx) and requires a top-level `tools` block. It is not a security sandbox and the docs say why."
         },
         "model": {
           "type": "string",

@@ -47,6 +47,7 @@ ENV_KEYS = {
     "openai": "OPENAI_API_KEY",
     "openrouter": "OPENROUTER_API_KEY",
     "jev": "OPENROUTER_API_KEY",
+    "typesafe": "TYPESAFE_API_KEY",
 }
 
 
@@ -408,12 +409,29 @@ class DecisionsProvider(HttpProvider):
         )
 
 
+class TypeSafeProvider(DecisionsProvider):
+    """The same decisions call on TypeSafe's own endpoint, `POST /v1/systemone`.
+
+    Identical request and answer shape to the OpenRouter path (which is where
+    OpenRouter's alpha endpoint got it), so one class does both and the record
+    says which door was used: `provider: jev` is the middleman, `typesafe` is
+    direct. The endpoint reports tokens but no cost, so the ledger prices the
+    call from the spec's rates like any other provider. Model `jev-latest` is
+    TypeSafe's own name for the current Jev; `model_reported` on the manifest
+    records what actually answered.
+    """
+
+    provider_name = "typesafe"
+    URL = "https://api.typesafe.ai/v1/systemone"
+
+
 PROVIDERS = {
     "dry": DryProvider,
     "anthropic": AnthropicProvider,
     "openai": OpenAICompatProvider,
     "openrouter": OpenRouterProvider,
     "jev": DecisionsProvider,
+    "typesafe": TypeSafeProvider,
 }
 
 # Providers whose calls cost nothing the ledger has to price. `python` targets
