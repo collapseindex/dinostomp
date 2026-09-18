@@ -2,6 +2,17 @@
 
 ### Unreleased
 
+- **`provider: jev`: a decisions model as an examinee.** TypeSafe's Jev through
+  OpenRouter's decisions endpoint. The item's `choices` are the request (a
+  Choice question, option texts from `metadata.options` when present), the
+  answer is a choice by name, and the record's trajectory carries the
+  probability vector and confidence. No prompt is rendered, so nothing is
+  parsed and no label is copied; the shuffle probe permutes the menu, the
+  blind probe blanks the state, and the endpoint's reported cost goes to the
+  ledger as target-reported. `params.instructions` sets the question text.
+  Built for the `onepass` tool-routing pods, where it runs beside a local
+  chooser and three hosted LLMs on identical items.
+
 - **Jevlike audited as a one-pass examinee (F-051, N-034).** A from-scratch
   Jev-like scorer mounted through the `python` provider on Wikispeedia
   next-click data: informed 29.8%, blind 5.0%, uniform floor 3.6%, so the

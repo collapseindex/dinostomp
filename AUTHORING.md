@@ -148,6 +148,23 @@ same witness gate, same drift boundary, same battery.
 
 There are two rails, and choosing between them is the only real decision here.
 
+**`jev` — a decisions model: the menu is the request.**
+
+```yaml
+data: {path: items.jsonl, format: jsonl}       # items carry `choices`
+models:
+  - {provider: jev, model: typesafe/jev-1.13, price_in: 0.042, price_out: 0,
+     params: {instructions: "Pick the function to call, or NONE."}}
+```
+TypeSafe's Jev through OpenRouter's decisions endpoint (`OPENROUTER_API_KEY`).
+No prompt is rendered and no text is parsed: the item's `choices` become a
+Choice question, the answer is one of them by name, and the record's
+trajectory carries a probability per choice and a confidence, so calibration
+can be read off the run. Option descriptions come from `metadata.options`
+when the item carries one per choice, otherwise the choice text is the
+criterion. The blind probe blanks the state as usual; the shuffle probe
+permutes the menu itself. Cost is what the endpoint reports.
+
 **`python` — the agent writes its own trace.**
 
 ```yaml

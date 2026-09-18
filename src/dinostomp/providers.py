@@ -32,6 +32,7 @@ ENV_KEYS = {
     "anthropic": "ANTHROPIC_API_KEY",
     "openai": "OPENAI_API_KEY",
     "openrouter": "OPENROUTER_API_KEY",
+    "jev": "OPENROUTER_API_KEY",
 }
 
 
@@ -130,6 +131,10 @@ class HttpProvider:
     """Shared plumbing for the JSON-over-HTTPS providers."""
 
     provider_name: str = ""
+    # True for providers that take the item's `choices` as the request itself:
+    # the runner then renders no option block and permutes the menu, not the
+    # prompt, under the shuffle probe.
+    takes_choices: bool = False
 
     def __init__(self, model: str):
         self.model = model
@@ -258,11 +263,79 @@ class OpenRouterProvider(OpenAICompatProvider):
         payload["reasoning"] = {"effort": effort}
 
 
+class DecisionsProvider(HttpProvider):
+    """TypeSafe's Jev through OpenRouter's decisions endpoint: a System One model.
+
+    The item's `choices` ARE the request. No prompt is rendered, no text comes
+    back, nothing is parsed: the answer is one of the choices by name, with a
+    probability per choice and a confidence, which ride in the record's
+    trajectory as evidence. Option texts come from `metadata.options` when the
+    item carries one for every choice, otherwise the choice string itself is
+    the criterion. The blind probe still blanks `input`, which is the state.
+
+    Cost is what the endpoint reports, handed to the ledger as target-reported.
+    """
+
+    provider_name = "jev"
+    URL = "https://openrouter.ai/api/alpha/decisions"
+    takes_choices = True
+    QUESTION_KEY = "decision"
+    DEFAULT_INSTRUCTIONS = "Choose the one option that answers the state."
+
+    def complete(self, item: dict, seed: int, params: dict) -> Completion:
+        choices = item.get("choices")
+        if not isinstance(choices, list) or len(choices) < 2:
+            raise ProviderError(f"{self.provider_name} needs an item with at least two choices: {item.get('id')!r}")
+        options = (item.get("metadata") or {}).get("options")
+        if isinstance(options, dict) and all(c in options for c in choices):
+            criteria = {str(c): str(options[c]) for c in choices}
+        else:
+            criteria = {str(c): str(c) for c in choices}
+        state = item["input"] if isinstance(item["input"], (str, dict, list)) else str(item["input"])
+        payload: dict[str, Any] = {
+            "model": self.model,
+            "state": state,
+            "questions": {self.QUESTION_KEY: {
+                "type": "choice",
+                "instructions": str(params.get("instructions") or self.DEFAULT_INSTRUCTIONS),
+                "criteria": criteria,
+            }},
+        }
+        headers = {"content-type": "application/json", "authorization": f"Bearer {self.key}"}
+        data = self._request(self.URL, headers, payload)
+        try:
+            answer = data["answers"][self.QUESTION_KEY]
+            choice = str(answer["choice"])
+            probabilities = {str(k): float(v) for k, v in (answer.get("probabilities") or {}).items()}
+            confidence = float(answer.get("confidence") or 0.0)
+            usage = data.get("usage") or {}
+            cost = usage.get("cost")
+        except (TypeError, AttributeError, ValueError, KeyError) as exc:
+            raise ProviderError(f"{self.provider_name} response had an unexpected shape: {exc}") from exc
+        evidence = {"top": choice, "p_top": round(probabilities.get(choice, 0.0), 6),
+                    "p_target": round(probabilities.get(str(item.get("target")), 0.0), 6),
+                    "confidence": round(confidence, 6),
+                    "distribution": {k: round(v, 6) for k, v in probabilities.items()}}
+        return Completion(
+            text=choice,
+            finish_reason="stop",
+            input_tokens=int(usage.get("input_tokens") or 0),
+            output_tokens=int(usage.get("output_tokens") or 0),
+            raw_usage=usage,
+            model_reported=str(data.get("model") or ""),
+            cost_usd=float(cost) if cost is not None else None,
+            trajectory=[{"tool": "decisions.choice",
+                         "args": {"n_options": len(criteria), "question": self.QUESTION_KEY},
+                         "result": json.dumps(evidence, ensure_ascii=False), "ok": True}],
+        )
+
+
 PROVIDERS = {
     "dry": DryProvider,
     "anthropic": AnthropicProvider,
     "openai": OpenAICompatProvider,
     "openrouter": OpenRouterProvider,
+    "jev": DecisionsProvider,
 }
 
 # Providers whose calls cost nothing the ledger has to price. `python` targets

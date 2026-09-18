@@ -254,6 +254,12 @@ def shuffled_input(item: dict, seed: int) -> str | None:
 
     Deterministic per (item, seed), so a shuffle probe re-runs identically.
     """
+    order = shuffled_choices(item, seed)
+    return render_options(item, order) if order else None
+
+
+def shuffled_choices(item: dict, seed: int) -> list | None:
+    """The permuted menu itself, for providers that take choices directly."""
     choices = item.get("choices")
     if not isinstance(choices, list) or len(choices) < 2:
         return None
@@ -261,7 +267,7 @@ def shuffled_input(item: dict, seed: int) -> str | None:
     random.Random(f"shuffle|{seed}|{item['id']}").shuffle(order)
     if order == list(choices):      # a permutation that changed nothing tests nothing
         order = order[1:] + order[:1]
-    return render_options(item, order)
+    return order
 
 
 def select_items(items: list[dict], n: int, seed: int) -> list[dict]:
@@ -1022,8 +1028,16 @@ def run_spec(
                     except BudgetExceeded as exc:
                         stopped = f"budget: {exc}"
                         break
+                    takes_choices = bool(getattr(provider, "takes_choices", False))
                     if probe == "blind":
                         call_item = {**item, "input": blind_input(item)}
+                    elif takes_choices:
+                        # The menu is the request: nothing is rendered into the
+                        # prompt, and a shuffle permutes the menu itself.
+                        if probe == "shuffle" and (order := shuffled_choices(item, seed)):
+                            call_item = {**item, "choices": order}
+                        else:
+                            call_item = item
                     elif probe == "template":
                         # The item's own text is untouched; only the task
                         # statement wrapped around it changes, which is what
