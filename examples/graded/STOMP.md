@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 24 of 36 checks ran (24 of 36 ran; 62 n/a of 98 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 24 of 36 checks ran (24 of 36 ran; 64 n/a of 100 declared). Not a clean bill of health.
 
 measures the intended construct: **NOT ESTABLISHED BY DINOSTOMP**
 
@@ -133,9 +133,11 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 2 | 2 of 2 run(s) were produced by a different engine than the one auditing them (now dda7b581036fec19); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 2 | 2 of 2 run(s) were produced by a different engine than the one auditing them (now a794a1f0838578f8); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | no failed answer numerically equals its target | 3 | 0 of 3 numeric-target failure(s) equal their target as a number; the scorer may be rejecting a correct value in the wrong form |
+| n/a | reported confidence matches observed accuracy | 0 | no record carries a probability vector; only a one-pass model (decisions, chooser, loglikelihood) reports one |
+| n/a | confidence separates right answers from wrong ones | 0 | no record carries a probability vector; only a one-pass model (decisions, chooser, loglikelihood) reports one |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | tool calls are not redundant | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |

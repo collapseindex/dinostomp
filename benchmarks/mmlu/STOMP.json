@@ -256,6 +256,12 @@
       "provenance": "judgment",
       "basis": "author judgment; no derivation or calibration on record"
     },
+    "ece_max": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "convention",
+      "basis": "0.10 is ten points of stated confidence the accuracy does not back; Guo et al. 2017 report 0.05 to 0.17 for uncalibrated deep nets and under 0.03 after temperature scaling, so the bar sits between a fixable habit and an honest number"
+    },
     "prose_answer_words": {
       "value": 6.0,
       "source": "default",
@@ -324,8 +330,8 @@
     }
   },
   "coverage": {
-    "declared_total": 98,
-    "declared": 47,
+    "declared_total": 100,
+    "declared": 49,
     "ran": 16,
     "skipped": [
       {
@@ -410,6 +416,14 @@
       },
       {
         "id": "R22",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R23",
+        "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
+      },
+      {
+        "id": "R24",
         "reason": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`"
       },
       {
@@ -663,7 +677,7 @@
   "summary": {
     "fail": 3,
     "warn": 1,
-    "skip": 31,
+    "skip": 33,
     "verdict": "broken",
     "scope": "pod"
   },
@@ -1856,6 +1870,26 @@
       "slug": "numeric-miss",
       "stage": "scorer",
       "check": "no failed answer numerically equals its target",
+      "level": "skip",
+      "gating": false,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R23",
+      "slug": "overconfident",
+      "stage": "aggregate",
+      "check": "reported confidence matches observed accuracy",
+      "level": "skip",
+      "gating": false,
+      "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",
+      "witnesses": 0
+    },
+    {
+      "id": "R24",
+      "slug": "confidence-blind",
+      "stage": "aggregate",
+      "check": "confidence separates right answers from wrong ones",
       "level": "skip",
       "gating": false,
       "detail": "no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import`",

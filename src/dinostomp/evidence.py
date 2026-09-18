@@ -65,6 +65,8 @@ NEEDS: dict[str, list[Need]] = {
     "R16": [Need(RECORD, "output", "an unparsed-but-correct answer is looked for in the text")],
     "R18": [Need(RECORD, "usage", "billed output tokens are compared against the recorded text")],
     "R19": [Need(MANIFEST, "tool_sha256", "the engine that produced the run is compared to this one")],
+    "R23": [Need(RECORD, "trajectory", "the probability vector rides in a trajectory step's result")],
+    "R24": [Need(RECORD, "trajectory", "the probability vector rides in a trajectory step's result")],
     "T1": [Need(RECORD, "trajectory", "a forbidden tool call is read from the trace")],
     "T2": [Need(RECORD, "trajectory", "a missing required call is read from the trace")],
     "T3": [Need(RECORD, "trajectory", "well-formedness is a property of the trace")],

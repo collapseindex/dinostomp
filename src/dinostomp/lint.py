@@ -35,6 +35,7 @@ from pathlib import Path
 from statistics import median
 
 import dinostomp
+from dinostomp.calibration import auroc, confidence_points, coverage_table, expected_calibration_error
 from dinostomp.claims import evaluate_claims
 from dinostomp.items import load_items
 from dinostomp.providers import ProviderError
@@ -180,6 +181,13 @@ CHECKS: list[tuple[str, str, bool, str]] = [
     ("R21", "graded scores stay in range", True, "records carrying a graded value"),
     ("R22", "no failed answer numerically equals its target", False,
      "failed records whose target is a number"),
+    # A one-pass model answers with a probability per option. Text never carries
+    # this, so these two are the only checks that can hold a stated confidence
+    # to the accuracy it claimed.
+    ("R23", "reported confidence matches observed accuracy", False,
+     "20+ checkable records carrying a probability vector, per model"),
+    ("R24", "confidence separates right answers from wrong ones", False,
+     "20+ checkable records with a probability vector and 5+ misses, per model"),
     ("T1", "no forbidden tool is called", True, "forbidden_tools declared"),
     ("T2", "every required tool is actually called", True, "required_tools declared"),
     ("T3", "trajectories are well-formed", True, "python-target runs on disk"),
@@ -269,6 +277,7 @@ THRESHOLDS = {
     "noise_z": 1.96,
     "contains_target_max": 0.25,  # R16: share of a model's FAILED answers containing the reference
     "min_scored_misses": 5,       # R16: failed records a model needs before its misses are judged
+    "ece_max": 0.10,              # R23: expected calibration error above this is a confidence that lies
     "prose_answer_words": 6,      # W4: a median answer this many words+ makes exact match a wording test, not a capability test
     "key_skew_margin": 0.10,      # S20: modal-answer share this far above a balanced key's 1/k is a skewed key worth naming
     "global_label_max": 3,        # S2: a shared answer vocabulary this small (yes/no, entailment/neutral/contradiction) is a label set, not per-item keys
@@ -381,6 +390,7 @@ SLUGS = {
     "R13": "blind-solvable", "R14": "response-collapse", "R15": "input-blind",
     "R16": "scorer-artifact", "R17": "nothing-scoreable", "R18": "billing-mismatch",
     "R19": "engine-drift", "R20": "repeat-ties", "R21": "graded-range",
+    "R23": "overconfident", "R24": "confidence-blind",
     "R22": "numeric-miss",
     "T1": "forbidden-tool", "T2": "required-tool", "T3": "trajectory-shape",
     "T4": "answer-grounding", "T5": "trace-underreport", "T6": "redundant-calls",
@@ -422,7 +432,7 @@ STAGES: dict[str, str] = {
     "J1": "scorer", "J2": "scorer", "J3": "scorer", "J4": "scorer",
     # the number, and whether noise or a shortcut could have produced it
     "R7": "aggregate", "R9": "aggregate", "R13": "aggregate", "R14": "aggregate",
-    "R15": "aggregate",
+    "R15": "aggregate", "R23": "aggregate", "R24": "aggregate",
     **{f"P{i}": "aggregate" for i in range(1, 15) if i != 6},
     # what the evidence entitles anyone to say
     "C1": "claim", "P6": "claim",
@@ -576,6 +586,10 @@ THRESHOLD_PROVENANCE = {
     "negative_discrimination": ("convention", "item analysis treats r_pb below about -0.2 as a "
                                               "candidate key error"),
     "min_checkable": ("judgment", "20 records before a per-model rate is worth reporting"),
+    "ece_max": ("convention", "0.10 is ten points of stated confidence the accuracy does not "
+                              "back; Guo et al. 2017 report 0.05 to 0.17 for uncalibrated "
+                              "deep nets and under 0.03 after temperature scaling, so the bar "
+                              "sits between a fixable habit and an honest number"),
     "min_items_psycho": ("judgment", "5 common items before a matrix means anything"),
     "min_fleet": ("judgment", "4 examinees before fleet statistics are attempted"),
     "min_fleet_agree": ("judgment", "3 models before unanimity is a word worth using"),
@@ -655,7 +669,7 @@ CONSTRUCT_VALIDITY = {
 
 
 RUN_CHECK_IDS = ("R1", "R3", "R4", "R5", "R6", "R8", "R9", "R10", "R11", "R12", "R14", "R16", "R17",
-                 "R18", "R19", "R20", "R21", "R22")
+                 "R18", "R19", "R20", "R21", "R22", "R23", "R24")
 PSYCHO_CHECK_IDS = ("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P13", "P14")
 # P9 lives with the probes, not the fleet matrix: it needs a probe run, not more models.
 TRAJECTORY_CHECK_IDS = ("T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8")
@@ -1821,6 +1835,76 @@ def _blind_check(rep: Reporter, probes: list[dict], real_runs: list[dict], chanc
               evidence={"lift": {m: round(real - bl, 4) for m, (real, bl) in paired.items()}})
 
 
+def _calibration_checks(rep: Reporter, mine: list[dict]) -> None:
+    """R23 and R24: what a reported probability is worth.
+
+    Both read the same points per model, (confidence in the answer given, was
+    it right), from records carrying a probability vector. Records without one
+    are not evidence either way, so a pod of text models is n/a, not failing.
+    Confidence is the mass on the model's OWN answer: the number a caller
+    acting on that answer would see, whether or not the answer was right.
+    """
+    per_model: dict[str, list[tuple[float, bool]]] = {}
+    for e in mine:
+        m = str((e["manifest"] or {}).get("model"))
+        per_model.setdefault(m, []).extend(confidence_points(e["records"]))
+    per_model = {m: pts for m, pts in per_model.items() if pts}
+    if not per_model:
+        for cid in ("R23", "R24"):
+            rep.not_applicable(cid, "no record carries a probability vector; only a one-pass "
+                                    "model (decisions, chooser, loglikelihood) reports one")
+        return
+
+    # R23: expected calibration error. The confidence a model states, weighed
+    # against how often it was right at that confidence. A miss here is a
+    # model whose "0.95" means 0.80, which no accuracy number reveals and which
+    # temperature scaling on a held-out run repairs without moving an answer.
+    enough = {m: pts for m, pts in per_model.items() if len(pts) >= THRESHOLDS["min_checkable"]}
+    if not enough:
+        rep.skip("R23", f"no model has {THRESHOLDS['min_checkable']}+ checkable records carrying a "
+                        "probability vector")
+    else:
+        ece = {m: expected_calibration_error(pts) for m, pts in enough.items()}
+        mean_conf = {m: sum(c for c, _ in pts) / len(pts) for m, pts in enough.items()}
+        acc = {m: sum(ok for _, ok in pts) / len(pts) for m, pts in enough.items()}
+        off = [f"{m}: ECE {ece[m]:.3f}, mean confidence {mean_conf[m]:.0%} against {acc[m]:.0%} "
+               f"accuracy ({'over' if mean_conf[m] > acc[m] else 'under'}confident) on {len(enough[m])}"
+               for m in sorted(enough) if ece[m] > THRESHOLDS["ece_max"]]
+        rep.check("R23", not off,
+                  f"{len(off)} of {len(enough)} model(s) state a confidence their accuracy does not "
+                  f"back (ECE above {THRESHOLDS['ece_max']:.2f}); act on their probabilities only "
+                  "after scaling them on a held-out run",
+                  n=len(enough), examples=off,
+                  evidence={"ece": {m: round(v, 4) for m, v in ece.items()},
+                            "mean_confidence": {m: round(v, 4) for m, v in mean_conf.items()},
+                            "accuracy": {m: round(v, 4) for m, v in acc.items()},
+                            "coverage": {m: coverage_table(pts) for m, pts in enough.items()}})
+
+    # R24: does confidence rank right answers above wrong ones at all? AUROC of
+    # confidence as a classifier of pass against fail, held to the same noise
+    # bar as every other move in this battery. A model can pass R23 on average
+    # and fail this per item; that model's confidence is a constant wearing
+    # decimals, and acting on it is acting on nothing.
+    rankable = {m: pts for m, pts in enough.items()
+                if sum(not ok for _, ok in pts) >= THRESHOLDS["min_scored_misses"]
+                and any(ok for _, ok in pts)}
+    if not rankable:
+        rep.skip("R24", f"no model has {THRESHOLDS['min_checkable']}+ records with a vector, "
+                        f"{THRESHOLDS['min_scored_misses']}+ misses and at least one pass; "
+                        "ranking needs both classes")
+        return
+    areas = {m: auroc(pts) for m, pts in rankable.items()}
+    blind = [f"{m}: AUROC {a:.2f} (z {z:+.1f}) over {sum(ok for _, ok in rankable[m])} passes and "
+             f"{sum(not ok for _, ok in rankable[m])} fails; its confidence does not know which is which"
+             for m, (a, z) in sorted(areas.items()) if z < THRESHOLDS["noise_z"]]
+    rep.check("R24", not blind,
+              f"{len(blind)} of {len(rankable)} model(s) report a confidence that ranks right answers "
+              "no better than chance; thresholding it buys nothing",
+              n=len(rankable), examples=blind,
+              evidence={"auroc": {m: round(a, 4) for m, (a, _) in areas.items()},
+                        "z": {m: round(z, 2) for m, (_, z) in areas.items()}})
+
+
 def collapsed_models(runs: list[dict], modal_share: float,
                     min_share: float | None = None) -> dict[str, tuple[str, float, int]]:
     """{model: (its one answer, that answer's share, n)} for examinees that give
@@ -2957,6 +3041,8 @@ def _run_checks(rep: Reporter, mine: list[dict], foreign: list[dict], spec_file:
                   f"{len(found)} of {len(judged_models)} model(s) answer with one response far more "
                   f"often than any target warrants",
                   n=len(judged_models), examples=examples)
+
+    _calibration_checks(rep, mine)
 
     # R17: did this eval measure anything at all? A model whose every record
     # came back uncheckable produced no evidence, and its accuracy is None

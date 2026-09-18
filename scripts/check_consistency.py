@@ -121,10 +121,14 @@ def spell(n: int) -> str | None:
     that stops answering as the project grows is worse than no lookup: it turns
     a check into a no-op exactly when the number it guards has moved.
     """
-    if n < 0 or n > 99:
+    if n < 0 or n > 999:
         return None
     if n < 20:
         return _ONES[n]
+    if n >= 100:
+        hundreds, rest = divmod(n, 100)
+        head = f"{'one' if hundreds == 1 else _ONES[hundreds]} hundred"
+        return head if not rest else f"{head} and {spell(rest)}"
     tens, ones = divmod(n, 10)
     base = _TENS[tens * 10]
     return base if not ones else f"{base}-{_ONES[ones]}"

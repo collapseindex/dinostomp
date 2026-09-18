@@ -256,6 +256,12 @@
       "provenance": "judgment",
       "basis": "author judgment; no derivation or calibration on record"
     },
+    "ece_max": {
+      "value": 0.1,
+      "source": "default",
+      "provenance": "convention",
+      "basis": "0.10 is ten points of stated confidence the accuracy does not back; Guo et al. 2017 report 0.05 to 0.17 for uncalibrated deep nets and under 0.03 after temperature scaling, so the bar sits between a fixable habit and an honest number"
+    },
     "prose_answer_words": {
       "value": 6.0,
       "source": "default",
@@ -324,7 +330,7 @@
     }
   },
   "coverage": {
-    "declared_total": 98,
+    "declared_total": 100,
     "declared": 36,
     "ran": 24,
     "skipped": [
@@ -553,6 +559,14 @@
       {
         "id": "R20",
         "reason": "no run on disk repeats an item; a single pass per item cannot tie"
+      },
+      {
+        "id": "R23",
+        "reason": "no record carries a probability vector; only a one-pass model (decisions, chooser, loglikelihood) reports one"
+      },
+      {
+        "id": "R24",
+        "reason": "no record carries a probability vector; only a one-pass model (decisions, chooser, loglikelihood) reports one"
       },
       {
         "id": "T1",
@@ -1353,7 +1367,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "2 of 2 run(s) were produced by a different engine than the one auditing them (now dda7b581036fec19); re-run to get numbers this report can stand behind",
+      "detail": "2 of 2 run(s) were produced by a different engine than the one auditing them (now a794a1f0838578f8); re-run to get numbers this report can stand behind",
       "witnesses": 2,
       "examples": [
         "engine bdf9d65d922fbdd1: dry-strong seed 42 (tool 0.61.0), dry-up seed 42 (tool 0.61.0)"
@@ -1393,6 +1407,26 @@
       "gating": false,
       "detail": "0 of 3 numeric-target failure(s) equal their target as a number; the scorer may be rejecting a correct value in the wrong form",
       "witnesses": 3
+    },
+    {
+      "id": "R23",
+      "slug": "overconfident",
+      "stage": "aggregate",
+      "check": "reported confidence matches observed accuracy",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no record carries a probability vector; only a one-pass model (decisions, chooser, loglikelihood) reports one",
+      "witnesses": 0
+    },
+    {
+      "id": "R24",
+      "slug": "confidence-blind",
+      "stage": "aggregate",
+      "check": "confidence separates right answers from wrong ones",
+      "level": "n/a",
+      "gating": false,
+      "detail": "no record carries a probability vector; only a one-pass model (decisions, chooser, loglikelihood) reports one",
+      "witnesses": 0
     },
     {
       "id": "T1",

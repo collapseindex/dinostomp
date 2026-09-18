@@ -2,6 +2,21 @@
 
 ### Unreleased
 
+- **R23 `overconfident` and R24 `confidence-blind`: a reported probability
+  held to the verdicts.** A one-pass model (the `jev` provider, a chooser, a
+  loglikelihood ranker) puts a probability per option on the record as a
+  trajectory step with a `distribution`; nothing else on the record is read.
+  R23 is expected calibration error per model against `ece_max` 0.10, with
+  the accuracy-at-confidence table as evidence; R24 is the AUROC of that
+  confidence as a ranker of right over wrong, held to the battery's noise
+  bar. Both diagnostic, both n/a for text models. The battery is one
+  hundred checks. First run on the `onepass` routing pod (N-036): the
+  trained choosers and Jev pass, the zero-shot baseline says 83% and
+  delivers 63%.
+- **A rate limit waits longer than a server error.** 429 and 529, by status
+  or inside a 200 body, get eight attempts at 5, 10, 20 ... 120 seconds
+  instead of three at 2 and 4. GPT-5.6 Luna's upstream limit was stopping
+  a run every seven records under the old backoff.
 - **`provider: jev`: a decisions model as an examinee.** TypeSafe's Jev through
   OpenRouter's decisions endpoint. The item's `choices` are the request (a
   Choice question, option texts from `metadata.options` when present), the

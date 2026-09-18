@@ -103,6 +103,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [N-035](#n-035) | Jevlike (Wikispeedia) | three hosted LLMs on the same 1,000 items: Qwen3-30B-A3B 29.8%, GPT-5.6 Luna 22.8%, Llama-3.1-8B 17.4% against the one-pass scorer's 29.8%; every arm clears its own blind run; 4 s and $0 against 12 to 23 minutes and 5 to 9 cents | measured |
 | [F-052](#f-052) | BFCL v4 | one live request keyed to `rotateImageAction` in `live_multiple` and to "irrelevant" in `live_irrelevance` with the same menu, so nobody can score both; three exact duplicates inside `live_irrelevance` | confirmed |
 | [D-099](#d-099) | dinostomp | OpenRouter answered a rate limit with HTTP 200 and an `error` body; it parsed as an empty answer, scored wrong, never retried, and GPT-5.6 Luna read 21.9% with 1,379 of 1,933 records never reaching the model; error bodies now raise and 429/5xx retry | confirmed, fixed |
+| [N-036](#n-036) | onepass (BFCL v4 live) | first run of the calibration checks on four one-pass arms: ModernBERT-base ECE 0.033, MiniLM chooser 0.078, Jev 1.13 0.081, zero-shot MiniLM 0.194 (R23 warns: says 83%, delivers 63%); every arm's confidence ranks right over wrong (AUROC 0.73 to 0.87), Jev best | measured |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
 | [F-021](#f-021) | MATH-500 | 2 problems whose answer is written in the question | confirmed, scoped |
@@ -262,6 +263,8 @@ at fault.
 | `R15` | [F-051](#f-051), [N-035](#n-035), [N-034](#n-034), [D-006](#d-006) |
 | `R16` | [D-022](#d-022), [D-041](#d-041) |
 | `R20` | [N-008](#n-008) |
+| `R23` | [N-036](#n-036) |
+| `R24` | [N-036](#n-036) |
 | `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-044](#f-044), [F-045](#f-045), [F-046](#f-046), [F-047](#f-047), [F-029](#f-029), [F-052](#f-052), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
 | `S2` | [F-004](#f-004), [F-041](#f-041), [F-043](#f-043), [F-045](#f-045), [F-046](#f-046), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052), [D-058](#d-058) |
@@ -337,6 +340,7 @@ at fault.
 | MMLU-Pro vs MMLU | [F-012](#f-012) |
 | MMLU-Redux 2.0 | [F-018](#f-018) |
 | NCLEX nursing | [N-016](#n-016) |
+| onepass (BFCL v4 live) | [N-036](#n-036) |
 | Pharmacist Licensure Exam | [F-025](#f-025) |
 | public HF datasets | [N-020](#n-020) |
 | QASC, AG News | [N-030](#n-030) |
@@ -364,7 +368,7 @@ at fault.
 `dup-questions` (S1) · 2026-07 · confirmed
 
 The battery's first contact with real data was the most famous dataset in
-statistics. Transcript re-run under the current 98-check battery; the original
+statistics. Transcript re-run under the current 100-check battery; the original
 catch happened at 23 checks.
 
 ```
@@ -2199,6 +2203,50 @@ the 5xx and Cloudflare 52x set) go back through the same backoff as a status
 retry, and any other code fails on the first attempt without spending retries.
 `tests/test_error_body.py` covers the rate-limited body, retry then success,
 a permanent 404 body, and the classification table.
+
+---
+
+### N-036
+**Four one-pass arms on 1,933 BFCL live routing items, confidence held to accuracy for the first time: the trained choosers and Jev state a number their accuracy backs, the zero-shot baseline says 83% and delivers 63%**
+`overconfident` (R23), `confidence-blind` (R24) · 2026-09-18 · measured
+
+The first pod stomped with R23 and R24, which read the probability vector a
+one-pass model puts on the record and hold it to the verdicts. The `onepass`
+route-live pod, same 1,933 items and blind controls as the routing
+comparison, four arms that report a vector: TypeSafe's Jev 1.13 through the
+`jev` provider, two choosers trained in `onepass` (MiniLM-L6, 22M, and
+ModernBERT-base, 149M), and the zero-shot MiniLM baseline. The three hosted
+text models on the same pod carry no vector and are n/a, which is the point:
+this evidence exists only for models that answer with a probability.
+
+```
+arm                       accuracy   mean conf   ECE     AUROC   acc at conf >= 0.90 (coverage)
+chooser-modernbert-base   81.9%      84.5%       0.033   0.78    92.5%  (53.8%)
+chooser-minilm-l6         81.9%      74.2%       0.078   0.74    94.4%  (23.2%)
+typesafe/jev-1.13         84.7%      92.7%       0.081   0.87    93.9%  (77.0%)
+zeroshot-minilm-l6        63.4%      82.5%       0.194   0.73    77.5%  (51.1%)
+```
+
+R23 warns on the baseline only, and in the direction a stock similarity
+softmax would be expected to fail: it is confident about everything, right
+about two thirds. The two trained choosers carry a temperature fitted on the
+dev split (`onepass.calibrate`), which is where their ECE comes from; the
+MiniLM one is now slightly *under*confident. Jev is the sharpest and the
+best ranker, and sits eight points over its accuracy at the top, inside the
+bar. R24 passes every arm at z above 14: none of these confidences is a
+constant wearing decimals.
+
+What this does and does not say. ECE at 0.08 is one number for one pod;
+TypeSafe's "probabilities optimized against outcomes" is a claim about the
+model in general and this is one task from one benchmark, so it is a
+consistent observation and not a confirmation. The coverage column is the
+usable part: a caller who acts only above 0.90 gets 92 to 94% from any of
+the three trained arms, but on very different shares of the traffic (Jev
+answers three quarters of it at that floor, the temperature-scaled MiniLM
+chooser under a quarter), and the baseline's 77.5% at the same floor is not
+a number to act on. The `onepass` README carries
+the same table computed independently (`onepass.table`) to the third
+decimal, which is the parity check on the check.
 
 ---
 
@@ -6220,7 +6268,7 @@ Count it precisely.
 | &nbsp;&nbsp;of which receipt-backed dataset defects | 16 (F-001 to F-004, F-008 to F-013, F-041 to F-046) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **35** |
+| negative results, recorded rather than dropped (**N**) | **36** |
 | defects in dinostomp itself (**D**) | **99** |
 
 Ninety-one to forty-nine. That ratio is the useful number to publish, and it is the

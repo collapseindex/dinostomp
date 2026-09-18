@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**BROKEN**: 3 gated finding(s) (16 of 47 ran; 51 n/a of 98 declared)
+**BROKEN**: 3 gated finding(s) (16 of 49 ran; 51 n/a of 100 declared)
 
 measures the intended construct: **NOT ESTABLISHED BY DINOSTOMP**
 
@@ -99,6 +99,8 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | the runs were produced by this engine | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | skip | repeated items reached a verdict | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | skip | no failed answer numerically equals its target | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
+| skip | reported confidence matches observed accuracy | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
+| skip | confidence separates right answers from wrong ones | 0 | no evidence on disk. This check reads run records; produce them with `dinostomp run <spec>`, or import another harness's logs with `dinostomp import` |
 | n/a | passing answers are grounded in tool evidence | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | no model under-reports its trajectory | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | tool calls are not redundant | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |

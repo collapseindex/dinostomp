@@ -76,3 +76,22 @@ def test_retryable_classification(code, retryable):
 def test_a_normal_body_passes_through():
     assert raise_for_error_body(GOOD, "openrouter") is None
     assert raise_for_error_body({"error": None}, "openrouter") is None
+
+
+def test_a_rate_limit_gets_a_longer_budget_than_a_server_error(monkeypatch):
+    """Eight attempts with a growing wait for a 429; three with 2s/4s for a 503."""
+    waits = []
+    monkeypatch.setattr("time.sleep", lambda s: waits.append(s))
+    served = _responses([RATE_LIMITED] * 7 + [GOOD], monkeypatch)
+    monkeypatch.setattr("time.sleep", lambda s: waits.append(s))
+    completion = OpenRouterProvider("m").complete(ITEM, 1, {})
+    assert completion.text == "A" and len(served) == 8
+    assert waits == [5, 10, 20, 40, 80, 120, 120]
+
+    waits.clear()
+    overloaded = {"error": {"code": 503, "message": "upstream down"}}
+    served = _responses([overloaded], monkeypatch)
+    monkeypatch.setattr("time.sleep", lambda s: waits.append(s))
+    with pytest.raises(ProviderError) as exc:
+        OpenRouterProvider("m").complete(ITEM, 1, {})
+    assert len(served) == 3 and waits == [2.0, 4.0] and "3 attempt(s)" in str(exc.value)

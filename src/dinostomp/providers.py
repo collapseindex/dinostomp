@@ -26,6 +26,15 @@ from typing import Any
 TIMEOUT_S = 60
 DEFAULT_MAX_TOKENS = 1024
 RETRIES = 3
+# A rate limit is the upstream asking for time, not a fault to retry at once.
+# It gets its own budget: more attempts, and a wait that doubles from
+# RATE_LIMIT_WAIT_S up to RATE_LIMIT_WAIT_MAX_S. Sized from GPT-5.6 Luna on
+# OpenRouter, 2026-09-18, which answered 429 for tens of seconds at a time and
+# stopped a run every seven records under the 2s/4s server-error backoff.
+RATE_LIMIT_STATUSES = {429, 529}
+RATE_LIMIT_RETRIES = 8
+RATE_LIMIT_WAIT_S = 5
+RATE_LIMIT_WAIT_MAX_S = 120
 MAX_ERROR_CHARS = 300
 # Error codes worth another attempt when they arrive inside a 200 body.
 RETRYABLE_BODY_CODES = {408, 409, 425, 429, 500, 502, 503, 504, 520, 521, 522, 523, 524, 529}
@@ -49,9 +58,10 @@ class ProviderError(RuntimeError):
     loop in HttpProvider._request.
     """
 
-    def __init__(self, message: str, *, retryable: bool = False):
+    def __init__(self, message: str, *, retryable: bool = False, rate_limited: bool = False):
         super().__init__(message)
         self.retryable = retryable
+        self.rate_limited = rate_limited
 
 
 def raise_for_error_body(data: Any, provider_name: str) -> None:
@@ -81,7 +91,15 @@ def raise_for_error_body(data: Any, provider_name: str) -> None:
         code = None
     raise ProviderError(
         f"{provider_name} returned an error body with HTTP 200: {code or 'no code'}: {message}",
-        retryable=code in RETRYABLE_BODY_CODES)
+        retryable=code in RETRYABLE_BODY_CODES, rate_limited=code in RATE_LIMIT_STATUSES)
+
+
+def backoff_s(attempt: int, rate_limited: bool) -> float:
+    """Seconds to wait before attempt+1. A server error waits 2s, 4s; a rate
+    limit waits 5s, 10s, 20s ... capped, because the limit is on the clock."""
+    if rate_limited:
+        return min(RATE_LIMIT_WAIT_S * 2 ** (attempt - 1), RATE_LIMIT_WAIT_MAX_S)
+    return 2.0 * attempt
 
 
 @dataclass
@@ -190,7 +208,11 @@ class HttpProvider:
     def _request(self, url: str, headers: dict, payload: dict) -> dict:
         body = json.dumps(payload).encode("utf-8")
         last = "no attempt made"
-        for attempt in range(1, RETRIES + 1):
+        attempt = 0
+        budget = RETRIES
+        while attempt < budget:
+            attempt += 1
+            rate_limited = False
             req = urllib.request.Request(url, data=body, headers=headers, method="POST")
             try:
                 with urllib.request.urlopen(req, timeout=TIMEOUT_S) as resp:
@@ -209,6 +231,7 @@ class HttpProvider:
                     if not exc.retryable:
                         raise
                     last = str(exc)
+                    rate_limited = exc.rate_limited
                 else:
                     return data
             except urllib.error.HTTPError as exc:
@@ -220,11 +243,14 @@ class HttpProvider:
                 last = f"HTTP {exc.code}: {detail}"
                 if exc.code not in RETRY_STATUSES:
                     break
+                rate_limited = exc.code in RATE_LIMIT_STATUSES
             except (urllib.error.URLError, TimeoutError, OSError) as exc:
                 last = f"network error: {exc}"
-            if attempt < RETRIES:
-                time.sleep(2 * attempt)
-        raise ProviderError(f"{self.provider_name} call failed after {RETRIES} attempt(s): {last}")
+            if rate_limited:
+                budget = RATE_LIMIT_RETRIES
+            if attempt < budget:
+                time.sleep(backoff_s(attempt, rate_limited))
+        raise ProviderError(f"{self.provider_name} call failed after {attempt} attempt(s): {last}")
 
 
 class AnthropicProvider(HttpProvider):
