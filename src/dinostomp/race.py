@@ -158,6 +158,7 @@ class Ink:
     def _c(self, code: str, text: str) -> str:
         return f"\x1b[{code}m{text}\x1b[0m" if self.enabled else text
 
+    def paint(self, code: str, t: str) -> str: return self._c(code, t)
     def green(self, t): return self._c("32", t)
     def red(self, t): return self._c("31", t)
     def dim(self, t): return self._c("2", t)
@@ -177,6 +178,57 @@ def bar(acc: float | None, floor_share: float, width: int = BAR_WIDTH) -> str:
     mark = min(width - 1, round(floor_share * width))
     cells[mark] = "|"
     return "".join(cells)
+
+
+# Colours for the bar, by meaning. The share of a bar under the floor mark is
+# what always giving the most common answer would have scored anyway, so it is
+# drawn dim: free. The share above it is what the model earned. A lane that
+# ends under the floor is red end to end: it did worse than knowing nothing.
+FREE = "38;5;29"        # dim green
+EARNED = "38;5;84"      # bright mint
+UNDER = "38;5;203"      # red
+EMPTY = "38;5;238"      # dark grey
+MARK = "1;97"           # bold white
+MINT = "38;5;85"
+
+
+def color_bar(acc: float | None, floor_share: float, ink: Ink, width: int = BAR_WIDTH) -> str:
+    """The same cells as `bar`, in colour, with block characters."""
+    if not ink.enabled:
+        return bar(acc, floor_share, width)
+    filled = 0 if acc is None else round(acc * width)
+    mark = min(width - 1, round(floor_share * width))
+    below = acc is not None and acc < floor_share
+    out = []
+    for i in range(width):
+        if i == mark:
+            out.append(ink.paint(MARK, "│"))
+        elif i < filled:
+            out.append(ink.paint(UNDER if below else FREE if i < mark else EARNED, "█"))
+        else:
+            out.append(ink.paint(EMPTY, "░"))
+    return "".join(out)
+
+
+# A pixel dino, the README banner's, in blocks. Drawn only when animating to
+# a terminal; piped output and --no-animate stay plain text.
+DINO = [
+    "          ▄██████▄",
+    "          ██▄█████",
+    "          █████▀▀▀",
+    " █       ▄█████▄▄",
+    " ██▄  ▄██████  ▀",
+    "  ▀█████████",
+    "    ▀█████▀",
+    "      █▀ █▄",
+]
+WORDMARK = ["", "", "d i n o s t o m p   r a c e", "", "every frame is a record on disk", "", "", ""]
+
+
+def art(ink: Ink) -> list[str]:
+    if not ink.enabled:
+        return []
+    return [ink.paint(MINT, f"{d:<22}") + ("  " + ink.bold(w) if w else "") for d, w in zip(DINO, WORDMARK)] + [""]
 
 
 def _item_line(item: dict, width: int) -> str:
@@ -232,7 +284,7 @@ def frame(i: int, item: dict, lanes: list[Lane], floor_share: float, ink: Ink, w
             vec = probability_vector(r)
             conf = f" p {vec[r['output']]:.2f}" if vec and r.get("output") in vec else ""
             said = f"{mark}{text!r}{conf}"
-        out.append(f"  {_clip(lane.model, NAME_WIDTH):<{NAME_WIDTH}} {score}  {bar(acc, floor_share)}  {said}")
+        out.append(f"  {_clip(lane.model, NAME_WIDTH):<{NAME_WIDTH}} {score}  {color_bar(acc, floor_share, ink)}  {said}")
     return out
 
 
@@ -241,10 +293,11 @@ def final_table(lanes: list[Lane], items: list[dict], ink: Ink, total: int | Non
     table says so on every row and compares nothing to a full-run summary."""
     top, share = floor(items)
     partial = total is not None and len(items) < total
-    title = (f"{len(items)} of {total} items, evenly spaced, recomputed from the records:" if partial
+    title = (f"{len(items)} of {total} items, evenly spaced, recomputed from the records "
+             f"(a sample: nothing here is compared with the full-run summaries):" if partial
              else "Final, recomputed from the records:")
     rows = ["", ink.bold(title), ""]
-    last = "vs saved summary" if not partial else "note"
+    last = "vs saved summary" if not partial else ""
     rows.append(f"  {'model':<{NAME_WIDTH}} {'accuracy':>9} {'95% interval':>14} {'blind':>7} "
                 f"{'checkable':>10} {'wall (full run)':>16} {'cost (full)':>11}  {last}")
     ids = [str(i["id"]) for i in items]
@@ -261,7 +314,7 @@ def final_table(lanes: list[Lane], items: list[dict], ink: Ink, total: int | Non
             wall = "?"
         saved = (lane.summary or {}).get("accuracy_on_checkable")
         if partial:
-            parity = ink.dim(f"sample of {len(items)}; the saved summary covers all {total}")
+            parity = ""
         elif saved is None:
             parity = ink.yellow("no summary")
         elif acc is not None and abs(saved - acc) <= PARITY_TOLERANCE:
@@ -298,7 +351,7 @@ def replay(pod: str | Path, rate: float = DEFAULT_RATE, limit: int | None = None
     ink = Ink(animate and hasattr(out, "isatty") and out.isatty() and "NO_COLOR" not in __import__("os").environ)
     width = shutil.get_terminal_size((120, 40)).columns
     _, share = floor(items)
-    for line in header(spec, Path(pod), items, ink):
+    for line in art(ink) + header(spec, Path(pod), items, ink):
         print(line, file=out)
     drawn = 0
     delay = 1.0 / rate if rate > 0 else 0.0

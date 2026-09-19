@@ -106,7 +106,7 @@ def test_a_limited_replay_compares_nothing_to_the_full_run(tmp_path):
     replay(spec, limit=10, animate=False, out=out)
     text = out.getvalue()
     assert "MISMATCH" not in text and "matches" not in text
-    assert "10 of 24 items, evenly spaced" in text and "the saved summary covers all 24" in text
+    assert "10 of 24 items, evenly spaced" in text and "nothing here is compared with the full-run summaries" in text
 
 
 def test_a_limited_replay_samples_the_whole_run_not_its_head(tmp_path):
@@ -120,3 +120,15 @@ def test_a_limited_replay_samples_the_whole_run_not_its_head(tmp_path):
     from argparse import Namespace
     from dinostomp.race import cmd_race
     assert cmd_race(Namespace(pod=str(spec), rate=0, limit=10, models=None, no_animate=True)) == 0
+
+
+def test_colour_means_free_earned_or_under_and_plain_output_has_none():
+    from dinostomp.race import EARNED, FREE, Ink, UNDER, art, color_bar
+    plain = Ink(False)
+    assert color_bar(0.9, 0.6, plain, width=10) == bar(0.9, 0.6, width=10)
+    assert art(plain) == []                                  # piped output stays text
+    ink = Ink(True)
+    above = color_bar(0.9, 0.6, ink, width=10)
+    assert FREE in above and EARNED in above and UNDER not in above
+    below = color_bar(0.4, 0.6, ink, width=10)
+    assert UNDER in below and EARNED not in below            # under the floor is red end to end
