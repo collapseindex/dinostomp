@@ -6,13 +6,13 @@
   "tool": {
     "name": "dinostomp",
     "version": "0.63.0",
-    "engine": "35f037a944d7ef8fed80bcb9023f75512c9c8a9ff73567c50c2b1748177f92aa"
+    "engine": "cbe6dd18f9d268e97398729bb14614c25a3799d54d0720b79a9c0d675b421fe0"
   },
   "counts": {
     "F": 52,
-    "D": 99,
+    "D": 100,
     "N": 38,
-    "total": 189
+    "total": 190
   },
   "series": {
     "F": "other people's evals",
@@ -1283,6 +1283,23 @@
       "status_class": "measured",
       "anchor": "#n-038",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-038"
+    },
+    {
+      "id": "D-100",
+      "series": "D",
+      "series_name": "dinostomp itself",
+      "title": "A resumed blind run stopped being blind: 1,930 of 1,933 \"blind\" answers were informed, and the manifest stopped saying blind",
+      "summary": "`--resume` did not carry the probe: a blind run resumed without `--probe blind` continued as an informed run into the blind file and rewrote its manifest without the probe; GPT-5.6 Luna's route-live \"blind\" score (80.2%) was 1,930 informed answers; resume now inherits the probe and refuses a different one",
+      "subject": "dinostomp",
+      "check_label": "`resume`",
+      "checks": [],
+      "date": "2026-09-19",
+      "date_iso": "2026-09-19",
+      "date_precision": "day",
+      "status": "confirmed, fixed",
+      "status_class": "confirmed",
+      "anchor": "#d-100",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#d-100"
     },
     {
       "id": "F-019",

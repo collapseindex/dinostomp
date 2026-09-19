@@ -8,7 +8,7 @@
 
 **Stomp the eval. Trust the evidence.**
 
-<sub>v0.63.0 · Apache-2.0 · engine `35f037a944d7ef8f` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.63.0 · Apache-2.0 · engine `cbe6dd18f9d268e9` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 **Find broken data, misleading scorers, and unsupported benchmark claims before you trust the score.**
 
@@ -94,15 +94,15 @@ Each of those is one entry in **[FINDINGS.md](FINDINGS.md)**, with the item id,
 the verbatim data and the command that reproduces it. Every `F` re-derives in
 seconds, offline, for free, using the reproduction command attached to each finding.
 
-**[FINDINGS.md](FINDINGS.md): 189 entries, all permanent, none deleted.**
+**[FINDINGS.md](FINDINGS.md): 190 entries, all permanent, none deleted.**
 
 | series | count | what it records |
 |---|--:|---|
 | **F** | 52 | findings in other people's evals |
-| **D** | 99 | defects in dinostomp itself |
+| **D** | 100 | defects in dinostomp itself |
 | **N** | 38 | negative results, recorded rather than dropped |
 
-**Ninety-nine of the 189 are against this tool**, which is the number to
+**One hundred of the 190 are against this tool**, which is the number to
 read first. A validator that only publishes other people's mistakes is telling
 you which mistakes it is willing to look for. Included there: the entry it
 retracted after its own killer control killed it ([N-013](FINDINGS.md#n-013)),
@@ -116,7 +116,7 @@ graded against an answer key somebody outside this repo wrote**
 against ciFAIR's hand-annotated CIFAR-10 duplicates, and
 [N-019](FINDINGS.md#n-019) against MT-Bench's human preference votes). All three
 produced the least flattering numbers in the file, which is the argument for
-more of them. Ninety-nine self-found defects is still self-grading, and that
+more of them. One hundred self-found defects is still self-grading, and that
 number moves when an outsider runs it rather than when the total goes up.
 [Break it, please](CONTRIBUTING.md#break-it-please).
 
@@ -981,7 +981,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`35f037a944d7ef8fed80bcb9023f75512c9c8a9ff73567c50c2b1748177f92aa`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`cbe6dd18f9d268e97398729bb14614c25a3799d54d0720b79a9c0d675b421fe0`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 
@@ -990,7 +990,7 @@ fee for a new check and the rules a patch may not remove. [Apache-2.0](LICENSE).
 
 <sub>Built and maintained by one person, unfunded. If it caught something in your
 eval, [sponsorship](https://github.com/sponsors/collapseindex) buys time to keep
-pointing it at real benchmarks and publishing what it finds, including the ninety-nine
+pointing it at real benchmarks and publishing what it finds, including the one hundred
   findings against itself. Adversarial pods and bug reports are worth more than
 money and are always free:
 [break it, please](CONTRIBUTING.md#break-it-please).</sub>

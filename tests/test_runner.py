@@ -414,3 +414,65 @@ def test_an_even_repeat_tie_does_not_report_zero_accuracy():
 def test_summarize_all_uncheckable_reports_none_not_zero():
     s = summarize([{"score": {"verdict": "uncheckable"}, "usage": {}}])
     assert s["accuracy_on_checkable"] is None
+
+
+# --- D-100: a resume continues the same probe, or nothing ---------------------
+
+
+class InputRecorder(CountingProvider):
+    """Remembers every input it was sent, so a test can see whether a resumed
+    blind run was still blind."""
+    seen: list = []
+
+    def complete(self, item, seed, params):
+        type(self).seen.append(item["input"])
+        return super().complete(item, seed, params)
+
+
+def _stopped_blind_run(tmp_path):
+    def cheap(spec):
+        paid_spec(spec)
+        spec["run"]["budget_usd"] = 100.0
+    spec_path = make_eval(tmp_path, cheap)
+    InputRecorder.seen = []
+    InputRecorder.fail_on_call = 3
+    first = run_spec(spec_path, probe="blind", provider_factory=lambda p, m: InputRecorder(m), **PRICES)
+    assert first.exit_code == STOPPED_EARLY
+    InputRecorder.fail_on_call = None
+    return spec_path, first.run_files[0]
+
+
+def test_a_blind_run_resumed_without_the_flag_stays_blind(tmp_path):
+    from dinostomp.runner import blind_input
+    spec_path, run_file = _stopped_blind_run(tmp_path)
+    items = [json.loads(l) for l in (tmp_path / "items.jsonl").read_text(encoding="utf-8").splitlines()
+             if '"id"' in l]
+    blind_texts = {blind_input(i) for i in items}
+    before = len(InputRecorder.seen)
+    second = run_spec(spec_path, resume=run_file, provider_factory=lambda p, m: InputRecorder(m), **PRICES)
+    assert second.exit_code == OK
+    resumed = InputRecorder.seen[before:]
+    assert resumed and all(text in blind_texts for text in resumed), "a resumed blind run saw a real question"
+    manifest = json.loads(run_file.with_name(run_file.stem + "_manifest.json").read_text(encoding="utf-8"))
+    assert manifest["probe"] == "blind" and manifest["status"] == "complete"
+
+
+def test_resuming_with_a_different_probe_is_refused(tmp_path):
+    spec_path, run_file = _stopped_blind_run(tmp_path)
+    out = run_spec(spec_path, resume=run_file, probe="shuffle",
+                   provider_factory=lambda p, m: InputRecorder(m), **PRICES)
+    assert out.exit_code == CANNOT_RUN
+    assert "that run was a blind probe" in out.issues[0].message
+
+
+def test_an_informed_run_cannot_be_resumed_as_blind(tmp_path):
+    CountingProvider.fail_on_call = 3
+    def cheap(spec):
+        paid_spec(spec)
+        spec["run"]["budget_usd"] = 100.0
+    spec_path = make_eval(tmp_path, cheap)
+    first = run_spec(spec_path, provider_factory=counting_factory, **PRICES)
+    CountingProvider.fail_on_call = None
+    out = run_spec(spec_path, resume=first.run_files[0], probe="blind",
+                   provider_factory=counting_factory, **PRICES)
+    assert out.exit_code == CANNOT_RUN and "that run was an informed run" in out.issues[0].message

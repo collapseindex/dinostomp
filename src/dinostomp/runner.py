@@ -843,6 +843,27 @@ def run_spec(
                 Issue(loc="$", check="resume",
                       message="refusing to resume a real-provider run with --dry-run: synthetic "
                               "outputs would be appended into a paid ledger")])
+        # The probe is part of the experiment. A blind run resumed without
+        # `--probe blind` used to carry on as an INFORMED run, appending real
+        # answers into the blind file and rewriting its manifest without the
+        # probe, so the battery then read it as a second informed run (D-100:
+        # GPT-5.6 Luna's route-live "blind" pass, 1,930 of 1,933 records).
+        # The run's own manifest decides; a caller who names a different probe
+        # is refused rather than obeyed.
+        old_probe, old_framing = old.get("probe"), old.get("framing")
+        if old_probe in ("judge", "crossjudge", "canary"):
+            return RunOutcome(CANNOT_RUN, issues=[
+                Issue(loc="$", check="resume",
+                      message=f"cannot resume a {old_probe} probe; re-run it with --probe {old_probe}")])
+        if probe is None:
+            probe, framing = old_probe, old_framing
+        elif probe != old_probe or (probe == "template" and framing != old_framing):
+            return RunOutcome(CANNOT_RUN, issues=[
+                Issue(loc="$", check="resume",
+                      message=f"cannot resume: that run was {'a ' + old_probe + ' probe' if old_probe else 'an informed run'}"
+                              f"{' (framing ' + str(old_framing) + ')' if old_framing else ''}, "
+                              f"and this asks for {'a ' + probe + ' probe' if probe else 'an informed run'}; "
+                              "resume continues the same experiment or nothing")])
         resume_seed = old.get("seed")
         models = [mc for mc in models
                   if mc["model"] == old.get("model")

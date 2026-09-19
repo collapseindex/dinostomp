@@ -162,17 +162,22 @@ def check_prose_counts() -> list[str]:
     # therefore missed four stale numbers in the page's credibility paragraph,
     # including "forty-seven of the eighty-nine" sitting directly under a table
     # that read 66 and 116. A checker aimed at one sentence guards one sentence.
+    # A count past ninety-nine is more than one word ("one hundred and four"),
+    # and a one-word capture read "One hundred" as "hundred": the check fired
+    # on the first sentence that was right, the day the ledger reached 100.
+    NUM = (r"((?:one|two|three|four|five|six|seven|eight|nine) hundred(?: and [\w-]+)?"
+           r"|[\w,-]+)")
     PATTERNS = (
-        (r"([\w-]+) findings against itself", "D", "findings against itself"),
-        (r"([\w-]+) self-found defects", "D", "self-found defects"),
-        (r"([\w-]+) of the ([\w,-]+) are against this tool", "D+total",
+        (NUM + r" findings against itself", "D", "findings against itself"),
+        (NUM + r" self-found defects", "D", "self-found defects"),
+        (NUM + r" of the ([\w,-]+) are against this tool", "D+total",
          "are against this tool"),
     )
     bad = []
     for name in ("README.md", "METHODOLOGY.md", "FINDINGS.md", "CONTRIBUTING.md"):
         text = " ".join(read(name).split())
         for pattern, kind, label in PATTERNS:
-            for m in re.finditer(pattern, text):
+            for m in re.finditer(pattern, text, re.IGNORECASE):
                 first = m.group(1).lower()
                 if first in {"the", "its", "our", "these", "those", "all"}:
                     continue

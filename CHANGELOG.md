@@ -2,6 +2,12 @@
 
 ### Unreleased
 
+- **Fixed: a resumed probe run stopped being a probe (D-100).** `--resume`
+  now takes the probe (and a template framing) from the interrupted run's
+  manifest and refuses a different one. A blind pass resumed without
+  `--probe blind` used to continue informed into the blind file and drop the
+  probe from its manifest; GPT-5.6 Luna's route-live "blind" 80.2% was 1,930
+  informed answers.
 - **`race --hide-prompts`, for recordings that get shared.** Request text is
   replaced by `[request hidden]` plus the item's type; its id stays on screen.
   Outputs are cut to their first line with the rest's length shown
