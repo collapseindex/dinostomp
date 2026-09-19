@@ -279,36 +279,61 @@ def _output_text(output, width: int, hide: bool) -> str:
     return repr(_clip(first, width)) + (f" (+{more} chars)" if more else "")
 
 
+def must_fail(spec: dict) -> str:
+    """The witness outputs the scorer is required to FAIL, in the spec's own
+    words, grouped by key: a viewer who sees the right word inside a failed
+    answer can read why it failed without anyone interpreting."""
+    by_key: dict[str, list[str]] = {}
+    for w in (spec.get("scorer") or {}).get("witnesses") or ():
+        if w.get("expect") == "fail":
+            by_key.setdefault(str(w.get("target", "")), []).append(repr(str(w.get("output", ""))))
+    parts = []
+    for key, outs in by_key.items():
+        shown = ", ".join(outs[:MAX_WITNESSES_SHOWN]) + (", ..." if len(outs) > MAX_WITNESSES_SHOWN else "")
+        parts.append(f"{shown} against key {key!r}")
+    return "; ".join(parts)
+
+
 def scorer_line(spec: dict) -> str:
-    """The scorer's rule in the spec's own words: its kind, and the witness
-    outputs it is required to FAIL. A viewer who sees the right word inside a
-    failed answer can read here why it failed, without anyone interpreting."""
+    """One line naming the scorer and what it must fail (kept for callers
+    that want a single string; the header lays the same facts out in rows)."""
     sc = spec.get("scorer") or {}
-    kind = sc.get("kind", "?")
-    name = sc.get("code") or sc.get("kind")
-    must_fail = [f"{w.get('output', '')!r} vs key {w.get('target', '')!r}"
-                 for w in sc.get("witnesses") or () if w.get("expect") == "fail"]
-    shown = "; ".join(must_fail[:MAX_WITNESSES_SHOWN]) + ("; ..." if len(must_fail) > MAX_WITNESSES_SHOWN else "")
-    return (f"Scorer: {name} ({kind}). Its own witnesses require these to FAIL: {shown}"
-            if must_fail else f"Scorer: {name} ({kind}).")
+    name, kind = sc.get("code") or sc.get("kind"), sc.get("kind", "?")
+    fails = must_fail(spec)
+    return f"Scorer: {name} ({kind}). Must FAIL: {fails}" if fails else f"Scorer: {name} ({kind})."
 
 
-def header(spec: dict, pod: Path, items: list[dict], ink: Ink, hide: bool = False) -> list[str]:
+LABEL_WIDTH = 12
+
+
+def _row(label: str, text: str, width: int, ink: Ink) -> list[str]:
+    """A labelled row, wrapped under itself: the label column stays clear."""
+    import textwrap
+    body = textwrap.wrap(text, width=max(30, width - LABEL_WIDTH - 2)) or [""]
+    pad = " " * (LABEL_WIDTH + 2)
+    return [f"  {ink.dim(f'{label:<{LABEL_WIDTH}}')}{body[0]}"] + [pad + line for line in body[1:]]
+
+
+def header(spec: dict, pod: Path, items: list[dict], ink: Ink, hide: bool = False,
+           width: int = 100) -> list[str]:
     top, share = floor(items)
-    hidden = (["Requests hidden for sharing (--hide-prompts); outputs cut to their first line, "
-               "with the length of the rest shown. Every item id is on screen and in the repo."]
-              if hide else [])
-    return [
-        ink.bold(f"dinostomp race | {spec['name']} | REPLAY of committed run records; no model is called"),
-        *hidden,
-        _clip(spec.get("question", ""), 120),
-        f"Answer key: the pod's reference answers. Floor: always answering {top!r} scores {share:.1%} "
-        f"(the | on each bar).",
-        scorer_line(spec),
-        "Every lane grades the SAME item in each frame, in the order the runs used. "
-        "ok/no is the verdict the scorer recorded; the quoted text is the model's raw output.",
-        "",
-    ]
+    sc = spec.get("scorer") or {}
+    lines = [ink.bold(f"dinostomp race | {spec['name']}"),
+             "REPLAY of committed run records. No model is called.", ""]
+    if hide:
+        lines += _row("hidden", "--hide-prompts: request text is hidden and each output is cut to its first line, "
+                                "with the length of the rest shown; every item id stays on screen "
+                                "and in the repo", width, ink)
+    lines += _row("question", spec.get("question", ""), width, ink)
+    lines += _row("answer key", "the pod's reference answers", width, ink)
+    lines += _row("floor", f"always answering {top!r} scores {share:.1%}  (the | on each bar)", width, ink)
+    lines += _row("scorer", f"{sc.get('code') or sc.get('kind')} ({sc.get('kind', '?')})", width, ink)
+    if must_fail(spec):
+        lines += _row("must fail", must_fail(spec), width, ink)
+    lines += _row("each frame", "every lane grades the SAME item, in the order the runs used", width, ink)
+    lines += _row("each lane", "ok/no is the verdict the scorer recorded; the quoted text is the "
+                               "model's raw output", width, ink)
+    return lines + [""]
 
 
 def frame(i: int, item: dict, lanes: list[Lane], floor_share: float, ink: Ink, width: int,
@@ -474,7 +499,7 @@ def replay(pod: str | Path, rate: float = DEFAULT_RATE, limit: int | None = None
     ink = Ink(animate and hasattr(out, "isatty") and out.isatty() and "NO_COLOR" not in __import__("os").environ)
     width = shutil.get_terminal_size((120, 40)).columns
     _, share = floor(items)
-    for line in art(ink) + header(spec, Path(pod), items, ink, hide=hide_prompts):
+    for line in art(ink) + header(spec, Path(pod), items, ink, hide=hide_prompts, width=width):
         print(line, file=out)
     drawn = 0
     delay = 1.0 / rate if rate > 0 else 0.0

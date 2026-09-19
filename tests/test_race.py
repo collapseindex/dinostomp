@@ -31,7 +31,7 @@ def test_lanes_follow_the_spec_and_replay_in_lockstep(tmp_path):
     out = io.StringIO()
     done = replay(spec, animate=False, out=out)
     text = out.getvalue()
-    assert "REPLAY of committed run records; no model is called" in text
+    assert "REPLAY of committed run records. No model is called." in text
     for lane in done:
         assert lane.checkable == 24
         assert f"{lane.accuracy:.1%}" in text
@@ -85,7 +85,7 @@ def test_the_scorer_line_quotes_the_witnesses_that_must_fail():
         {"output": "not 57", "target": "57", "expect": "fail"},
         {"output": "5", "target": "57", "expect": "fail"}]}}
     line = scorer_line(spec)
-    assert line == "Scorer: exact (exact). Its own witnesses require these to FAIL: 'not 57' vs key '57'; '5' vs key '57'"
+    assert line == "Scorer: exact (exact). Must FAIL: 'not 57', '5' against key '57'"
     assert scorer_line({"scorer": {"kind": "exact"}}) == "Scorer: exact (exact)."
 
 
@@ -206,7 +206,7 @@ def test_hidden_prompts_hide_the_text_but_not_the_item_or_why_it_failed(tmp_path
     buf = io.StringIO()
     replay(spec, limit=3, rate=0, animate=True, hide_prompts=True, out=buf)
     text = buf.getvalue()
-    assert "Requests hidden for sharing (--hide-prompts)" in text and "Pick the correct fruit" not in text
+    assert "--hide-prompts: request text is hidden" in text and "Pick the correct fruit" not in text
 
 
 def test_fit_counts_visible_characters_not_colour_codes():
@@ -260,3 +260,17 @@ def test_the_rich_table_wraps_a_long_model_name_instead_of_falling_back(tmp_path
     text = _re.sub(r"\x1b\[[0-9;]*m", "", buf.getvalue())
     assert all(len(line) <= 110 for line in text.splitlines())
     assert "..." not in text and "…" not in text           # nothing truncated, it wrapped
+
+
+def test_the_header_is_labelled_rows_that_wrap_under_themselves(tmp_path):
+    from pathlib import Path as _P
+    from dinostomp.race import LABEL_WIDTH, Ink, header
+    spec, _ = _pod(tmp_path)
+    loaded, items, _ = load_race(spec)
+    lines = header(loaded, _P("."), items, Ink(False), hide=True, width=60)
+    assert lines[1] == "REPLAY of committed run records. No model is called."
+    labels = [l[2:2 + LABEL_WIDTH].strip() for l in lines if l.startswith("  ") and l[2:3] != " "]
+    assert labels[:3] == ["hidden", "question", "answer key"] and "must fail" in labels
+    assert all(len(l) <= 60 for l in lines), "rows wrap to the width"
+    continuation = [l for l in lines if l.startswith(" " * (LABEL_WIDTH + 2)) and l.strip()]
+    assert continuation, "long rows continue under their own text, not under the label"
