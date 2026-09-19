@@ -75,8 +75,11 @@ def test_the_floor_and_the_bar_mark_it():
     top, share = floor(items)
     assert top == "a" and share == 0.6
     drawn = bar(0.9, share, width=10)
-    assert drawn == "######|##." and drawn.count("#") == 8     # 9 cells lit, one carries the floor mark
-    assert bar(None, share, width=10) == "......|..."
+    assert drawn == "######|###" and drawn.count("#") == 9     # the mark sits between cells, hides none
+    assert bar(None, share, width=10) == "......|...."
+    # Found live: 65.8% against a 57.7% floor showed no earned cell at all.
+    llama = bar(0.658, 0.577)
+    assert llama.split("|")[1].startswith("#"), "a model above the floor shows it on the bar"
 
 
 def test_the_scorer_line_quotes_the_witnesses_that_must_fail():

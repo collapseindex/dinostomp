@@ -197,12 +197,13 @@ def _clip(text: str, width: int) -> str:
 
 
 def bar(acc: float | None, floor_share: float, width: int = BAR_WIDTH) -> str:
-    """A 0..100% bar with the floor marked as `|`."""
+    """A 0..100% bar of `width` cells with the floor marked as `|` BETWEEN
+    cells. Found live: drawn ON a cell, the mark covered the one cell that
+    showed a model 8 points above the floor, and the lane read as "at floor"."""
     filled = 0 if acc is None else round(acc * width)
     cells = ["#" if i < filled else "." for i in range(width)]
-    mark = min(width - 1, round(floor_share * width))
-    cells[mark] = "|"
-    return "".join(cells)
+    mark = min(width, round(floor_share * width))
+    return "".join(cells[:mark]) + "|" + "".join(cells[mark:])
 
 
 # Colours for the bar, by meaning. The share of a bar under the floor mark is
@@ -222,16 +223,18 @@ def color_bar(acc: float | None, floor_share: float, ink: Ink, width: int = BAR_
     if not ink.enabled:
         return bar(acc, floor_share, width)
     filled = 0 if acc is None else round(acc * width)
-    mark = min(width - 1, round(floor_share * width))
+    mark = min(width, round(floor_share * width))
     below = acc is not None and acc < floor_share
     out = []
     for i in range(width):
         if i == mark:
-            out.append(ink.paint(MARK, "│"))
-        elif i < filled:
-            out.append(ink.paint(UNDER if below else FREE if i < mark else EARNED, "█"))
+            out.append(ink.paint(MARK, "\u2502"))
+        if i < filled:
+            out.append(ink.paint(UNDER if below else FREE if i < mark else EARNED, "\u2588"))
         else:
-            out.append(ink.paint(EMPTY, "░"))
+            out.append(ink.paint(EMPTY, "\u2591"))
+    if mark == width:
+        out.append(ink.paint(MARK, "\u2502"))
     return "".join(out)
 
 
