@@ -8,7 +8,7 @@
 
 **Stomp the eval. Trust the evidence.**
 
-<sub>v0.63.0 · Apache-2.0 · engine `73e7fecfb81567c7` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.63.0 · Apache-2.0 · engine `a8353f7c4f89642c` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 **Find broken data, misleading scorers, and unsupported benchmark claims before you trust the score.**
 
@@ -94,15 +94,15 @@ Each of those is one entry in **[FINDINGS.md](FINDINGS.md)**, with the item id,
 the verbatim data and the command that reproduces it. Every `F` re-derives in
 seconds, offline, for free, using the reproduction command attached to each finding.
 
-**[FINDINGS.md](FINDINGS.md): 190 entries, all permanent, none deleted.**
+**[FINDINGS.md](FINDINGS.md): 191 entries, all permanent, none deleted.**
 
 | series | count | what it records |
 |---|--:|---|
 | **F** | 52 | findings in other people's evals |
 | **D** | 100 | defects in dinostomp itself |
-| **N** | 38 | negative results, recorded rather than dropped |
+| **N** | 39 | negative results, recorded rather than dropped |
 
-**One hundred of the 190 are against this tool**, which is the number to
+**One hundred of the 191 are against this tool**, which is the number to
 read first. A validator that only publishes other people's mistakes is telling
 you which mistakes it is willing to look for. Included there: the entry it
 retracted after its own killer control killed it ([N-013](FINDINGS.md#n-013)),
@@ -748,7 +748,9 @@ frame. Wall time is not animated (the provider and the queue are in it) and
 appears once, as recorded, in the final table, where every accuracy is
 recomputed from the records and checked against the run's saved summary; a
 disagreement prints `MISMATCH` and fails the exit code.
-`pip install dinostomp[pretty]` draws that table with
+Several pods replay together (`dinostomp replay podA podB`) only when their
+items are byte-identical and they share a scorer and witnesses; otherwise it
+refuses. `pip install dinostomp[pretty]` draws that table with
 [rich](https://github.com/Textualize/rich); without it, the same rows print as
 plain text, and a table too wide for the terminal falls back to plain rather
 than cut a number short. `--hide-prompts` is for sharing a recording: request
@@ -981,7 +983,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`73e7fecfb81567c74f65ff92440ea23806362ebadd4ce80cca985b82371c41c2`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`a8353f7c4f89642c23f0fa564d334324880c62a95ce1b9017001396b3e78e4bb`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

@@ -142,6 +142,64 @@ def load_replay(pod: str | Path, models: list[str] | None = None) -> tuple[dict,
     return spec, ordered, lanes
 
 
+def _spec_path(pod: str | Path) -> Path:
+    pod = Path(pod)
+    return pod / "eval.yaml" if pod.is_dir() else pod
+
+
+def comparability(specs: list[tuple[Path, dict]]) -> str:
+    """The sha256 the pods share, or ReplayError naming what differs.
+
+    Lanes from different pods are only comparable when every judge saw the
+    same items, byte for byte, and was scored by the same scorer: the same
+    kind, the same code bytes, the same witnesses. Anything else would put two
+    different evals in one table under one floor."""
+    import hashlib
+    item_hashes, scorer_keys = set(), set()
+    for path, spec in specs:
+        base = path.parent
+        item_hashes.add(hashlib.sha256((base / spec["data"]["path"]).read_bytes()).hexdigest())
+        sc = spec["scorer"]
+        code = hashlib.sha256((base / sc["code"]).read_bytes()).hexdigest() if sc.get("code") else ""
+        scorer_keys.add(json.dumps({"kind": sc.get("kind"), "code": code,
+                                    "witnesses": sc.get("witnesses")}, sort_keys=True))
+    if len(item_hashes) != 1:
+        raise ReplayError("these pods' items are not byte-identical, so their judges did not see "
+                          "the same items; replay them separately")
+    if len(scorer_keys) != 1:
+        raise ReplayError("these pods score differently (scorer kind, code or witnesses), so their "
+                          "verdicts are not comparable; replay them separately")
+    return item_hashes.pop()
+
+
+def load_replays(pods: list[str | Path], models: list[str] | None = None
+                 ) -> tuple[dict, list[dict], list[Lane], list[str], str | None]:
+    """(first pod's spec, items, every pod's lanes, pod names, shared items sha256
+    or None for one pod). Items and replay order come from the first pod."""
+    if len(pods) == 1:
+        spec, items, lanes = load_replay(pods[0], models)
+        return spec, items, lanes, [spec["name"]], None
+    loaded = []
+    for pod in pods:
+        spec, _ = load_spec(_spec_path(pod))
+        if spec is None:
+            raise ReplayError(f"{_spec_path(pod)}: not a valid spec")
+        loaded.append((_spec_path(pod), spec))
+    shared = comparability(loaded)
+    spec, items, lanes = load_replay(pods[0])
+    names = [spec["name"]]
+    for pod in pods[1:]:
+        other, _, more = load_replay(pod)
+        lanes += more
+        names.append(other["name"])
+    if models:
+        unknown = [m for m in models if m not in {l.model for l in lanes}]
+        if unknown:
+            raise ReplayError(f"no complete run for: {unknown}")
+        lanes = [l for l in lanes if l.model in models]
+    return spec, items, lanes, names, shared
+
+
 def floor(items: list[dict]) -> tuple[str, float]:
     """The most common reference answer and what always giving it scores."""
     counts = Counter(str(i["target"]) for i in items)
@@ -319,11 +377,15 @@ def _row(label: str, text: str, width: int, ink: Ink) -> list[str]:
 
 
 def header(spec: dict, pod: Path, items: list[dict], ink: Ink, hide: bool = False,
-           width: int = 100) -> list[str]:
+           width: int = 100, names: list[str] | None = None, shared: str | None = None) -> list[str]:
     top, share = floor(items)
     sc = spec.get("scorer") or {}
-    lines = [ink.bold(f"dinostomp replay | {spec['name']}"),
+    title = " + ".join(names) if names else spec["name"]
+    lines = [ink.bold(f"dinostomp replay | {title}"),
              "REPLAY of committed run records. No model is called.", ""]
+    if shared:
+        lines += _row("pods", f"{len(names)} pods, same items byte for byte (sha256 {shared[:16]}), "
+                              "same scorer and witnesses", width, ink)
     if hide:
         lines += _row("hidden", "--hide-prompts: request text is hidden and each output is cut to its first line, "
                                 "with the length of the rest shown; every item id stays on screen "
@@ -489,12 +551,13 @@ def rich_table(lanes: list[Lane], items: list[dict], out, total: int | None = No
     return True
 
 
-def replay(pod: str | Path, rate: float = DEFAULT_RATE, limit: int | None = None,
+def replay(pod: str | Path | list, rate: float = DEFAULT_RATE, limit: int | None = None,
            models: list[str] | None = None, animate: bool = True, out=None,
            hide_prompts: bool = False) -> list[Lane]:
     """Run the replay. Returns the lanes with their final tallies (for tests)."""
     out = out or sys.stdout
-    spec, items, lanes = load_replay(pod, models)
+    pods = list(pod) if isinstance(pod, (list, tuple)) else [pod]
+    spec, items, lanes, names, shared = load_replays(pods, models)
     total = len(items)
     if limit and limit < total:
         # Evenly spaced across the whole run, not the head of it: a pod is often
@@ -504,7 +567,8 @@ def replay(pod: str | Path, rate: float = DEFAULT_RATE, limit: int | None = None
     ink = Ink(animate and hasattr(out, "isatty") and out.isatty() and "NO_COLOR" not in __import__("os").environ)
     width = shutil.get_terminal_size((120, 40)).columns
     _, share = floor(items)
-    for line in art(ink) + header(spec, Path(pod), items, ink, hide=hide_prompts, width=width):
+    for line in art(ink) + header(spec, Path(pods[0]), items, ink, hide=hide_prompts, width=width,
+                                  names=names, shared=shared):
         print(line, file=out)
     drawn = 0
     delay = 1.0 / rate if rate > 0 else 0.0

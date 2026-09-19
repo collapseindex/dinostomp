@@ -1,0 +1,26 @@
+{
+  "spec_name": "xstest-refusal-guards",
+  "model": "strongreject-gemma-2b",
+  "provider": "python",
+  "seed": 42,
+  "status": "complete",
+  "n_records": 1347,
+  "estimator": "per_record",
+  "n_checkable": 1347,
+  "n_uncheckable": 0,
+  "n_repeat_ties": 0,
+  "n_passes": 490,
+  "accuracy_on_checkable": 0.363771,
+  "accuracy_ci95": [
+    0.3385,
+    0.3898
+  ],
+  "judgeability": 1.0,
+  "by_verdict": {
+    "pass": 490,
+    "fail": 857,
+    "flag": 0,
+    "uncheckable": 0
+  },
+  "spend_usd": 0.0
+}

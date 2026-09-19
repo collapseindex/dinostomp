@@ -25,6 +25,8 @@ that is 34 of 43 of them. Nothing here converts a judgment call into a citation.
 | McNemar's test | `order-stability` (P9), `prompt-stability` (P11) | McNemar, Q. (1947). *Note on the sampling error of the difference between correlated proportions or percentages.* Psychometrika 12(2), 153–157. |
 | Paired bootstrap resampling | `ordering-noise` (P6), typed superiority claims | Efron, B. (1979). *Bootstrap methods: another look at the jackknife.* Annals of Statistics 7(1), 1–26. |
 | Mutation testing | `witness-coverage` (W1) | DeMillo, R. A., Lipton, R. J. & Sayward, F. G. (1978). *Hints on test data selection: help for the practicing programmer.* Computer 11(4), 34–41. The mutation gauntlet applies this to scorers: a witness suite that no mutant survives is a suite that constrains the scorer. |
+| Expected calibration error | `overconfident` (R23) | Naeini, M. P., Cooper, G. F. & Hauskrecht, M. (2015). *Obtaining well calibrated probabilities using Bayesian binning.* AAAI 2015. Guo, C., Pleiss, G., Sun, Y. & Weinberger, K. Q. (2017). *On calibration of modern neural networks.* ICML 2017, for the equal-width binned form used here. |
+| AUROC as the Mann-Whitney U | `confidence-blind` (R24) | Hanley, J. A. & McNeil, B. J. (1982). *The meaning and use of the area under a receiver operating characteristic (ROC) curve.* Radiology 143(1), 29–36. |
 
 ### The four `convention` thresholds, and what they lean on
 
@@ -105,6 +107,14 @@ also produce.
   distinguishing exact duplicates from re-processed copies of one camera shot
   from merely similar images. Fetched by `benchmarks/cifair/fetch.py`, licensed
   CC-BY-SA, not vendored.
+- **XSTest v2** — Röttger, P., Kirk, H. R., Vidgen, B., Attanasio, G., Bianchi, F.
+  & Hovy, D. (2024). *XSTest: A Test Suite for Identifying Exaggerated Safety
+  Behaviours in Large Language Models.* NAACL 2024. arXiv:2308.01263. Model
+  completions each labelled by two annotators as full compliance, full refusal
+  or partial refusal; the answer key for every refusal judge in
+  `audits/xstest-refusal` and `audits/xstest-refusal-guards`
+  ([N-038](FINDINGS.md#n-038)). `paul-rottger/xstest` @ `d7bb5bd7`,
+  CC-BY-4.0, fetched by the pod's build script, not vendored.
 
 ## Artifacts audited outside the benchmark pods
 
@@ -126,6 +136,9 @@ is pinned by repository and commit so a reader can fetch the same bytes.
 | StrongREJECT | `https://github.com/alexandrasouly/strongreject` | commit `f7cad6c17e624e21d8df2278e918ae1dddb4cb56` |
 | AISafetyLab | `https://github.com/thu-coai/AISafetyLab` | commit `3fd15737dee5c6858466162d6a68e6cb6f996b27` |
 | garak | `https://github.com/NVIDIA/garak` | commit `b1e0101a177981cc423455448fd745be88b87916` |
+| WildGuard (judge, not target) | Han, S., Rao, K., Ettinger, A. et al. (2024). *WildGuard: Open One-Stop Moderation Tools for Safety Risks, Jailbreaks, and Refusals of LLMs.* [arXiv:2406.18495](https://arxiv.org/abs/2406.18495). Allen Institute for AI. Run as a refusal judge in `audits/xstest-refusal-guards` with the model card's prompt. | model `allenai/wildguard`, Apache-2.0; outputs committed and pinned by sha256 |
+| StrongREJECT fine-tuned evaluator (judge, not target) | Souly, A., Lu, Q., Bowen, D. et al. (2024). *A StrongREJECT for Empty Jailbreaks.* [arXiv:2402.10260](https://arxiv.org/abs/2402.10260). Run as a refusal judge in `audits/xstest-refusal-guards` with the reference template and scoring. | adapter `qylu4156/strongreject-15k-v1` on `google/gemma-2b` (Gemma Terms of Use); template and scoring from `dsbowen/strong_reject` @ `7a551d5b` |
+| Jev 1.13 (judge and examinee, not target) | TypeSafe AI (2026). *Introducing System One Models and Jev.* <https://typesafe.ai/blog/introducing-system-one-models-and-jev>. A decisions model called through `provider: typesafe` and `provider: jev`. | `jev-1.13.0` as reported by the endpoint; $0.042 per million input tokens per TypeSafe's docs (read 2026-09-19) |
 
 The lower seven rows record the artifact each audit actually ran against, which
 is what its findings are about. Several have accompanying papers that are not

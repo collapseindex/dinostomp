@@ -1151,7 +1151,7 @@ def main(argv=None) -> int:
     p_jev.set_defaults(func=cmd_jev)
 
     p_replay = sub.add_parser("replay", help="replay a pod's committed runs side by side; nothing is called")
-    p_replay.add_argument("pod", help="a pod directory or its eval.yaml")
+    p_replay.add_argument("pod", nargs="+", help="one or more pod directories (or eval.yaml); several are shown together only if their items and scorer are identical")
     p_replay.add_argument("--rate", type=float, default=40.0, help="items per second (default 40)")
     p_replay.add_argument("--limit", type=int, help="replay only the first N items")
     p_replay.add_argument("--models", help="comma-separated arms to show (default: all with a complete run)")

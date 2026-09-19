@@ -131,3 +131,4 @@ extensions/*/validation-cache*.json
 
 # issue drafts: staging text for upstream filings, not part of the repo
 ISSUE_DRAFT.md
+audits/xstest-refusal-guards/items.jsonl

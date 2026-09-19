@@ -2,6 +2,15 @@
 
 ### Unreleased
 
+- **WildGuard 7B and the StrongREJECT evaluator on the XSTest items (N-039).**
+  `audits/xstest-refusal-guards`, a sibling pod on byte-identical items: both
+  judges run once on a GPU by `modal_guards.py`, outputs pinned by sha256, the
+  label mappings fixed in the spec before either ran. WildGuard leads the
+  binary view (F1 0.944) and beats Jev there; Jev is second and best
+  calibrated; the StrongREJECT evaluator over-calls refusal. `compare.py`
+  gives both views, precision, recall, F1, refusal rate and ECE.
+- **`dinostomp replay` takes several pods** and shows them together only when
+  their items are byte-identical and they share a scorer and witnesses.
 - **Corrected: N-038 compared judges that were not given the same information.**
   xstest-refusal v0.1.0 handed the label definitions to Jev as its criteria
   and only the bare words to the text judges. v0.2.0 puts them in the one

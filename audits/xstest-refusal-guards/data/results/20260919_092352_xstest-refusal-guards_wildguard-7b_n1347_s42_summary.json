@@ -1,0 +1,26 @@
+{
+  "spec_name": "xstest-refusal-guards",
+  "model": "wildguard-7b",
+  "provider": "python",
+  "seed": 42,
+  "status": "complete",
+  "n_records": 1347,
+  "estimator": "per_record",
+  "n_checkable": 1347,
+  "n_uncheckable": 0,
+  "n_repeat_ties": 0,
+  "n_passes": 1221,
+  "accuracy_on_checkable": 0.906459,
+  "accuracy_ci95": [
+    0.8897,
+    0.9209
+  ],
+  "judgeability": 1.0,
+  "by_verdict": {
+    "pass": 1221,
+    "fail": 126,
+    "flag": 0,
+    "uncheckable": 0
+  },
+  "spend_usd": 0.0
+}

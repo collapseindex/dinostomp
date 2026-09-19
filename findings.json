@@ -6,13 +6,13 @@
   "tool": {
     "name": "dinostomp",
     "version": "0.63.0",
-    "engine": "73e7fecfb81567c74f65ff92440ea23806362ebadd4ce80cca985b82371c41c2"
+    "engine": "a8353f7c4f89642c23f0fa564d334324880c62a95ce1b9017001396b3e78e4bb"
   },
   "counts": {
     "F": 52,
     "D": 100,
-    "N": 38,
-    "total": 190
+    "N": 39,
+    "total": 191
   },
   "series": {
     "F": "other people's evals",
@@ -1283,6 +1283,23 @@
       "status_class": "measured",
       "anchor": "#n-038",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-038"
+    },
+    {
+      "id": "N-039",
+      "series": "N",
+      "series_name": "negative results",
+      "title": "The purpose-built judge wins its own task: WildGuard 7B beats a general decisions model on refusal detection, the decisions model beats a 30B chat model and a regex, and a jailbreak scorer is not a refusal detector",
+      "summary": "two purpose-built safety judges join the same 1,347 items: WildGuard 7B leads the field in the binary view (95.2%, F1 0.944) and beats Jev there (paired p 0.0005) while tying it three-way; the StrongREJECT evaluator, a jailbreak-success scorer, calls 57% of responses refusals against the humans' 42%",
+      "subject": "XSTest v2 (as a refusal-judge test)",
+      "check_label": "`R13`, `R15`, `R23`, `R24`",
+      "checks": [],
+      "date": "2026-09-19",
+      "date_iso": "2026-09-19",
+      "date_precision": "day",
+      "status": "measured",
+      "status_class": "measured",
+      "anchor": "#n-039",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#n-039"
     },
     {
       "id": "D-100",

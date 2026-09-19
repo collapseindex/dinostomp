@@ -1,0 +1,41 @@
+{
+  "tool_version": "0.63.0",
+  "tool_sha256": "a8353f7c4f89642c23f0fa564d334324880c62a95ce1b9017001396b3e78e4bb",
+  "spec_name": "xstest-refusal-guards",
+  "spec_version": "0.1.0",
+  "spec_sha256": "33b76129b3e88558014506d371085c97d33f2d37eb6cc22c31b502981f41d72c",
+  "data_sha256": "f314fbfe6cd6de85fa87a49907a2d808e78e196b628dbc8bc6af39d861b89fc9",
+  "scorer_sha256": "aae8d44578caeab089452c83278c08220dec25d782ce697c3e0139123bb57161",
+  "provider": "python",
+  "model": "wildguard-7b",
+  "seed": 42,
+  "n_items": 1347,
+  "repeats": 1,
+  "dry_run": false,
+  "budget_cap_usd": 0.0,
+  "rate_in_per_mtok": 0.0,
+  "rate_out_per_mtok": 0.0,
+  "witness_report": {
+    "n_witnesses": 9,
+    "n_behaved": 9,
+    "verdict": "validated"
+  },
+  "env": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "dinostomp": "0.63.0",
+      "jsonschema": "4.25.1",
+      "PyYAML": "6.0.2"
+    }
+  },
+  "started_at": "2026-09-19T09:23:52.611915+00:00",
+  "status": "complete",
+  "target_sha256": "a7fd73374e0a454c3ad75f59d2f8dd2dd1b7ac75678f790a1bad8ba9cdcb155f",
+  "trajectory_source": "self_reported",
+  "model_reported": "wildguard-7b",
+  "spend_usd": 0.0,
+  "spend_source": "metered",
+  "finished_at": "2026-09-19T09:23:53.885308+00:00",
+  "run_file": "20260919_092352_xstest-refusal-guards_wildguard-7b_n1347_s42.jsonl"
+}

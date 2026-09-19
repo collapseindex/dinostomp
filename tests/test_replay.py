@@ -286,3 +286,36 @@ def test_every_frame_ends_with_where_the_records_are(tmp_path):
     _, share = floor(items)
     lines = frame(0, items[0], lanes, share, Ink(False), 100, total=len(items))
     assert REPO_URL in lines[-1]
+
+
+def _second_pod(tmp_path, items, models):
+    from tests.test_lint import write_eval
+    d = tmp_path / "second"
+    d.mkdir()
+    spec = write_eval(d, items, models=models)
+    assert run_spec(spec).exit_code == OK
+    return spec
+
+
+def test_two_pods_on_the_same_items_replay_together(tmp_path):
+    from dinostomp.replay import load_replays
+    first = tmp_path / "first"
+    first.mkdir()
+    spec_a, _ = _pod(first)
+    spec_b = _second_pod(tmp_path, choice_items(24), [{"provider": "dry", "model": "dry-charlie"}])
+    spec, items, lanes, names, shared = load_replays([spec_a, spec_b])
+    assert [l.model for l in lanes] == ["dry-alpha", "dry-bravo", "dry-charlie"]
+    assert len(names) == 2 and shared and len(items) == 24
+    out = io.StringIO()
+    replay([spec_a, spec_b], animate=False, out=out)
+    assert out.getvalue().count("matches") == 3
+
+
+def test_pods_on_different_items_are_refused(tmp_path):
+    from dinostomp.replay import load_replays
+    first = tmp_path / "first"
+    first.mkdir()
+    spec_a, _ = _pod(first)
+    spec_b = _second_pod(tmp_path, choice_items(23), [{"provider": "dry", "model": "dry-charlie"}])
+    with pytest.raises(ReplayError, match="not byte-identical"):
+        load_replays([spec_a, spec_b])
