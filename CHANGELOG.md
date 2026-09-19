@@ -31,18 +31,18 @@
   `--probe blind` used to continue informed into the blind file and drop the
   probe from its manifest; GPT-5.6 Luna's route-live "blind" 80.2% was 1,930
   informed answers.
-- **`race --hide-prompts`, for recordings that get shared.** Request text is
+- **`replay --hide-prompts`, for recordings that get shared.** Request text is
   replaced by `[request hidden]` plus the item's type; its id stays on screen.
   Outputs are cut to their first line with the rest's length shown
   (`'A. compliance' (+162 chars)`), because the rest is often why the scorer
   failed it. The header says both.
-- **`pip install dinostomp[pretty]`: rich tables for `race`, optional.** One
+- **`pip install dinostomp[pretty]`: rich tables for `replay`, optional.** One
   set of rows feeds both renderers, a test holds the rich table to the plain
   table's numbers, and no column is allowed to shrink below its widest cell:
   if the table does not fit, the plain one prints instead. Found while
   building it: rich at 80 columns cut "83.3%" to "83..." and dropped the
   parity column entirely. The core stays at two dependencies.
-- **`dinostomp race <pod>`: replay committed runs side by side.** Lockstep
+- **`dinostomp replay <pod>`: committed runs side by side.** Lockstep
   over the seeded items, raw output and recorded verdict per lane, the
   floor marked on every bar, the scorer's must-fail witnesses quoted in the
   header, wall time shown once as recorded, and each final accuracy

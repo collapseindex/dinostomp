@@ -23,7 +23,7 @@ Findings = "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md"
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0"]
-# Terminal DRAWING, and nothing else. `dinostomp race` renders its final table
+# Terminal DRAWING, and nothing else. `dinostomp replay` renders its final table
 # with rich when this is installed and falls back to plain text when it is not;
 # both draw from one set of rows, so the numbers cannot differ between them.
 pretty = ["rich>=13.0"]

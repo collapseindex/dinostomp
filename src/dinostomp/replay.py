@@ -1,6 +1,6 @@
 """Replay a pod's committed runs side by side in the terminal.
 
-    dinostomp race audits/xstest-refusal
+    dinostomp replay audits/xstest-refusal
 
 Every lane is one model's informed run, read from the pod's run records.
 Nothing is called and nothing is simulated: each frame is a record that is
@@ -53,7 +53,7 @@ WIDE_UNBOUNDED = 400    # console width when writing to a file: never the reason
 CHECKABLE = ("pass", "fail", "flag")
 
 
-class RaceError(ValueError):
+class ReplayError(ValueError):
     """The pod cannot be replayed; the message says why."""
 
 
@@ -101,17 +101,17 @@ def _accuracy(records: list[dict]) -> float | None:
     return sum(r["score"]["verdict"] == "pass" for r in scored) / len(scored) if scored else None
 
 
-def load_race(pod: str | Path, models: list[str] | None = None) -> tuple[dict, list[dict], list[Lane]]:
+def load_replay(pod: str | Path, models: list[str] | None = None) -> tuple[dict, list[dict], list[Lane]]:
     """(spec, items in replay order, lanes). Lanes follow the spec's model order."""
     pod = Path(pod)
     spec_path = pod / "eval.yaml" if pod.is_dir() else pod
     spec, issues = load_spec(spec_path)
     if spec is None:
-        raise RaceError(f"{spec_path}: {'; '.join(i.message for i in issues)}")
+        raise ReplayError(f"{spec_path}: {'; '.join(i.message for i in issues)}")
     base = spec_path.parent
     items, item_issues = load_items(spec["data"], base)
     if item_issues:
-        raise RaceError(f"{spec_path}: the items are not on disk ({item_issues[0].message}); "
+        raise ReplayError(f"{spec_path}: the items are not on disk ({item_issues[0].message}); "
                         "build them first, the pod's README or build script says how")
     by_id = {str(i["id"]): i for i in items}
     mine, _ = _discover_runs(base, spec["name"])
@@ -120,7 +120,7 @@ def load_race(pod: str | Path, models: list[str] | None = None) -> tuple[dict, l
     if models:
         unknown = [m for m in models if m not in order]
         if unknown:
-            raise RaceError(f"not in the spec: {unknown}")
+            raise ReplayError(f"not in the spec: {unknown}")
         order = [m for m in order if m in models]
     lanes = []
     for model in order:
@@ -133,12 +133,12 @@ def load_race(pod: str | Path, models: list[str] | None = None) -> tuple[dict, l
                           manifest=e["manifest"], summary=_summary_for(e["path"]),
                           blind_records={str(r["item_id"]): r for r in blind["records"]} if blind else None))
     if not lanes:
-        raise RaceError(f"{spec_path}: no complete informed run on disk to replay")
+        raise ReplayError(f"{spec_path}: no complete informed run on disk to replay")
     first = next(iter(runs[(lanes[0].model, False)]["records"]), None)
     replay_order = [str(r["item_id"]) for r in runs[(lanes[0].model, False)]["records"]]
     ordered = [by_id[i] for i in dict.fromkeys(replay_order) if i in by_id]
     if first is None or not ordered:
-        raise RaceError(f"{spec_path}: the runs name no item that is in items.jsonl")
+        raise ReplayError(f"{spec_path}: the runs name no item that is in items.jsonl")
     return spec, ordered, lanes
 
 
@@ -251,7 +251,7 @@ DINO = [
     "    ▀█████▀",
     "      █▀ █▄",
 ]
-WORDMARK = ["", "", "d i n o s t o m p   r a c e", "", "every frame is a record on disk", "", "", ""]
+WORDMARK = ["", "", "d i n o s t o m p   r e p l a y", "", "every frame is a record on disk", "", "", ""]
 
 
 def art(ink: Ink) -> list[str]:
@@ -322,7 +322,7 @@ def header(spec: dict, pod: Path, items: list[dict], ink: Ink, hide: bool = Fals
            width: int = 100) -> list[str]:
     top, share = floor(items)
     sc = spec.get("scorer") or {}
-    lines = [ink.bold(f"dinostomp race | {spec['name']}"),
+    lines = [ink.bold(f"dinostomp replay | {spec['name']}"),
              "REPLAY of committed run records. No model is called.", ""]
     if hide:
         lines += _row("hidden", "--hide-prompts: request text is hidden and each output is cut to its first line, "
@@ -494,7 +494,7 @@ def replay(pod: str | Path, rate: float = DEFAULT_RATE, limit: int | None = None
            hide_prompts: bool = False) -> list[Lane]:
     """Run the replay. Returns the lanes with their final tallies (for tests)."""
     out = out or sys.stdout
-    spec, items, lanes = load_race(pod, models)
+    spec, items, lanes = load_replay(pod, models)
     total = len(items)
     if limit and limit < total:
         # Evenly spaced across the whole run, not the head of it: a pod is often
@@ -541,7 +541,7 @@ def replay(pod: str | Path, rate: float = DEFAULT_RATE, limit: int | None = None
     return lanes
 
 
-def cmd_race(args) -> int:
+def cmd_replay(args) -> int:
     try:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     except (AttributeError, ValueError):
@@ -550,8 +550,8 @@ def cmd_race(args) -> int:
         lanes = replay(args.pod, rate=args.rate, limit=args.limit,
                        models=args.models.split(",") if args.models else None,
                        animate=not args.no_animate, hide_prompts=getattr(args, "hide_prompts", False))
-    except RaceError as exc:
-        print(f"CANNOT RACE: {exc}", file=sys.stderr)
+    except ReplayError as exc:
+        print(f"CANNOT REPLAY: {exc}", file=sys.stderr)
         return 2
     if args.limit:
         return 0

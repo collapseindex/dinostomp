@@ -8,7 +8,7 @@
 
 **Stomp the eval. Trust the evidence.**
 
-<sub>v0.63.0 · Apache-2.0 · engine `f2a897e9aa72d93c` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.63.0 · Apache-2.0 · engine `73e7fecfb81567c7` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 **Find broken data, misleading scorers, and unsupported benchmark claims before you trust the score.**
 
@@ -731,10 +731,10 @@ the trajectory checks. It cost **one** defect where the first cost five (N-011).
 An imported trace is labelled `foreign_observed`, never `harness_observed`: the
 exporting harness watched those calls, this engine did not.
 
-## Replay a race
+## Replay a pod's runs
 
 ```
-dinostomp race audits/xstest-refusal
+dinostomp replay audits/xstest-refusal
 ```
 
 Every arm of a pod grades the same items side by side in the terminal, from
@@ -981,7 +981,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`f2a897e9aa72d93c37f8ea02aa2c03e4b48d20af32489775eed55e491f5222d7`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`73e7fecfb81567c74f65ff92440ea23806362ebadd4ce80cca985b82371c41c2`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

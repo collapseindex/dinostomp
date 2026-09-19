@@ -212,8 +212,8 @@ def cmd_jev(args) -> int:
     return run(args)
 
 
-def cmd_race(args) -> int:
-    from dinostomp.race import cmd_race as run  # local: keeps --help fast
+def cmd_replay(args) -> int:
+    from dinostomp.replay import cmd_replay as run  # local: keeps --help fast
 
     return run(args)
 
@@ -1150,14 +1150,14 @@ def main(argv=None) -> int:
     p_jev.add_argument("--no-save", action="store_true", help="do not write the result under data/jev/")
     p_jev.set_defaults(func=cmd_jev)
 
-    p_race = sub.add_parser("race", help="replay a pod's committed runs side by side; nothing is called")
-    p_race.add_argument("pod", help="a pod directory or its eval.yaml")
-    p_race.add_argument("--rate", type=float, default=40.0, help="items per second (default 40)")
-    p_race.add_argument("--limit", type=int, help="replay only the first N items")
-    p_race.add_argument("--models", help="comma-separated arms to show (default: all with a complete run)")
-    p_race.add_argument("--no-animate", action="store_true", help="print the final table only")
-    p_race.add_argument("--hide-prompts", action="store_true", help="replace request text with [request hidden] and cut outputs to their first line, marked; for sharing")
-    p_race.set_defaults(func=cmd_race)
+    p_replay = sub.add_parser("replay", help="replay a pod's committed runs side by side; nothing is called")
+    p_replay.add_argument("pod", help="a pod directory or its eval.yaml")
+    p_replay.add_argument("--rate", type=float, default=40.0, help="items per second (default 40)")
+    p_replay.add_argument("--limit", type=int, help="replay only the first N items")
+    p_replay.add_argument("--models", help="comma-separated arms to show (default: all with a complete run)")
+    p_replay.add_argument("--no-animate", action="store_true", help="print the final table only")
+    p_replay.add_argument("--hide-prompts", action="store_true", help="replace request text with [request hidden] and cut outputs to their first line, marked; for sharing")
+    p_replay.set_defaults(func=cmd_replay)
 
     args = parser.parse_args(argv)
     return args.func(args)
