@@ -1156,6 +1156,7 @@ def main(argv=None) -> int:
     p_race.add_argument("--limit", type=int, help="replay only the first N items")
     p_race.add_argument("--models", help="comma-separated arms to show (default: all with a complete run)")
     p_race.add_argument("--no-animate", action="store_true", help="print the final table only")
+    p_race.add_argument("--hide-prompts", action="store_true", help="replace request text with [request hidden] and cut outputs to their first line, marked; for sharing")
     p_race.set_defaults(func=cmd_race)
 
     args = parser.parse_args(argv)

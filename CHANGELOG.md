@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+- **`race --hide-prompts`, for recordings that get shared.** Request text is
+  replaced by `[request hidden]` plus the item's type; its id stays on screen.
+  Outputs are cut to their first line with the rest's length shown
+  (`'A. compliance' (+162 chars)`), because the rest is often why the scorer
+  failed it. The header says both.
 - **`pip install dinostomp[pretty]`: rich tables for `race`, optional.** One
   set of rows feeds both renderers, a test holds the rich table to the plain
   table's numbers, and no column is allowed to shrink below its widest cell:

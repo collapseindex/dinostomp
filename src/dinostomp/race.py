@@ -232,10 +232,27 @@ def art(ink: Ink) -> list[str]:
     return [ink.paint(MINT, f"{d:<22}") + ("  " + ink.bold(w) if w else "") for d, w in zip(DINO, WORDMARK)] + [""]
 
 
-def _item_line(item: dict, width: int) -> str:
+def _item_line(item: dict, width: int, hide: bool = False) -> str:
     meta = item.get("metadata") or {}
+    if hide:
+        # The text goes; the item does not. Its id is on the line already, and
+        # its type says what kind of request it was without repeating it.
+        kind = ", ".join(str(k) for k in (meta.get("type"), item.get("subskill")) if k)
+        return f"[request hidden]{' ' + kind if kind else ''}"
     what = meta.get("request") or item.get("input")
     return _clip(what, width)
+
+
+def _output_text(output, width: int, hide: bool) -> str:
+    """The model's output as shown. Hidden mode keeps the first line and says
+    how much followed, because the rest is often WHY a verdict is what it is
+    ("A. compliance" plus an explanation fails an exact scorer)."""
+    text = str(output if output is not None else "")
+    if not hide:
+        return repr(_clip(text, width))
+    first, _, rest = text.strip().partition("\n")
+    more = len(rest.strip())
+    return repr(_clip(first, width)) + (f" (+{more} chars)" if more else "")
 
 
 def scorer_line(spec: dict) -> str:
@@ -252,9 +269,12 @@ def scorer_line(spec: dict) -> str:
             if must_fail else f"Scorer: {name} ({kind}).")
 
 
-def header(spec: dict, pod: Path, items: list[dict], ink: Ink) -> list[str]:
+def header(spec: dict, pod: Path, items: list[dict], ink: Ink, hide: bool = False) -> list[str]:
     top, share = floor(items)
-    return [
+    hidden = (["Requests hidden for sharing (--hide-prompts); outputs cut to their first line, "
+               "with the length of the rest shown. Every item id is on screen and in the repo."]
+              if hide else [])
+    return hidden + [
         ink.bold(f"dinostomp race | {spec['name']} | REPLAY of committed run records; no model is called"),
         _clip(spec.get("question", ""), 120),
         f"Answer key: the pod's reference answers. Floor: always answering {top!r} scores {share:.1%} "
@@ -267,9 +287,9 @@ def header(spec: dict, pod: Path, items: list[dict], ink: Ink) -> list[str]:
 
 
 def frame(i: int, item: dict, lanes: list[Lane], floor_share: float, ink: Ink, width: int,
-          total: int | None = None) -> list[str]:
+          total: int | None = None, hide: bool = False) -> list[str]:
     out_width = max(MIN_OUTPUT_WIDTH, width - FIXED_COLUMNS)
-    out = [ink.dim(f"item {i + 1}/{total or len(lanes[0].records)}  [{item['id']}]  ") + _item_line(item, width - 30),
+    out = [ink.dim(f"item {i + 1}/{total or len(lanes[0].records)}  [{item['id']}]  ") + _item_line(item, width - 30, hide),
            ink.dim(f"reference answer: {_clip(item['target'], 60)}"), ""]
     for lane in lanes:
         r = lane.last
@@ -279,12 +299,12 @@ def frame(i: int, item: dict, lanes: list[Lane], floor_share: float, ink: Ink, w
             said = ink.dim("no record for this item")
         else:
             verdict = (r.get("score") or {}).get("verdict")
-            text = _clip(r.get("output"), out_width)
+            text = _output_text(r.get("output"), out_width, hide)
             mark = ink.green("ok ") if verdict == "pass" else ink.red("no ") if verdict in CHECKABLE \
                 else ink.yellow("?? ")
             vec = probability_vector(r)
             conf = f" p {vec[r['output']]:.2f}" if vec and r.get("output") in vec else ""
-            said = f"{mark}{text!r}{conf}"
+            said = f"{mark}{text}{conf}"
         out.append(f"  {_clip(lane.model, NAME_WIDTH):<{NAME_WIDTH}} {score}  {color_bar(acc, floor_share, ink)}  {said}")
     return out
 
@@ -410,7 +430,8 @@ def rich_table(lanes: list[Lane], items: list[dict], out, total: int | None = No
 
 
 def replay(pod: str | Path, rate: float = DEFAULT_RATE, limit: int | None = None,
-           models: list[str] | None = None, animate: bool = True, out=None) -> list[Lane]:
+           models: list[str] | None = None, animate: bool = True, out=None,
+           hide_prompts: bool = False) -> list[Lane]:
     """Run the replay. Returns the lanes with their final tallies (for tests)."""
     out = out or sys.stdout
     spec, items, lanes = load_race(pod, models)
@@ -423,7 +444,7 @@ def replay(pod: str | Path, rate: float = DEFAULT_RATE, limit: int | None = None
     ink = Ink(animate and hasattr(out, "isatty") and out.isatty() and "NO_COLOR" not in __import__("os").environ)
     width = shutil.get_terminal_size((120, 40)).columns
     _, share = floor(items)
-    for line in art(ink) + header(spec, Path(pod), items, ink):
+    for line in art(ink) + header(spec, Path(pod), items, ink, hide=hide_prompts):
         print(line, file=out)
     drawn = 0
     delay = 1.0 / rate if rate > 0 else 0.0
@@ -436,7 +457,7 @@ def replay(pod: str | Path, rate: float = DEFAULT_RATE, limit: int | None = None
                     lane.checkable += 1
                     lane.passes += r["score"]["verdict"] == "pass"
             if animate:
-                lines = frame(i, item, lanes, share, ink, width, total=len(items))
+                lines = frame(i, item, lanes, share, ink, width, total=len(items), hide=hide_prompts)
                 if drawn:
                     out.write(f"\x1b[{drawn}F")
                 for line in lines:
@@ -467,7 +488,7 @@ def cmd_race(args) -> int:
     try:
         lanes = replay(args.pod, rate=args.rate, limit=args.limit,
                        models=args.models.split(",") if args.models else None,
-                       animate=not args.no_animate)
+                       animate=not args.no_animate, hide_prompts=getattr(args, "hide_prompts", False))
     except RaceError as exc:
         print(f"CANNOT RACE: {exc}", file=sys.stderr)
         return 2
