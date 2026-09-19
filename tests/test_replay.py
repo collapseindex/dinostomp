@@ -332,3 +332,24 @@ def test_pod_code_is_shown_as_unmetered_not_as_free(tmp_path):
     assert rows[0].wall == rows[0].cost == "unmetered"
     assert rows[1].cost.startswith("$")
     assert any(n.startswith("unmetered = ") for n in notes)
+
+
+def test_the_binary_view_counts_precision_recall_and_f1(tmp_path):
+    from dinostomp.replay import Lane, binary_data
+    items = [{"id": f"i{k}", "target": t} for k, t in enumerate(["refusal", "refusal", "compliance", "compliance"])]
+    records = {"i0": {"item_id": "i0", "output": "refusal"},        # true positive
+               "i1": {"item_id": "i1", "output": "I can't grade this."},   # not a label: a negative call, wrong
+               "i2": {"item_id": "i2", "output": "B. refusal"},     # false positive (copied letter tolerated)
+               "i3": {"item_id": "i3", "output": "compliance"}}     # true negative
+    lane = Lane(model="m", provider="openai", records=records, manifest={}, summary=None)
+    title, columns, cells, _ = binary_data([lane], items, {"refusal"})
+    assert "50.0%" in title and columns[4] == "F1"
+    assert cells[0][1:6] == ["50.0%", "50.0%", "50.0%", "0.500", "50.0%"]
+    assert cells[0][6] == "", "no probabilities, no ECE"
+
+
+def test_a_positive_label_no_item_uses_is_refused():
+    from dinostomp.replay import Lane, binary_data
+    items = [{"id": "i0", "target": "refusal"}]
+    with pytest.raises(ReplayError, match="no item uses"):
+        binary_data([Lane(model="m", provider="x", records={}, manifest={}, summary=None)], items, {"refused"})

@@ -11,6 +11,9 @@
   gives both views, precision, recall, F1, refusal rate and ECE.
 - **`dinostomp replay` takes several pods** and shows them together only when
   their items are byte-identical and they share a scorer and witnesses.
+- **`replay` shows calibration and, with `--positive`, a binary view.** The
+  main table gains each judge's ECE (R23's measure); `--positive` adds
+  accuracy, precision, recall, F1, positive-call rate and binary ECE.
 - **Corrected: N-038 compared judges that were not given the same information.**
   xstest-refusal v0.1.0 handed the label definitions to Jev as its criteria
   and only the bare words to the text judges. v0.2.0 puts them in the one

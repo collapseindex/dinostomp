@@ -34,7 +34,7 @@ from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from dinostomp.calibration import probability_vector
+from dinostomp.calibration import confidence_points, expected_calibration_error, probability_vector
 from dinostomp.items import load_items
 from dinostomp.lint import _discover_runs
 from dinostomp.psychometrics import wilson_ci
@@ -438,6 +438,14 @@ class Row:
     cost: str
     parity: str             # "matches" | "MISMATCH (summary x)" | "no summary" | "" (a sample)
     under_floor: bool
+    ece: str = ""           # R23's measure over these items; blank for an arm with no probabilities
+
+
+def _ece(records: list[dict]) -> str:
+    """R23's number for these records: the confidence in the answer given,
+    against whether it was right. Blank when the arm records no probabilities."""
+    points = confidence_points(records)
+    return f"{expected_calibration_error(points):.3f}" if points else ""
 
 
 def _wall(manifest: dict) -> str:
@@ -461,7 +469,7 @@ def table_data(lanes: list[Lane], items: list[dict], total: int | None = None
     title = (f"{len(items)} of {total} items, evenly spaced, recomputed from the records "
              f"(a sample: nothing here is compared with the full-run summaries)" if partial
              else "Final, recomputed from the records")
-    columns = ["model", "accuracy", "95% interval", "blind", "checkable", "wall", "cost",
+    columns = ["model", "accuracy", "95% interval", "blind", "ECE", "checkable", "wall", "cost",
                "" if partial else "summary"]
     ids = [str(i["id"]) for i in items]
     rows = []
@@ -491,7 +499,8 @@ def table_data(lanes: list[Lane], items: list[dict], total: int | None = None
                         wall=_wall(lane.manifest) if metered else "unmetered",
                         cost=(f"${spend:.3f}" if isinstance(spend, (int, float)) else "?") if metered
                         else "unmetered",
-                        parity=parity, under_floor=acc is not None and acc < share))
+                        parity=parity, under_floor=acc is not None and acc < share,
+                        ece=_ece([lane.records[i] for i in ids if i in lane.records])))
     notes = [f"floor: always {top!r} = {share:.1%} on these items.  "
              "blind = the same model with the input withheld, same items.",
              "wall time and cost are the full run's, as recorded: provider, network and queue included, "
@@ -499,6 +508,8 @@ def table_data(lanes: list[Lane], items: list[dict], total: int | None = None
              "cost is the ledger's figure; where the provider reports none, it is priced from the spec's rates.",
              "unmetered = the arm is pod code; any compute it used (a GPU run, for example) is outside the "
              "ledger and stated in its pod's spec.",
+             "ECE = expected calibration error of the confidence in each answer given (R23's measure); "
+             "blank where the arm records no probabilities.",
              f"re-derive every verdict offline: dinostomp verify <pod>/eval.yaml  |  {REPO_URL}"]
     return title, columns, rows, notes
 
@@ -508,12 +519,12 @@ def final_table(lanes: list[Lane], items: list[dict], ink: Ink, total: int | Non
     title, columns, rows, notes = table_data(lanes, items, total)
     out = ["", ink.bold(title + ":"), ""]
     out.append(f"  {columns[0]:<{NAME_WIDTH}} {columns[1]:>9} {columns[2]:>14} {columns[3]:>7} "
-               f"{columns[4]:>10} {columns[5]:>16} {columns[6]:>11}  {columns[7]}")
+               f"{columns[4]:>6} {columns[5]:>10} {columns[6]:>10} {columns[7]:>10}  {columns[8]}")
     for r in rows:
         paint = ink.green if r.parity == "matches" else ink.red if r.parity.startswith("MISMATCH") else ink.yellow
         acc = "None" if r.accuracy is None else f"{r.accuracy:.1%}"
         out.append(f"  {_clip(r.model, NAME_WIDTH):<{NAME_WIDTH}} {acc:>9} {r.interval:>14} {r.blind:>7} "
-                   f"{r.checkable:>10} {r.wall:>16} {r.cost:>11}  {paint(r.parity) if r.parity else ''}")
+                   f"{r.ece:>6} {r.checkable:>10} {r.wall:>10} {r.cost:>10}  {paint(r.parity) if r.parity else ''}")
     out += [""] + [f"  {n}" for n in notes]
     return out
 
@@ -529,7 +540,7 @@ def rich_table(lanes: list[Lane], items: list[dict], out, total: int | None = No
         return False
     title, columns, rows, notes = table_data(lanes, items, total)
     cells = [[r.model, "None" if r.accuracy is None else f"{r.accuracy:.1%}", r.interval, r.blind,
-              str(r.checkable), r.wall, r.cost, r.parity] for r in rows]
+              r.ece, str(r.checkable), r.wall, r.cost, r.parity] for r in rows]
     # Never truncate: every column is at least as wide as its widest cell, so a
     # number can not turn into "83..." in a screenshot. If that does not fit the
     # terminal, the plain table (which wraps whole lines instead) is used.
@@ -548,21 +559,118 @@ def rich_table(lanes: list[Lane], items: list[dict], out, total: int | None = No
         if i == 0:
             table.add_column(name, min_width=widths[i], overflow="fold")
         else:
-            table.add_column(name, justify="left" if i == 7 else "right", min_width=widths[i], no_wrap=True)
+            table.add_column(name, justify="left" if i == 8 else "right", min_width=widths[i], no_wrap=True)
     for r, c in zip(rows, cells):
         acc = c[1]
         acc_style = "bold red" if r.under_floor else "bold green"
         parity_style = ("green" if r.parity == "matches" else "bold red" if r.parity.startswith("MISMATCH")
                         else "yellow")
-        table.add_row(r.model, f"[{acc_style}]{acc}[/]", r.interval, r.blind, str(r.checkable),
+        table.add_row(r.model, f"[{acc_style}]{acc}[/]", r.interval, r.blind, r.ece, str(r.checkable),
                       r.wall, r.cost, f"[{parity_style}]{r.parity}[/]" if r.parity else "")
+    console.print(table)
+    return True
+
+
+MENU_LABEL = re.compile(r"^[A-Z]{1,2}\.\s+")
+
+
+def answer_label(output) -> str:
+    """An output read as the scorer tolerates it: the first line, one copied
+    menu letter removed, a trailing full stop dropped."""
+    first = str(output or "").strip().split("\n")[0].strip()
+    return MENU_LABEL.sub("", first, count=1).strip().rstrip(".")
+
+
+def binary_data(lanes: list[Lane], items: list[dict], positive: set[str]
+                ) -> tuple[str, list[str], list[list[str]], list[str]]:
+    """The binary view: every label in `positive` is one class, everything else
+    the other. Accuracy, precision, recall, F1 with `positive` as the positive
+    class, how often each arm says positive, and the calibration of that call
+    for arms whose every record carries a probability.
+
+    An answer that is not one of the item's labels (a refusal to grade, a
+    sentence) is wrong in this view and counts as a negative call, the
+    direction that costs recall rather than inventing it."""
+    labels = {str(i["target"]) for i in items} | {str(c) for i in items for c in i.get("choices") or ()}
+    unknown = sorted(positive - labels)
+    if unknown:
+        raise ReplayError(f"--positive names label(s) no item uses: {unknown}; the labels are {sorted(labels)}")
+    truth = {str(i["id"]): str(i["target"]) in positive for i in items}
+    rate = sum(truth.values()) / len(truth)
+    name = " + ".join(sorted(positive))
+    title = f"Binary view: {name} as positive (the humans say positive on {rate:.1%} of these items)"
+    columns = ["model", "accuracy", "precision", "recall", "F1", "says positive", "ECE"]
+    cells = []
+    for lane in lanes:
+        recs = [lane.records[i] for i in truth if i in lane.records]
+        tp = fp = fn = right = 0
+        points = []
+        for r in recs:
+            label = answer_label(r.get("output"))
+            valid = label in labels
+            called = valid and label in positive
+            real = truth[str(r["item_id"])]
+            right += valid and called == real
+            tp += called and real
+            fp += called and not real
+            fn += real and not called
+            vec = probability_vector(r)
+            if vec is not None:
+                p = sum(v for k, v in vec.items() if k in positive)
+                points.append((p if p >= 0.5 else 1 - p, (p >= 0.5) == real))
+        prec = tp / (tp + fp) if tp + fp else 0.0
+        rec = tp / (tp + fn) if tp + fn else 0.0
+        f1 = 2 * prec * rec / (prec + rec) if prec + rec else 0.0
+        ece = (f"{expected_calibration_error(points):.3f}" if recs and len(points) == len(recs) else "")
+        cells.append([lane.model, f"{right / len(recs):.1%}" if recs else "", f"{prec:.1%}", f"{rec:.1%}",
+                      f"{f1:.3f}", f"{(tp + fp) / len(recs):.1%}" if recs else "", ece])
+    notes = [f"positive = the answer is one of: {name}. An answer that is not one of the item's labels counts "
+             "as a negative call and a wrong one.",
+             "ECE here is the calibration of the positive/negative call itself, from the probability each arm "
+             "put on the positive labels."]
+    return title, columns, cells, notes
+
+
+def plain_grid(title: str, columns: list[str], cells: list[list[str]], notes: list[str], ink: Ink) -> list[str]:
+    widths = [max([len(c)] + [len(row[i]) for row in cells]) for i, c in enumerate(columns)]
+    widths[0] = min(widths[0], NAME_WIDTH)
+    line = lambda row: "  " + "  ".join(                                    # noqa: E731
+        (_clip(v, widths[0]).ljust(widths[0]) if i == 0 else v.rjust(widths[i])) for i, v in enumerate(row))
+    return ["", ink.bold(title + ":"), "", line(columns)] + [line(r) for r in cells] + [""] + \
+        [f"  {n}" for n in notes]
+
+
+def rich_grid(title: str, columns: list[str], cells: list[list[str]], notes: list[str], out) -> bool:
+    """The same grid with rich, under the same no-truncation rule as the main table."""
+    try:
+        from rich import box
+        from rich.console import Console
+        from rich.table import Table
+    except ImportError:
+        return False
+    widths = [max([len(c)] + [len(row[i]) for row in cells]) for i, c in enumerate(columns)]
+    widths[0] = min(widths[0], MODEL_MIN_WIDTH)
+    is_tty = getattr(out, "isatty", lambda: False)()
+    console = Console(file=out, force_terminal=True, highlight=False,
+                      width=shutil.get_terminal_size((120, 40)).columns if is_tty else WIDE_UNBOUNDED)
+    if sum(widths) + 3 * len(widths) + 1 > console.width:
+        return False
+    table = Table(title=title, box=box.ROUNDED, title_style="bold", header_style="bold",
+                  caption="\n".join(notes), caption_justify="left", caption_style="dim")
+    for i, name in enumerate(columns):
+        if i == 0:
+            table.add_column(name, min_width=widths[i], overflow="fold")
+        else:
+            table.add_column(name, justify="right", min_width=widths[i], no_wrap=True)
+    for row in cells:
+        table.add_row(*row)
     console.print(table)
     return True
 
 
 def replay(pod: str | Path | list, rate: float = DEFAULT_RATE, limit: int | None = None,
            models: list[str] | None = None, animate: bool = True, out=None,
-           hide_prompts: bool = False) -> list[Lane]:
+           hide_prompts: bool = False, positive: set[str] | None = None) -> list[Lane]:
     """Run the replay. Returns the lanes with their final tallies (for tests)."""
     out = out or sys.stdout
     pods = list(pod) if isinstance(pod, (list, tuple)) else [pod]
@@ -611,6 +719,12 @@ def replay(pod: str | Path | list, rate: float = DEFAULT_RATE, limit: int | None
     if not (ink.enabled and rich_table(lanes, items, out, total=total)):
         for line in final_table(lanes, items, ink, total=total):
             print(line, file=out)
+    if positive:
+        grid = binary_data(lanes, items, positive)
+        print(file=out)
+        if not (ink.enabled and rich_grid(*grid, out)):
+            for line in plain_grid(*grid, ink):
+                print(line, file=out)
     return lanes
 
 
@@ -622,7 +736,8 @@ def cmd_replay(args) -> int:
     try:
         lanes = replay(args.pod, rate=args.rate, limit=args.limit,
                        models=args.models.split(",") if args.models else None,
-                       animate=not args.no_animate, hide_prompts=getattr(args, "hide_prompts", False))
+                       animate=not args.no_animate, hide_prompts=getattr(args, "hide_prompts", False),
+                       positive=set(args.positive.split(",")) if getattr(args, "positive", None) else None)
     except ReplayError as exc:
         print(f"CANNOT REPLAY: {exc}", file=sys.stderr)
         return 2

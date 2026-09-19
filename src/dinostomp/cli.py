@@ -1157,6 +1157,7 @@ def main(argv=None) -> int:
     p_replay.add_argument("--models", help="comma-separated arms to show (default: all with a complete run)")
     p_replay.add_argument("--no-animate", action="store_true", help="print the final table only")
     p_replay.add_argument("--hide-prompts", action="store_true", help="replace request text with [request hidden] and cut outputs to their first line, marked; for sharing")
+    p_replay.add_argument("--positive", help="comma-separated labels to treat as the positive class; adds a binary table with precision, recall, F1 and calibration")
     p_replay.set_defaults(func=cmd_replay)
 
     args = parser.parse_args(argv)
