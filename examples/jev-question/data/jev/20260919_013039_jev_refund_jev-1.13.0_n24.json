@@ -1,0 +1,257 @@
+{
+ "question_file": "refund.jev.yaml",
+ "question_sha256": "9b1aae7e81ebb54c0e4896ccc9da42e9224ac8bdfb5c7a7d470564d6cef70b40",
+ "provider": "typesafe",
+ "model": "jev-latest",
+ "model_reported": "jev-1.13.0",
+ "at": "2026-09-19T01:30:39.218304+00:00",
+ "summary": {
+  "n": 24,
+  "correct": 23,
+  "accuracy": 0.9583,
+  "accuracy_ci95": [
+   0.7976,
+   0.9926
+  ],
+  "blank": {
+   "answer": "no",
+   "p": 0.66,
+   "accuracy_if_always": 0.5833
+  },
+  "flips": 0,
+  "reworded": 60,
+  "confident": {
+   "coverage": 0.8333,
+   "accuracy": 1.0
+  },
+  "ece": 0.0813,
+  "cut": {
+   "at_0.50": 0.9583,
+   "best": 0.5,
+   "at_best": 0.9583
+  }
+ },
+ "flips": [],
+ "tokens": {
+  "input": 29787,
+  "output": 1700
+ },
+ "answers": [
+  {
+   "expect": "yes",
+   "answer": "yes",
+   "p": 0.98,
+   "dist": {
+    "yes": 0.98,
+    "no": 0.02
+   }
+  },
+  {
+   "expect": "yes",
+   "answer": "yes",
+   "p": 0.99,
+   "dist": {
+    "yes": 0.99,
+    "no": 0.01
+   }
+  },
+  {
+   "expect": "yes",
+   "answer": "yes",
+   "p": 0.98,
+   "dist": {
+    "yes": 0.98,
+    "no": 0.02
+   }
+  },
+  {
+   "expect": "yes",
+   "answer": "yes",
+   "p": 0.98,
+   "dist": {
+    "yes": 0.98,
+    "no": 0.02
+   }
+  },
+  {
+   "expect": "yes",
+   "answer": "yes",
+   "p": 0.97,
+   "dist": {
+    "yes": 0.97,
+    "no": 0.03
+   }
+  },
+  {
+   "expect": "yes",
+   "answer": "yes",
+   "p": 0.98,
+   "dist": {
+    "yes": 0.98,
+    "no": 0.02
+   }
+  },
+  {
+   "expect": "yes",
+   "answer": "yes",
+   "p": 0.97,
+   "dist": {
+    "yes": 0.97,
+    "no": 0.03
+   }
+  },
+  {
+   "expect": "yes",
+   "answer": "yes",
+   "p": 0.97,
+   "dist": {
+    "yes": 0.97,
+    "no": 0.03
+   }
+  },
+  {
+   "expect": "no",
+   "answer": "no",
+   "p": 0.99,
+   "dist": {
+    "yes": 0.01,
+    "no": 0.99
+   }
+  },
+  {
+   "expect": "no",
+   "answer": "no",
+   "p": 0.98,
+   "dist": {
+    "yes": 0.02,
+    "no": 0.98
+   }
+  },
+  {
+   "expect": "no",
+   "answer": "no",
+   "p": 0.98,
+   "dist": {
+    "yes": 0.02,
+    "no": 0.98
+   }
+  },
+  {
+   "expect": "no",
+   "answer": "no",
+   "p": 0.98,
+   "dist": {
+    "yes": 0.02,
+    "no": 0.98
+   }
+  },
+  {
+   "expect": "no",
+   "answer": "no",
+   "p": 0.98,
+   "dist": {
+    "yes": 0.02,
+    "no": 0.98
+   }
+  },
+  {
+   "expect": "no",
+   "answer": "no",
+   "p": 0.98,
+   "dist": {
+    "yes": 0.02,
+    "no": 0.98
+   }
+  },
+  {
+   "expect": "no",
+   "answer": "no",
+   "p": 0.99,
+   "dist": {
+    "yes": 0.01,
+    "no": 0.99
+   }
+  },
+  {
+   "expect": "no",
+   "answer": "no",
+   "p": 0.98,
+   "dist": {
+    "yes": 0.02,
+    "no": 0.98
+   }
+  },
+  {
+   "expect": "no",
+   "answer": "no",
+   "p": 0.97,
+   "dist": {
+    "yes": 0.03,
+    "no": 0.97
+   }
+  },
+  {
+   "expect": "no",
+   "answer": "no",
+   "p": 0.88,
+   "dist": {
+    "yes": 0.12,
+    "no": 0.88
+   }
+  },
+  {
+   "expect": "no",
+   "answer": "no",
+   "p": 0.9,
+   "dist": {
+    "yes": 0.1,
+    "no": 0.9
+   }
+  },
+  {
+   "expect": "yes",
+   "answer": "yes",
+   "p": 0.96,
+   "dist": {
+    "yes": 0.96,
+    "no": 0.04
+   }
+  },
+  {
+   "expect": "no",
+   "answer": "no",
+   "p": 0.91,
+   "dist": {
+    "yes": 0.09,
+    "no": 0.91
+   }
+  },
+  {
+   "expect": "no",
+   "answer": "no",
+   "p": 0.59,
+   "dist": {
+    "yes": 0.41,
+    "no": 0.59
+   }
+  },
+  {
+   "expect": "no",
+   "answer": "yes",
+   "p": 0.81,
+   "dist": {
+    "yes": 0.81,
+    "no": 0.19
+   }
+  },
+  {
+   "expect": "yes",
+   "answer": "yes",
+   "p": 0.73,
+   "dist": {
+    "yes": 0.73,
+    "no": 0.27
+   }
+  }
+ ]
+}

@@ -1,0 +1,55 @@
+# A harder Jev question: one with a gray zone, on purpose.
+#
+#   dinostomp jev examples/jev-question/refund.jev.yaml
+#
+# urgency.jev.yaml is clear-cut and scores 100%, which shows the report but
+# not what it is for. This one has a rule with edges: a refund is money back
+# to the customer for something already paid. Cancelling a future charge is
+# not a refund, account credit is not a refund, and a complaint about a price
+# is not a refund request until it asks for money back. The last eight
+# examples sit on those edges, labelled by the rule as written. Where Jev
+# disagrees with the rule while sure, the report lists it first; that is
+# either a label to fix or a rule the question does not state clearly enough.
+
+question:
+  type: noul
+  instructions: "Is the customer asking for money back for something they already paid?"
+  criteria:
+    true: "they want a payment returned to them: a refund, a chargeback, money back"
+    false: "anything else, including cancelling future charges, asking for account credit, or complaining without asking for money back"
+
+require:
+  accuracy: 0.80
+
+examples:
+  # clear yes
+  - {state: "Please refund my last payment, I was charged after I cancelled.", expect: yes}
+  - {state: "I want my money back for the annual plan, I only used it for a week.", expect: yes}
+  - {state: "You charged me twice on the 3rd. Please return the duplicate charge.", expect: yes}
+  - {state: "The order never arrived. I'd like a full refund to my card.", expect: yes}
+  - {state: "Can you reverse the $49 charge from yesterday? I didn't authorize it.", expect: yes}
+  - {state: "The product was broken on arrival, I'm sending it back and want my money returned.", expect: yes}
+  - {state: "I'm going to file a chargeback unless you refund me by Friday.", expect: yes}
+  - {state: "Refund the difference please, I was billed for the Pro tier but I'm on Basic.", expect: yes}
+  # clear no
+  - {state: "How do I change my billing email?", expect: no}
+  - {state: "What payment methods do you accept?", expect: no}
+  - {state: "Thanks, the invoice looks correct now.", expect: no}
+  - {state: "Can I upgrade to the Pro plan mid-month?", expect: no}
+  - {state: "Where can I download my receipts?", expect: no}
+  - {state: "Does the price include VAT?", expect: no}
+  - {state: "Please add our PO number to future invoices.", expect: no}
+  - {state: "Is there a student discount?", expect: no}
+  # the edges, labelled by the rule above
+  - {state: "Please cancel my subscription so I'm not charged next month.", expect: no}
+  - {state: "Can you give us account credit for the six hours of downtime last week?", expect: no}
+  - {state: "Your price went up 40% with no notice, that's outrageous.", expect: no}
+  - {state: "I'd like to cancel and get a prorated refund for the unused months.", expect: yes}
+  - {state: "Can you apply last month's overcharge as a credit on the next invoice instead?", expect: no}
+  - {state: "I was charged for 12 seats but we only have 9 users. Can you fix that?", expect: no}
+  # The report lists this one as wrong (Jev: yes at about 0.8). Read the rule
+  # again: it asks whether money for a paid, unused year comes back, which is
+  # arguably a refund question. Left as first labelled, so the demo shows the
+  # report doing its job: pointing at a label a person should reread.
+  - {state: "If I cancel today, do I get anything back for the rest of the year?", expect: no}
+  - {state: "The discount code didn't apply at checkout, can you adjust what I paid?", expect: yes}

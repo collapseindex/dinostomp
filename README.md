@@ -8,7 +8,7 @@
 
 **Stomp the eval. Trust the evidence.**
 
-<sub>v0.63.0 · Apache-2.0 · engine `515b5e591d35d76e` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.63.0 · Apache-2.0 · engine `2bdf4f76bd9cb72a` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 **Find broken data, misleading scorers, and unsupported benchmark claims before you trust the score.**
 
@@ -754,9 +754,12 @@ What each line is for: the interval says how much your examples can tell you;
 the threshold line says where to cut p(yes); **blank input** is what the
 question answers with no text at all, so lopsided examples or a leaning
 question show up as a small gap; **rewording** changes nothing a reader
-would care about and must not flip an answer; anything the model got wrong
-*while sure* is listed first, because it is a wrong label or the question's
-blind spot. Every run is saved under `data/jev/` and compared with the last
+would care about and must not flip an answer; every wrong answer is listed,
+the ones it was *sure* of first, because those are a wrong label or the
+question's blind spot; and **close calls** (right, but under 0.80) show where
+the wording is carrying the decision. `examples/jev-question/refund.jev.yaml`
+is a question with a gray zone on purpose, and its report points at one of
+its own labels. Every run is saved under `data/jev/` and compared with the last
 run of the same question, so when `jev-latest` moves to a new version, the
 change is one printed line (`jev-1.13.0 -> jev-1.14.0: accuracy 100% -> 90%,
 2 answer(s) changed`) rather than something your users find. Choice questions
@@ -941,7 +944,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`515b5e591d35d76e0d78ee415524550d33e08489c6745007f6aa8571489b7e53`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`2bdf4f76bd9cb72aac5f06a6a65eb0143a9a26ddced7cb61b9dbe55afb1684d9`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

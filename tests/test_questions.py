@@ -146,7 +146,18 @@ def test_sure_and_wrong_examples_are_listed_first(tmp_path):
     q = load_question(urgency_file(tmp_path))
     r = run_question(q, rewording=False, provider_factory=lambda p, m: FakeJev(overconfident_on_one))
     out = render(r, summarize(r), None, None)
-    assert "sure and wrong" in out and "yes at 0.98, expected no: 'small font'" in out
+    assert "wrong (1 of 1 while sure" in out and "yes at 0.98, expected no: 'small font'" in out
+
+
+def test_unsure_misses_and_close_calls_are_listed_too(tmp_path):
+    def edgy(state):
+        return {"small font": 0.62, "payouts failing": 0.58, "checkout down": 0.7}.get(state, honest(state))
+    q = load_question(urgency_file(tmp_path))
+    r = run_question(q, rewording=False, provider_factory=lambda p, m: FakeJev(edgy))
+    out = render(r, summarize(r), None, None)
+    assert "wrong (0 of 1 while sure" in out and "yes at 0.62, expected no: 'small font'" in out
+    close = out.split("close calls")[1]
+    assert close.index("payouts failing") < close.index("checkout down"), "closest call first"
 
 
 def test_the_best_cut_is_reported_only_when_it_beats_one_half(tmp_path):
@@ -198,7 +209,7 @@ def test_a_choice_question(tmp_path):
     r = run_question(q, rewording=False, provider_factory=lambda p, m: FakeJev(None, choice=choose))
     s = summarize(r)
     assert s["correct"] == 2 and "cut" not in s
-    assert "sure and wrong" in render(r, s, None, None)
+    assert "wrong (1 of 1 while sure" in render(r, s, None, None)
 
 
 def test_the_command_exits_one_on_a_failed_requirement_and_two_on_a_bad_file(tmp_path, monkeypatch, capsys):

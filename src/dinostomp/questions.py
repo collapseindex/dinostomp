@@ -18,8 +18,10 @@ examples) and answers what they need before shipping it:
     are lopsided or the question leans, and the accuracy says little;
   * rewording: content-free changes to the state (whitespace, a markdown
     fence, a polite sign-off) that must not flip an answer;
-  * the examples it got wrong while sure, which are either mislabelled or
-    the question's blind spot, and are the first thing to read;
+  * every example it got wrong, the sure ones first (a sure miss is either a
+    wrong label or the question's blind spot), and the close calls: right
+    answers under 0.80, where the wording is doing the work and which move
+    first when the wording or the model changes;
   * a saved result per run, compared with the last run of the same question,
     so a model update that moves the answers is a printed line, not a
     production incident.
@@ -63,6 +65,7 @@ REWORDING_SAMPLE = 20                  # examples perturbed per run; each costs 
 REWORDING_SEED = 20260918
 CUT_GRID = [round(0.05 * i, 2) for i in range(1, 20)]   # 0.05 .. 0.95
 CONFIDENT = 0.90                       # the floor the "confident" line reports
+CLOSE_CALL = 0.80                      # a right answer under this is listed as a close call
 ECE_BAR = 0.10                         # R23's bar, stated once here for the printout
 BLIND_LIFT_MIN = 0.10                  # R15's bar: the model must clear its own blank-input score by this
 SHOW_WRONG = 5
@@ -393,13 +396,24 @@ def render(r: Result, s: dict, saved: Path | None, line_vs_last: str | None) -> 
                  f"{(s['accuracy'] - b['accuracy_if_always']) * 100:+.0f} points from that")
     if r.reworded:
         lines.append(f"  rewording    {s['flips']} of {r.reworded} answer(s) flipped ({', '.join(q.rewording)})")
-    wrong = sorted((a for a in r.answers if a["answer"] != a["expect"] and a["p"] >= CONFIDENT),
-                   key=lambda a: -a["p"])
+    def show(a):
+        state = " ".join(a["state"].split())
+        return f"    {a['answer']} at {a['p']:.2f}, expected {a['expect']}: {state[:90]!r}"
+
+    # Every miss, the sure ones first: a sure miss is a wrong label or the
+    # question's blind spot, and either is the first thing to read.
+    wrong = sorted((a for a in r.answers if a["answer"] != a["expect"]), key=lambda a: -a["p"])
     if wrong:
-        lines += ["", "  sure and wrong (read these first: a wrong label, or the question's blind spot):"]
-        for a in wrong[:SHOW_WRONG]:
-            state = " ".join(a["state"].split())
-            lines.append(f"    {a['answer']} at {a['p']:.2f}, expected {a['expect']}: {state[:90]!r}")
+        sure = sum(a["p"] >= CONFIDENT for a in wrong)
+        lines += ["", f"  wrong ({sure} of {len(wrong)} while sure; check the label, then the wording):"]
+        lines += [show(a) for a in wrong[:SHOW_WRONG]]
+    # Right, but barely: where the question's wording carries the decision.
+    # These move first when the wording or the model changes.
+    close = sorted((a for a in r.answers if a["answer"] == a["expect"] and a["p"] < CLOSE_CALL),
+                   key=lambda a: a["p"])
+    if close:
+        lines += ["", f"  close calls (right, but under {CLOSE_CALL:.2f}; the wording is doing the work):"]
+        lines += [show(a) for a in close[:SHOW_WRONG]]
     for f in r.flips[:SHOW_WRONG]:
         lines.append(f"    flip: {f}")
     ok, failures, advice = verdict(q, s)

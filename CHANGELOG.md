@@ -6,8 +6,9 @@
   holds the question (noul or choice) and labelled examples; the command
   reports accuracy with an interval, where to cut p(yes), coverage and
   accuracy above 0.90, ECE against R23's bar, the blank-input prior against
-  R15's lift, flips under meaningless rewording, and the examples it got
-  wrong while sure. Every run is saved under `data/jev/` and compared with
+  R15's lift, flips under meaningless rewording, every wrong answer (the sure
+  ones first), and the close calls under 0.80 where the wording carries the
+  decision. Every run is saved under `data/jev/` and compared with
   the last run of the same question, so a model update is one printed line.
   `require: {accuracy, flips}` makes it a CI gate (exit 1). Example in
   `examples/jev-question/`.
