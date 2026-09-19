@@ -27,7 +27,7 @@ def test_lanes_follow_the_spec_and_replay_in_lockstep(tmp_path):
     spec, _ = _pod(tmp_path)
     loaded, items, lanes = load_race(spec)
     assert [l.model for l in lanes] == ["dry-alpha", "dry-bravo"]
-    assert len(items) == 24 and all(l.blind_accuracy is not None for l in lanes)
+    assert len(items) == 24 and all(l.blind_records for l in lanes)
     out = io.StringIO()
     done = replay(spec, animate=False, out=out)
     text = out.getvalue()
@@ -95,3 +95,28 @@ def test_models_filter_keeps_spec_order_and_rejects_strangers(tmp_path):
     assert [l.model for l in lanes] == ["dry-bravo"]
     with pytest.raises(RaceError, match="not in the spec"):
         load_race(spec, models=["dry-zulu"])
+
+
+def test_a_limited_replay_compares_nothing_to_the_full_run(tmp_path):
+    """Found live: --limit 200 printed MISMATCH on every lane, because a
+    200-item accuracy was checked against the full run's summary. A partial
+    replay says it is partial and computes blind over the same items."""
+    spec, _ = _pod(tmp_path)
+    out = io.StringIO()
+    replay(spec, limit=10, animate=False, out=out)
+    text = out.getvalue()
+    assert "MISMATCH" not in text and "matches" not in text
+    assert "10 of 24 items, evenly spaced" in text and "the saved summary covers all 24" in text
+
+
+def test_a_limited_replay_samples_the_whole_run_not_its_head(tmp_path):
+    spec, _ = _pod(tmp_path)
+    _, items, _ = load_race(spec)
+    out = io.StringIO()
+    replay(spec, limit=6, animate=True, rate=0, out=out)
+    shown = [i["id"] for i in items if f"[{i['id']}]" in out.getvalue()]
+    assert shown == [items[k * 4]["id"] for k in range(6)]     # every 4th of 24
+
+    from argparse import Namespace
+    from dinostomp.race import cmd_race
+    assert cmd_race(Namespace(pod=str(spec), rate=0, limit=10, models=None, no_animate=True)) == 0

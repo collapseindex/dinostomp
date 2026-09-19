@@ -61,7 +61,7 @@ class Lane:
     records: dict[str, dict]            # item_id -> record
     manifest: dict
     summary: dict | None
-    blind_accuracy: float | None = None
+    blind_records: dict[str, dict] | None = None
     passes: int = 0
     checkable: int = 0
     last: dict | None = field(default=None)
@@ -128,7 +128,7 @@ def load_race(pod: str | Path, models: list[str] | None = None) -> tuple[dict, l
         lanes.append(Lane(model=model, provider=str(e["manifest"].get("provider")),
                           records={str(r["item_id"]): r for r in e["records"]},
                           manifest=e["manifest"], summary=_summary_for(e["path"]),
-                          blind_accuracy=_accuracy(blind["records"]) if blind else None))
+                          blind_records={str(r["item_id"]): r for r in blind["records"]} if blind else None))
     if not lanes:
         raise RaceError(f"{spec_path}: no complete informed run on disk to replay")
     first = next(iter(runs[(lanes[0].model, False)]["records"]), None)
@@ -236,11 +236,18 @@ def frame(i: int, item: dict, lanes: list[Lane], floor_share: float, ink: Ink, w
     return out
 
 
-def final_table(lanes: list[Lane], items: list[dict], ink: Ink) -> list[str]:
+def final_table(lanes: list[Lane], items: list[dict], ink: Ink, total: int | None = None) -> list[str]:
+    """`total` is the pod's full item count; when the replay covered fewer, the
+    table says so on every row and compares nothing to a full-run summary."""
     top, share = floor(items)
-    rows = ["", ink.bold("Final, recomputed from the records:"), ""]
+    partial = total is not None and len(items) < total
+    title = (f"{len(items)} of {total} items, evenly spaced, recomputed from the records:" if partial
+             else "Final, recomputed from the records:")
+    rows = ["", ink.bold(title), ""]
+    last = "vs saved summary" if not partial else "note"
     rows.append(f"  {'model':<{NAME_WIDTH}} {'accuracy':>9} {'95% interval':>14} {'blind':>7} "
-                f"{'checkable':>10} {'wall (recorded)':>16} {'cost':>9}  summary")
+                f"{'checkable':>10} {'wall (full run)':>16} {'cost (full)':>11}  {last}")
+    ids = [str(i["id"]) for i in items]
     for lane in lanes:
         acc = lane.accuracy
         ci = wilson_ci(lane.passes, lane.checkable)
@@ -253,21 +260,25 @@ def final_table(lanes: list[Lane], items: list[dict], ink: Ink) -> list[str]:
         except (KeyError, ValueError, TypeError):
             wall = "?"
         saved = (lane.summary or {}).get("accuracy_on_checkable")
-        if saved is None:
+        if partial:
+            parity = ink.dim(f"sample of {len(items)}; the saved summary covers all {total}")
+        elif saved is None:
             parity = ink.yellow("no summary")
         elif acc is not None and abs(saved - acc) <= PARITY_TOLERANCE:
             parity = ink.green("matches")
         else:
             parity = ink.red(f"MISMATCH (summary {saved})")
-        blind = f"{lane.blind_accuracy:.1%}" if lane.blind_accuracy is not None else "not run"
+        blind_acc = (_accuracy([lane.blind_records[i] for i in ids if i in lane.blind_records])
+                     if lane.blind_records else None)
+        blind = f"{blind_acc:.1%}" if blind_acc is not None else "not run"
         spend = m.get("spend_usd")
         cost = f"${spend:.3f}" if isinstance(spend, (int, float)) else "?"
         rows.append(f"  {_clip(lane.model, NAME_WIDTH):<{NAME_WIDTH}} {acc if acc is None else f'{acc:.1%}':>9} "
                     f"{(f'{ci[0]:.1%} to {ci[1]:.1%}' if ci else ''):>14} {blind:>7} "
-                    f"{lane.checkable:>10} {wall:>16} {cost:>9}  {parity}")
+                    f"{lane.checkable:>10} {wall:>16} {cost:>11}  {parity}")
     rows += ["",
-             f"  floor: always {top!r} = {share:.1%}.  blind = the same model with the input withheld.",
-             "  wall time is as recorded: provider, network and queue included, calls made one at a time.",
+             f"  floor: always {top!r} = {share:.1%} on these items.  blind = the same model with the input withheld, same items.",
+             "  wall time and cost are the full run's, as recorded: provider, network and queue included, calls one at a time.",
              "  cost is the ledger's figure; where the provider reports none, it is priced from the spec's rates.",
              "  re-derive every verdict offline: dinostomp verify <pod>/eval.yaml"]
     return rows
@@ -278,8 +289,12 @@ def replay(pod: str | Path, rate: float = DEFAULT_RATE, limit: int | None = None
     """Run the replay. Returns the lanes with their final tallies (for tests)."""
     out = out or sys.stdout
     spec, items, lanes = load_race(pod, models)
-    if limit:
-        items = items[:limit]
+    total = len(items)
+    if limit and limit < total:
+        # Evenly spaced across the whole run, not the head of it: a pod is often
+        # ordered by source (xstest-refusal puts every GPT-4 completion first),
+        # and the head of a sorted run is not a sample of it.
+        items = [items[(k * total) // limit] for k in range(limit)]
     ink = Ink(animate and hasattr(out, "isatty") and out.isatty() and "NO_COLOR" not in __import__("os").environ)
     width = shutil.get_terminal_size((120, 40)).columns
     _, share = floor(items)
@@ -312,10 +327,8 @@ def replay(pod: str | Path, rate: float = DEFAULT_RATE, limit: int | None = None
                 if r is not None and (r.get("score") or {}).get("verdict") in CHECKABLE:
                     lane.checkable += 1
                     lane.passes += r["score"]["verdict"] == "pass"
-    for line in final_table(lanes, items, ink):
+    for line in final_table(lanes, items, ink, total=total):
         print(line, file=out)
-    if limit:
-        print(f"  (first {limit} items only; the summaries cover every item, so parity is not checked)", file=out)
     return lanes
 
 
