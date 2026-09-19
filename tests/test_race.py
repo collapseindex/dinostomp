@@ -75,7 +75,7 @@ def test_the_floor_and_the_bar_mark_it():
     top, share = floor(items)
     assert top == "a" and share == 0.6
     drawn = bar(0.9, share, width=10)
-    assert drawn == "######|###" and drawn.count("#") == 9     # the mark sits between cells, hides none
+    assert drawn == "######|###." and drawn.count("#") == 9    # the mark sits between cells, hides none
     assert bar(None, share, width=10) == "......|...."
     # Found live: 65.8% against a 57.7% floor showed no earned cell at all.
     llama = bar(0.658, 0.577)
@@ -277,3 +277,12 @@ def test_the_header_is_labelled_rows_that_wrap_under_themselves(tmp_path):
     assert all(len(l) <= 60 for l in lines), "rows wrap to the width"
     continuation = [l for l in lines if l.startswith(" " * (LABEL_WIDTH + 2)) and l.strip()]
     assert continuation, "long rows continue under their own text, not under the label"
+
+
+def test_every_frame_ends_with_where_the_records_are(tmp_path):
+    from dinostomp.race import REPO_URL, Ink, floor, frame
+    spec, _ = _pod(tmp_path)
+    _, items, lanes = load_race(spec)
+    _, share = floor(items)
+    lines = frame(0, items[0], lanes, share, Ink(False), 100, total=len(items))
+    assert REPO_URL in lines[-1]

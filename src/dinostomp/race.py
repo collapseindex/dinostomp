@@ -41,6 +41,7 @@ from dinostomp.psychometrics import wilson_ci
 from dinostomp.spec import load_spec
 
 DEFAULT_RATE = 40.0                 # items per second
+REPO_URL = "github.com/collapseindex/dinostomp"   # where every record replayed here can be checked
 BAR_WIDTH = 20
 NAME_WIDTH = 28
 MIN_OUTPUT_WIDTH = 30
@@ -359,6 +360,7 @@ def frame(i: int, item: dict, lanes: list[Lane], floor_share: float, ink: Ink, w
             conf = f" p {vec[r['output']]:.2f}" if vec and r.get("output") in vec else ""
             said = f"{mark}{text}{conf}"
         out.append(f"  {_clip(lane.model, NAME_WIDTH):<{NAME_WIDTH}} {score}  {color_bar(acc, floor_share, ink)}  {said}")
+    out += ["", ink.dim(f"records and checks: {REPO_URL}  |  re-derive: dinostomp verify")]
     return out
 
 
@@ -426,7 +428,7 @@ def table_data(lanes: list[Lane], items: list[dict], total: int | None = None
              "wall time and cost are the full run's, as recorded: provider, network and queue included, "
              "calls one at a time.",
              "cost is the ledger's figure; where the provider reports none, it is priced from the spec's rates.",
-             "re-derive every verdict offline: dinostomp verify <pod>/eval.yaml"]
+             f"re-derive every verdict offline: dinostomp verify <pod>/eval.yaml  |  {REPO_URL}"]
     return title, columns, rows, notes
 
 
