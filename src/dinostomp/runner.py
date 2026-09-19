@@ -258,6 +258,76 @@ def shuffled_input(item: dict, seed: int) -> str | None:
     return render_options(item, order) if order else None
 
 
+# The menu-drift probe changes the tool list the way production does: a tool
+# is added, one is retired, one is renamed in a schema change. The keyed
+# answer is never touched, and neither is an abstain option (NONE), which is
+# part of the task's contract rather than a tool. Suggested by @xchatgcp on
+# X, 2026-09-19, reviewing the onepass routing results.
+MENU_KINDS = ("add", "remove", "rename")
+ABSTAIN_OPTIONS = {"none", "none of the above", "no function"}
+RENAME_SUFFIX = "_v2"
+
+
+def menu_pool(items: list[dict]) -> list[tuple[str, str]]:
+    """(option, its text) for every option any item offers: the distractors
+    an added tool is drawn from. A real option from another item, not a made
+    up name, so an added tool looks like the tools around it."""
+    seen: dict[str, str] = {}
+    for it in items:
+        texts = (it.get("metadata") or {}).get("options") or {}
+        for c in it.get("choices") or ():
+            c = str(c)
+            if c.lower() not in ABSTAIN_OPTIONS and c not in seen:
+                seen[c] = str(texts.get(c, c)) if isinstance(texts, dict) else c
+    return sorted(seen.items())
+
+
+def menu_change(item: dict, seed: int, pool: list[tuple[str, str]]) -> tuple[dict, str] | None:
+    """(the item with its menu changed, what changed), or None when the item
+    has no menu. One change per item, chosen per (seed, item) so a probe
+    re-runs identically; a kind that cannot apply falls back to adding."""
+    choices = item.get("choices")
+    if not isinstance(choices, list) or len(choices) < 2:
+        return None
+    targets = {str(t) for t in (item["target"] if isinstance(item["target"], list) else [item["target"]])}
+    menu = [str(c) for c in choices]
+    meta = dict(item.get("metadata") or {})
+    texts = dict(meta.get("options") or {}) if isinstance(meta.get("options"), dict) else None
+    rng = random.Random(f"menu|{seed}|{item['id']}")
+    movable = [c for c in menu if c not in targets and c.lower() not in ABSTAIN_OPTIONS]
+    kind = MENU_KINDS[rng.randrange(len(MENU_KINDS))]
+    if kind in ("remove", "rename") and not movable:
+        kind = "add"
+    if kind == "remove" and len(menu) <= 2:
+        kind = "add"
+    if kind == "add":
+        spare = [(c, t) for c, t in pool if c not in menu]
+        if not spare:
+            return None
+        name, text = spare[rng.randrange(len(spare))]
+        new = list(menu)
+        new.insert(rng.randrange(len(new) + 1), name)
+        if texts is not None:
+            texts[name] = text
+        what = f"menu:add:{name}"
+    elif kind == "remove":
+        gone = movable[rng.randrange(len(movable))]
+        new = [c for c in menu if c != gone]
+        if texts is not None:
+            texts.pop(gone, None)
+        what = f"menu:remove:{gone}"
+    else:
+        old = movable[rng.randrange(len(movable))]
+        renamed = old + RENAME_SUFFIX
+        new = [renamed if c == old else c for c in menu]
+        if texts is not None and old in texts:
+            texts[renamed] = str(texts.pop(old)).replace(old, renamed)
+        what = f"menu:rename:{old}->{renamed}"
+    if texts is not None:
+        meta["options"] = {c: texts[c] for c in new if c in texts}
+    return {**item, "choices": new, "metadata": meta}, what
+
+
 def shuffled_choices(item: dict, seed: int) -> list | None:
     """The permuted menu itself, for providers that take choices directly."""
     choices = item.get("choices")
@@ -884,6 +954,11 @@ def run_spec(
             message=f"judge model {judge_cfg.get('model')!r} has no known price; a judge that "
                     "cannot be priced cannot be capped, and an uncapped grader is not free")])
 
+    if probe == "timeout" and not any(mc.get("provider") == "mediated" for mc in spec["models"]):
+        return RunOutcome(CANNOT_RUN, issues=[Issue(
+            loc="--probe timeout", check="probe",
+            message="the timeout probe fails a TOOL call after it has run, and only a `mediated` "
+                    "agent reaches its tools through the harness; there is nothing to time out otherwise")])
     if probe == "ablate" and not any(mc.get("provider") == "mediated" for mc in spec["models"]):
         return RunOutcome(CANNOT_RUN, issues=[Issue(
             loc="--probe ablate", check="probe",
@@ -893,6 +968,11 @@ def run_spec(
                     "silently be an ordinary one")])
 
     render_choices = bool(spec["data"].get("render_choices"))
+    pool = menu_pool(items) if probe == "menu" else []
+    if probe == "menu" and not any(isinstance(i.get("choices"), list) for i in items):
+        return RunOutcome(CANNOT_RUN, issues=[Issue(
+            loc="$.data", check="probe",
+            message="a menu probe changes each item's `choices`, and no item here has any")])
     if probe == "shuffle" and not render_choices:
         return RunOutcome(CANNOT_RUN, issues=[Issue(
             loc="$.data.render_choices", check="probe",
@@ -986,6 +1066,7 @@ def run_spec(
                      "forbidden": set(traj.get("forbidden_tools") or ()),
                      "max_steps": traj.get("max_steps"),
                      "ablate": probe == "ablate",
+                     "timeout_fault": probe == "timeout",
                      "isolation": spec.get("isolation") or {}}
         try:
             provider = provider_factory(provider_name, model, **extra)
@@ -1064,7 +1145,20 @@ def run_spec(
                         stopped = f"budget: {exc}"
                         break
                     takes_choices = bool(getattr(provider, "takes_choices", False))
-                    if probe == "blind":
+                    menu_note = None
+                    if probe == "menu" and (changed := menu_change(item, seed, pool)):
+                        # The changed menu reaches every kind of examinee: a
+                        # decisions provider takes it as the request, a python
+                        # target reads it off the item, and a rendered option
+                        # block is drawn from it. Prose inside the input is the
+                        # pod's own and is left alone, as the shuffle probe does.
+                        changed_item, menu_note = changed
+                        if takes_choices or not (render_choices and isinstance(changed_item.get("choices"), list)):
+                            call_item = changed_item
+                        else:
+                            call_item = {**changed_item,
+                                         "input": render_options(changed_item, changed_item["choices"])}
+                    elif probe == "blind":
                         call_item = {**item, "input": blind_input(item)}
                     elif takes_choices:
                         # The menu is the request: nothing is rendered into the
@@ -1159,6 +1253,8 @@ def run_spec(
                         record["judge_response"] = scorer.last_response
                     if completion.trajectory:
                         record["trajectory"] = completion.trajectory
+                    if menu_note:
+                        record["perturbation"] = menu_note
                     log.append(record)
                     if over_cap and not stopped:
                         stopped = (f"budget: actual spend ${budget.spent_usd:.4f} passed the "

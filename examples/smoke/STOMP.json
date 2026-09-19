@@ -330,7 +330,7 @@
     }
   },
   "coverage": {
-    "declared_total": 100,
+    "declared_total": 102,
     "declared": 33,
     "ran": 21,
     "skipped": [
@@ -617,6 +617,10 @@
         "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
+        "id": "T9",
+        "reason": "only a mediated agent reaches its tools through the harness, so there is no call to time out"
+      },
+      {
         "id": "J1",
         "reason": "this eval does not score with a judge"
       },
@@ -651,6 +655,10 @@
       {
         "id": "P12",
         "reason": "instruction-framing probes need runs on disk"
+      },
+      {
+        "id": "P15",
+        "reason": "menu probes need a real provider; this pod's runs are all local"
       }
     ]
   },
@@ -1382,7 +1390,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "1 of 1 run(s) were produced by a different engine than the one auditing them (now cbe6dd18f9d268e9); re-run to get numbers this report can stand behind",
+      "detail": "1 of 1 run(s) were produced by a different engine than the one auditing them (now 4fefcc77c6100545); re-run to get numbers this report can stand behind",
       "witnesses": 1,
       "examples": [
         "engine 050e2f343915e1b9: dry-strong seed 42 (tool 0.57.1)"
@@ -1521,6 +1529,16 @@
       "level": "n/a",
       "gating": false,
       "detail": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one",
+      "witnesses": 0
+    },
+    {
+      "id": "T9",
+      "slug": "retry-duplicate",
+      "stage": "records",
+      "check": "a timed-out call that already ran is not run again",
+      "level": "n/a",
+      "gating": false,
+      "detail": "only a mediated agent reaches its tools through the harness, so there is no call to time out",
       "witnesses": 0
     },
     {
@@ -1701,6 +1719,16 @@
       "level": "skip",
       "gating": false,
       "detail": "only 1 model(s) on disk; run a fleet of 4+ to unlock psychometrics",
+      "witnesses": 0
+    },
+    {
+      "id": "P15",
+      "slug": "menu-stability",
+      "stage": "aggregate",
+      "check": "answers survive a changed tool list",
+      "level": "n/a",
+      "gating": false,
+      "detail": "menu probes need a real provider; this pod's runs are all local",
       "witnesses": 0
     }
   ],

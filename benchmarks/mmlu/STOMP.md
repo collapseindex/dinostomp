@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**BROKEN**: 3 gated finding(s) (16 of 49 ran; 51 n/a of 100 declared)
+**BROKEN**: 3 gated finding(s) (16 of 49 ran; 53 n/a of 102 declared)
 
 measures the intended construct: **NOT ESTABLISHED BY DINOSTOMP**
 
@@ -106,6 +106,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | tool calls are not redundant | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | passing answers CHANGE when their evidence is withheld | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | the trajectory was observed, not self-reported | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | a timed-out call that already ran is not run again | 0 | only a mediated agent reaches its tools through the harness, so there is no call to time out |
 | n/a | the judge agrees with cases whose answer is known | 0 | this eval does not score with a judge |
 | n/a | the judge is invariant to content-free perturbations | 0 | this eval does not score with a judge |
 | n/a | the judge agrees with itself on identical input | 0 | this eval does not score with a judge |
@@ -123,6 +124,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | the fleet ORDERING survives re-phrasing the instruction | 0 | instruction-framing probes need runs on disk |
 | skip | the fleet varies on one axis, not a blend of abilities | 0 | no runs on disk yet |
 | skip | declared subskills actually separate in the responses | 0 | no runs on disk yet |
+| n/a | answers survive a changed tool list | 0 | menu probes need a real provider; this pod's runs are all local |
 
 Re-derive this report from the directory holding the target: `dinostomp stomp eval.yaml`
 

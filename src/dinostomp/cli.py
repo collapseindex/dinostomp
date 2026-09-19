@@ -1041,7 +1041,7 @@ def main(argv=None) -> int:
     p_run.add_argument("--framings", help="template probe: comma-separated framing names "
                                           "(default: all six)")
     p_run.add_argument("--probe", choices=["blind", "judge", "canary", "shuffle", "crossjudge",
-                                           "template", "ablate"],
+                                           "template", "ablate", "menu", "timeout"],
                        help="probe mode: 'blind' strips every input before the call and feeds R13; "
                             "'judge' grades constructed cases whose right verdict is known, then "
                             "regrades them under content-free perturbations, and feeds J1/J2. "

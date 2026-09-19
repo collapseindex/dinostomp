@@ -160,7 +160,9 @@
         "judge",
         "canary",
         "shuffle",
-        "crossjudge"
+        "crossjudge",
+        "menu",
+        "timeout"
       ],
       "description": "Present when this run is a probe, not a result. Blind probes strip every input before the call (read only by R13). Judge probes grade constructed cases whose right verdict is known by construction (read only by J1/J2). Neither ever pools with real runs."
     },

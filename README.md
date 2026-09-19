@@ -8,7 +8,7 @@
 
 **Stomp the eval. Trust the evidence.**
 
-<sub>v0.63.0 · Apache-2.0 · engine `cbe6dd18f9d268e9` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.63.0 · Apache-2.0 · engine `4fefcc77c6100545` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 **Find broken data, misleading scorers, and unsupported benchmark claims before you trust the score.**
 
@@ -133,7 +133,7 @@ One invariant runs under all of it: **nothing becomes evidence merely because an
 earlier stage said it was.** Summaries are recomputed from records, verdicts are
 re-scored from recorded text, and the engine hashes itself into its own output.
 
-One hundred checks, each negative-tested to prove it fires, most invisible until
+One hundred and two checks, each negative-tested to prove it fires, most invisible until
 something breaks. The ledger records concrete failures at these boundaries:
 
 | stage | what goes wrong there |
@@ -282,9 +282,9 @@ BROKEN AT DATA SCOPE: 2 gated finding(s) in the dataset itself
 That is a real run against the real MMLU test split, and `mmlu-02178` is the
 subtraction item above: the answer is on its option list twice, so a model that
 computes it correctly picks the wrong letter half the time. Thirty-six of the
-one hundred checks read data at rest, which is why this costs nothing.
+one hundred and two checks read data at rest, which is why this costs nothing.
 
-**Five minutes, for the other sixty-four.** They need evidence: outputs, a
+**Five minutes, for the other sixty-six.** They need evidence: outputs, a
 scorer, a ledger, a claim.
 
 ```bash
@@ -346,7 +346,7 @@ Four things then happen that you did not ask for, and they are the product:
   between seeds is a finding; another moving 11.5 points is not, if its sample
   is smaller. The battery does that arithmetic so nobody has to eyeball it.
 - **Coverage is stated, always.** `MECHANICALLY SOUND: no integrity findings,
-  full coverage (35 of 35 ran; 65 n/a of 100 declared)` is a different claim from
+  full coverage (35 of 35 ran; 67 n/a of 102 declared)` is a different claim from
   a green tick, and the difference is printed every time.
 - **Nothing is trusted downstream of the run.** Summaries are recomputed from
   records, verdicts are re-scored offline, and hand-editing either is a gated
@@ -598,7 +598,7 @@ At 24 items an UNPAIRED comparison resolves gaps down to about 40%.
 Then item difficulty and discrimination, hardest first, with who missed each one
 and the most common wrong answer. Then accuracy sliced by every metadata field
 the items carry, which on MMLU is accuracy by subject. Then cost and tokens,
-summed from the records. Then the claims, then all one hundred checks, then the
+summed from the records. Then the claims, then all one hundred and two checks, then the
 receipts and the provenance.
 
 Three rules hold that section together:
@@ -883,7 +883,7 @@ extension is named, versioned and hashed in the report, so a `SOUND` is always a
 claim about a specific set of code.
 
 The full contract, including why an extension is trusted when a stranger's pod
-is not, is in **[METHODOLOGY.md](METHODOLOGY.md)** along with all one hundred
+is not, is in **[METHODOLOGY.md](METHODOLOGY.md)** along with all one hundred and two
 checks and why each one exists.
 
 ## In CI
@@ -942,7 +942,7 @@ measures the intended construct: NOT ESTABLISHED BY DINOSTOMP
 That is a constant. There is no flag and no code path that sets it to anything
 else, and a test walks the source to keep it that way. This battery checks
 mechanical integrity; construct validity is argued, not computed, and a trivial,
-mis-aimed, or saturated eval can pass every check here. One hundred is not a
+mis-aimed, or saturated eval can pass every check here. One hundred and two is not a
 number that bounds the ways an eval can be invalid.
 
 **The self-tests are not independent validation.** 102 of 102 caught means every
@@ -972,7 +972,7 @@ the tool names them.
 
 - **[AUTHORING.md](AUTHORING.md)** — writing a spec, or having a model write one: the schema contract and the self-correction loop
 - **[FINDINGS.md](FINDINGS.md)** — what it found, in MMLU, GSM8K, TruthfulQA, and in itself
-- **[METHODOLOGY.md](METHODOLOGY.md)** — the one hundred checks, the pod format, the philosophy, the self-audit
+- **[METHODOLOGY.md](METHODOLOGY.md)** — the one hundred and two checks, the pod format, the philosophy, the self-audit
 - **[SECURITY.md](SECURITY.md)** — pod code, untrusted model output, money, what this does not do
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — the entry fee for a new check is a planted defect, not an argument
 - **[findings.json](findings.json)** — the ledger as data: versioned, validated against [docs/findings.schema.json](docs/findings.schema.json) before it is written
@@ -981,7 +981,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`cbe6dd18f9d268e97398729bb14614c25a3799d54d0720b79a9c0d675b421fe0`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`4fefcc77c6100545bb22e741294d5569de4b4590e1394bd98d859055d4529680`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

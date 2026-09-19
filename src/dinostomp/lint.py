@@ -197,6 +197,8 @@ CHECKS: list[tuple[str, str, bool, str]] = [
     ("T7", "passing answers CHANGE when their evidence is withheld", False,
      "a mediated agent plus an ablation probe"),
     ("T8", "the trajectory was observed, not self-reported", False, "target runs on disk"),
+    ("T9", "a timed-out call that already ran is not run again", False,
+     "timeout probe on a mediated agent"),
     ("J1", "the judge agrees with cases whose answer is known", False, "judge probe on disk"),
     ("J2", "the judge is invariant to content-free perturbations", False, "judge probe on disk"),
     ("J3", "the judge agrees with itself on identical input", False, "judge probe on disk"),
@@ -218,6 +220,7 @@ CHECKS: list[tuple[str, str, bool, str]] = [
      "6+ models, 5+ common items"),
     ("P14", "declared subskills actually separate in the responses", False,
      "6+ models, 2+ labelled subskills"),
+    ("P15", "answers survive a changed tool list", False, "menu probe plus real runs"),
 ]
 GATING = {cid: hard for cid, _, hard, _ in CHECKS}
 NAMES = {cid: name for cid, name, _, _ in CHECKS}
@@ -394,12 +397,12 @@ SLUGS = {
     "R22": "numeric-miss",
     "T1": "forbidden-tool", "T2": "required-tool", "T3": "trajectory-shape",
     "T4": "answer-grounding", "T5": "trace-underreport", "T6": "redundant-calls",
-    "T7": "answer-grounding-causal", "T8": "trace-observed",
+    "T7": "answer-grounding-causal", "T8": "trace-observed", "T9": "retry-duplicate",
     "J1": "judge-agreement", "J2": "judge-bias", "J3": "judge-consistency",
     "J4": "judge-self-preference",
     "P1": "fleet-reliability", "P2": "item-discrimination", "P3": "dead-weight",
     "P4": "matrix-complete", "P5": "unanimous-wrong", "P6": "ordering-noise",
-    "P7": "ceiling-floor", "P8": "dynamic-range", "P9": "order-stability",
+    "P7": "ceiling-floor", "P8": "dynamic-range", "P9": "order-stability", "P15": "menu-stability",
     "P10": "seed-stability", "P11": "prompt-stability", "P12": "ranking-stability",
     "P13": "construct-dimensionality",
     "P14": "subskill-discriminant",
@@ -425,7 +428,7 @@ STAGES: dict[str, str] = {
     "R17": "runner", "R18": "runner", "R20": "runner",
     # what a record is allowed to contain, and what a trajectory is
     "R4": "records", "R5": "records", "R6": "records", "R21": "records",
-    **{f"T{i}": "records" for i in range(1, 9)},
+    **{f"T{i}": "records" for i in range(1, 10)},
     # whether the scorer, or the judge standing in for one, can be trusted
     "W1": "scorer", "W2": "scorer", "W3": "scorer", "W4": "scorer",
     "R2": "scorer", "R8": "scorer", "R12": "scorer", "R16": "scorer", "R22": "scorer",
@@ -433,7 +436,7 @@ STAGES: dict[str, str] = {
     # the number, and whether noise or a shortcut could have produced it
     "R7": "aggregate", "R9": "aggregate", "R13": "aggregate", "R14": "aggregate",
     "R15": "aggregate", "R23": "aggregate", "R24": "aggregate",
-    **{f"P{i}": "aggregate" for i in range(1, 15) if i != 6},
+    **{f"P{i}": "aggregate" for i in range(1, 16) if i != 6},
     # what the evidence entitles anyone to say
     "C1": "claim", "P6": "claim",
     # the auditor is an input to its own verdicts
@@ -3532,6 +3535,138 @@ def _order_check(rep: Reporter, probes: list[dict], real_runs: list[dict]) -> No
                                    for m, (a, b, broke, fixed, n) in paired.items()}})
 
 
+def _timeout_check(rep: Reporter, probes: list[dict], spec: dict) -> None:
+    """T9: after a timeout on a call that RAN, does the agent run it again?
+
+    The timeout probe lets the first call to each tool execute, then tells
+    the agent it timed out. In production that is the case that bills a card
+    twice or writes a row twice: the work happened, the answer was lost, and
+    a naive retry repeats the work. A retry of the same tool with the same
+    arguments after that is a duplicate execution, unless the pod declares the
+    tool idempotent (`trajectory.idempotent_tools`: a read, a lookup). Moving
+    to another tool, and giving up, are counted too, because "retries the same
+    route" and "switches route" are different behaviours worth seeing.
+    Suggested by @xchatgcp.
+    """
+    runs = [e for e in probes if (e["manifest"] or {}).get("probe") == "timeout"]
+    if not runs:
+        if any(mc.get("provider") == "mediated" for mc in spec.get("models") or ()):
+            rep.skip("T9", "no timeout probe on disk; run `dinostomp run <spec> --probe timeout`")
+        else:
+            rep.not_applicable("T9", "only a mediated agent reaches its tools through the harness, "
+                                     "so there is no call to time out")
+        return
+    idempotent = set(((spec.get("trajectory") or {}).get("idempotent_tools")) or ())
+    per_model: dict[str, dict[str, int]] = {}
+    examples = []
+    for e in runs:
+        model = str((e["manifest"] or {}).get("model"))
+        tally = per_model.setdefault(model, {"faults": 0, "duplicates": 0, "switched": 0,
+                                             "gave_up": 0, "exempt": 0})
+        for r in e["records"]:
+            steps = r.get("trajectory") or []
+            for k, step in enumerate(steps):
+                if step.get("fault") != "timeout":
+                    continue
+                tally["faults"] += 1
+                later = steps[k + 1:]
+                same = [s for s in later if s.get("tool") == step.get("tool") and s.get("args") == step.get("args")]
+                if same and step.get("tool") in idempotent:
+                    tally["exempt"] += 1
+                elif same:
+                    tally["duplicates"] += 1
+                    if len(examples) < 8:
+                        examples.append(f"{model}: {r.get('item_id')} re-ran {step.get('tool')}"
+                                        f"({json.dumps(step.get('args'), sort_keys=True)[:60]}) after a timeout, "
+                                        "though the first call had completed")
+                elif later:
+                    tally["switched"] += 1
+                else:
+                    tally["gave_up"] += 1
+    total = sum(t["faults"] for t in per_model.values())
+    if not total:
+        rep.skip("T9", "the timeout probe ran but no tool call was made, so nothing timed out")
+        return
+    dup = sum(t["duplicates"] for t in per_model.values())
+    rep.check("T9", dup == 0,
+              f"{dup} of {total} timed-out call(s) were run again with the same arguments after they had "
+              "completed; a retry that repeats work is a duplicate charge or write in production",
+              n=total, examples=examples, evidence={"timeouts": per_model})
+
+
+def _menu_check(rep: Reporter, probes: list[dict], real_runs: list[dict]) -> None:
+    """P15: does a correct answer survive the tool list changing around it?
+
+    The menu probe re-asks every item with one change the right answer does
+    not depend on: a distractor added from another item's menu, a wrong
+    option removed, or a wrong option renamed as a schema change would. A
+    router that was right only in the original list was partly matching the
+    list. Paired per item against the model's informed run, with P9's McNemar
+    band, and broken down by kind of change, because "renames break it" and
+    "an extra tool breaks it" are different bugs. Suggested by @xchatgcp.
+    """
+    menus = [e for e in probes if (e["manifest"] or {}).get("probe") == "menu"]
+    if not menus:
+        if any(e["manifest"] and not e["manifest"].get("dry_run") for e in real_runs):
+            rep.skip("P15", "no menu probe on disk; items with `choices` can run "
+                            "`dinostomp run <spec> --probe menu` to unlock")
+        else:
+            rep.not_applicable("P15", "menu probes need a real provider; this pod's runs are all local")
+        return
+
+    def verdicts(entries):
+        out: dict[str, dict[str, tuple[str, str]]] = {}
+        for e in entries:
+            model = str((e["manifest"] or {}).get("model"))
+            for r in e["records"]:
+                v = (r.get("score") or {}).get("verdict")
+                if v in ("pass", "fail", "flag"):
+                    kind = str(r.get("perturbation") or "").split(":")[1:2]
+                    out.setdefault(model, {})[str(r.get("item_id"))] = (v, kind[0] if kind else "")
+        return out
+
+    original, changed = verdicts(real_runs), verdicts(menus)
+    paired = {}
+    for m, before in original.items():
+        after = changed.get(m)
+        if not after:
+            continue
+        both = sorted(set(before) & set(after))
+        if len(both) < THRESHOLDS["min_checkable"]:
+            continue
+        broke = [i for i in both if before[i][0] == "pass" and after[i][0] != "pass"]
+        fixed = [i for i in both if before[i][0] != "pass" and after[i][0] == "pass"]
+        by_kind: dict[str, list[int]] = {}
+        for i in both:
+            if before[i][0] == "pass":
+                slot = by_kind.setdefault(after[i][1] or "?", [0, 0])
+                slot[1] += 1
+                slot[0] += after[i][0] != "pass"
+        n = len(both)
+        paired[m] = (sum(before[i][0] == "pass" for i in both) / n,
+                     sum(after[i][0] == "pass" for i in both) / n, len(broke), len(fixed), n, by_kind)
+    if not paired:
+        rep.skip("P15", f"no model has {THRESHOLDS['min_checkable']}+ items scored in BOTH "
+                        "the original and the changed tool list")
+        return
+    swung = []
+    for m, (a, b, broke, fixed, n, by_kind) in sorted(paired.items()):
+        band = _paired_band(broke + fixed, n)
+        if abs(a - b) > band and abs(a - b) > THRESHOLDS["order_swing_min"]:
+            kinds = ", ".join(f"{k} breaks {x} of {t}" for k, (x, t) in sorted(by_kind.items()) if t)
+            swung.append(f"{m}: {a:.0%} on the original list vs {b:.0%} with it changed "
+                         f"({broke} right answers lost, {fixed} gained; {kinds})")
+    rep.check("P15", not swung,
+              f"{len(swung)} of {len(paired)} model(s) lose more right answers than churn explains "
+              "when a tool is added, removed or renamed; part of the score is the list, not the request",
+              n=len(paired), examples=swung,
+              evidence={"menu": {m: {"moves": round(b - a, 4), "lost": broke, "gained": fixed,
+                                      "noise_band": round(_paired_band(broke + fixed, n), 4),
+                                      "lost_by_kind": {k: {"lost": x, "of_right": t}
+                                                       for k, (x, t) in by_kind.items()}}
+                                  for m, (a, b, broke, fixed, n, by_kind) in paired.items()}})
+
+
 def _psychometric_checks(rep: Reporter, runs: list[dict], spec: dict,
                          collapsed: dict | None = None,
                          item_subskills: dict | None = None) -> None:
@@ -4029,9 +4164,11 @@ def lint_eval(spec_path: str | Path, trust_code: bool = False,
     _blind_check(rep, probes, mine, chance)
     _regurgitation_check(rep, probes, mine)
     _order_check(rep, probes, mine)
+    _menu_check(rep, probes, mine)
     _seed_check(rep, mine, spec)
     _template_checks(rep, probes, mine)
     _trajectory_checks(rep, mine, spec, items, probes)
+    _timeout_check(rep, probes, spec)
     _judge_checks(rep, probes, mine, spec)
     _self_preference_check(rep, probes, mine, spec)
     _psychometric_checks(rep, mine, spec,

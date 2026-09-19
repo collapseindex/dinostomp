@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**BROKEN**: 2 gated finding(s) (36 of 43 ran; 57 n/a of 100 declared)
+**BROKEN**: 2 gated finding(s) (36 of 44 ran; 58 n/a of 102 declared)
 
 measures the intended construct: **NOT ESTABLISHED BY DINOSTOMP**
 
@@ -169,7 +169,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | warn | failed answers do not contain the reference | 4 | 3 of 4 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | ok | billed output tokens match the recorded text | 4 | 0 of 4 model(s) report far more output tokens than their recorded text accounts for (expected for hidden-reasoning models; otherwise check your invoice) |
-| warn | the runs were produced by this engine | 12 | 12 of 12 run(s) were produced by a different engine than the one auditing them (now cbe6dd18f9d268e9); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 12 | 12 of 12 run(s) were produced by a different engine than the one auditing them (now 4fefcc77c6100545); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | no failed answer numerically equals its target | 361 | 0 of 361 numeric-target failure(s) equal their target as a number; the scorer may be rejecting a correct value in the wrong form |
 | n/a | reported confidence matches observed accuracy | 0 | no record carries a probability vector; only a one-pass model (decisions, chooser, loglikelihood) reports one |
@@ -179,6 +179,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | tool calls are not redundant | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | passing answers CHANGE when their evidence is withheld | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | the trajectory was observed, not self-reported | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | a timed-out call that already ran is not run again | 0 | only a mediated agent reaches its tools through the harness, so there is no call to time out |
 | n/a | the judge agrees with cases whose answer is known | 0 | this eval does not score with a judge |
 | n/a | the judge is invariant to content-free perturbations | 0 | this eval does not score with a judge |
 | n/a | the judge agrees with itself on identical input | 0 | this eval does not score with a judge |
@@ -196,6 +197,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | the fleet ORDERING survives re-phrasing the instruction | 0 | no template probe on disk; run `dinostomp run <spec> --probe template` to unlock |
 | skip | the fleet varies on one axis, not a blend of abilities | 0 | 4 model(s) x 294 common item(s); need 6+ models and 5+ items to unlock |
 | n/a | declared subskills actually separate in the responses | 0 | no item declares a `subskill`; there is no partition to test |
+| skip | answers survive a changed tool list | 0 | no menu probe on disk; items with `choices` can run `dinostomp run <spec> --probe menu` to unlock |
 
 Re-derive this report from the directory holding the target: `dinostomp stomp eval.yaml`
 

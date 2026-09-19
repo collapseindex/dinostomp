@@ -330,8 +330,8 @@
     }
   },
   "coverage": {
-    "declared_total": 100,
-    "declared": 47,
+    "declared_total": 102,
+    "declared": 48,
     "ran": 42,
     "skipped": [
       {
@@ -353,6 +353,10 @@
       {
         "id": "P13",
         "reason": "4 model(s) x 26 common item(s); need 6+ models and 5+ items to unlock"
+      },
+      {
+        "id": "P15",
+        "reason": "no menu probe on disk; items with `choices` can run `dinostomp run <spec> --probe menu` to unlock"
       }
     ],
     "not_applicable": [
@@ -541,6 +545,10 @@
         "reason": "no mediated agent on disk; only the harness can withhold a tool result, and a self-reporting target calls its own functions"
       },
       {
+        "id": "T9",
+        "reason": "only a mediated agent reaches its tools through the harness, so there is no call to time out"
+      },
+      {
         "id": "J1",
         "reason": "this eval does not score with a judge"
       },
@@ -573,7 +581,7 @@
   "summary": {
     "fail": 0,
     "warn": 2,
-    "skip": 5,
+    "skip": 6,
     "verdict": "incomplete",
     "scope": "pod"
   },
@@ -1338,7 +1346,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now cbe6dd18f9d268e9); re-run to get numbers this report can stand behind",
+      "detail": "4 of 4 run(s) were produced by a different engine than the one auditing them (now 4fefcc77c6100545); re-run to get numbers this report can stand behind",
       "witnesses": 4,
       "examples": [
         "engine 050e2f343915e1b9: agent-grounded seed 42 (tool 0.57.1), agent-lazy seed 42 (tool 0.57.1), agent-narrow seed 42 (tool 0.57.1) and 1 more"
@@ -1503,6 +1511,16 @@
           "n/a"
         ]
       }
+    },
+    {
+      "id": "T9",
+      "slug": "retry-duplicate",
+      "stage": "records",
+      "check": "a timed-out call that already ran is not run again",
+      "level": "n/a",
+      "gating": false,
+      "detail": "only a mediated agent reaches its tools through the harness, so there is no call to time out",
+      "witnesses": 0
     },
     {
       "id": "J1",
@@ -1706,6 +1724,16 @@
       "level": "n/a",
       "gating": false,
       "detail": "no item declares a `subskill`; there is no partition to test",
+      "witnesses": 0
+    },
+    {
+      "id": "P15",
+      "slug": "menu-stability",
+      "stage": "aggregate",
+      "check": "answers survive a changed tool list",
+      "level": "skip",
+      "gating": false,
+      "detail": "no menu probe on disk; items with `choices` can run `dinostomp run <spec> --probe menu` to unlock",
       "witnesses": 0
     }
   ],

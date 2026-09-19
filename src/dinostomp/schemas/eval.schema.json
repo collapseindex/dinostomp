@@ -384,6 +384,14 @@
           "type": "integer",
           "minimum": 1,
           "description": "A trajectory longer than this is a runaway. T3 gates."
+        },
+        "idempotent_tools": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Tools that are safe to call twice with the same arguments (a read, a lookup). T9 does not count a retry of these after a timeout as a duplicate."
         }
       }
     },

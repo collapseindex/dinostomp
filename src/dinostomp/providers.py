@@ -538,6 +538,9 @@ def make_provider(provider: str, model: str, **kw):
         shared = dict(tools=kw.get("tools"), forbidden=kw.get("forbidden"),
                       max_steps=kw.get("max_steps"), ablate=bool(kw.get("ablate")))
         base = kw.get("base_dir") or Path(".")
+        if kw.get("timeout_fault") and (kw.get("isolation") or {}).get("mode") == "subprocess":
+            raise ProviderError("the timeout probe runs in-process for now: a subprocess agent reaches "
+                                "its tools across a message boundary that does not yet carry a timeout")
         if (kw.get("isolation") or {}).get("mode") == "subprocess":
             from dinostomp.sandbox import SandboxedTarget  # local: imports Completion from here
 
@@ -546,7 +549,7 @@ def make_provider(provider: str, model: str, **kw):
                                    **shared)
         from dinostomp.harness import MediatedTarget  # local: imports Completion from here
 
-        return MediatedTarget(model, entrypoint, base, **shared)
+        return MediatedTarget(model, entrypoint, base, timeout_fault=bool(kw.get("timeout_fault")), **shared)
     if provider not in PROVIDERS:
         raise ProviderError(f"unknown provider: {provider!r}")
     return PROVIDERS[provider](model)

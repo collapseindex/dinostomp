@@ -330,8 +330,8 @@
     }
   },
   "coverage": {
-    "declared_total": 100,
-    "declared": 47,
+    "declared_total": 102,
+    "declared": 49,
     "ran": 37,
     "skipped": [
       {
@@ -345,6 +345,10 @@
       {
         "id": "R15",
         "reason": "no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock"
+      },
+      {
+        "id": "T9",
+        "reason": "no timeout probe on disk; run `dinostomp run <spec> --probe timeout`"
       },
       {
         "id": "P1",
@@ -373,6 +377,10 @@
       {
         "id": "P13",
         "reason": "3 model(s) x 24 common item(s); need 6+ models and 5+ items to unlock"
+      },
+      {
+        "id": "P15",
+        "reason": "no menu probe on disk; items with `choices` can run `dinostomp run <spec> --probe menu` to unlock"
       }
     ],
     "not_applicable": [
@@ -593,7 +601,7 @@
   "summary": {
     "fail": 0,
     "warn": 4,
-    "skip": 10,
+    "skip": 12,
     "verdict": "incomplete",
     "scope": "pod"
   },
@@ -1343,7 +1351,7 @@
       "check": "the runs were produced by this engine",
       "level": "warn",
       "gating": false,
-      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now cbe6dd18f9d268e9); re-run to get numbers this report can stand behind",
+      "detail": "3 of 3 run(s) were produced by a different engine than the one auditing them (now 4fefcc77c6100545); re-run to get numbers this report can stand behind",
       "witnesses": 3,
       "examples": [
         "engine 050e2f343915e1b9: greedy seed 7 (tool 0.57.1), grounded seed 7 (tool 0.57.1), oneshot seed 7 (tool 0.57.1)"
@@ -1519,6 +1527,16 @@
           "inprocess"
         ]
       }
+    },
+    {
+      "id": "T9",
+      "slug": "retry-duplicate",
+      "stage": "records",
+      "check": "a timed-out call that already ran is not run again",
+      "level": "skip",
+      "gating": false,
+      "detail": "no timeout probe on disk; run `dinostomp run <spec> --probe timeout`",
+      "witnesses": 0
     },
     {
       "id": "J1",
@@ -1705,6 +1723,16 @@
       "level": "n/a",
       "gating": false,
       "detail": "no item declares a `subskill`; there is no partition to test",
+      "witnesses": 0
+    },
+    {
+      "id": "P15",
+      "slug": "menu-stability",
+      "stage": "aggregate",
+      "check": "answers survive a changed tool list",
+      "level": "skip",
+      "gating": false,
+      "detail": "no menu probe on disk; items with `choices` can run `dinostomp run <spec> --probe menu` to unlock",
       "witnesses": 0
     }
   ],

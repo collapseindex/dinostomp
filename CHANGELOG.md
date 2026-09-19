@@ -2,6 +2,21 @@
 
 ### Unreleased
 
+- **`--probe menu` and P15: does a right answer survive the tool list
+  changing?** Each item is re-asked with one change the keyed answer does not
+  depend on: a distractor added from another item's menu, a wrong option
+  removed, or one renamed as a schema change would (`name_v2`). The keyed
+  answer and a NONE option are never touched. P15 pairs every item with the
+  informed run, uses P9's McNemar band, and says which kind of change broke
+  what. Suggested by @xchatgcp on X.
+- **`--probe timeout` and T9: is a timed-out call that already ran run
+  again?** For a mediated agent, the first call to each tool executes and
+  the agent is then told it timed out, the production case that charges a
+  card twice. T9 counts retries of the same call with the same arguments,
+  exempts tools the pod declares in `trajectory.idempotent_tools`, and
+  reports agents that switched tools or gave up. In-process agents only for
+  now. Also suggested by @xchatgcp. The battery is one hundred and two
+  checks.
 - **Fixed: a resumed probe run stopped being a probe (D-100).** `--resume`
   now takes the probe (and a template framing) from the interrupted run's
   manifest and refuses a different one. A blind pass resumed without

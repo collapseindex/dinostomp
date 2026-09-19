@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 24 of 36 checks ran (24 of 36 ran; 64 n/a of 100 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 24 of 36 checks ran (24 of 36 ran; 66 n/a of 102 declared). Not a clean bill of health.
 
 measures the intended construct: **NOT ESTABLISHED BY DINOSTOMP**
 
@@ -133,7 +133,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | skip | failed answers do not contain the reference | 0 | no model has 5+ failed records to inspect |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 2 | 2 of 2 run(s) were produced by a different engine than the one auditing them (now cbe6dd18f9d268e9); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 2 | 2 of 2 run(s) were produced by a different engine than the one auditing them (now 4fefcc77c6100545); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | no failed answer numerically equals its target | 3 | 0 of 3 numeric-target failure(s) equal their target as a number; the scorer may be rejecting a correct value in the wrong form |
 | n/a | reported confidence matches observed accuracy | 0 | no record carries a probability vector; only a one-pass model (decisions, chooser, loglikelihood) reports one |
@@ -143,6 +143,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | tool calls are not redundant | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | passing answers CHANGE when their evidence is withheld | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | the trajectory was observed, not self-reported | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | a timed-out call that already ran is not run again | 0 | only a mediated agent reaches its tools through the harness, so there is no call to time out |
 | n/a | the judge agrees with cases whose answer is known | 0 | this eval does not score with a judge |
 | n/a | the judge is invariant to content-free perturbations | 0 | this eval does not score with a judge |
 | n/a | the judge agrees with itself on identical input | 0 | this eval does not score with a judge |
@@ -160,6 +161,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | the fleet ORDERING survives re-phrasing the instruction | 0 | instruction-framing probes need runs on disk |
 | skip | the fleet varies on one axis, not a blend of abilities | 0 | 2 model(s) x 6 common item(s); need 6+ models and 5+ items to unlock |
 | n/a | declared subskills actually separate in the responses | 0 | no item declares a `subskill`; there is no partition to test |
+| n/a | answers survive a changed tool list | 0 | menu probes need a real provider; this pod's runs are all local |
 
 Re-derive this report from the directory holding the target: `dinostomp stomp eval.yaml`
 

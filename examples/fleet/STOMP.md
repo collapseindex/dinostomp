@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**OK**: no failures, 1 warning(s) (35 of 35 ran; 65 n/a of 100 declared)
+**OK**: no failures, 1 warning(s) (35 of 35 ran; 67 n/a of 102 declared)
 
 measures the intended construct: **NOT ESTABLISHED BY DINOSTOMP**
 
@@ -163,7 +163,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | each model beats its own blind baseline | 0 | blind probes need a real provider; this pod's runs are all dry |
 | ok | failed answers do not contain the reference | 4 | 0 of 4 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 6 | 6 of 6 run(s) were produced by a different engine than the one auditing them (now cbe6dd18f9d268e9); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 6 | 6 of 6 run(s) were produced by a different engine than the one auditing them (now 4fefcc77c6100545); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | no failed answer numerically equals its target | 44 | 0 of 44 numeric-target failure(s) equal their target as a number; the scorer may be rejecting a correct value in the wrong form |
 | n/a | reported confidence matches observed accuracy | 0 | no record carries a probability vector; only a one-pass model (decisions, chooser, loglikelihood) reports one |
@@ -173,6 +173,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | tool calls are not redundant | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | passing answers CHANGE when their evidence is withheld | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
 | n/a | the trajectory was observed, not self-reported | 0 | this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one |
+| n/a | a timed-out call that already ran is not run again | 0 | only a mediated agent reaches its tools through the harness, so there is no call to time out |
 | n/a | the judge agrees with cases whose answer is known | 0 | this eval does not score with a judge |
 | n/a | the judge is invariant to content-free perturbations | 0 | this eval does not score with a judge |
 | n/a | the judge agrees with itself on identical input | 0 | this eval does not score with a judge |
@@ -190,6 +191,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | n/a | the fleet ORDERING survives re-phrasing the instruction | 0 | instruction-framing probes need runs on disk |
 | ok | the fleet varies on one axis, not a blend of abilities | 24 | top-axis share 0.74 against 0.84 the fixed-margins null allows; the fleet varies on one axis; this fleet is all-dry, whose skill is a single scalar by construction, so a quiet result here is a plumbing check, not validity evidence; at 6 examinees this has limited power, so a quiet result is NOT proof the score measures one thing |
 | n/a | declared subskills actually separate in the responses | 0 | no item declares a `subskill`; there is no partition to test |
+| n/a | answers survive a changed tool list | 0 | menu probes need a real provider; this pod's runs are all local |
 
 Re-derive this report from the directory holding the target: `dinostomp stomp eval.yaml`
 

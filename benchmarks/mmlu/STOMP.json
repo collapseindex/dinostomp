@@ -330,7 +330,7 @@
     }
   },
   "coverage": {
-    "declared_total": 100,
+    "declared_total": 102,
     "declared": 49,
     "ran": 16,
     "skipped": [
@@ -641,6 +641,10 @@
         "reason": "this spec runs no code targets and no imported run carries a trajectory; nothing here produces or carries one"
       },
       {
+        "id": "T9",
+        "reason": "only a mediated agent reaches its tools through the harness, so there is no call to time out"
+      },
+      {
         "id": "J1",
         "reason": "this eval does not score with a judge"
       },
@@ -671,6 +675,10 @@
       {
         "id": "P12",
         "reason": "instruction-framing probes need runs on disk"
+      },
+      {
+        "id": "P15",
+        "reason": "menu probes need a real provider; this pod's runs are all local"
       }
     ]
   },
@@ -1976,6 +1984,16 @@
       "witnesses": 0
     },
     {
+      "id": "T9",
+      "slug": "retry-duplicate",
+      "stage": "records",
+      "check": "a timed-out call that already ran is not run again",
+      "level": "n/a",
+      "gating": false,
+      "detail": "only a mediated agent reaches its tools through the harness, so there is no call to time out",
+      "witnesses": 0
+    },
+    {
       "id": "J1",
       "slug": "judge-agreement",
       "stage": "scorer",
@@ -2153,6 +2171,16 @@
       "level": "skip",
       "gating": false,
       "detail": "no runs on disk yet",
+      "witnesses": 0
+    },
+    {
+      "id": "P15",
+      "slug": "menu-stability",
+      "stage": "aggregate",
+      "check": "answers survive a changed tool list",
+      "level": "n/a",
+      "gating": false,
+      "detail": "menu probes need a real provider; this pod's runs are all local",
       "witnesses": 0
     }
   ],

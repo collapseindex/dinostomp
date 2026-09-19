@@ -373,7 +373,7 @@ at fault.
 `dup-questions` (S1) · 2026-07 · confirmed
 
 The battery's first contact with real data was the most famous dataset in
-statistics. Transcript re-run under the current 100-check battery; the original
+statistics. Transcript re-run under the current 102-check battery; the original
 catch happened at 23 checks.
 
 ```

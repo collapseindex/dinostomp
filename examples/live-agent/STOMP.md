@@ -1,6 +1,6 @@
 # 🦖 stomp report: eval.yaml
 
-**INCOMPLETE**: no failures, but only 37 of 47 checks ran (37 of 47 ran; 53 n/a of 100 declared). Not a clean bill of health.
+**INCOMPLETE**: no failures, but only 37 of 48 checks ran (37 of 48 ran; 54 n/a of 102 declared). Not a clean bill of health.
 
 measures the intended construct: **NOT ESTABLISHED BY DINOSTOMP**
 
@@ -149,7 +149,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | each model beats its own blind baseline | 0 | no blind probe on disk; run `dinostomp run <spec> --probe blind` to unlock |
 | warn | failed answers do not contain the reference | 2 | 2 of 2 model(s) are failed on answers that contain the reference; the scorer may be grading format, not correctness |
 | n/a | billed output tokens match the recorded text | 0 | no model produced 20+ answers of at least 40 characters; short-answer evals cannot be billed against reliably |
-| warn | the runs were produced by this engine | 3 | 3 of 3 run(s) were produced by a different engine than the one auditing them (now cbe6dd18f9d268e9); re-run to get numbers this report can stand behind |
+| warn | the runs were produced by this engine | 3 | 3 of 3 run(s) were produced by a different engine than the one auditing them (now 4fefcc77c6100545); re-run to get numbers this report can stand behind |
 | n/a | repeated items reached a verdict | 0 | no run on disk repeats an item; a single pass per item cannot tie |
 | ok | no failed answer numerically equals its target | 1 | 0 of 1 numeric-target failure(s) equal their target as a number; the scorer may be rejecting a correct value in the wrong form |
 | n/a | reported confidence matches observed accuracy | 0 | no record carries a probability vector; only a one-pass model (decisions, chooser, loglikelihood) reports one |
@@ -159,6 +159,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | warn | tool calls are not redundant | 3 | 1 of 3 target(s) repeat identical calls in more than 25% of their trajectories |
 | n/a | passing answers CHANGE when their evidence is withheld | 0 | no mediated agent on disk; only the harness can withhold a tool result, and a self-reporting target calls its own functions |
 | ok | the trajectory was observed, not self-reported | 3 | all 3 target(s) write their own trajectory, so T1-T6 verify the RECORD and not the EXECUTION: a target that omits a call from its own trace cannot be caught by reading it. Supported and stated, not a defect. Provider `mediated` moves the tools into the harness if you want the trace to be a log |
+| n/a | a timed-out call that already ran is not run again | 0 | only a mediated agent reaches its tools through the harness, so there is no call to time out |
 | n/a | the judge agrees with cases whose answer is known | 0 | this eval does not score with a judge |
 | n/a | the judge is invariant to content-free perturbations | 0 | this eval does not score with a judge |
 | n/a | the judge agrees with itself on identical input | 0 | this eval does not score with a judge |
@@ -176,6 +177,7 @@ Threshold-based signals: they warn, expose their underlying values, and can have
 | skip | the fleet ORDERING survives re-phrasing the instruction | 0 | no template probe on disk; run `dinostomp run <spec> --probe template` to unlock |
 | skip | the fleet varies on one axis, not a blend of abilities | 0 | 3 model(s) x 24 common item(s); need 6+ models and 5+ items to unlock |
 | n/a | declared subskills actually separate in the responses | 0 | no item declares a `subskill`; there is no partition to test |
+| skip | answers survive a changed tool list | 0 | no menu probe on disk; items with `choices` can run `dinostomp run <spec> --probe menu` to unlock |
 
 Re-derive this report from the directory holding the target: `dinostomp stomp eval.yaml`
 
