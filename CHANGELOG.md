@@ -2,6 +2,12 @@
 
 ### Unreleased
 
+- **`dinostomp race <pod>`: replay committed runs side by side.** Lockstep
+  over the seeded items, raw output and recorded verdict per lane, the
+  floor marked on every bar, the scorer's must-fail witnesses quoted in the
+  header, wall time shown once as recorded, and each final accuracy
+  recomputed from the records and checked against the saved summary
+  (`MISMATCH` fails the exit code). Nothing is called.
 - **`dinostomp jev`: a Jev question tested like an if-statement.** One file
   holds the question (noul or choice) and labelled examples; the command
   reports accuracy with an interval, where to cut p(yes), coverage and

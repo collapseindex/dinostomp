@@ -8,7 +8,7 @@
 
 **Stomp the eval. Trust the evidence.**
 
-<sub>v0.63.0 · Apache-2.0 · engine `2bdf4f76bd9cb72a` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.63.0 · Apache-2.0 · engine `53a4177c84e3da0e` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 **Find broken data, misleading scorers, and unsupported benchmark claims before you trust the score.**
 
@@ -731,6 +731,24 @@ the trajectory checks. It cost **one** defect where the first cost five (N-011).
 An imported trace is labelled `foreign_observed`, never `harness_observed`: the
 exporting harness watched those calls, this engine did not.
 
+## Replay a race
+
+```
+dinostomp race audits/xstest-refusal
+```
+
+Every arm of a pod grades the same items side by side in the terminal, from
+the committed run records: no model is called and nothing is simulated. The
+header says so, names the answer key, states what always giving the most
+common answer scores (marked on every bar), and quotes the scorer's own
+must-fail witnesses so a right word inside a failed answer needs no
+explanation. Each lane shows the model's raw output and the verdict the
+scorer recorded, in lockstep, so the running scores are comparable at every
+frame. Wall time is not animated (the provider and the queue are in it) and
+appears once, as recorded, in the final table, where every accuracy is
+recomputed from the records and checked against the run's saved summary; a
+disagreement prints `MISMATCH` and fails the exit code.
+
 ## A Jev question, tested like an if-statement
 
 TypeSafe's Jev answers a question about some text with a probability, and
@@ -956,7 +974,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`2bdf4f76bd9cb72aac5f06a6a65eb0143a9a26ddced7cb61b9dbe55afb1684d9`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`53a4177c84e3da0e2879a3fcc547d29da709e159ca263087d2b10bd324081429`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

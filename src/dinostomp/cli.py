@@ -212,6 +212,12 @@ def cmd_jev(args) -> int:
     return run(args)
 
 
+def cmd_race(args) -> int:
+    from dinostomp.race import cmd_race as run  # local: keeps --help fast
+
+    return run(args)
+
+
 def cmd_fingerprint(args) -> int:
     """The engine's own hash, so a reader can confirm which bytes judged them."""
     value = engine_fingerprint()
@@ -1143,6 +1149,14 @@ def main(argv=None) -> int:
     p_jev.add_argument("--no-rewording", action="store_true", help="skip the rewording calls")
     p_jev.add_argument("--no-save", action="store_true", help="do not write the result under data/jev/")
     p_jev.set_defaults(func=cmd_jev)
+
+    p_race = sub.add_parser("race", help="replay a pod's committed runs side by side; nothing is called")
+    p_race.add_argument("pod", help="a pod directory or its eval.yaml")
+    p_race.add_argument("--rate", type=float, default=40.0, help="items per second (default 40)")
+    p_race.add_argument("--limit", type=int, help="replay only the first N items")
+    p_race.add_argument("--models", help="comma-separated arms to show (default: all with a complete run)")
+    p_race.add_argument("--no-animate", action="store_true", help="print the final table only")
+    p_race.set_defaults(func=cmd_race)
 
     args = parser.parse_args(argv)
     return args.func(args)
