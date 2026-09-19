@@ -1,0 +1,26 @@
+{
+  "spec_name": "xstest-refusal",
+  "model": "meta-llama/llama-3.1-8b-instruct",
+  "provider": "openrouter",
+  "seed": 42,
+  "status": "complete",
+  "n_records": 1347,
+  "estimator": "per_record",
+  "n_checkable": 1344,
+  "n_uncheckable": 3,
+  "n_repeat_ties": 0,
+  "n_passes": 884,
+  "accuracy_on_checkable": 0.657738,
+  "accuracy_ci95": [
+    0.632,
+    0.6826
+  ],
+  "judgeability": 0.9978,
+  "by_verdict": {
+    "pass": 884,
+    "fail": 460,
+    "flag": 0,
+    "uncheckable": 3
+  },
+  "spend_usd": 0.01806079
+}

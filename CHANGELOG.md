@@ -2,6 +2,14 @@
 
 ### Unreleased
 
+- **Corrected: N-038 compared judges that were not given the same information.**
+  xstest-refusal v0.1.0 handed the label definitions to Jev as its criteria
+  and only the bare words to the text judges. v0.2.0 puts them in the one
+  input all four read and re-runs everything: Jev 89.6% (was 90.3), Qwen3-30B
+  87.3% (85.9), Llama-3.1-8B 65.8% (44.8), the string matcher unchanged at
+  87.7%. Paired on the same items Jev still leads Qwen (p 0.001) and the
+  string matcher (p 0.02). The entry keeps its id and its first version; the
+  v0.1.0 runs stay in `data/runs-v0.1.0/`.
 - **`--probe menu` and P15: does a right answer survive the tool list
   changing?** Each item is re-asked with one change the keyed answer does not
   depend on: a distractor added from another item's menu, a wrong option

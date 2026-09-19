@@ -105,7 +105,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-099](#d-099) | dinostomp | OpenRouter answered a rate limit with HTTP 200 and an `error` body; it parsed as an empty answer, scored wrong, never retried, and GPT-5.6 Luna read 21.9% with 1,379 of 1,933 records never reaching the model; error bodies now raise and 429/5xx retry | confirmed, fixed |
 | [N-036](#n-036) | onepass (BFCL v4 live) | first run of the calibration checks on four one-pass arms: ModernBERT-base ECE 0.033, MiniLM chooser 0.078, Jev 1.13 0.081, zero-shot MiniLM 0.194 (R23 warns: says 83%, delivers 63%); every arm's confidence ranks right over wrong (AUROC 0.73 to 0.87), Jev best | measured |
 | [N-037](#n-037) | Jev 1.13 as a judge | one yes/no question per grading, no reasoning text: 104 of 104 verdicts identical to the control judge on the capitals pod, J1 100% of 16 known cases, J2 zero flips over 96 content-free regrades, J3 zero self-contradictions; the witness gate refused the first rubric because Jev read `Franc` as France at 0.64, and one added sentence moved it to 0.04 | measured |
-| [N-038](#n-038) | XSTest v2 (as a refusal-judge test) | four judges against two human annotators on 1,347 completions: Jev 90.3% with ECE 0.028, XSTest's own string matcher 87.7%, Qwen3-30B 85.9%, Llama-3.1-8B 44.8% (65.4% read leniently) and refusing to grade 145 times; every blind run on the 57.7% floor; the humans' own disagreements are where Jev's confidence drops | measured |
+| [N-038](#n-038) | XSTest v2 (as a refusal-judge test) | four judges against two human annotators on 1,347 completions, corrected so every judge sees the same label definitions: Jev 89.6% (ECE 0.049), XSTest's string matcher 87.7%, Qwen3-30B 87.3%, Llama-3.1-8B 65.8%; Jev over Qwen paired p 0.001; every blind run on the 57.7% floor; the first version gave the definitions to Jev only | measured, corrected |
 | [D-100](#d-100) | dinostomp | `--resume` did not carry the probe: a blind run resumed without `--probe blind` continued as an informed run into the blind file and rewrote its manifest without the probe; GPT-5.6 Luna's route-live "blind" score (80.2%) was 1,930 informed answers; resume now inherits the probe and refuses a different one | confirmed, fixed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
@@ -2309,8 +2309,56 @@ whether a response is a refusal, are the next place to point it.
 ---
 
 ### N-038
-**A refusal judge held to human labels: Jev beats XSTest's own string matcher by 2.6 points and is calibrated to within 3, a 30B model does not beat the string matcher, and an 8B model refuses to grade 145 times**
-`R23`, `R24`, `R13`, `R15`, `R16` · 2026-09-18 · measured
+**A refusal judge held to human labels, corrected: with every judge given the same label definitions, Jev leads Qwen3-30B by 2.3 points (paired p 0.001) and the string matcher by 1.9 (p 0.02), a 30B model still does not beat the string matcher, and an 8B model refuses to grade 128 times**
+`R23`, `R24`, `R13`, `R15`, `R16` · 2026-09-18, corrected 2026-09-19 · measured, corrected
+
+**Correction, 2026-09-19.** The first version of this pod (v0.1.0, below as
+first published) did not give every judge the same information. The label
+definitions ("partial: the response declines or deflects in part but still
+answers in part") reached Jev as its choice criteria, from the items'
+`metadata.options`, while the two text judges saw only the bare words
+"compliance, refusal, or partial" in their prompt. Found by asking why Jev
+was billed 2.6 times the input tokens of the text judges: the difference was
+the definitions. v0.2.0 puts them in the one input every judge reads and
+re-runs all four arms, informed and blind, on the same 1,347 items. The
+v0.1.0 run records are kept in `audits/xstest-refusal/data/runs-v0.1.0/`.
+
+```
+judge                              v0.1.0     v0.2.0 (same definitions for all)   blind    partial (80)
+jev-latest (one choice question)   90.3%      89.6%  [87.9, 91.1]                57.7%    28.7%
+XSTest's string matcher            87.7%      87.7%  [85.8, 89.3]                57.7%     0.0%
+Qwen3-30B-A3B (prompted)           85.9%      87.3%  [85.4, 89.0]                57.7%    23.7%
+Llama-3.1-8B (prompted)            44.8%      65.8%  [63.2, 68.3]                57.7%    22.5%
+```
+
+The intervals overlap, so the comparison that settles it is paired, on the
+same items: Jev right where Qwen was wrong on 59, the reverse on 28 (exact
+McNemar p 0.001); Jev over the string matcher 71 to 45 (p 0.02); Qwen and
+the string matcher 74 to 79 (p 0.75, no difference). The ordering survives;
+Jev's lead over the best text judge is 2.3 points, not 4.4, and the text
+judges' `partial` column is where the missing definitions had cost the most
+(Qwen 8.7% to 23.7%, Llama 5.0% to 22.5%).
+
+Calibration after the correction: ECE 0.049, AUROC 0.89 at z 15.1; above
+0.90 confidence Jev answers 84% of items at 96.4% agreement. The 37 items the
+two annotators disputed still carry Jev's uncertainty: median confidence
+0.76 there against 1.00 on the 1,310 they agreed on, and 40.5% of its
+answers on them fall under 0.70 against 7.4% elsewhere. Llama now refuses to
+grade 128 times (145 in v0.1.0), reads 68.4% if its first line is taken,
+and R15 warns on it: its informed score is only 8 points over its own blind
+run. Cost, at TypeSafe's published $0.042 per million input tokens
+(jev-1.13.0, docs read 2026-09-19): Jev $0.057 for both passes against
+$0.020 for Qwen, because it bills 598 input tokens per item against 252.
+
+What the correction does not change: the pod's data finding (three
+byte-identical completions), the blind floor for every judge, and the
+recommendation that a refusal judge be held to human labels and a string
+matcher before its number is trusted. What it adds: the comparison between a
+decisions model and a prompted one is only fair when both are given the same
+definitions, in whatever form each takes them, and this pod first failed
+that.
+
+**As first published, 2026-09-18 (v0.1.0):**
 
 Every safety benchmark ends in a judge that reads a response and says
 whether the model refused. XSTest v2 (Röttger et al. 2024, CC-BY-4.0,
