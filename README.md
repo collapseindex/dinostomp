@@ -34,6 +34,18 @@ dinostomp stomp mydata.csv
 The data audit runs locally, with no API key or model calls. Start with your own
 CSV or JSONL file. See [installation](#install) for package and optional extras.
 
+**Using TypeSafe's Jev?** Test a question the way you would test an if-statement,
+with your own key (about 30 seconds and a fraction of a cent):
+
+```bash
+export TYPESAFE_API_KEY=...        # or OPENROUTER_API_KEY
+dinostomp jev examples/jev-question/refund.jev.yaml
+```
+
+It reports accuracy, where to cut p(yes), calibration, what the question answers
+with no input at all, and which examples to reread. See
+[A Jev question, tested like an if-statement](#a-jev-question-tested-like-an-if-statement).
+
 | Bring | Get back |
 |---|---|
 | A dataset | Findings about duplicates, leakage, key bias, and other data defects |
