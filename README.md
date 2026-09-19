@@ -8,7 +8,7 @@
 
 **Stomp the eval. Trust the evidence.**
 
-<sub>v0.63.0 · Apache-2.0 · engine `1169601b54bf8dcc` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
+<sub>v0.63.0 · Apache-2.0 · engine `4da53906589967e4` · [what it found](FINDINGS.md) · [how it works](METHODOLOGY.md) · [writing evals](AUTHORING.md) · [security](SECURITY.md)</sub>
 
 **Find broken data, misleading scorers, and unsupported benchmark claims before you trust the score.**
 
@@ -748,6 +748,10 @@ frame. Wall time is not animated (the provider and the queue are in it) and
 appears once, as recorded, in the final table, where every accuracy is
 recomputed from the records and checked against the run's saved summary; a
 disagreement prints `MISMATCH` and fails the exit code.
+`pip install dinostomp[pretty]` draws that table with
+[rich](https://github.com/Textualize/rich); without it, the same rows print as
+plain text, and a table too wide for the terminal falls back to plain rather
+than cut a number short.
 
 ## A Jev question, tested like an if-statement
 
@@ -974,7 +978,7 @@ the tool names them.
 
 ## Authenticity
 
-<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`1169601b54bf8dcc63f09c7df49daa11344f6e47c06d1e5dd0bc7c0215735a74`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
+<sub>The engine fingerprint is the SHA-256 of dinostomp's own code and schema pack (`4da53906589967e4917ee314c2ef79bed14f672cdb62a60d127ae7a6dc19b577`). Recompute it with `dinostomp fingerprint`; if it differs, you are not running the code these docs describe. It is recorded in every run manifest as `tool_sha256`, because an auditing tool is an input to its own verdicts and should be hashed like every other input. When you cite a RESULT rather than the tool, quote the fingerprint alongside the version.</sub>
 
 ## Citing, contributing, license
 

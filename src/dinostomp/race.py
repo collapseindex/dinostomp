@@ -47,6 +47,7 @@ MIN_OUTPUT_WIDTH = 30
 FIXED_COLUMNS = 2 + NAME_WIDTH + 1 + 6 + 2 + BAR_WIDTH + 2 + 3 + 8   # everything on a lane row but the output
 MAX_WITNESSES_SHOWN = 6
 PARITY_TOLERANCE = 1e-6
+WIDE_UNBOUNDED = 400    # console width when writing to a file: never the reason a cell is cut
 CHECKABLE = ("pass", "fail", "flag")
 
 
@@ -288,53 +289,124 @@ def frame(i: int, item: dict, lanes: list[Lane], floor_share: float, ink: Ink, w
     return out
 
 
-def final_table(lanes: list[Lane], items: list[dict], ink: Ink, total: int | None = None) -> list[str]:
-    """`total` is the pod's full item count; when the replay covered fewer, the
-    table says so on every row and compares nothing to a full-run summary."""
+@dataclass
+class Row:
+    model: str
+    accuracy: float | None
+    interval: str
+    blind: str
+    checkable: int
+    wall: str
+    cost: str
+    parity: str             # "matches" | "MISMATCH (summary x)" | "no summary" | "" (a sample)
+    under_floor: bool
+
+
+def _wall(manifest: dict) -> str:
+    from datetime import datetime
+    try:
+        secs = (datetime.fromisoformat(manifest["finished_at"])
+                - datetime.fromisoformat(manifest["started_at"])).total_seconds()
+    except (KeyError, ValueError, TypeError):
+        return "?"
+    return f"{secs / 60:.1f} min"
+
+
+def table_data(lanes: list[Lane], items: list[dict], total: int | None = None
+               ) -> tuple[str, list[str], list[Row], list[str]]:
+    """(title, column names, rows, footnotes): the ONE source both renderers
+    draw from, so the rich table cannot show a number the plain one does not.
+    `total` is the pod's full item count; a replay of fewer items is a sample
+    and is compared with no full-run summary."""
     top, share = floor(items)
     partial = total is not None and len(items) < total
     title = (f"{len(items)} of {total} items, evenly spaced, recomputed from the records "
-             f"(a sample: nothing here is compared with the full-run summaries):" if partial
-             else "Final, recomputed from the records:")
-    rows = ["", ink.bold(title), ""]
-    last = "vs saved summary" if not partial else ""
-    rows.append(f"  {'model':<{NAME_WIDTH}} {'accuracy':>9} {'95% interval':>14} {'blind':>7} "
-                f"{'checkable':>10} {'wall (full run)':>16} {'cost (full)':>11}  {last}")
+             f"(a sample: nothing here is compared with the full-run summaries)" if partial
+             else "Final, recomputed from the records")
+    columns = ["model", "accuracy", "95% interval", "blind", "checkable", "wall (full run)", "cost (full)",
+               "" if partial else "vs saved summary"]
     ids = [str(i["id"]) for i in items]
+    rows = []
     for lane in lanes:
         acc = lane.accuracy
         ci = wilson_ci(lane.passes, lane.checkable)
-        m = lane.manifest
-        wall = ""
-        try:
-            from datetime import datetime
-            secs = (datetime.fromisoformat(m["finished_at"]) - datetime.fromisoformat(m["started_at"])).total_seconds()
-            wall = f"{secs / 60:.1f} min"
-        except (KeyError, ValueError, TypeError):
-            wall = "?"
         saved = (lane.summary or {}).get("accuracy_on_checkable")
         if partial:
             parity = ""
         elif saved is None:
-            parity = ink.yellow("no summary")
+            parity = "no summary"
         elif acc is not None and abs(saved - acc) <= PARITY_TOLERANCE:
-            parity = ink.green("matches")
+            parity = "matches"
         else:
-            parity = ink.red(f"MISMATCH (summary {saved})")
+            parity = f"MISMATCH (summary {saved})"
         blind_acc = (_accuracy([lane.blind_records[i] for i in ids if i in lane.blind_records])
                      if lane.blind_records else None)
-        blind = f"{blind_acc:.1%}" if blind_acc is not None else "not run"
-        spend = m.get("spend_usd")
-        cost = f"${spend:.3f}" if isinstance(spend, (int, float)) else "?"
-        rows.append(f"  {_clip(lane.model, NAME_WIDTH):<{NAME_WIDTH}} {acc if acc is None else f'{acc:.1%}':>9} "
-                    f"{(f'{ci[0]:.1%} to {ci[1]:.1%}' if ci else ''):>14} {blind:>7} "
-                    f"{lane.checkable:>10} {wall:>16} {cost:>11}  {parity}")
-    rows += ["",
-             f"  floor: always {top!r} = {share:.1%} on these items.  blind = the same model with the input withheld, same items.",
-             "  wall time and cost are the full run's, as recorded: provider, network and queue included, calls one at a time.",
-             "  cost is the ledger's figure; where the provider reports none, it is priced from the spec's rates.",
-             "  re-derive every verdict offline: dinostomp verify <pod>/eval.yaml"]
-    return rows
+        spend = lane.manifest.get("spend_usd")
+        rows.append(Row(model=lane.model, accuracy=acc,
+                        interval=f"{ci[0]:.1%} to {ci[1]:.1%}" if ci else "",
+                        blind=f"{blind_acc:.1%}" if blind_acc is not None else "not run",
+                        checkable=lane.checkable, wall=_wall(lane.manifest),
+                        cost=f"${spend:.3f}" if isinstance(spend, (int, float)) else "?",
+                        parity=parity, under_floor=acc is not None and acc < share))
+    notes = [f"floor: always {top!r} = {share:.1%} on these items.  "
+             "blind = the same model with the input withheld, same items.",
+             "wall time and cost are the full run's, as recorded: provider, network and queue included, "
+             "calls one at a time.",
+             "cost is the ledger's figure; where the provider reports none, it is priced from the spec's rates.",
+             "re-derive every verdict offline: dinostomp verify <pod>/eval.yaml"]
+    return title, columns, rows, notes
+
+
+def final_table(lanes: list[Lane], items: list[dict], ink: Ink, total: int | None = None) -> list[str]:
+    """The plain renderer: fixed-width text, colour only if `ink` allows it."""
+    title, columns, rows, notes = table_data(lanes, items, total)
+    out = ["", ink.bold(title + ":"), ""]
+    out.append(f"  {columns[0]:<{NAME_WIDTH}} {columns[1]:>9} {columns[2]:>14} {columns[3]:>7} "
+               f"{columns[4]:>10} {columns[5]:>16} {columns[6]:>11}  {columns[7]}")
+    for r in rows:
+        paint = ink.green if r.parity == "matches" else ink.red if r.parity.startswith("MISMATCH") else ink.yellow
+        acc = "None" if r.accuracy is None else f"{r.accuracy:.1%}"
+        out.append(f"  {_clip(r.model, NAME_WIDTH):<{NAME_WIDTH}} {acc:>9} {r.interval:>14} {r.blind:>7} "
+                   f"{r.checkable:>10} {r.wall:>16} {r.cost:>11}  {paint(r.parity) if r.parity else ''}")
+    out += [""] + [f"  {n}" for n in notes]
+    return out
+
+
+def rich_table(lanes: list[Lane], items: list[dict], out, total: int | None = None) -> bool:
+    """The rich renderer, when the optional `rich` is installed. Returns False
+    (and draws nothing) when it is not, so the caller falls back to plain."""
+    try:
+        from rich import box
+        from rich.console import Console
+        from rich.table import Table
+    except ImportError:
+        return False
+    title, columns, rows, notes = table_data(lanes, items, total)
+    cells = [[r.model, "None" if r.accuracy is None else f"{r.accuracy:.1%}", r.interval, r.blind,
+              str(r.checkable), r.wall, r.cost, r.parity] for r in rows]
+    # Never truncate: every column is at least as wide as its widest cell, so a
+    # number can not turn into "83..." in a screenshot. If that does not fit the
+    # terminal, the plain table (which wraps whole lines instead) is used.
+    widths = [max([len(name)] + [len(c[i]) for c in cells]) for i, name in enumerate(columns)]
+    is_tty = getattr(out, "isatty", lambda: False)()
+    console = Console(file=out, force_terminal=True, highlight=False,
+                      width=shutil.get_terminal_size((120, 40)).columns if is_tty else WIDE_UNBOUNDED)
+    if sum(widths) + 3 * len(widths) + 1 > console.width:
+        return False
+    table = Table(title=title, box=box.ROUNDED, title_style="bold", header_style="bold",
+                  caption="\n".join(notes), caption_justify="left", caption_style="dim")
+    for i, name in enumerate(columns):
+        table.add_column(name, justify="left" if i in (0, 7) else "right", no_wrap=True,
+                         min_width=widths[i])
+    for r, c in zip(rows, cells):
+        acc = c[1]
+        acc_style = "bold red" if r.under_floor else "bold green"
+        parity_style = ("green" if r.parity == "matches" else "bold red" if r.parity.startswith("MISMATCH")
+                        else "yellow")
+        table.add_row(r.model, f"[{acc_style}]{acc}[/]", r.interval, r.blind, str(r.checkable),
+                      r.wall, r.cost, f"[{parity_style}]{r.parity}[/]" if r.parity else "")
+    console.print(table)
+    return True
 
 
 def replay(pod: str | Path, rate: float = DEFAULT_RATE, limit: int | None = None,
@@ -380,8 +452,10 @@ def replay(pod: str | Path, rate: float = DEFAULT_RATE, limit: int | None = None
                 if r is not None and (r.get("score") or {}).get("verdict") in CHECKABLE:
                     lane.checkable += 1
                     lane.passes += r["score"]["verdict"] == "pass"
-    for line in final_table(lanes, items, ink, total=total):
-        print(line, file=out)
+    print(file=out)
+    if not (ink.enabled and rich_table(lanes, items, out, total=total)):
+        for line in final_table(lanes, items, ink, total=total):
+            print(line, file=out)
     return lanes
 
 

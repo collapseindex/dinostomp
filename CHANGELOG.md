@@ -2,6 +2,12 @@
 
 ### Unreleased
 
+- **`pip install dinostomp[pretty]`: rich tables for `race`, optional.** One
+  set of rows feeds both renderers, a test holds the rich table to the plain
+  table's numbers, and no column is allowed to shrink below its widest cell:
+  if the table does not fit, the plain one prints instead. Found while
+  building it: rich at 80 columns cut "83.3%" to "83..." and dropped the
+  parity column entirely. The core stays at two dependencies.
 - **`dinostomp race <pod>`: replay committed runs side by side.** Lockstep
   over the seeded items, raw output and recorded verdict per lane, the
   floor marked on every bar, the scorer's must-fail witnesses quoted in the

@@ -23,6 +23,10 @@ Findings = "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md"
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0"]
+# Terminal DRAWING, and nothing else. `dinostomp race` renders its final table
+# with rich when this is installed and falls back to plain text when it is not;
+# both draw from one set of rows, so the numbers cannot differ between them.
+pretty = ["rich>=13.0"]
 # Image DECODING, and nothing else. The core stays at two dependencies: an
 # image's bytes answer "is this the same file", and only "is this the same
 # picture" needs pixels. S15 is the one check that does, and it skips loudly

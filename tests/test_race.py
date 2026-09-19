@@ -132,3 +132,59 @@ def test_colour_means_free_earned_or_under_and_plain_output_has_none():
     assert FREE in above and EARNED in above and UNDER not in above
     below = color_bar(0.4, 0.6, ink, width=10)
     assert UNDER in below and EARNED not in below            # under the floor is red end to end
+
+
+def test_the_rich_table_shows_exactly_the_plain_tables_numbers(tmp_path):
+    pytest.importorskip("rich")
+    import re as _re
+    from dinostomp.race import Ink, final_table, rich_table
+    spec, _ = _pod(tmp_path)
+    _, items, lanes = load_race(spec)
+    for lane in lanes:
+        for i in items:
+            r = lane.records.get(str(i["id"]))
+            if r and r["score"]["verdict"] in ("pass", "fail", "flag"):
+                lane.checkable += 1
+                lane.passes += r["score"]["verdict"] == "pass"
+    plain = "\n".join(final_table(lanes, items, Ink(False), total=len(items)))
+    buf = io.StringIO()
+    assert rich_table(lanes, items, buf, total=len(items)) is True
+    fancy = _re.sub(r"\x1b\[[0-9;]*m", "", buf.getvalue())
+    number = r"\d+\.\d%|\$\d+\.\d{3}|\d+\.\d min"
+    assert sorted(_re.findall(number, fancy)) == sorted(_re.findall(number, plain))
+    assert fancy.count("matches") == plain.count("matches") == 2
+
+
+def test_without_rich_the_plain_table_is_used(tmp_path, monkeypatch):
+    import builtins
+    from dinostomp.race import rich_table
+    real_import = builtins.__import__
+
+    def no_rich(name, *args, **kw):
+        if name == "rich" or name.startswith("rich."):
+            raise ImportError("rich is not installed")
+        return real_import(name, *args, **kw)
+    monkeypatch.setattr(builtins, "__import__", no_rich)
+    spec, _ = _pod(tmp_path)
+    _, items, lanes = load_race(spec)
+    buf = io.StringIO()
+    assert rich_table(lanes, items, buf, total=len(items)) is False and buf.getvalue() == ""
+
+
+def test_a_rich_table_that_would_truncate_falls_back_to_plain(tmp_path):
+    pytest.importorskip("rich")
+    from dinostomp.race import rich_table
+
+    class Narrow(io.StringIO):
+        def isatty(self):
+            return True
+    spec, _ = _pod(tmp_path)
+    _, items, lanes = load_race(spec)
+    import shutil
+    real = shutil.get_terminal_size
+    try:
+        shutil.get_terminal_size = lambda fallback=(80, 24): __import__("os").terminal_size((60, 24))
+        buf = Narrow()
+        assert rich_table(lanes, items, buf, total=len(items)) is False and buf.getvalue() == ""
+    finally:
+        shutil.get_terminal_size = real
