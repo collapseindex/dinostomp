@@ -49,7 +49,8 @@ FIXED_COLUMNS = 2 + NAME_WIDTH + 1 + 6 + 2 + BAR_WIDTH + 2 + 3 + 8   # everythin
 MAX_WITNESSES_SHOWN = 6
 PARITY_TOLERANCE = 1e-6
 MODEL_MIN_WIDTH = 18   # the model column's floor in the rich table; longer names wrap in the cell
-WIDE_UNBOUNDED = 400    # console width when writing to a file: never the reason a cell is cut
+WIDE_UNBOUNDED = 400
+UNMETERED_PROVIDERS = ("python", "mediated")   # pod code: the ledger does not see its compute    # console width when writing to a file: never the reason a cell is cut
 CHECKABLE = ("pass", "fail", "flag")
 
 
@@ -479,17 +480,25 @@ def table_data(lanes: list[Lane], items: list[dict], total: int | None = None
         blind_acc = (_accuracy([lane.blind_records[i] for i in ids if i in lane.blind_records])
                      if lane.blind_records else None)
         spend = lane.manifest.get("spend_usd")
+        # Pod code is not metered by the ledger: a string matcher costs nothing
+        # and a lookup of GPU outputs computed elsewhere costs nothing HERE. A
+        # zero in this column would read as "free and instant" for both.
+        metered = lane.provider not in UNMETERED_PROVIDERS
         rows.append(Row(model=lane.model, accuracy=acc,
                         interval=f"{ci[0]:.1%} to {ci[1]:.1%}" if ci else "",
                         blind=f"{blind_acc:.1%}" if blind_acc is not None else "not run",
-                        checkable=lane.checkable, wall=_wall(lane.manifest),
-                        cost=f"${spend:.3f}" if isinstance(spend, (int, float)) else "?",
+                        checkable=lane.checkable,
+                        wall=_wall(lane.manifest) if metered else "unmetered",
+                        cost=(f"${spend:.3f}" if isinstance(spend, (int, float)) else "?") if metered
+                        else "unmetered",
                         parity=parity, under_floor=acc is not None and acc < share))
     notes = [f"floor: always {top!r} = {share:.1%} on these items.  "
              "blind = the same model with the input withheld, same items.",
              "wall time and cost are the full run's, as recorded: provider, network and queue included, "
              "calls one at a time.",
              "cost is the ledger's figure; where the provider reports none, it is priced from the spec's rates.",
+             "unmetered = the arm is pod code; any compute it used (a GPU run, for example) is outside the "
+             "ledger and stated in its pod's spec.",
              f"re-derive every verdict offline: dinostomp verify <pod>/eval.yaml  |  {REPO_URL}"]
     return title, columns, rows, notes
 

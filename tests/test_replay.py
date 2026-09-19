@@ -319,3 +319,16 @@ def test_pods_on_different_items_are_refused(tmp_path):
     spec_b = _second_pod(tmp_path, choice_items(23), [{"provider": "dry", "model": "dry-charlie"}])
     with pytest.raises(ReplayError, match="not byte-identical"):
         load_replays([spec_a, spec_b])
+
+
+def test_pod_code_is_shown_as_unmetered_not_as_free(tmp_path):
+    """Found live: WildGuard's outputs, computed on a GPU elsewhere and read
+    from a pinned file, showed 0.0 min and $0.000, which reads as free."""
+    from dinostomp.replay import Lane, table_data
+    spec, _ = _pod(tmp_path)
+    _, items, lanes = load_replay(spec)
+    lanes[0].provider = "python"
+    _, _, rows, notes = table_data(lanes, items, len(items))
+    assert rows[0].wall == rows[0].cost == "unmetered"
+    assert rows[1].cost.startswith("$")
+    assert any(n.startswith("unmetered = ") for n in notes)
