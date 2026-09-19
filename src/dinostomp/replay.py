@@ -469,7 +469,7 @@ def table_data(lanes: list[Lane], items: list[dict], total: int | None = None
     title = (f"{len(items)} of {total} items, evenly spaced, recomputed from the records "
              f"(a sample: nothing here is compared with the full-run summaries)" if partial
              else "Final, recomputed from the records")
-    columns = ["model", "accuracy", "95% interval", "blind", "ECE", "checkable", "wall", "cost",
+    columns = ["model", "accuracy", "95% interval", "blind", "ECE (3-way)", "checkable", "wall", "cost",
                "" if partial else "summary"]
     ids = [str(i["id"]) for i in items]
     rows = []
@@ -508,7 +508,7 @@ def table_data(lanes: list[Lane], items: list[dict], total: int | None = None
              "cost is the ledger's figure; where the provider reports none, it is priced from the spec's rates.",
              "unmetered = the arm is pod code; any compute it used (a GPU run, for example) is outside the "
              "ledger and stated in its pod's spec.",
-             "ECE = expected calibration error of the confidence in each answer given (R23's measure); "
+             "ECE (3-way) = calibration of the confidence in each answer given (R23's measure); "
              "blank where the arm records no probabilities.",
              f"re-derive every verdict offline: dinostomp verify <pod>/eval.yaml  |  {REPO_URL}"]
     return title, columns, rows, notes
@@ -519,12 +519,12 @@ def final_table(lanes: list[Lane], items: list[dict], ink: Ink, total: int | Non
     title, columns, rows, notes = table_data(lanes, items, total)
     out = ["", ink.bold(title + ":"), ""]
     out.append(f"  {columns[0]:<{NAME_WIDTH}} {columns[1]:>9} {columns[2]:>14} {columns[3]:>7} "
-               f"{columns[4]:>6} {columns[5]:>10} {columns[6]:>10} {columns[7]:>10}  {columns[8]}")
+               f"{columns[4]:>11} {columns[5]:>10} {columns[6]:>10} {columns[7]:>10}  {columns[8]}")
     for r in rows:
         paint = ink.green if r.parity == "matches" else ink.red if r.parity.startswith("MISMATCH") else ink.yellow
         acc = "None" if r.accuracy is None else f"{r.accuracy:.1%}"
         out.append(f"  {_clip(r.model, NAME_WIDTH):<{NAME_WIDTH}} {acc:>9} {r.interval:>14} {r.blind:>7} "
-                   f"{r.ece:>6} {r.checkable:>10} {r.wall:>10} {r.cost:>10}  {paint(r.parity) if r.parity else ''}")
+                   f"{r.ece:>11} {r.checkable:>10} {r.wall:>10} {r.cost:>10}  {paint(r.parity) if r.parity else ''}")
     out += [""] + [f"  {n}" for n in notes]
     return out
 
@@ -599,7 +599,7 @@ def binary_data(lanes: list[Lane], items: list[dict], positive: set[str]
     rate = sum(truth.values()) / len(truth)
     name = " + ".join(sorted(positive))
     title = f"Binary view: {name} as positive (the humans say positive on {rate:.1%} of these items)"
-    columns = ["model", "accuracy", "precision", "recall", "F1", "says positive", "ECE"]
+    columns = ["model", "accuracy", "precision", "recall", "F1", "says positive", "ECE (binary)"]
     cells = []
     for lane in lanes:
         recs = [lane.records[i] for i in truth if i in lane.records]
@@ -626,8 +626,8 @@ def binary_data(lanes: list[Lane], items: list[dict], positive: set[str]
                       f"{f1:.3f}", f"{(tp + fp) / len(recs):.1%}" if recs else "", ece])
     notes = [f"positive = the answer is one of: {name}. An answer that is not one of the item's labels counts "
              "as a negative call and a wrong one.",
-             "ECE here is the calibration of the positive/negative call itself, from the probability each arm "
-             "put on the positive labels."]
+             "ECE (binary) = calibration of the positive/negative call itself, from the probability each arm "
+             "put on the positive labels; it differs from the 3-way ECE above because it grades a different call."]
     return title, columns, cells, notes
 
 

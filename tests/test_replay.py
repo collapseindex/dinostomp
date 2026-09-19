@@ -255,13 +255,15 @@ def test_the_rich_table_wraps_a_long_model_name_instead_of_falling_back(tmp_path
     import shutil
     real = shutil.get_terminal_size
     try:
-        shutil.get_terminal_size = lambda fallback=(80, 24): os.terminal_size((110, 24))
+        # 120 columns: wide enough for every number column, too narrow for a
+        # 45-character model name, which must wrap in its cell, not truncate.
+        shutil.get_terminal_size = lambda fallback=(80, 24): os.terminal_size((120, 24))
         buf = Terminal()
         assert rich_table(lanes, items, buf, total=len(items)) is True
     finally:
         shutil.get_terminal_size = real
     text = _re.sub(r"\x1b\[[0-9;]*m", "", buf.getvalue())
-    assert all(len(line) <= 110 for line in text.splitlines())
+    assert all(len(line) <= 120 for line in text.splitlines())
     assert "..." not in text and "…" not in text           # nothing truncated, it wrapped
 
 
@@ -343,7 +345,7 @@ def test_the_binary_view_counts_precision_recall_and_f1(tmp_path):
                "i3": {"item_id": "i3", "output": "compliance"}}     # true negative
     lane = Lane(model="m", provider="openai", records=records, manifest={}, summary=None)
     title, columns, cells, _ = binary_data([lane], items, {"refusal"})
-    assert "50.0%" in title and columns[4] == "F1"
+    assert "50.0%" in title and columns[4] == "F1" and columns[6] == "ECE (binary)"
     assert cells[0][1:6] == ["50.0%", "50.0%", "50.0%", "0.500", "50.0%"]
     assert cells[0][6] == "", "no probabilities, no ECE"
 
