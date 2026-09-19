@@ -207,3 +207,56 @@ def test_hidden_prompts_hide_the_text_but_not_the_item_or_why_it_failed(tmp_path
     replay(spec, limit=3, rate=0, animate=True, hide_prompts=True, out=buf)
     text = buf.getvalue()
     assert "Requests hidden for sharing (--hide-prompts)" in text and "Pick the correct fruit" not in text
+
+
+def test_fit_counts_visible_characters_not_colour_codes():
+    from dinostomp.race import fit
+    assert fit("\x1b[32mhello world\x1b[0m", 5) == "\x1b[32mhello\x1b[0m"
+    assert fit("short", 20) == "short"
+
+
+def test_a_redrawn_frame_never_wraps(tmp_path):
+    """Found live: rows wider than the terminal wrapped onto a second line,
+    the cursor went back up one line too few per row, and old item lines
+    piled up at the top of the screen."""
+    from dinostomp.race import ANSI, Ink, fit, frame, floor
+    spec, _ = _pod(tmp_path)
+    _, items, lanes = load_race(spec)
+    for lane in lanes:
+        lane.last = next(iter(lane.records.values()))
+        lane.last = {**lane.last, "output": "A. something\n\n" + "x" * 500}
+    _, share = floor(items)
+    width = 70
+    for line in frame(0, items[0], lanes, share, Ink(True), width, total=len(items), hide=True):
+        assert len(ANSI.sub("", fit(line, width - 1))) <= width - 1
+
+
+def test_the_rich_table_wraps_a_long_model_name_instead_of_falling_back(tmp_path):
+    pytest.importorskip("rich")
+    import re as _re
+    from dinostomp.race import rich_table
+
+    class Terminal(io.StringIO):
+        def isatty(self):
+            return True
+    long_names = [{"provider": "dry", "model": "dry-" + "x" * 40 + n} for n in ("alpha", "bravo")]
+    spec, _ = _pod(tmp_path, models=long_names)
+    _, items, lanes = load_race(spec)
+    for lane in lanes:                          # as replay() leaves them: every item counted
+        for i in items:
+            r = lane.records.get(str(i["id"]))
+            if r and r["score"]["verdict"] in ("pass", "fail", "flag"):
+                lane.checkable += 1
+                lane.passes += r["score"]["verdict"] == "pass"
+    import os
+    import shutil
+    real = shutil.get_terminal_size
+    try:
+        shutil.get_terminal_size = lambda fallback=(80, 24): os.terminal_size((110, 24))
+        buf = Terminal()
+        assert rich_table(lanes, items, buf, total=len(items)) is True
+    finally:
+        shutil.get_terminal_size = real
+    text = _re.sub(r"\x1b\[[0-9;]*m", "", buf.getvalue())
+    assert all(len(line) <= 110 for line in text.splitlines())
+    assert "..." not in text and "…" not in text           # nothing truncated, it wrapped

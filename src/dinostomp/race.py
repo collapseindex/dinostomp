@@ -47,6 +47,7 @@ MIN_OUTPUT_WIDTH = 30
 FIXED_COLUMNS = 2 + NAME_WIDTH + 1 + 6 + 2 + BAR_WIDTH + 2 + 3 + 8   # everything on a lane row but the output
 MAX_WITNESSES_SHOWN = 6
 PARITY_TOLERANCE = 1e-6
+MODEL_MIN_WIDTH = 18   # the model column's floor in the rich table; longer names wrap in the cell
 WIDE_UNBOUNDED = 400    # console width when writing to a file: never the reason a cell is cut
 CHECKABLE = ("pass", "fail", "flag")
 
@@ -167,6 +168,29 @@ class Ink:
     def yellow(self, t): return self._c("33", t)
 
 
+ANSI = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def fit(line: str, width: int) -> str:
+    """Cut a line to `width` VISIBLE characters, colour codes not counted, so a
+    redrawn frame never wraps. A wrapped row takes two terminal lines, the
+    cursor goes back up one too few, and the old frame is left on screen."""
+    out, seen, i = [], 0, 0
+    while i < len(line):
+        m = ANSI.match(line, i)
+        if m:
+            out.append(m.group(0))
+            i = m.end()
+            continue
+        if seen == width:
+            out.append("\x1b[0m")
+            break
+        out.append(line[i])
+        seen += 1
+        i += 1
+    return "".join(out)
+
+
 def _clip(text: str, width: int) -> str:
     flat = re.sub(r"\s+", " ", str(text or "")).strip()
     return flat if len(flat) <= width else flat[: width - 3] + "..."
@@ -274,8 +298,9 @@ def header(spec: dict, pod: Path, items: list[dict], ink: Ink, hide: bool = Fals
     hidden = (["Requests hidden for sharing (--hide-prompts); outputs cut to their first line, "
                "with the length of the rest shown. Every item id is on screen and in the repo."]
               if hide else [])
-    return hidden + [
+    return [
         ink.bold(f"dinostomp race | {spec['name']} | REPLAY of committed run records; no model is called"),
+        *hidden,
         _clip(spec.get("question", ""), 120),
         f"Answer key: the pod's reference answers. Floor: always answering {top!r} scores {share:.1%} "
         f"(the | on each bar).",
@@ -343,8 +368,8 @@ def table_data(lanes: list[Lane], items: list[dict], total: int | None = None
     title = (f"{len(items)} of {total} items, evenly spaced, recomputed from the records "
              f"(a sample: nothing here is compared with the full-run summaries)" if partial
              else "Final, recomputed from the records")
-    columns = ["model", "accuracy", "95% interval", "blind", "checkable", "wall (full run)", "cost (full)",
-               "" if partial else "vs saved summary"]
+    columns = ["model", "accuracy", "95% interval", "blind", "checkable", "wall", "cost",
+               "" if partial else "summary"]
     ids = [str(i["id"]) for i in items]
     rows = []
     for lane in lanes:
@@ -408,6 +433,9 @@ def rich_table(lanes: list[Lane], items: list[dict], out, total: int | None = No
     # number can not turn into "83..." in a screenshot. If that does not fit the
     # terminal, the plain table (which wraps whole lines instead) is used.
     widths = [max([len(name)] + [len(c[i]) for c in cells]) for i, name in enumerate(columns)]
+    # The model name is the one cell allowed to wrap, onto a second line inside
+    # its cell, so nothing is lost; it still needs MODEL_MIN_WIDTH to be legible.
+    widths[0] = min(widths[0], MODEL_MIN_WIDTH)
     is_tty = getattr(out, "isatty", lambda: False)()
     console = Console(file=out, force_terminal=True, highlight=False,
                       width=shutil.get_terminal_size((120, 40)).columns if is_tty else WIDE_UNBOUNDED)
@@ -416,8 +444,10 @@ def rich_table(lanes: list[Lane], items: list[dict], out, total: int | None = No
     table = Table(title=title, box=box.ROUNDED, title_style="bold", header_style="bold",
                   caption="\n".join(notes), caption_justify="left", caption_style="dim")
     for i, name in enumerate(columns):
-        table.add_column(name, justify="left" if i in (0, 7) else "right", no_wrap=True,
-                         min_width=widths[i])
+        if i == 0:
+            table.add_column(name, min_width=widths[i], overflow="fold")
+        else:
+            table.add_column(name, justify="left" if i == 7 else "right", min_width=widths[i], no_wrap=True)
     for r, c in zip(rows, cells):
         acc = c[1]
         acc_style = "bold red" if r.under_floor else "bold green"
@@ -457,7 +487,8 @@ def replay(pod: str | Path, rate: float = DEFAULT_RATE, limit: int | None = None
                     lane.checkable += 1
                     lane.passes += r["score"]["verdict"] == "pass"
             if animate:
-                lines = frame(i, item, lanes, share, ink, width, total=len(items), hide=hide_prompts)
+                lines = [fit(line, width - 1) for line in
+                         frame(i, item, lanes, share, ink, width, total=len(items), hide=hide_prompts)]
                 if drawn:
                     out.write(f"\x1b[{drawn}F")
                 for line in lines:
