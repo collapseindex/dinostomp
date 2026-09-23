@@ -1,0 +1,165 @@
+{
+ "clinc/train": {
+  "rows": 15250,
+  "oos": 250,
+  "gold_intent_name_whole_word_in_message": 3146,
+  "examples": [
+   "train:6",
+   "train:20",
+   "train:28",
+   "train:31",
+   "train:32",
+   "train:40",
+   "train:44",
+   "train:45"
+  ]
+ },
+ "clinc/validation": {
+  "rows": 3100,
+  "oos": 100,
+  "gold_intent_name_whole_word_in_message": 603,
+  "examples": [
+   "validation:15",
+   "validation:16",
+   "validation:17",
+   "validation:18",
+   "validation:19",
+   "validation:20",
+   "validation:27",
+   "validation:28"
+  ]
+ },
+ "clinc/test": {
+  "rows": 5500,
+  "oos": 1000,
+  "gold_intent_name_whole_word_in_message": 942,
+  "examples": [
+   "test:36",
+   "test:37",
+   "test:40",
+   "test:41",
+   "test:42",
+   "test:45",
+   "test:47",
+   "test:48"
+  ]
+ },
+ "banking77/train": {
+  "rows": 10003,
+  "gold_intent_name_whole_word_in_message": 203,
+  "messages_repeated_after_folding": 21,
+  "examples": [
+   "train:295",
+   "train:297",
+   "train:302",
+   "train:304",
+   "train:309",
+   "train:311",
+   "train:312",
+   "train:313"
+  ],
+  "duplicate_examples": [
+   "train:1211~train:1171",
+   "train:1290~train:1246",
+   "train:1724~train:1710",
+   "train:2010~train:2009",
+   "train:2015~train:1995",
+   "train:2022~train:1982",
+   "train:2068~train:2005",
+   "train:2258~train:2253"
+  ]
+ },
+ "banking77/test": {
+  "rows": 3080,
+  "gold_intent_name_whole_word_in_message": 65,
+  "messages_repeated_after_folding": 4,
+  "examples": [
+   "test:83",
+   "test:84",
+   "test:87",
+   "test:92",
+   "test:94",
+   "test:97",
+   "test:98",
+   "test:101"
+  ],
+  "duplicate_examples": [
+   "test:675~test:663",
+   "test:748~test:723",
+   "test:1461~test:1441",
+   "test:2838~test:618"
+  ]
+ },
+ "fever_gold_evidence/train": {
+  "rows": 228277,
+  "labels": {
+   "SUPPORTS": 114801,
+   "REFUTES": 47096,
+   "NOT ENOUGH INFO": 66380
+  },
+  "claim_evidence_pairs_repeated": 110,
+  "rows_with_exactly_one_of_supports_refutes_as_a_word": 152,
+  "duplicate_examples": [
+   "86af7feec10dd321c8ae571d006c106d~6dcd8126fef3fcf669277fc73905a17d",
+   "944b1a0ef1815f9cbe277ba05ae85848~1ef4b5d12b83c7d4e07264286d3fc122",
+   "cf84f7b998011aa79ce8184af7f855c3~5c711c28d4140b3818dac69af3597947",
+   "5ed80d259038fa6645c0fdce89789c6c~f2a46148810ecd595107ae9601b44915",
+   "a11fec5963b0147b61782115e2fd16a2~68979713516a8fa5f7108d745389b551",
+   "e4a827519f5aec2f85600edeb59338ba~0a98c586f81b829599a943c0dd7770ba",
+   "e085f9ced8e0e6603f266a8d1537df0a~2336d0e4e855eb33a3ab7bfd6c4d9784",
+   "ae9c894bec6f3d063466cbacc90622dc~6bd6fd08824dcc61fe13cb0ecd844474"
+  ],
+  "verb_examples": [
+   "f9ffb45d89085bd39b07aba2c2046177",
+   "8c6f1259cab8d49fb6ad47f3282ce5af",
+   "bf63c24d654cc3014ac5e3b940075eb2",
+   "b38665a9ee0c4fed844c7573c943a6d3",
+   "b87bdc5873de473e2648f78268d3fe63",
+   "027192730d96abc711e1ec0a34d3f2b2",
+   "628c6932920babfdcb6ad766b5dbb37d",
+   "e4a4089abc3a7160da407c4969d3d0aa"
+  ]
+ },
+ "fever_gold_evidence/valid": {
+  "rows": 15935,
+  "labels": {
+   "REFUTES": 4887,
+   "SUPPORTS": 4638,
+   "NOT ENOUGH INFO": 6410
+  },
+  "claim_evidence_pairs_repeated": 5,
+  "rows_with_exactly_one_of_supports_refutes_as_a_word": 12,
+  "duplicate_examples": [
+   "ef971313345197ec261bd4f9a2d539d8~997de9276d8f83b314997dd464cf3322",
+   "c8492fa20171d8807d8a25ca43166c49~ef87426381b557f55cfa65e297b09de2",
+   "c415815339faf70d6594696a3354c25d~c39e62c1439e9836e51c9e30bd591793",
+   "02b4d4caddc23868176cc7be859052d0~26e7e44a28b0906030074c9a50cfd630",
+   "86c5bf9c2faaad1045f113c0001316d8~54f446072f88a949f72826d5bf19ba9a"
+  ],
+  "verb_examples": [
+   "33f883856f2f2e6b48cbae2c782d4cfe",
+   "f7dc4a03b1f9295cc58314b4067941cb",
+   "037f4ffd99cd97bec5f0797f69a86bf9",
+   "36c2e1b9e11213000a24366de4d5ad28",
+   "9828531d8805a46b31158a93536018ff",
+   "ff7661ed4e25da02702905901b0eeaf6",
+   "7798e6521285c63ac96881b23c06c266",
+   "5f7b1ef9efff95227e169ca656decbad"
+  ]
+ },
+ "quality/validation": {
+  "rows": 2086,
+  "gold_option_verbatim_in_article_and_no_distractor": 35,
+  "rows_with_no_break_space": 20,
+  "examples": [
+   "validation:326",
+   "validation:392",
+   "validation:411",
+   "validation:517",
+   "validation:601",
+   "validation:693",
+   "validation:732",
+   "validation:744"
+  ]
+ }
+}

@@ -102,11 +102,16 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [D-098](#d-098) | dinostomp | a reasoning model spent all 256 output tokens thinking, returned an empty string and was billed in full; `params.reasoning_effort` now caps it | confirmed, fixed |
 | [N-035](#n-035) | Jevlike (Wikispeedia) | three hosted LLMs on the same 1,000 items: Qwen3-30B-A3B 29.8%, GPT-5.6 Luna 22.8%, Llama-3.1-8B 17.4% against the one-pass scorer's 29.8%; every arm clears its own blind run; 4 s and $0 against 12 to 23 minutes and 5 to 9 cents | measured |
 | [F-052](#f-052) | BFCL v4 | one live request keyed to `rotateImageAction` in `live_multiple` and to "irrelevant" in `live_irrelevance` with the same menu, so nobody can score both; three exact duplicates inside `live_irrelevance` | confirmed |
+| [F-053](#f-053) | CLINC150 | a fifth of messages name their gold intent; word overlap alone finds the gold on 87% of decidable items when intents are offered as options | confirmed |
+| [F-054](#f-054) | BANKING77 | 2% of messages name their gold intent, 25 repeat after folding a hyphen or quote, overlap finds the gold on 58% of decidable items | confirmed |
+| [F-055](#f-055) | FEVER | 110 (claim, evidence) pairs repeated verbatim in train and 5 in valid | confirmed |
+| [F-056](#f-056) | QuALITY | 35 questions answerable by searching the article for the options; 20 no-break spaces; the mirror states no license | confirmed |
 | [D-099](#d-099) | dinostomp | OpenRouter answered a rate limit with HTTP 200 and an `error` body; it parsed as an empty answer, scored wrong, never retried, and GPT-5.6 Luna read 21.9% with 1,379 of 1,933 records never reaching the model; error bodies now raise and 429/5xx retry | confirmed, fixed |
 | [N-036](#n-036) | onepass (BFCL v4 live) | first run of the calibration checks on four one-pass arms: ModernBERT-base ECE 0.033, MiniLM chooser 0.078, Jev 1.13 0.081, zero-shot MiniLM 0.194 (R23 warns: says 83%, delivers 63%); every arm's confidence ranks right over wrong (AUROC 0.73 to 0.87), Jev best | measured |
 | [N-037](#n-037) | Jev 1.13 as a judge | one yes/no question per grading, no reasoning text: 104 of 104 verdicts identical to the control judge on the capitals pod, J1 100% of 16 known cases, J2 zero flips over 96 content-free regrades, J3 zero self-contradictions; the witness gate refused the first rubric because Jev read `Franc` as France at 0.64, and one added sentence moved it to 0.04 | measured |
 | [N-038](#n-038) | XSTest v2 (as a refusal-judge test) | four judges against two human annotators on 1,347 completions, corrected so every judge sees the same label definitions: Jev 89.6% (ECE 0.049), XSTest's string matcher 87.7%, Qwen3-30B 87.3%, Llama-3.1-8B 65.8%; Jev over Qwen paired p 0.001; every blind run on the 57.7% floor; the first version gave the definitions to Jev only | measured, corrected |
 | [N-039](#n-039) | XSTest v2 (as a refusal-judge test) | two purpose-built safety judges join the same 1,347 items: WildGuard 7B leads the field in the binary view (95.2%, F1 0.944) and beats Jev there (paired p 0.0005) while tying it three-way; the StrongREJECT evaluator, a jailbreak-success scorer, calls 57% of responses refusals against the humans' 42% | measured |
+| [N-040](#n-040) | TruthfulQA | the multiple_choice config as a judge task: nothing found on 17 data checks over 5,412 rows | measured |
 | [D-100](#d-100) | dinostomp | `--resume` did not carry the probe: a blind run resumed without `--probe blind` continued as an informed run into the blind file and rewrote its manifest without the probe; GPT-5.6 Luna's route-live "blind" score (80.2%) was 1,930 informed answers; resume now inherits the probe and refuses a different one | confirmed, fixed |
 | [F-019](#f-019) | LogiQA | 8 items with a duplicated option; 3 offer the same option four times | confirmed |
 | [F-020](#f-020) | DROP | 86 duplicated questions, 37 keyed to different accepted answers | confirmed |
@@ -247,7 +252,7 @@ at fault.
 
 | check | findings |
 |---|---|
-| `G1` | [D-086](#d-086) |
+| `G1` | [D-086](#d-086), [F-054](#f-054), [F-056](#f-056) |
 | `G6` | [D-080](#d-080) |
 | `G7` | [D-080](#d-080), [D-085](#d-085) |
 | `G8` | [D-081](#d-081) |
@@ -269,20 +274,20 @@ at fault.
 | `R20` | [N-008](#n-008) |
 | `R23` | [N-036](#n-036) |
 | `R24` | [N-036](#n-036) |
-| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-044](#f-044), [F-045](#f-045), [F-046](#f-046), [F-047](#f-047), [F-029](#f-029), [F-052](#f-052), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
-| `S2` | [F-004](#f-004), [F-041](#f-041), [F-043](#f-043), [F-045](#f-045), [F-046](#f-046), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075) |
+| `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-044](#f-044), [F-045](#f-045), [F-046](#f-046), [F-047](#f-047), [F-029](#f-029), [F-052](#f-052), [F-055](#f-055), [N-040](#n-040), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
+| `S2` | [F-004](#f-004), [F-041](#f-041), [F-043](#f-043), [F-045](#f-045), [F-046](#f-046), [F-053](#f-053), [F-054](#f-054), [F-056](#f-056), [N-040](#n-040), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052), [D-058](#d-058) |
 | `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-020](#n-020), [N-012](#n-012), [F-025](#f-025) |
 | `S6` | [D-053](#d-053), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066) |
 | `S7` | [F-027](#f-027), [F-028](#f-028), [F-041](#f-041), [F-042](#f-042), [F-044](#f-044), [F-052](#f-052), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-042](#d-042) |
-| `S9` | [F-013](#f-013), [N-001](#n-001), [D-015](#d-015), [D-061](#d-061) |
+| `S9` | [F-013](#f-013), [F-053](#f-053), [F-054](#f-054), [N-001](#n-001), [D-015](#d-015), [D-061](#d-061) |
 | `S10` | [N-006](#n-006) |
 | `S11` | [F-012](#f-012), [N-004](#n-004), [N-031](#n-031), [D-014](#d-014), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078) |
 | `S12` | [D-044](#d-044) |
 | `S15` | [D-043](#d-043), [N-017](#n-017) |
-| `S19` | [F-040](#f-040), [F-043](#f-043), [F-044](#f-044) |
-| `S20` | [F-040](#f-040) |
+| `S19` | [F-040](#f-040), [F-043](#f-043), [F-044](#f-044), [F-054](#f-054) |
+| `S20` | [F-040](#f-040), [N-040](#n-040) |
 | `S21` | [D-079](#d-079) |
 | `T1` | [D-027](#d-027) |
 | `T4` | [N-009](#n-009), [D-020](#d-020) |
@@ -308,6 +313,7 @@ at fault.
 | MT-Bench / LLM-as-judge | [N-019](#n-019), [N-022](#n-022) |
 | SciQ | [F-010](#f-010), [F-013](#f-013) |
 | SWE-bench | [F-039](#f-039), [N-026](#n-026) |
+| TruthfulQA | [F-004](#f-004), [N-040](#n-040) |
 | XSTest v2 (as a refusal-judge test) | [N-038](#n-038), [N-039](#n-039) |
 | a judge (qwen3-30b) | [F-014](#f-014) |
 | a RAG agent | [F-017](#f-017) |
@@ -316,9 +322,11 @@ at fault.
 | AQuA-RAT | [F-023](#f-023) |
 | ARC, OpenBookQA, HellaSwag, WinoGrande | [N-003](#n-003) |
 | ASDiv | [F-029](#f-029) |
+| BANKING77 | [F-054](#f-054) |
 | BFCL v4 | [F-052](#f-052) |
 | BoolQ | [F-040](#f-040) |
 | CIFAR-10 / ciFAIR | [N-017](#n-017) |
+| CLINC150 | [F-053](#f-053) |
 | CNN/DailyMail | [F-045](#f-045) |
 | CommonsenseQA | [F-008](#f-008) |
 | CUDA Agent reward harness | [F-049](#f-049) |
@@ -326,6 +334,7 @@ at fault.
 | DeepSWE v1.1 | [N-025](#n-025) |
 | dinostomp-aei | [D-050](#d-050) |
 | DROP | [F-020](#f-020) |
+| FEVER | [F-055](#f-055) |
 | four small models | [F-015](#f-015) |
 | HarmBench (ArtPrompt baseline) | [F-036](#f-036) |
 | HellaSwag, ARC, MMLU | [N-001](#n-001) |
@@ -350,6 +359,7 @@ at fault.
 | Pharmacist Licensure Exam | [F-025](#f-025) |
 | public HF datasets | [N-020](#n-020) |
 | QASC, AG News | [N-030](#n-030) |
+| QuALITY | [F-056](#f-056) |
 | QuaRTz | [F-027](#f-027) |
 | RACE | [F-022](#f-022) |
 | Reinhart-Rogoff | [N-032](#n-032) |
@@ -359,7 +369,6 @@ at fault.
 | SQuAD v2 | [F-042](#f-042) |
 | StrongREJECT | [N-024](#n-024) |
 | TriviaQA | [F-041](#f-041) |
-| TruthfulQA | [F-004](#f-004) |
 | tweet_eval hate | [N-029](#n-029) |
 | XNLI (Russian), emotion | [N-028](#n-028) |
 
@@ -2183,6 +2192,102 @@ https://epoch.ai/benchmarks/berkeley-function-calling-leaderboard/review
 
 ---
 
+### F-053
+**CLINC150 · one message in five names its gold intent, and the option sharing the most words with the message is the gold one on 87% of decidable items when the intents are offered as options**
+`answer-leak` (S2), `surface-shortcut` (S9) · 2026-09-23 · confirmed
+
+Found while converting CLINC150 (`clinc/clinc_oos`, config `plus`, CC BY 3.0)
+into a typed decision: the message, and ten intents from the same domain as
+options, with the authors' `domains.json` giving the domains. Receipts and a
+source-level verifier are in
+[audits/typed-decision-corpora](audits/typed-decision-corpora/FINDINGS.md).
+
+**Independent of any framing**, over the full public splits: the gold intent's
+name, underscores read as spaces, appears whole-word in the message on 3,146
+of 15,000 in-scope train rows (21.0%), 603 of 3,000 validation (20.1%) and
+942 of 4,500 test (20.9%). "what is needed for setting up direct deposit" is
+labelled `direct_deposit`; "how do you say hello in japanese" is `translate`.
+
+**Under the ten-option framing** with same-domain distractors drawn at random,
+`answer-leak` (S2) fires on 3,107 of 15,249 train rows and 596 of 3,100
+validation rows: the gold is named and no distractor is. `surface-shortcut`
+(S9) finds the gold in 1,241 of 1,420 decidable items by word overlap with the
+message alone, against about 142 expected (z=97). Drawing the nine distractors
+by that same overlap, so the confusable intents are the ones offered, removes
+the exact-name leak and brings the overlap shortcut to 788 of 1,099 (72%,
+z=68). It does not remove it.
+
+**Scope.** A 150-way classifier trained on label indices never sees the names,
+and for it none of this is a defect. Any system that reads the intent names,
+which is every LLM readout of CLINC150 and every typed-decision use of it,
+gets a fifth of the answers from the name alone. The rate is the finding; the
+fix in the conversion (drop the leaking rows) is not neutral, since intents
+with literal names lose rows, and the counts above say how many.
+
+---
+
+### F-054
+**BANKING77 · 2% of messages name their gold intent, 25 messages repeat after folding a hyphen or a quote, and the most-overlap option is the gold one on 58% of decidable items**
+`answer-leak` (S2), `surface-shortcut` (S9), `lookalike-questions` (S19), `cell-hygiene` (G1) · 2026-09-23 · confirmed
+
+The same conversion as [F-053](#f-053) on BANKING77 (the authors' GitHub CSVs,
+CC BY 4.0; the Hub copy is a retired loader script), ten intents a row, the
+nine distractors the most name-similar. Receipts in
+[audits/typed-decision-corpora](audits/typed-decision-corpora/FINDINGS.md).
+
+Independent of the framing: the gold intent's name appears whole-word in the
+message on 203 of 10,003 train rows (2.0%) and 65 of 3,080 test rows (2.1%).
+Twenty-one train messages and four test messages are repeats of another once
+case, curly quotes and hyphens are folded ("Can I top-up any amount?" and "Can
+I top up any amount?" are two rows). Two messages carry a NO-BREAK SPACE
+inside a dollar amount.
+
+Under the framing: `surface-shortcut` finds the gold by word overlap in 607 of
+1,046 decidable items (58%, z=52) with name-similar distractors and 415 of 896
+(46%, z=36) with overlap-drawn ones. A tenth of the leak rate of CLINC150,
+because BANKING77's names are compounds ("card_payment_wrong_exchange_rate")
+that messages rarely contain whole.
+
+---
+
+### F-055
+**FEVER, gold evidence release · 110 (claim, evidence) pairs appear twice in train and 5 in valid; 152 rows contain exactly one of the words "supports" and "refutes"**
+`dup-questions` (S1) · 2026-09-23 · confirmed
+
+`copenlu/fever_gold_evidence` (CC BY-SA 3.0), the FEVER release that carries
+the gold evidence sentences with each claim. Over the full splits, folding
+case, quotes and whitespace: 110 of 228,277 train rows and 5 of 15,935 valid
+rows are a verbatim repeat of another row's claim and evidence. One made it
+into a 3,000-row seeded sample and fired `dup-questions` there. Receipts in
+[audits/typed-decision-corpora](audits/typed-decision-corpora/FINDINGS.md).
+
+Recorded and not counted as a defect: 152 train rows and 12 valid rows have
+the claim or its evidence containing exactly one of the words "supports" and
+"refutes". That is only a leak for a conversion that names its two options
+with those verbs, which this one did; it is noted for anyone who does the
+same. The natural label mix in train is 50.3% SUPPORTS, 29.1% NOT ENOUGH
+INFO, 20.6% REFUTES, which a converted sample should balance and this one did.
+
+---
+
+### F-056
+**QuALITY, Hub mirror · 35 of 2,086 validation questions have the gold option verbatim in the article and no distractor, 20 carry a no-break space, and the mirror states no license where the origin records one per article**
+`answer-leak` (S2), `cell-hygiene` (G1) · 2026-09-23 · confirmed
+
+`emozilla/quality`, a Hub mirror of QuALITY (multiple choice over articles of
+about 5,000 tokens). Over the full validation split: 35 questions (1.7%) can be
+answered by searching the article for the four options, because the gold one
+is in it verbatim and none of the others is. Twenty rows carry a NO-BREAK
+SPACE in the article or question. Receipts and verifier in
+[audits/typed-decision-corpora](audits/typed-decision-corpora/FINDINGS.md).
+
+The provenance finding is the one that decides use: the mirror's card states
+no license, and the originating repository stores a license per article,
+which the mirror's columns do not carry. The set was audited and not trained
+on for that reason.
+
+---
+
 ### D-099
 **A rate-limit error inside an HTTP 200 was scored as an empty answer: 1,379 of 1,933 records for one model were the provider's availability, not the model**
 `openrouter provider` · 2026-09-18 · confirmed, fixed
@@ -2496,6 +2601,25 @@ one A10G, outside the ledger: under $1. Outputs are committed in
 `audits/xstest-refusal-guards/outputs/` and pinned by sha256; `dinostomp
 replay audits/xstest-refusal audits/xstest-refusal-guards` shows all six
 side by side after checking the items and scorer match.
+
+---
+
+### N-040
+**TruthfulQA · the `multiple_choice` config as a judge task: nothing found on 17 data checks over 5,412 (question, answer) rows**
+`answer-leak` (S2), `dup-questions` (S1), `key-skew` (S20) · 2026-09-23 · measured
+
+The 817 questions with their `mc2` choices and truth labels, one row per
+(question, candidate answer), asking whether the answer is true: 5,882 pairs,
+44% true. Split by question with a seed into 3,128 training rows (balanced on
+the answer) and 2,284 held-out rows (natural rate), and each file run through
+`dinostomp stomp`: sixteen and seventeen data checks respectively, nothing
+fired, no warning. Receipts in
+[audits/typed-decision-corpora](audits/typed-decision-corpora/FINDINGS.md).
+
+Recorded because it is the one of five sets converted that day where the
+battery had nothing to say, and because [F-004](#f-004) found an item passable
+by restating the question in the `generation` config of the same benchmark;
+this pass was over the `multiple_choice` config and does not bear on that.
 
 ---
 
@@ -6547,11 +6671,11 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **52** |
-| &nbsp;&nbsp;of which receipt-backed dataset defects | 16 (F-001 to F-004, F-008 to F-013, F-041 to F-046) |
+| findings in other people's evals (**F**) | **56** |
+| &nbsp;&nbsp;of which receipt-backed dataset defects | 20 (F-001 to F-004, F-008 to F-013, F-041 to F-046, F-053 to F-056) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
-| negative results, recorded rather than dropped (**N**) | **39** |
+| negative results, recorded rather than dropped (**N**) | **40** |
 | defects in dinostomp itself (**D**) | **100** |
 
 Ninety-one to forty-nine. That ratio is the useful number to publish, and it is the

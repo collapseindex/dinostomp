@@ -1,0 +1,1733 @@
+{
+ "tool": "dinostomp",
+ "version": "0.63.0",
+ "target": "fever_answerable_n3000_s42.jsonl",
+ "reproduce": "dinostomp stomp fever_answerable_n3000_s42.jsonl",
+ "generated_at": "2026-09-23T02:56:01.797516+00:00",
+ "thresholds": {
+  "position_margin": {
+   "value": 0.2,
+   "source": "default",
+   "provenance": "calibrated",
+   "basis": "measured against clean data by dinocorpus: the margin is ABSOLUTE and applied to each of k positions with no multiplicity correction, so on clean 4-option data a dataset trips S3 by chance 16.3% of the time at 20 items, 8.7% at 24, 3.3% at 30 and 0.4% at 50. min_choice_items=20 admits the noisiest end of that. Not retuned on one measurement; S3 warns and never gates, and the warning now states the rate at the size it fired on. Full curve: D-046."
+  },
+  "length_margin": {
+   "value": 0.1,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "uncheckable_warn": {
+   "value": 0.2,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "guess_margin": {
+   "value": 0.1,
+   "source": "default",
+   "provenance": "calibrated",
+   "basis": "found live: a 1B model answering one label constantly sat at exactly chance and pooling hid it"
+  },
+  "min_choice_items": {
+   "value": 20.0,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "20 keyed choice items before position or length skew"
+  },
+  "min_checkable": {
+   "value": 20.0,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "20 records before a per-model rate is worth reporting"
+  },
+  "min_leak_len": {
+   "value": 2.0,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "2 characters before a target is long enough to 'appear' in a question"
+  },
+  "dropped_rows_max": {
+   "value": 0.01,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "1% of a file being unauditable is the line between housekeeping and a structural problem. Empirical basis: all 31 fetched benchmark corpora drop ZERO rows, so any material drop is unusual rather than routine"
+  },
+  "near_dup_bits": {
+   "value": 5.0,
+   "source": "default",
+   "provenance": "calibrated",
+   "basis": "5 of 64 bits is conventional in the perceptual-hash literature, and is now MEASURED against a human annotation: on ciFAIR's hand-labelled CIFAR-10 duplicates it recovers 28.1% of them (70 of 249) and flags 158 test/train pairs across 60,000 images, while every byte-level check recovers 0%. 8 bits nearly doubles recall to 52.6% for 3.2x the candidates and starts flagging images the annotators judged similar but NOT duplicates. The default stays at 5: that curve is one dataset of 32x32 photographs, and it is not a licence to reset a default for documents or spectrograms. Full curve: N-017, and `benchmarks/cifair/compare.py --sweep` re-derives it."
+  },
+  "kr20_min": {
+   "value": 0.5,
+   "source": "default",
+   "provenance": "convention",
+   "basis": "0.5 is the low end of what psychometrics calls usable reliability; 0.7+ is the textbook bar and would skip most fleets"
+  },
+  "negative_discrimination": {
+   "value": -0.2,
+   "source": "default",
+   "provenance": "convention",
+   "basis": "item analysis treats r_pb below about -0.2 as a candidate key error"
+  },
+  "dead_weight_max": {
+   "value": 0.5,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "min_fleet": {
+   "value": 4.0,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "4 examinees before fleet statistics are attempted"
+  },
+  "min_fleet_discrimination": {
+   "value": 12.0,
+   "source": "default",
+   "provenance": "calibrated",
+   "basis": "measured: 0/5 detections at 6 examinees, 5/5 at 40, on 200 items with 10% of keys inverted"
+  },
+  "min_fleet_agree": {
+   "value": 3.0,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "3 models before unanimity is a word worth using"
+  },
+  "min_fleet_dimension": {
+   "value": 6.0,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "6 examinees before a second axis is worth asking after; dimensionality needs more spread than reliability does"
+  },
+  "dimension_margin": {
+   "value": 0.1,
+   "source": "default",
+   "provenance": "calibrated",
+   "basis": "measured: at 0.10 above the fixed-margins null, 0/10 false alarms on unidimensional fleets and 0/10 misses on 2- and 3-cluster specialised fleets, at 6, 8 and 10 examinees"
+  },
+  "min_items_per_subskill": {
+   "value": 5.0,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "5 items per declared subskill before its within-group coherence is more than noise"
+  },
+  "min_items_psycho": {
+   "value": 5.0,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "5 common items before a matrix means anything"
+  },
+  "spend_tolerance_usd": {
+   "value": 1e-06,
+   "source": "default",
+   "provenance": "structural",
+   "basis": "floating-point slack on a money comparison"
+  },
+  "candidate_list_min": {
+   "value": 3.0,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "3 other answer-space values before a question counts as offering a candidate list"
+  },
+  "ordering_flip_rate": {
+   "value": 0.05,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "bootstrap_trials": {
+   "value": 400.0,
+   "source": "default",
+   "provenance": "structural",
+   "basis": "how many resamples a bootstrap draws"
+  },
+  "ceiling_acc": {
+   "value": 0.9,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "floor_acc": {
+   "value": 0.1,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "min_dynamic_range": {
+   "value": 0.1,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "escape_margin": {
+   "value": 0.1,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "escape_min_rate": {
+   "value": 0.05,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "shortcut_z": {
+   "value": 3.0,
+   "source": "default",
+   "provenance": "convention",
+   "basis": "3 sigma against the per-item chance null, the usual bar for calling a surface feature real"
+  },
+  "shortcut_lift": {
+   "value": 0.1,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "target_leak_nmi": {
+   "value": 0.5,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "0.5 normalized mutual information: a column that resolves half the target's entropy is worth a human's eye. A candidate, not a verdict; only the author knows if it exists at predict time"
+  },
+  "collapse_margin": {
+   "value": 0.3,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "blind_lift_min": {
+   "value": 0.1,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "collapse_exclude_share": {
+   "value": 0.95,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "95% identical before a model is called constant"
+  },
+  "seed_spread_min": {
+   "value": 0.05,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "a practical floor beneath the noise band, so a significant 2-point move at huge n is not reported as a finding"
+  },
+  "min_billed_chars": {
+   "value": 40.0,
+   "source": "default",
+   "provenance": "calibrated",
+   "basis": "below 40 characters chars/4 is too noisy to bill against"
+  },
+  "billing_ratio_max": {
+   "value": 3.0,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "order_swing_min": {
+   "value": 0.05,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "same practical floor, for presentation order"
+  },
+  "template_swing_min": {
+   "value": 0.05,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "same practical floor, for instruction framing"
+  },
+  "noise_z": {
+   "value": 1.96,
+   "source": "default",
+   "provenance": "derived",
+   "basis": "1.96 standard errors is the 95% two-sided normal quantile"
+  },
+  "contains_target_max": {
+   "value": 0.25,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "min_scored_misses": {
+   "value": 5.0,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "ece_max": {
+   "value": 0.1,
+   "source": "default",
+   "provenance": "convention",
+   "basis": "0.10 is ten points of stated confidence the accuracy does not back; Guo et al. 2017 report 0.05 to 0.17 for uncalibrated deep nets and under 0.03 after temperature scaling, so the bar sits between a fixable habit and an honest number"
+  },
+  "prose_answer_words": {
+   "value": 6.0,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "6 words at the median: a proper noun or a canonical title rarely runs longer, a sentence-length free-text answer almost always does, so this is where exact match stops testing capability and starts testing wording. A candidate, not a verdict"
+  },
+  "key_skew_margin": {
+   "value": 0.1,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "0.10 above a balanced key's 1/k: enough that always guessing the majority answer is a real strategy, not the parity a well-built key aims for. A candidate for the author's eye, not a defect; a real base rate can be skewed"
+  },
+  "global_label_max": {
+   "value": 3.0,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "label_reuse_min": {
+   "value": 10.0,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "10 items per distinct answer on average: a classification set reuses its few labels heavily (emotion is ~333), open QA does not (TriviaQA is ~2), so this is where a small answer space stops being per-item keys and becomes a label vocabulary S2 should not read as leakage"
+  },
+  "ungrounded_max": {
+   "value": 0.1,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "min_grounding_evidence": {
+   "value": 5.0,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "underreport_ratio": {
+   "value": 0.5,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "redundant_call_max": {
+   "value": 0.25,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "judge_agreement_min": {
+   "value": 0.9,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "self_preference_max": {
+   "value": 0.1,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  },
+  "judge_inconsistency_max": {
+   "value": 0.05,
+   "source": "default",
+   "provenance": "judgment",
+   "basis": "author judgment; no derivation or calibration on record"
+  }
+ },
+ "coverage": {
+  "declared_total": 102,
+  "declared": 20,
+  "ran": 20,
+  "skipped": [],
+  "not_applicable": [
+   {
+    "id": "S3",
+    "reason": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'supports' is the answer 50% of the time"
+   },
+   {
+    "id": "S4",
+    "reason": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'supports' is the answer 50% of the time"
+   },
+   {
+    "id": "S8",
+    "reason": "a contamination canary is a convention for data you author; a dataset audit does not expect one"
+   },
+   {
+    "id": "S9",
+    "reason": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'supports' is the answer 50% of the time"
+   },
+   {
+    "id": "S10",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "S11",
+    "reason": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot."
+   },
+   {
+    "id": "S12",
+    "reason": "no item carries an `input_ref`; nothing points at a file"
+   },
+   {
+    "id": "S13",
+    "reason": "no item carries an `input_ref`; nothing points at a file"
+   },
+   {
+    "id": "S14",
+    "reason": "no item carries an `input_ref`; nothing points at a file"
+   },
+   {
+    "id": "S15",
+    "reason": "no item carries an `input_ref`; nothing points at a file"
+   },
+   {
+    "id": "S16",
+    "reason": "no spec in a dataset audit, so no provenance to read; point this at an eval pod to reach it"
+   },
+   {
+    "id": "S18",
+    "reason": "no item offers two options that both parse as numbers, so there is no numeric equivalence to check"
+   },
+   {
+    "id": "XL1",
+    "reason": ".jsonl has no formulas, hidden rows or merged cells to read; workbook structure exists only in .xlsx/.xlsm"
+   },
+   {
+    "id": "XL2",
+    "reason": ".jsonl has no formulas, hidden rows or merged cells to read; workbook structure exists only in .xlsx/.xlsm"
+   },
+   {
+    "id": "XL3",
+    "reason": ".jsonl has no formulas, hidden rows or merged cells to read; workbook structure exists only in .xlsx/.xlsm"
+   },
+   {
+    "id": "XL4",
+    "reason": ".jsonl has no formulas, hidden rows or merged cells to read; workbook structure exists only in .xlsx/.xlsm"
+   },
+   {
+    "id": "XL5",
+    "reason": ".jsonl has no formulas, hidden rows or merged cells to read; workbook structure exists only in .xlsx/.xlsm"
+   },
+   {
+    "id": "XL6",
+    "reason": ".jsonl has no formulas, hidden rows or merged cells to read; workbook structure exists only in .xlsx/.xlsm"
+   },
+   {
+    "id": "JN1",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "JN2",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "JN3",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "JN4",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "JN5",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "JN6",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "JN7",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "W1",
+    "reason": "no scorer in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "W2",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "W3",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "W4",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "C1",
+    "reason": "no typed claims in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R1",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R2",
+    "reason": "no scorer in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R3",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R4",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R5",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R6",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R7",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R8",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R9",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R10",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R11",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R12",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R13",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R14",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R15",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R16",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R17",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R18",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R19",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "R20",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "R21",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "R22",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "R23",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "R24",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "T1",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "T2",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "T3",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "T4",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "T5",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "T6",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "T7",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "T8",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "T9",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "J1",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "J2",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "J3",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "J4",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "P1",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "P2",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "P3",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "P4",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "P5",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "P6",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "P7",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "P8",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "P9",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "P10",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "P11",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "P12",
+    "reason": "no runs in a dataset audit; point this at an eval pod to reach it"
+   },
+   {
+    "id": "P13",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "P14",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   },
+   {
+    "id": "P15",
+    "reason": "out of scope for a data audit (the dataset at rest)"
+   }
+  ]
+ },
+ "summary": {
+  "fail": 0,
+  "warn": 0,
+  "skip": 0,
+  "verdict": "sound",
+  "scope": "data"
+ },
+ "construct_validity": {
+  "measures_the_intended_construct": "NOT ESTABLISHED BY DINOSTOMP",
+  "why": "This battery checks mechanical integrity: that the data is not self-incriminating, the scorer can fail, the runs are honest, the numbers survive noise, and the claims have their evidence. None of that establishes that the eval measures what its author means it to measure. A trivial eval, a mis-aimed eval, and a saturated eval can all pass every check here.",
+  "what_would": "construct validity is argued, not computed: task analysis, comparison against an external criterion, and evidence that the score moves with the ability it claims to track. No tool can hand you that, and one that implied it could would be the worst instrument in this repository."
+ },
+ "findings": [
+  {
+   "id": "S1",
+   "slug": "dup-questions",
+   "stage": "data",
+   "check": "questions are unique",
+   "level": "pass",
+   "gating": true,
+   "detail": "0 duplicated question(s) among 3000",
+   "witnesses": 3000
+  },
+  {
+   "id": "S2",
+   "slug": "answer-leak",
+   "stage": "data",
+   "check": "no answer leaks into its own question",
+   "level": "pass",
+   "gating": true,
+   "detail": "0 of 3000 item(s) leak their answer into the question",
+   "witnesses": 3000
+  },
+  {
+   "id": "S3",
+   "slug": "position-bias",
+   "stage": "data",
+   "check": "gold answer does not favour an option position",
+   "level": "n/a",
+   "gating": false,
+   "detail": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'supports' is the answer 50% of the time",
+   "witnesses": 0
+  },
+  {
+   "id": "S4",
+   "slug": "length-bias",
+   "stage": "data",
+   "check": "gold answer is not systematically the longest option",
+   "level": "n/a",
+   "gating": false,
+   "detail": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'supports' is the answer 50% of the time",
+   "witnesses": 0
+  },
+  {
+   "id": "S5",
+   "slug": "dup-options",
+   "stage": "data",
+   "check": "no option offered twice in one item",
+   "level": "pass",
+   "gating": true,
+   "detail": "0 item(s) offer a duplicate option",
+   "witnesses": 3000
+  },
+  {
+   "id": "S6",
+   "slug": "target-not-offered",
+   "stage": "data",
+   "check": "every target is among its choices",
+   "level": "pass",
+   "gating": true,
+   "detail": "0 item(s) whose target is not among their choices",
+   "witnesses": 3000
+  },
+  {
+   "id": "S7",
+   "slug": "conflicting-keys",
+   "stage": "data",
+   "check": "no identical question with contradictory targets",
+   "level": "pass",
+   "gating": true,
+   "detail": "0 question(s) appear with conflicting targets",
+   "witnesses": 3000
+  },
+  {
+   "id": "S8",
+   "slug": "canary-present",
+   "stage": "data",
+   "check": "a contamination canary travels with the data",
+   "level": "n/a",
+   "gating": false,
+   "detail": "a contamination canary is a convention for data you author; a dataset audit does not expect one",
+   "witnesses": 0
+  },
+  {
+   "id": "S9",
+   "slug": "surface-shortcut",
+   "stage": "data",
+   "check": "no surface feature predicts the gold answer",
+   "level": "n/a",
+   "gating": false,
+   "detail": "every item offers the same options, so position and length are properties of the label set rather than of how each item's distractors were written. What varies is class balance: 'supports' is the answer 50% of the time",
+   "witnesses": 0
+  },
+  {
+   "id": "S10",
+   "slug": "canary-regurgitated",
+   "stage": "data",
+   "check": "no model reproduces the contamination canary",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "S11",
+   "slug": "corpus-overlap",
+   "stage": "data",
+   "check": "no item already appears in a reference dataset",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no reference dataset supplied; pass --against <file> to compare these items against a corpus you have. This never checks training data, and cannot.",
+   "witnesses": 0
+  },
+  {
+   "id": "S12",
+   "slug": "asset-drift",
+   "stage": "data",
+   "check": "every referenced asset resolves and still hashes the same",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no item carries an `input_ref`; nothing points at a file",
+   "witnesses": 0
+  },
+  {
+   "id": "S13",
+   "slug": "label-in-path",
+   "stage": "data",
+   "check": "no asset's own path gives away its label",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no item carries an `input_ref`; nothing points at a file",
+   "witnesses": 0
+  },
+  {
+   "id": "S14",
+   "slug": "split-leak",
+   "stage": "data",
+   "check": "no asset appears in two splits",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no item carries an `input_ref`; nothing points at a file",
+   "witnesses": 0
+  },
+  {
+   "id": "S15",
+   "slug": "near-dup-assets",
+   "stage": "data",
+   "check": "no near-duplicate assets",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no item carries an `input_ref`; nothing points at a file",
+   "witnesses": 0
+  },
+  {
+   "id": "S16",
+   "slug": "authorship-circularity",
+   "stage": "data",
+   "check": "the eval is not authored in a circle",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no spec in a dataset audit, so no provenance to read; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "S17",
+   "slug": "target-leak",
+   "stage": "data",
+   "check": "no single column all but determines the target",
+   "level": "pass",
+   "gating": false,
+   "detail": "0 of 3 column(s) all but determine the target; if any is not known at prediction time it is a label leak, which only you can decide",
+   "witnesses": 3,
+   "evidence": {
+    "candidates": [],
+    "target": "target"
+   }
+  },
+  {
+   "id": "S18",
+   "slug": "numeric-dup-options",
+   "stage": "data",
+   "check": "no two options are the same number written differently",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no item offers two options that both parse as numbers, so there is no numeric equivalence to check",
+   "witnesses": 0
+  },
+  {
+   "id": "S19",
+   "slug": "lookalike-questions",
+   "stage": "data",
+   "check": "no two items are the same question in different encodings",
+   "level": "pass",
+   "gating": false,
+   "detail": "0 group(s) of items are the same question in different encodings",
+   "witnesses": 3000
+  },
+  {
+   "id": "S20",
+   "slug": "key-skew",
+   "stage": "data",
+   "check": "the answer key is not dominated by one value",
+   "level": "pass",
+   "gating": false,
+   "detail": "the answer key is not dominated by one value (modal 50% of 2 answers)",
+   "witnesses": 3000,
+   "evidence": {
+    "modal_share": 0.504,
+    "n_distinct": 2,
+    "modal_value": "supports"
+   }
+  },
+  {
+   "id": "S21",
+   "slug": "rows-audited",
+   "stage": "data",
+   "check": "the audit covers the rows it was given",
+   "level": "pass",
+   "gating": true,
+   "detail": "0 of 3000 row(s) were dropped: every row in the file was audited",
+   "witnesses": 3000,
+   "evidence": {
+    "rows_read": 3000,
+    "rows_dropped": 0,
+    "rows_audited": 3000,
+    "dropped_share": 0.0,
+    "gate": 0.01
+   }
+  },
+  {
+   "id": "G1",
+   "slug": "cell-hygiene",
+   "stage": "data",
+   "check": "no cell carries edge whitespace or invisible characters",
+   "level": "pass",
+   "gating": false,
+   "detail": "no edge whitespace or invisible characters in any header or cell",
+   "witnesses": 3000
+  },
+  {
+   "id": "G2",
+   "slug": "dup-rows",
+   "stage": "data",
+   "check": "rows are unique",
+   "level": "pass",
+   "gating": true,
+   "detail": "no duplicate rows among 3000",
+   "witnesses": 3000
+  },
+  {
+   "id": "G3",
+   "slug": "dup-keys",
+   "stage": "data",
+   "check": "no identifier column repeats a value",
+   "level": "pass",
+   "gating": false,
+   "detail": "no identifier column repeats a value",
+   "witnesses": 3000
+  },
+  {
+   "id": "G4",
+   "slug": "numeric-string",
+   "stage": "data",
+   "check": "no digit-string column has leading zeros a conversion would destroy",
+   "level": "pass",
+   "gating": false,
+   "detail": "no digit-string column carries leading zeros",
+   "witnesses": 3000
+  },
+  {
+   "id": "G5",
+   "slug": "date-format",
+   "stage": "data",
+   "check": "no date column mixes formats or reads both ways",
+   "level": "pass",
+   "gating": false,
+   "detail": "no date column mixes formats or reads both ways",
+   "witnesses": 3000
+  },
+  {
+   "id": "G6",
+   "slug": "type-drift",
+   "stage": "data",
+   "check": "no numeric column is contaminated with text",
+   "level": "pass",
+   "gating": false,
+   "detail": "no numeric column carries non-numeric cells",
+   "witnesses": 3000
+  },
+  {
+   "id": "G7",
+   "slug": "sentinel-values",
+   "stage": "data",
+   "check": "no value stands in for missing without saying so",
+   "level": "pass",
+   "gating": false,
+   "detail": "no sentinel values found",
+   "witnesses": 3000
+  },
+  {
+   "id": "G8",
+   "slug": "category-collapse",
+   "stage": "data",
+   "check": "no category column splits one label across spellings",
+   "level": "pass",
+   "gating": false,
+   "detail": "no category column collapses under normalisation",
+   "witnesses": 3000
+  },
+  {
+   "id": "G9",
+   "slug": "percent-scale",
+   "stage": "data",
+   "check": "no rate column mixes fraction and percent scales",
+   "level": "pass",
+   "gating": false,
+   "detail": "no rate column mixes fraction and percent scales",
+   "witnesses": 3000
+  },
+  {
+   "id": "G10",
+   "slug": "formatted-numbers",
+   "stage": "data",
+   "check": "no numeric column stores symbols or separators",
+   "level": "pass",
+   "gating": false,
+   "detail": "no numeric column stores formatted text",
+   "witnesses": 3000
+  },
+  {
+   "id": "G11",
+   "slug": "near-dup-rows",
+   "stage": "data",
+   "check": "no rows are duplicates once case and whitespace stop counting",
+   "level": "pass",
+   "gating": false,
+   "detail": "no near-duplicate rows among 3000",
+   "witnesses": 3000
+  },
+  {
+   "id": "XL1",
+   "slug": "pasted-constant",
+   "stage": "data",
+   "check": "no constant is pasted inside a formula column",
+   "level": "n/a",
+   "gating": false,
+   "detail": ".jsonl has no formulas, hidden rows or merged cells to read; workbook structure exists only in .xlsx/.xlsm",
+   "witnesses": 0
+  },
+  {
+   "id": "XL2",
+   "slug": "formula-error",
+   "stage": "data",
+   "check": "no error value is saved in the workbook",
+   "level": "n/a",
+   "gating": true,
+   "detail": ".jsonl has no formulas, hidden rows or merged cells to read; workbook structure exists only in .xlsx/.xlsm",
+   "witnesses": 0
+  },
+  {
+   "id": "XL3",
+   "slug": "hidden-cells",
+   "stage": "data",
+   "check": "nothing an aggregate counts is hidden from the reader",
+   "level": "n/a",
+   "gating": false,
+   "detail": ".jsonl has no formulas, hidden rows or merged cells to read; workbook structure exists only in .xlsx/.xlsm",
+   "witnesses": 0
+  },
+  {
+   "id": "XL4",
+   "slug": "merged-cells",
+   "stage": "data",
+   "check": "no merged range flattens a row on import",
+   "level": "n/a",
+   "gating": false,
+   "detail": ".jsonl has no formulas, hidden rows or merged cells to read; workbook structure exists only in .xlsx/.xlsm",
+   "witnesses": 0
+  },
+  {
+   "id": "XL5",
+   "slug": "range-short",
+   "stage": "data",
+   "check": "every column aggregate covers its own column",
+   "level": "n/a",
+   "gating": true,
+   "detail": ".jsonl has no formulas, hidden rows or merged cells to read; workbook structure exists only in .xlsx/.xlsm",
+   "witnesses": 0
+  },
+  {
+   "id": "XL6",
+   "slug": "uncalculated",
+   "stage": "data",
+   "check": "every formula has been calculated",
+   "level": "n/a",
+   "gating": false,
+   "detail": ".jsonl has no formulas, hidden rows or merged cells to read; workbook structure exists only in .xlsx/.xlsm",
+   "witnesses": 0
+  },
+  {
+   "id": "JN1",
+   "slug": "join-viable",
+   "stage": "data",
+   "check": "the join returns rows at all",
+   "level": "n/a",
+   "gating": true,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "JN2",
+   "slug": "orphan-rows",
+   "stage": "data",
+   "check": "no left row is dropped by the join",
+   "level": "n/a",
+   "gating": false,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "JN3",
+   "slug": "key-normalisation",
+   "stage": "data",
+   "check": "no key fails to match on case or whitespace alone",
+   "level": "n/a",
+   "gating": true,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "JN4",
+   "slug": "parent-key-unique",
+   "stage": "data",
+   "check": "the right-hand key is unique",
+   "level": "n/a",
+   "gating": false,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "JN5",
+   "slug": "join-fanout",
+   "stage": "data",
+   "check": "the join does not multiply rows",
+   "level": "n/a",
+   "gating": false,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "JN6",
+   "slug": "key-type-drift",
+   "stage": "data",
+   "check": "both sides store the key the same way",
+   "level": "n/a",
+   "gating": false,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "JN7",
+   "slug": "totals-reconcile",
+   "stage": "data",
+   "check": "every parent total equals the sum of its children",
+   "level": "n/a",
+   "gating": true,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "W1",
+   "slug": "witness-coverage",
+   "stage": "scorer",
+   "check": "witnesses kill the mutant scorers",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no scorer in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "W2",
+   "slug": "surface-form",
+   "stage": "scorer",
+   "check": "a correct answer survives its surface form",
+   "level": "n/a",
+   "gating": false,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "W3",
+   "slug": "graded-witness",
+   "stage": "scorer",
+   "check": "a graded scorer witnesses its gradation",
+   "level": "n/a",
+   "gating": true,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "W4",
+   "slug": "scorer-fit",
+   "stage": "scorer",
+   "check": "an exact scorer is not graded against prose answers",
+   "level": "n/a",
+   "gating": false,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "C1",
+   "slug": "claim-evidence",
+   "stage": "claim",
+   "check": "every typed claim's evidence requirements hold",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no typed claims in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R1",
+   "slug": "input-drift",
+   "stage": "runner",
+   "check": "runs match the spec, data, and scorer on disk (no drift)",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R2",
+   "slug": "witness-replay",
+   "stage": "scorer",
+   "check": "the witness gate replays clean",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no scorer in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R3",
+   "slug": "spend-ledger",
+   "stage": "runner",
+   "check": "ledger spend agrees with the manifest and the spec cap",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R4",
+   "slug": "record-integrity",
+   "stage": "records",
+   "check": "every run record is schema-valid, unique, and its manifest's own",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R5",
+   "slug": "truncation-credit",
+   "stage": "records",
+   "check": "truncated outputs are never credited",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R6",
+   "slug": "uncheckable-rate",
+   "stage": "records",
+   "check": "uncheckable rate is sane",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R7",
+   "slug": "above-guessing",
+   "stage": "aggregate",
+   "check": "accuracy is distinguishable from guessing",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R8",
+   "slug": "verdict-rederive",
+   "stage": "scorer",
+   "check": "recorded verdicts re-score identically",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R9",
+   "slug": "summary-rederive",
+   "stage": "aggregate",
+   "check": "summaries match their run records",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R10",
+   "slug": "run-scope",
+   "stage": "runner",
+   "check": "runs cover the spec's declared scope, nothing foreign",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R11",
+   "slug": "selection-coverage",
+   "stage": "runner",
+   "check": "records cover exactly the seeded selection",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R12",
+   "slug": "scorer-escape",
+   "stage": "scorer",
+   "check": "no model selectively escapes the scorer",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R13",
+   "slug": "blind-solvable",
+   "stage": "aggregate",
+   "check": "the eval is not solvable blind",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R14",
+   "slug": "response-collapse",
+   "stage": "aggregate",
+   "check": "no model collapses onto one answer",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R15",
+   "slug": "input-blind",
+   "stage": "aggregate",
+   "check": "each model beats its own blind baseline",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R16",
+   "slug": "scorer-artifact",
+   "stage": "scorer",
+   "check": "failed answers do not contain the reference",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R17",
+   "slug": "nothing-scoreable",
+   "stage": "runner",
+   "check": "every model produced something scoreable",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R18",
+   "slug": "billing-mismatch",
+   "stage": "runner",
+   "check": "billed output tokens match the recorded text",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R19",
+   "slug": "engine-drift",
+   "stage": "tool",
+   "check": "the runs were produced by this engine",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "R20",
+   "slug": "repeat-ties",
+   "stage": "runner",
+   "check": "repeated items reached a verdict",
+   "level": "n/a",
+   "gating": false,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "R21",
+   "slug": "graded-range",
+   "stage": "records",
+   "check": "graded scores stay in range",
+   "level": "n/a",
+   "gating": true,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "R22",
+   "slug": "numeric-miss",
+   "stage": "scorer",
+   "check": "no failed answer numerically equals its target",
+   "level": "n/a",
+   "gating": false,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "R23",
+   "slug": "overconfident",
+   "stage": "aggregate",
+   "check": "reported confidence matches observed accuracy",
+   "level": "n/a",
+   "gating": false,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "R24",
+   "slug": "confidence-blind",
+   "stage": "aggregate",
+   "check": "confidence separates right answers from wrong ones",
+   "level": "n/a",
+   "gating": false,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "T1",
+   "slug": "forbidden-tool",
+   "stage": "records",
+   "check": "no forbidden tool is called",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "T2",
+   "slug": "required-tool",
+   "stage": "records",
+   "check": "every required tool is actually called",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "T3",
+   "slug": "trajectory-shape",
+   "stage": "records",
+   "check": "trajectories are well-formed",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "T4",
+   "slug": "answer-grounding",
+   "stage": "records",
+   "check": "passing answers are grounded in tool evidence",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "T5",
+   "slug": "trace-underreport",
+   "stage": "records",
+   "check": "no model under-reports its trajectory",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "T6",
+   "slug": "redundant-calls",
+   "stage": "records",
+   "check": "tool calls are not redundant",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "T7",
+   "slug": "answer-grounding-causal",
+   "stage": "records",
+   "check": "passing answers CHANGE when their evidence is withheld",
+   "level": "n/a",
+   "gating": false,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "T8",
+   "slug": "trace-observed",
+   "stage": "records",
+   "check": "the trajectory was observed, not self-reported",
+   "level": "n/a",
+   "gating": false,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "T9",
+   "slug": "retry-duplicate",
+   "stage": "records",
+   "check": "a timed-out call that already ran is not run again",
+   "level": "n/a",
+   "gating": false,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "J1",
+   "slug": "judge-agreement",
+   "stage": "scorer",
+   "check": "the judge agrees with cases whose answer is known",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "J2",
+   "slug": "judge-bias",
+   "stage": "scorer",
+   "check": "the judge is invariant to content-free perturbations",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "J3",
+   "slug": "judge-consistency",
+   "stage": "scorer",
+   "check": "the judge agrees with itself on identical input",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "J4",
+   "slug": "judge-self-preference",
+   "stage": "scorer",
+   "check": "the judge does not favour its own family",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "P1",
+   "slug": "fleet-reliability",
+   "stage": "aggregate",
+   "check": "fleet score totals are reliable (KR-20)",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "P2",
+   "slug": "item-discrimination",
+   "stage": "aggregate",
+   "check": "no item anti-correlates with fleet skill",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "P3",
+   "slug": "dead-weight",
+   "stage": "aggregate",
+   "check": "dead-weight items stay a minority",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "P4",
+   "slug": "matrix-complete",
+   "stage": "aggregate",
+   "check": "every model was asked the same items",
+   "level": "n/a",
+   "gating": true,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "P5",
+   "slug": "unanimous-wrong",
+   "stage": "aggregate",
+   "check": "no unanimous identical wrong answers",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "P6",
+   "slug": "ordering-noise",
+   "stage": "claim",
+   "check": "entitled ordering claims are separated beyond sampling noise",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "P7",
+   "slug": "ceiling-floor",
+   "stage": "aggregate",
+   "check": "the fleet is not pinned at a ceiling or floor",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "P8",
+   "slug": "dynamic-range",
+   "stage": "aggregate",
+   "check": "the eval separates the fleet (dynamic range)",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "P9",
+   "slug": "order-stability",
+   "stage": "aggregate",
+   "check": "answers survive re-ordering the options",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "P10",
+   "slug": "seed-stability",
+   "stage": "aggregate",
+   "check": "the number survives changing the seed",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "P11",
+   "slug": "prompt-stability",
+   "stage": "aggregate",
+   "check": "the number survives re-phrasing the instruction",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "P12",
+   "slug": "ranking-stability",
+   "stage": "aggregate",
+   "check": "the fleet ORDERING survives re-phrasing the instruction",
+   "level": "n/a",
+   "gating": false,
+   "detail": "no runs in a dataset audit; point this at an eval pod to reach it",
+   "witnesses": 0
+  },
+  {
+   "id": "P13",
+   "slug": "construct-dimensionality",
+   "stage": "aggregate",
+   "check": "the fleet varies on one axis, not a blend of abilities",
+   "level": "n/a",
+   "gating": false,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "P14",
+   "slug": "subskill-discriminant",
+   "stage": "aggregate",
+   "check": "declared subskills actually separate in the responses",
+   "level": "n/a",
+   "gating": false,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  },
+  {
+   "id": "P15",
+   "slug": "menu-stability",
+   "stage": "aggregate",
+   "check": "answers survive a changed tool list",
+   "level": "n/a",
+   "gating": false,
+   "detail": "out of scope for a data audit (the dataset at rest)",
+   "witnesses": 0
+  }
+ ],
+ "inputs": {
+  "data_sha256": "63dab5a5082beeef37c29b049f99d503b771773bb9aa24afe62b7bc59242cff2"
+ },
+ "dataset": {
+  "rows": 3000,
+  "items": 3000,
+  "mapping": {
+   "id": "id",
+   "input": "input",
+   "target": "target",
+   "choices": "options"
+  },
+  "separator": null
+ }
+}
