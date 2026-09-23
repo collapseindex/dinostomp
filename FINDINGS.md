@@ -106,6 +106,7 @@ dinostomp stomp benchmarks/<name>/eval.yaml   # re-derives the finding
 | [F-054](#f-054) | BANKING77 | 2% of messages name their gold intent, 25 repeat after folding a hyphen or quote, overlap finds the gold on 58% of decidable items | confirmed |
 | [F-055](#f-055) | FEVER | 110 (claim, evidence) pairs repeated verbatim in train and 5 in valid | confirmed |
 | [F-056](#f-056) | QuALITY | 35 questions answerable by searching the article for the options; 20 no-break spaces; the mirror states no license | confirmed |
+| [F-057](#f-057) | PacifAIst | the safe action is the longest option in 58% of scenarios and the most prompt-like in 62% of decidable ones; after the context flip, 13% and 19% | confirmed |
 | [D-099](#d-099) | dinostomp | OpenRouter answered a rate limit with HTTP 200 and an `error` body; it parsed as an empty answer, scored wrong, never retried, and GPT-5.6 Luna read 21.9% with 1,379 of 1,933 records never reaching the model; error bodies now raise and 429/5xx retry | confirmed, fixed |
 | [N-036](#n-036) | onepass (BFCL v4 live) | first run of the calibration checks on four one-pass arms: ModernBERT-base ECE 0.033, MiniLM chooser 0.078, Jev 1.13 0.081, zero-shot MiniLM 0.194 (R23 warns: says 83%, delivers 63%); every arm's confidence ranks right over wrong (AUROC 0.73 to 0.87), Jev best | measured |
 | [N-037](#n-037) | Jev 1.13 as a judge | one yes/no question per grading, no reasoning text: 104 of 104 verdicts identical to the control judge on the capitals pod, J1 100% of 16 known cases, J2 zero flips over 96 content-free regrades, J3 zero self-contradictions; the witness gate refused the first rubric because Jev read `Franc` as France at 0.64, and one added sentence moved it to 0.04 | measured |
@@ -277,11 +278,11 @@ at fault.
 | `S1` | [F-001](#f-001), [F-003](#f-003), [F-011](#f-011), [F-027](#f-027), [F-028](#f-028), [F-044](#f-044), [F-045](#f-045), [F-046](#f-046), [F-047](#f-047), [F-029](#f-029), [F-052](#f-052), [F-055](#f-055), [N-040](#n-040), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-027](#d-027), [D-042](#d-042) |
 | `S2` | [F-004](#f-004), [F-041](#f-041), [F-043](#f-043), [F-045](#f-045), [F-046](#f-046), [F-053](#f-053), [F-054](#f-054), [F-056](#f-056), [N-040](#n-040), [F-021](#f-021), [D-004](#d-004), [D-037](#d-037), [D-059](#d-059), [D-071](#d-071), [D-073](#d-073), [D-074](#d-074), [D-075](#d-075) |
 | `S3` | [N-001](#n-001), [D-015](#d-015), [D-016](#d-016), [D-046](#d-046), [D-052](#d-052), [D-058](#d-058) |
-| `S4` | [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
+| `S4` | [F-057](#f-057), [F-024](#f-024), [N-001](#n-001), [D-015](#d-015) |
 | `S5` | [F-002](#f-002), [F-008](#f-008), [F-009](#f-009), [F-010](#f-010), [F-018](#f-018), [F-019](#f-019), [F-022](#f-022), [F-023](#f-023), [N-003](#n-003), [N-020](#n-020), [N-012](#n-012), [F-025](#f-025) |
 | `S6` | [D-053](#d-053), [D-064](#d-064), [D-065](#d-065), [D-066](#d-066) |
 | `S7` | [F-027](#f-027), [F-028](#f-028), [F-041](#f-041), [F-042](#f-042), [F-044](#f-044), [F-052](#f-052), [F-020](#f-020), [N-020](#n-020), [D-005](#d-005), [D-042](#d-042) |
-| `S9` | [F-013](#f-013), [F-053](#f-053), [F-054](#f-054), [N-001](#n-001), [D-015](#d-015), [D-061](#d-061) |
+| `S9` | [F-013](#f-013), [F-053](#f-053), [F-054](#f-054), [F-057](#f-057), [N-001](#n-001), [D-015](#d-015), [D-061](#d-061) |
 | `S10` | [N-006](#n-006) |
 | `S11` | [F-012](#f-012), [N-004](#n-004), [N-031](#n-031), [D-014](#d-014), [D-076](#d-076), [D-077](#d-077), [D-078](#d-078) |
 | `S12` | [D-044](#d-044) |
@@ -356,6 +357,7 @@ at fault.
 | MMLU-Redux 2.0 | [F-018](#f-018) |
 | NCLEX nursing | [N-016](#n-016) |
 | onepass (BFCL v4 live) | [N-036](#n-036) |
+| PacifAIst | [F-057](#f-057) |
 | Pharmacist Licensure Exam | [F-025](#f-025) |
 | public HF datasets | [N-020](#n-020) |
 | QASC, AG News | [N-030](#n-030) |
@@ -2285,6 +2287,37 @@ The provenance finding is the one that decides use: the mirror's card states
 no license, and the originating repository stores a license per article,
 which the mirror's columns do not carry. The set was audited and not trained
 on for that reason.
+
+---
+
+### F-057
+**PacifAIst · as a four-way choice, the safe action is the longest option in 205 of 351 scenarios and the one sharing the most words with the prompt in 170 of 274 decidable ones; after the Brittle Safety situational update, 45 and 55**
+`length-bias` (S4), `surface-shortcut` (S9) · 2026-09-23 · confirmed
+
+PacifAIst (Herrador 2025, MIT), 351 scenarios as released in the Brittle
+Safety context-flip package (Apache 2.0), each a scenario and four actions
+with one keyed safe. Converted here as a typed decision with the four actions
+as options, twins split together. Receipts and the verifier in
+[audits/typed-decision-corpora](audits/typed-decision-corpora/FINDINGS.md).
+
+**Independent of the framing**, over all 351 nominal scenarios: the keyed safe
+action is the strictly longest of the four in 205 (58.4%, against 25% at
+chance), and among the 274 scenarios where one option shares the most words
+with the prompt, that option is the keyed one in 170 (62.0%). Under the
+flipped context, where the same four actions are offered and a different one
+is keyed safe, the keyed action is the longest in 45 (12.8%) and the
+most-overlapping in 55 of 291 (18.9%).
+
+**Scope.** A reader that picks the longest or the most prompt-like action
+scores well above chance under the nominal context and below chance after
+the flip. That is the same signature the Brittle Safety Rate is defined to
+catch, persisting in the nominal answer after the update, without any safety
+reasoning at all. This does not say any evaluated model does that; it says
+the benchmark cannot tell that reader from a brittle one, and a length or
+overlap control belongs next to the BSR when it is reported. On the
+converted training half `dinostomp stomp` reads the length bias at +12%
+over per-item expectation and the shortcut at z=7.3 (non-gating); the
+source-level counts above are the ones to quote.
 
 ---
 
@@ -6671,8 +6704,8 @@ Count it precisely.
 
 | series | count |
 |---|---|
-| findings in other people's evals (**F**) | **56** |
-| &nbsp;&nbsp;of which receipt-backed dataset defects | 20 (F-001 to F-004, F-008 to F-013, F-041 to F-046, F-053 to F-056) |
+| findings in other people's evals (**F**) | **57** |
+| &nbsp;&nbsp;of which receipt-backed dataset defects | 21 (F-001 to F-004, F-008 to F-013, F-041 to F-046, F-053 to F-057) |
 | &nbsp;&nbsp;of which findings about a judge, model or agent | 4 (F-014 to F-017) |
 | &nbsp;&nbsp;of which findings about running one | 3 (F-005, F-006, F-007) |
 | negative results, recorded rather than dropped (**N**) | **40** |

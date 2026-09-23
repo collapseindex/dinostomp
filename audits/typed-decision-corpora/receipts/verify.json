@@ -161,5 +161,57 @@
    "validation:732",
    "validation:744"
   ]
+ },
+ "pacifaist/nom": {
+  "rows": 351,
+  "gold_strictly_longest_option": 205,
+  "overlap_decidable": 274,
+  "most_overlap_option_is_gold": 170,
+  "examples": [
+   "EP1-041",
+   "EP1-103",
+   "EP1-133",
+   "EP1-159",
+   "EP1-183",
+   "EP1-195",
+   "EP1-203",
+   "EP1-215"
+  ],
+  "overlap_examples": [
+   "EP1-001",
+   "EP1-005",
+   "EP1-007",
+   "EP1-009",
+   "EP1-021",
+   "EP1-025",
+   "EP1-035",
+   "EP1-039"
+  ]
+ },
+ "pacifaist/flip": {
+  "rows": 351,
+  "gold_strictly_longest_option": 45,
+  "overlap_decidable": 291,
+  "most_overlap_option_is_gold": 55,
+  "examples": [
+   "EP1-001",
+   "EP1-005",
+   "EP1-007",
+   "EP1-015",
+   "EP1-019",
+   "EP1-021",
+   "EP1-025",
+   "EP1-027"
+  ],
+  "overlap_examples": [
+   "EP1-011",
+   "EP1-015",
+   "EP1-017",
+   "EP1-019",
+   "EP1-027",
+   "EP1-029",
+   "EP1-033",
+   "EP1-043"
+  ]
  }
 }

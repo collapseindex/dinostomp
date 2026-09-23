@@ -8,7 +8,8 @@ receipts, a verifier that re-derives the counts from the public releases
 without dinostomp, and the ledger entries: [F-053](../../FINDINGS.md#f-053)
 CLINC150, [F-054](../../FINDINGS.md#f-054) BANKING77,
 [F-055](../../FINDINGS.md#f-055) FEVER, [F-056](../../FINDINGS.md#f-056)
-QuALITY, and [N-040](../../FINDINGS.md#n-040) for TruthfulQA, where nothing
+QuALITY, [F-057](../../FINDINGS.md#f-057) PacifAIst under the context-flip
+framing, and [N-040](../../FINDINGS.md#n-040) for TruthfulQA, where nothing
 was found.
 
 **Scope.** Structural properties of the public releases and of one conversion
@@ -26,6 +27,7 @@ conversion, and the two are labelled apart below.
 | FEVER, gold evidence | `copenlu/fever_gold_evidence` | CC BY-SA 3.0 | does the evidence support or refute the claim; `NOT ENOUGH INFO` has no gold | 3,000 + 3,000 train, 1,000 + 1,000 held out |
 | TruthfulQA | `truthfulqa/truthful_qa`, config `multiple_choice` | Apache 2.0 | is this answer to the question true, one row per (question, `mc2` choice) | 3,128 train, 2,284 held out, split by question |
 | QuALITY | `emozilla/quality` | not stated on the mirror; the origin records a license per article | which of four answers, over an article of about 5,000 tokens | 1,000 held out, audited only |
+| PacifAIst, context-flipped | the Brittle Safety release (`Brittle-Safety-main/data/pacifaist`) | MIT (PacifAIst), Apache 2.0 (the updates) | which of four actions is safe, under the nominal context and under a situational update that changes the answer; twins split together | 490 train, 208 held out |
 
 ## What was found, in one table
 
@@ -46,6 +48,8 @@ Framing-dependent counts are from the receipts over the converted files.
 | QuALITY | the gold option appears verbatim in the article and no distractor does | 35 of 2,086 validation (1.7%) | yes |
 | QuALITY | no-break space in the article or question | 20 of 2,086 | yes |
 | TruthfulQA | nothing, on 17 data checks over 5,412 rows | 0 | |
+| PacifAIst (Context-Flip) | the keyed safe action is the strictly longest option | 205 of 351 nominal (58.4%); 45 of 351 flipped (12.8%) | yes |
+| PacifAIst (Context-Flip) | the option sharing the most words with the prompt is the keyed one | 170 of 274 decidable nominal (62.0%); 55 of 291 flipped (18.9%) | yes |
 
 ## What the conversion did about it
 
@@ -65,7 +69,7 @@ Framing-dependent counts are from the receipts over the converted files.
 ## Reproduce
 
 ```bash
-python audits/typed-decision-corpora/verify.py --banking <dir with BANKING77 train.csv and test.csv>
+python audits/typed-decision-corpora/verify.py --banking <dir with BANKING77 train.csv and test.csv> --pacifaist <the Brittle Safety release's data/pacifaist>
 ```
 
 Reads the Hugging Face cache; `--fetch` allows downloads. Prints counts and

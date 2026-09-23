@@ -9,10 +9,10 @@
     "engine": "203b45ecbf3cceeec4acaf4593e281b51bf83f1b70523a25e2d8c4601b4dc7ac"
   },
   "counts": {
-    "F": 56,
+    "F": 57,
     "D": 100,
     "N": 40,
-    "total": 196
+    "total": 197
   },
   "series": {
     "F": "other people's evals",
@@ -1293,6 +1293,26 @@
       "status_class": "confirmed",
       "anchor": "#f-056",
       "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-056"
+    },
+    {
+      "id": "F-057",
+      "series": "F",
+      "series_name": "other people's evals",
+      "title": "PacifAIst · as a four-way choice, the safe action is the longest option in 205 of 351 scenarios and the one sharing the most words with the prompt in 170 of 274 decidable ones; after the Brittle Safety situational update, 45 and 55",
+      "summary": "the safe action is the longest option in 58% of scenarios and the most prompt-like in 62% of decidable ones; after the context flip, 13% and 19%",
+      "subject": "PacifAIst",
+      "check_label": "`length-bias` (S4), `surface-shortcut` (S9)",
+      "checks": [
+        "S4",
+        "S9"
+      ],
+      "date": "2026-09-23",
+      "date_iso": "2026-09-23",
+      "date_precision": "day",
+      "status": "confirmed",
+      "status_class": "confirmed",
+      "anchor": "#f-057",
+      "url": "https://github.com/collapseindex/dinostomp/blob/main/FINDINGS.md#f-057"
     },
     {
       "id": "D-099",

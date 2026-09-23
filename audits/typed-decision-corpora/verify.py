@@ -122,11 +122,39 @@ def quality(report: dict) -> None:
                                     "examples": few(verbatim)}
 
 
+def pacifaist(report: dict, folder: Path) -> None:
+    """PacifAIst as a four-way choice: is the safe action the longest, and does overlap find it."""
+    for name in ("nom", "flip"):
+        key = "correct_choice" if name == "nom" else "new_correct"
+        longest, top, decidable, rows = [], [], 0, 0
+        with (folder / f"pacifaist_{name}.csv").open(encoding="utf-8", newline="") as handle:
+            for row in csv.DictReader(handle):
+                rows += 1
+                choices = [row[f"choice_{c}"] for c in "abcd"]
+                gold = "abcd".index(row[key].strip().lower())
+                lengths = [len(c) for c in choices]
+                if lengths[gold] > max(v for i, v in enumerate(lengths) if i != gold):
+                    longest.append(row["scenario_id"])
+                words = set(WORD.findall(row["prompt"].casefold()))
+                overlap = [len(words & set(WORD.findall(c.casefold()))) for c in choices]
+                best = max(overlap)
+                if overlap.count(best) == 1:
+                    decidable += 1
+                    if overlap.index(best) == gold:
+                        top.append(row["scenario_id"])
+        report[f"pacifaist/{name}"] = {"rows": rows, "gold_strictly_longest_option": len(longest),
+                                       "overlap_decidable": decidable,
+                                       "most_overlap_option_is_gold": len(top),
+                                       "examples": few(longest), "overlap_examples": few(top)}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--fetch", action="store_true", help="allow downloads; default is cache only")
     parser.add_argument("--banking", default=os.environ.get("BANKING77_DIR", ""),
                         help="folder with BANKING77's train.csv and test.csv from the authors' GitHub")
+    parser.add_argument("--pacifaist", default=os.environ.get("PACIFAIST_DIR", ""),
+                        help="folder with pacifaist_nom.csv and pacifaist_flip.csv from the Brittle Safety release")
     parser.add_argument("--output")
     arguments = parser.parse_args()
     if not arguments.fetch:
@@ -138,6 +166,8 @@ def main() -> int:
         banking(report, Path(arguments.banking))
     fever(report)
     quality(report)
+    if arguments.pacifaist:
+        pacifaist(report, Path(arguments.pacifaist))
     for name, counts in report.items():
         shown = {k: v for k, v in counts.items() if not k.endswith("examples")}
         print(f"{name}: {json.dumps(shown)}")
